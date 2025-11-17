@@ -2,6 +2,7 @@
 
 import { Search, X } from "lucide-react";
 import React, { useState } from "react";
+import { cn } from "~/lib/utils";
 
 interface SearchInputProps {
   onSearch: (value: string) => void;
@@ -37,7 +38,10 @@ export default function SearchInput({
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
-        className="p-2 flex-1 border border-neutral-500 text-neutral-300 rounded-sm bg-base-800"
+        className={cn(
+          "p-2 flex-1 border border-slate-600 text-slate-200 rounded-md bg-slate-800/50",
+          "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+        )}
       />
       {value && (
         <button onClick={clearInput} aria-label="Clear search">

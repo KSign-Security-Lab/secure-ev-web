@@ -10,7 +10,7 @@ const MENU_ITEMS: MenuItemType[] = [
   { name: "Dashboard", icon: <Gauge />, url: "/" },
   { name: "Agents", icon: <Server />, url: "/agents" },
   { name: "Abilities", icon: <Database />, url: "/abilities" },
-  { name: "Playground", icon: <FlaskConical />, url: "/assessment" },
+  { name: "Playground", icon: <FlaskConical />, url: "/playground" },
 ];
 
 export default function SideBarLayout({
@@ -41,7 +41,7 @@ export default function SideBarLayout({
           }
           title={getTitle(pathname)}
         />
-        <main className="overflow-y-auto flex w-full">{children}</main>
+        <main className="overflow-y-auto flex w-full h-full">{children}</main>
       </div>
     </div>
   );

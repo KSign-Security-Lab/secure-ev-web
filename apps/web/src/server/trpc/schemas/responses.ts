@@ -103,3 +103,15 @@ export const agentStatisticsSchema = z.object({
     })
   ),
 });
+
+// Sessions schema based on actual API response structure
+export const sessionSchema = z.object({
+  id: z.number(),
+  info: z.string(),
+  platform: z.string(),
+  executors: z.array(z.string()),
+});
+
+export const sessionsListResponseSchema = z.object({
+  sessions: z.array(sessionSchema),
+});
