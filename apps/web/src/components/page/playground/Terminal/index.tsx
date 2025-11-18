@@ -52,6 +52,7 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
     const termRef = useRef<Terminal | null>(null);
     const fitAddonRef = useRef<FitAddon | null>(null);
     const inputBufferRef = useRef<string>("");
+    const connectionStateRef = useRef<ConnectionState>(connectionState);
 
     const write = useCallback((value: string) => {
       termRef.current?.write(value);
@@ -110,6 +111,26 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
       window.addEventListener("resize", resize);
 
       const dataListener = terminal.onData((data) => {
+        // Disable input when not connected (use ref to get current state)
+        if (connectionStateRef.current !== "connected") {
+          // Allow Ctrl+C to cancel
+          if (data === "\u0003") {
+            terminal.write("^C");
+            prompt();
+            return;
+          }
+          // Show warning on Enter
+          if (data === "\r") {
+            terminal.write("\r\n");
+            terminal.writeln(
+              "[warn] Terminal is not connected. Please wait for connection or click Reconnect."
+            );
+            prompt();
+          }
+          // Block all other input
+          return;
+        }
+
         const inputBuffer = inputBufferRef.current;
 
         switch (data) {
@@ -157,14 +178,34 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
       };
     }, [welcomeMessage, promptLabel, prompt, onCommand]);
 
+    // Update connection state ref when it changes
+    useEffect(() => {
+      connectionStateRef.current = connectionState;
+    }, [connectionState]);
+
+    const isConnected = connectionState === "connected";
+
     return (
-      <div className="flex h-full min-h-0 w-full flex-col">
+      <div className="flex h-full min-h-0 max-h-full w-full flex-col overflow-hidden">
         {/* Terminal Body */}
-        <div className="flex-1 min-h-0">
+        <div className="flex min-h-0 flex-1 relative overflow-hidden">
           <div
             ref={containerRef}
-            className="h-full w-full overflow-hidden rounded-lg bg-base-900/50 p-4"
+            className={`h-full w-full overflow-hidden rounded-lg bg-base-900/50 p-4 ${
+              !isConnected ? "opacity-75" : ""
+            }`}
           />
+          {!isConnected && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="rounded-lg bg-slate-900/90 border border-slate-700/50 px-4 py-2 text-sm text-slate-300">
+                {connectionState === "connecting"
+                  ? "Connecting to terminal..."
+                  : connectionState === "error"
+                  ? "Connection error. Use Reconnect button in header to try again."
+                  : "Terminal disconnected. Use Reconnect button in header to connect."}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );

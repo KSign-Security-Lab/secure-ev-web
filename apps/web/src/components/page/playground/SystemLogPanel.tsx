@@ -39,11 +39,11 @@ export default function SystemLogPanel({ logs, onClear, className }: Props) {
   return (
     <div
       className={cn(
-        "flex min-h-0 flex-col overflow-hidden rounded-lg border border-base-700/50 bg-base-900/50",
+        "flex h-full min-h-0 max-h-full flex-col overflow-hidden rounded-lg border border-base-700/50 bg-base-900/50",
         className
       )}
     >
-      <div className="flex items-center justify-between border-b border-base-700/50 px-3 py-2">
+      <div className="flex shrink-0 items-center justify-between border-b border-base-700/50 px-3 py-2">
         <span className="text-xs font-semibold uppercase tracking-wide text-neutral-300">
           System Log
         </span>
@@ -57,7 +57,7 @@ export default function SystemLogPanel({ logs, onClear, className }: Props) {
           </button>
         )}
       </div>
-      <div className="flex-1 overflow-y-auto px-3 py-2">
+      <div className="flex flex-col min-h-0 flex-1 overflow-y-auto px-3 py-2">
         {logs.length === 0 ? (
           <p className="text-xs text-neutral-500">No recent events.</p>
         ) : (
@@ -81,5 +81,3 @@ export default function SystemLogPanel({ logs, onClear, className }: Props) {
     </div>
   );
 }
-
-

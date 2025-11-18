@@ -8,6 +8,7 @@ interface Props {
   connectionState: ConnectionState;
   selectedSessionId: number | null;
   onRefreshSessions: () => void;
+  onReconnect?: () => void;
   sessionsLoading?: boolean;
 }
 
@@ -15,8 +16,11 @@ export function PageHeader({
   connectionState,
   selectedSessionId,
   onRefreshSessions,
+  onReconnect,
   sessionsLoading,
 }: Props) {
+  const isConnected = connectionState === "connected";
+  
   return (
     <div className="flex items-center justify-between rounded-lg border border-base-700/50 bg-base-900/50 px-4 py-3">
       <div>
@@ -28,12 +32,30 @@ export function PageHeader({
         </p>
       </div>
       <div className="flex items-center gap-3">
-        <ConnectionPill state={connectionState} />
-        {selectedSessionId && (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-500/20 px-2.5 py-1 text-[10px] font-medium text-primary-300 ring-1 ring-inset ring-primary-500/30">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary-400" />
-            Session #{selectedSessionId}
-          </span>
+        <div className="flex items-center gap-2">
+          <ConnectionPill state={connectionState} />
+          {selectedSessionId ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-500/20 px-2.5 py-1 text-[10px] font-medium text-primary-300 ring-1 ring-inset ring-primary-500/30">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary-400" />
+              Session #{selectedSessionId}
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-500/20 px-2.5 py-1 text-[10px] font-medium text-slate-400 ring-1 ring-inset ring-slate-500/30">
+              <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+              No session selected
+            </span>
+          )}
+        </div>
+        {!isConnected && onReconnect && (
+          <button
+            type="button"
+            onClick={onReconnect}
+            className="flex items-center gap-1.5 rounded-lg bg-base-800/80 px-3 py-1.5 text-xs font-medium text-neutral-300 ring-1 ring-inset ring-base-700/50 transition-colors hover:bg-base-800 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
+            title="Reconnect terminal"
+          >
+            <RefreshCw className="h-3.5 w-3.5" />
+            Reconnect
+          </button>
         )}
         <button
           type="button"

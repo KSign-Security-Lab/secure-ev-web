@@ -75,8 +75,8 @@ export function SessionsList({
   }, []);
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-lg border border-base-700/50 bg-base-900/50">
-      <div className="sticky top-0 z-10 border-b border-base-700/50 bg-base-900/60 backdrop-blur px-3 py-2">
+    <div className="flex h-full min-h-0 max-h-full flex-col overflow-hidden rounded-lg border border-base-700/50 bg-base-900/50">
+      <div className="sticky shrink-0 top-0 z-10 border-b border-base-700/50 bg-base-900/60 backdrop-blur px-3 py-2">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-sm font-semibold text-white">Sessions</h2>
@@ -90,9 +90,9 @@ export function SessionsList({
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col overflow-hidden p-3">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden p-3">
         {isLoading ? (
-          <div className="flex flex-1 flex-col gap-2">
+          <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
             {[...Array(6)].map((_, i) => (
               <div
                 key={i}
@@ -113,7 +113,7 @@ export function SessionsList({
           </div>
         ) : (
           <>
-            <div className="mb-2">
+            <div className="mb-2 shrink-0">
               <SearchInput onSearch={handleSearch} placeholder="Search..." />
             </div>
             {filteredSessions.length === 0 ? (
@@ -125,71 +125,75 @@ export function SessionsList({
               </div>
             ) : (
               <>
-                <div className="flex-1 space-y-1.5 overflow-y-auto pr-1">
-                  {paginatedSessions.map((s) => {
-                    const isSelected = selectedSessionId === s.id;
-                    const shownExecutors = s.executors.slice(0, 2);
-                    const extra = Math.max(
-                      s.executors.length - shownExecutors.length,
-                      0
-                    );
-                    return (
-                      <button
-                        key={s.id}
-                        onClick={() => onSelect(s.id)}
-                        className={`w-full rounded border px-3 py-2.5 text-left text-xs transition-colors ${
-                          isSelected
-                            ? "border-primary-500/50 bg-primary-500/10 shadow-inner"
-                            : "border-base-700/50 bg-base-800/30 hover:border-base-600 hover:bg-base-800/50"
-                        }`}
-                      >
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center gap-1.5">
-                              <span
-                                className={`font-medium ${
-                                  isSelected ? "text-primary-300" : "text-white"
-                                }`}
-                              >
-                                #{s.id}
-                              </span>
-                              <PlatformBadge platform={s.platform} />
-                            </div>
-                            <div className="mt-1 truncate text-neutral-400">
-                              {s.info}
-                            </div>
-                            {shownExecutors.length > 0 && (
-                              <div className="mt-1.5 flex flex-wrap items-center gap-1">
-                                {shownExecutors.map((ex) => (
-                                  <span
-                                    key={ex}
-                                    className="inline-flex items-center rounded bg-base-800/60 px-1.5 py-0.5 text-[10px] text-neutral-300 ring-1 ring-inset ring-base-700"
-                                  >
-                                    {ex}
-                                  </span>
-                                ))}
-                                {extra > 0 && (
-                                  <span className="inline-flex items-center rounded bg-base-800/60 px-1.5 py-0.5 text-[10px] text-neutral-300 ring-1 ring-inset ring-base-700">
-                                    +{extra}
-                                  </span>
-                                )}
+                <div className="flex min-h-0 flex-1 flex-col">
+                  <div className="flex-1 space-y-1.5 overflow-y-auto pr-1 min-h-0">
+                    {paginatedSessions.map((s) => {
+                      const isSelected = selectedSessionId === s.id;
+                      const shownExecutors = s.executors.slice(0, 2);
+                      const extra = Math.max(
+                        s.executors.length - shownExecutors.length,
+                        0
+                      );
+                      return (
+                        <button
+                          key={s.id}
+                          onClick={() => onSelect(s.id)}
+                          className={`w-full rounded border px-3 py-2.5 text-left text-xs transition-colors ${
+                            isSelected
+                              ? "border-primary-500/50 bg-primary-500/10 shadow-inner"
+                              : "border-base-700/50 bg-base-800/30 hover:border-base-600 hover:bg-base-800/50"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-1.5">
+                                <span
+                                  className={`font-medium ${
+                                    isSelected
+                                      ? "text-primary-300"
+                                      : "text-white"
+                                  }`}
+                                >
+                                  #{s.id}
+                                </span>
+                                <PlatformBadge platform={s.platform} />
                               </div>
-                            )}
+                              <div className="mt-1 truncate text-neutral-400">
+                                {s.info}
+                              </div>
+                              {shownExecutors.length > 0 && (
+                                <div className="mt-1.5 flex flex-wrap items-center gap-1">
+                                  {shownExecutors.map((ex) => (
+                                    <span
+                                      key={ex}
+                                      className="inline-flex items-center rounded bg-base-800/60 px-1.5 py-0.5 text-[10px] text-neutral-300 ring-1 ring-inset ring-base-700"
+                                    >
+                                      {ex}
+                                    </span>
+                                  ))}
+                                  {extra > 0 && (
+                                    <span className="inline-flex items-center rounded bg-base-800/60 px-1.5 py-0.5 text-[10px] text-neutral-300 ring-1 ring-inset ring-base-700">
+                                      +{extra}
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-                {totalPages > 1 && (
-                  <div className="mt-3 border-t border-base-700/50 pt-3">
-                    <Pagination
-                      currentPage={currentPage}
-                      totalPages={totalPages}
-                      onPageChange={setCurrentPage}
-                    />
+                        </button>
+                      );
+                    })}
                   </div>
-                )}
+                  {totalPages > 1 && (
+                    <div className="mt-3 border-t border-base-700/50 pt-3">
+                      <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                      />
+                    </div>
+                  )}
+                </div>
               </>
             )}
           </>
