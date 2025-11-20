@@ -4,6 +4,13 @@ import {
   paginatedAbilitiesResponseSchema,
   abilityStatisticsSchema,
 } from "../schemas/responses";
+import {
+  filterValuesResponseSchema,
+  paginatedCommandSearchResponseSchema,
+  commandSearchResultListSchema,
+  searchCommandsByFiltersInputSchema,
+  searchCommandsInputSchema,
+} from "../schemas/abilities";
 import prisma from "~/lib/prisma";
 
 export const abilitiesRouter = router({
@@ -63,6 +70,138 @@ export const abilitiesRouter = router({
       }));
 
       return { abilities: transformedAbilities, count };
+    }),
+
+  searchCommands: publicProcedure
+    .input(searchCommandsInputSchema)
+    .output(commandSearchResultListSchema)
+    .query(async ({ input }) => {
+      const abilities = await prisma.ability.findMany({
+        where: {
+          OR: [
+            { command: { contains: input.query } },
+            { ability_name: { contains: input.query } },
+            { description: { contains: input.query } },
+          ],
+        },
+        take: input.limit,
+        select: {
+          id: true,
+          ability_name: true,
+          command: true,
+          description: true,
+          platform: true,
+          type: true,
+          technique_name: true,
+          tactic: true,
+        },
+      });
+
+      return abilities;
+    }),
+
+  getFilterValues: publicProcedure
+    .output(filterValuesResponseSchema)
+    .query(async () => {
+      // Fetch distinct values for each filter field
+      const platformsRaw = await prisma.ability.findMany({
+        distinct: ["platform"],
+        select: { platform: true },
+      });
+      const typesRaw = await prisma.ability.findMany({
+        distinct: ["type"],
+        select: { type: true },
+      });
+      const techniqueNamesRaw = await prisma.ability.findMany({
+        distinct: ["technique_name"],
+        select: { technique_name: true },
+      });
+      const tacticsRaw = await prisma.ability.findMany({
+        distinct: ["tactic"],
+        select: { tactic: true },
+      });
+      // Filter out empty/null values and sort
+      const platforms = platformsRaw
+        .map((item) => item.platform?.trim())
+        .filter((v) => v)
+        .sort();
+      const types = typesRaw
+        .map((item) => item.type?.trim())
+        .filter((v) => v)
+        .sort();
+      const techniqueNames = techniqueNamesRaw
+        .map((item) => item.technique_name?.trim())
+        .filter((v) => v)
+        .sort();
+      const tactics = tacticsRaw
+        .map((item) => item.tactic?.trim())
+        .filter((v) => v)
+        .sort();
+      return {
+        platforms,
+        types,
+        techniqueNames,
+        tactics,
+      };
+    }),
+
+  searchCommandsByFilters: publicProcedure
+    .input(searchCommandsByFiltersInputSchema)
+    .output(paginatedCommandSearchResponseSchema)
+    .query(async ({ input }) => {
+      const pageNumber = input.page ?? 1;
+      const pageSize = input.pageSize ?? 50;
+      const skip = (pageNumber - 1) * pageSize;
+
+      const andConditions: any[] = [];
+      if (input.platform) {
+        andConditions.push({ platform: input.platform });
+      }
+      if (input.type) {
+        andConditions.push({ type: input.type });
+      }
+      if (input.techniqueName) {
+        andConditions.push({ technique_name: input.techniqueName });
+      }
+      if (input.tactic) {
+        andConditions.push({ tactic: input.tactic });
+      }
+      if (input.query?.trim()) {
+        const query = input.query.trim();
+        andConditions.push({
+          OR: [
+            { command: { contains: query, mode: "insensitive" } },
+            { ability_name: { contains: query, mode: "insensitive" } },
+            { description: { contains: query, mode: "insensitive" } },
+            { ability_id: { contains: query, mode: "insensitive" } },
+            { tactic: { contains: query, mode: "insensitive" } },
+            { technique_name: { contains: query, mode: "insensitive" } },
+          ],
+        });
+      }
+
+      const whereClause = andConditions.length ? { AND: andConditions } : {};
+
+      const [abilities, count] = await prisma.$transaction([
+        prisma.ability.findMany({
+          where: whereClause,
+          skip,
+          take: pageSize,
+          select: {
+            id: true,
+            ability_name: true,
+            command: true,
+            description: true,
+            platform: true,
+            type: true,
+            technique_name: true,
+            tactic: true,
+          },
+        }),
+        prisma.ability.count({ where: whereClause }),
+      ]);
+
+      return { abilities, count };
     }),
 
   statistics: publicProcedure

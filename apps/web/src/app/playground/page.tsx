@@ -12,6 +12,7 @@ import { normalizeMessage } from "~/components/page/playground/Terminal/utils";
 import PageHeader from "~/components/page/playground/PageHeader";
 import SessionsList from "~/components/page/playground/SessionsList";
 import SystemLogPanel from "~/components/page/playground/SystemLogPanel";
+import { CommandFilterDropdown } from "~/components/page/playground/CommandFilterDropdown";
 
 const TerminalView = dynamic(
   () =>
@@ -235,9 +236,17 @@ export default function Playground() {
     await fetchSessions();
   }, [fetchSessions]);
 
+  // Handle command selection from filter
+  const handleSelectCommand = useCallback((command: string) => {
+    // Set command in terminal input buffer
+    if (terminalRef.current) {
+      terminalRef.current.setCommand(command);
+    }
+  }, []);
+
   return (
-    <div className="flex h-full min-h-0 w-full flex-col">
-      <div className="flex h-full min-h-0 w-full flex-col gap-4 p-4">
+    <div className="flex flex-1 min-h-0 w-full flex-col overflow-hidden">
+      <div className="flex flex-1 min-h-0 w-full flex-col gap-4 p-4 overflow-hidden">
         <div className="shrink-0">
           <PageHeader
             connectionState={connectionState}
@@ -248,8 +257,8 @@ export default function Playground() {
           />
         </div>
 
-        <div className="flex min-h-0 flex-1 gap-4">
-          <div className="flex w-full flex-col lg:w-[360px] min-h-0 max-h-full">
+        <div className="flex min-h-0 flex-1 gap-4 overflow-hidden">
+          <div className="flex w-full flex-col lg:w-[360px] min-h-0 max-h-full overflow-hidden">
             <SessionsList
               data={sessionsData}
               isLoading={isLoadingSessions}
@@ -258,21 +267,26 @@ export default function Playground() {
               onSelect={handleSessionClick}
             />
           </div>
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 xl:flex-row">
-            <div className="flex min-h-0 flex-1 max-h-full">
-              <TerminalView
-                ref={terminalRef}
-                connectionState={connectionState}
-                sessionId={selectedSessionId}
-                onCommand={sendCommand}
-                onReconnect={reconnect}
-              />
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 xl:flex-row overflow-hidden">
+            <div className="flex min-h-0 flex-1 max-h-full flex-col gap-3 overflow-hidden">
+              <div className="shrink-0">
+                <CommandFilterDropdown onSelectCommand={handleSelectCommand} />
+              </div>
+              <div className="flex min-h-0 flex-1 overflow-hidden">
+                <TerminalView
+                  ref={terminalRef}
+                  connectionState={connectionState}
+                  sessionId={selectedSessionId}
+                  onCommand={sendCommand}
+                  onReconnect={reconnect}
+                />
+              </div>
             </div>
-            <div className="flex min-h-0 shrink-0 xl:w-[320px] max-h-full">
+            <div className="flex min-h-0 flex-1 xl:flex-none xl:w-[320px] max-h-full overflow-hidden h-full flex-col">
               <SystemLogPanel
                 logs={systemLogs}
                 onClear={systemLogs.length > 0 ? clearSystemLogs : undefined}
-                className="h-full w-full"
+                className="h-full w-full flex-1 min-h-0"
               />
             </div>
           </div>

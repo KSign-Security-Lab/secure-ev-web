@@ -26,9 +26,9 @@ export default function SideBarLayout({
   };
 
   return (
-    <div className="flex text-white">
+    <div className="flex h-screen min-h-screen overflow-hidden text-white">
       <Sidebar ref={sidebarRef} menus={MENU_ITEMS} />
-      <div className="flex p-6 w-full flex-col bg-base-950">
+      <div className="flex w-full flex-1 flex-col bg-base-950 p-6 min-w-0 min-h-0 overflow-hidden">
         <Topbar
           leftEnhancer={
             <button
@@ -41,7 +41,9 @@ export default function SideBarLayout({
           }
           title={getTitle(pathname)}
         />
-        <main className="overflow-y-auto flex w-full h-full">{children}</main>
+        <main className="flex w-full flex-1 min-h-0 min-w-0 overflow-hidden">
+          {children}
+        </main>
       </div>
     </div>
   );
