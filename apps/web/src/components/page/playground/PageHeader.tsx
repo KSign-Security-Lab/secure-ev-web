@@ -8,7 +8,6 @@ interface Props {
   connectionState: ConnectionState;
   selectedSessionId: number | null;
   onRefreshSessions: () => void;
-  onReconnect?: () => void;
   sessionsLoading?: boolean;
 }
 
@@ -16,7 +15,6 @@ export function PageHeader({
   connectionState,
   selectedSessionId,
   onRefreshSessions,
-  onReconnect,
   sessionsLoading,
 }: Props) {
   const isConnected = connectionState === "connected";
@@ -46,17 +44,6 @@ export function PageHeader({
             </span>
           )}
         </div>
-        {!isConnected && onReconnect && (
-          <button
-            type="button"
-            onClick={onReconnect}
-            className="flex items-center gap-1.5 rounded-lg bg-base-800/80 px-3 py-1.5 text-xs font-medium text-neutral-300 ring-1 ring-inset ring-base-700/50 transition-colors hover:bg-base-800 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
-            title="Reconnect terminal"
-          >
-            <RefreshCw className="h-3.5 w-3.5" />
-            Reconnect
-          </button>
-        )}
         <button
           type="button"
           onClick={onRefreshSessions}

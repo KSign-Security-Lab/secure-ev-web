@@ -50,8 +50,9 @@ export default function Playground() {
   const terminalRef = useRef<TerminalViewHandle | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const selectedSessionIdRef = useRef<number | null>(null);
   const [connectionState, setConnectionState] =
-    useState<ConnectionState>("connecting");
+    useState<ConnectionState>("disconnected");
   const [sessionsData, setSessionsData] = useState<SessionsListResponse | null>(
     null
   );
@@ -109,30 +110,43 @@ export default function Playground() {
     }
   }, []);
 
-  const closeWebSocket = useCallback(() => {
-    clearReconnectTimer();
-    const ws = wsRef.current;
-    if (ws) {
-      ws.onopen = null;
-      ws.onmessage = null;
-      ws.onerror = null;
-      ws.onclose = null;
-      ws.close();
-      wsRef.current = null;
-    }
-  }, [clearReconnectTimer]);
+  const closeWebSocket = useCallback(
+    (skipTimerClear = false) => {
+      if (!skipTimerClear) {
+        clearReconnectTimer();
+      }
+      const ws = wsRef.current;
+      if (ws) {
+        ws.onopen = null;
+        ws.onmessage = null;
+        ws.onerror = null;
+        ws.onclose = null;
+        ws.close();
+        wsRef.current = null;
+      }
+    },
+    [clearReconnectTimer]
+  );
 
   const connectWebSocket = useCallback(
     (sessionId?: number | null) => {
-      closeWebSocket();
+      // Don't connect if no session is selected
+      if (!sessionId) {
+        closeWebSocket();
+        setConnectionState("disconnected");
+        return;
+      }
+
+      // Clear any existing reconnect timer before connecting
+      clearReconnectTimer();
+      // Close existing connection without clearing timer (we already cleared it)
+      closeWebSocket(true);
 
       const baseUrl = process.env.NEXT_PUBLIC_TERMINAL_WS_URL?.trim() || "";
       const apiKey = process.env.NEXT_PUBLIC_DEFEND_API_KEY?.trim() || "";
 
       const normalizedBase = baseUrl.replace(/\/$/, "");
-      const baseWithSession = sessionId
-        ? `${normalizedBase}/${sessionId}`
-        : normalizedBase;
+      const baseWithSession = `${normalizedBase}/${sessionId}`;
       let url = baseWithSession;
       if (apiKey) {
         try {
@@ -147,10 +161,7 @@ export default function Playground() {
         }
       }
 
-      appendSystemLog(
-        "info",
-        `Connecting to ${sessionId ? `session #${sessionId}` : "terminal"}...`
-      );
+      appendSystemLog("info", `Connecting to session #${sessionId}...`);
       setConnectionState("connecting");
 
       const ws = new WebSocket(url);
@@ -158,10 +169,7 @@ export default function Playground() {
 
       ws.onopen = () => {
         setConnectionState("connected");
-        appendSystemLog(
-          "success",
-          `Connected to ${sessionId ? `session #${sessionId}` : "terminal"}.`
-        );
+        appendSystemLog("success", `Connected to session #${sessionId}.`);
         terminalRef.current?.prompt();
       };
 
@@ -175,21 +183,43 @@ export default function Playground() {
 
       ws.onerror = (event) => {
         console.error("Terminal WebSocket error", event);
-        setConnectionState("error");
+        // Don't set error state here - let onclose handle reconnection
+        // The error will cause the connection to close, and onclose will handle reconnection
         appendSystemLog("error", "Connection error.");
       };
 
-      ws.onclose = () => {
+      ws.onclose = (event) => {
+        // Only process close if this is still the current WebSocket
+        if (wsRef.current !== ws) {
+          return;
+        }
+
+        // Clear the ref first to prevent other close handlers from running
         wsRef.current = null;
         setConnectionState("disconnected");
-        appendSystemLog("warning", "Connection closed. Reconnecting...");
-        reconnectTimerRef.current = setTimeout(() => {
-          reconnectTimerRef.current = null;
-          connectWebSocket(sessionId ?? selectedSessionId ?? undefined);
-        }, 1000);
+
+        // Only reconnect if we still have a session selected and no timer is already set
+        const currentSessionId = selectedSessionIdRef.current;
+        if (currentSessionId && !reconnectTimerRef.current) {
+          appendSystemLog("warning", "Connection closed. Reconnecting...");
+          reconnectTimerRef.current = setTimeout(() => {
+            // Double-check we still need to reconnect
+            if (!reconnectTimerRef.current) {
+              return; // Timer was cleared
+            }
+            reconnectTimerRef.current = null;
+            // Check again if session is still selected before reconnecting
+            const sessionToReconnect = selectedSessionIdRef.current;
+            if (sessionToReconnect && wsRef.current === null) {
+              connectWebSocket(sessionToReconnect);
+            }
+          }, 1500);
+        } else if (!currentSessionId) {
+          appendSystemLog("warning", "Connection closed.");
+        }
       };
     },
-    [appendSystemLog, closeWebSocket, selectedSessionId]
+    [appendSystemLog, closeWebSocket]
   );
 
   const sendCommand = useCallback(
@@ -200,7 +230,7 @@ export default function Playground() {
         appendSystemLog("info", `Command: ${command}`);
       } else {
         terminalRef.current?.writeln(
-          "\r\n[warn] Not connected. Use the Reconnect button."
+          "\r\n[warn] Not connected. The terminal will automatically reconnect."
         );
         appendSystemLog(
           "warning",
@@ -211,25 +241,33 @@ export default function Playground() {
     [appendSystemLog]
   );
 
-  const reconnect = useCallback(() => {
-    connectWebSocket(selectedSessionId ?? undefined);
-  }, [connectWebSocket, selectedSessionId]);
-
   const handleSessionClick = useCallback(
     (sessionId: number) => {
+      selectedSessionIdRef.current = sessionId;
       setSelectedSessionId(sessionId);
       connectWebSocket(sessionId);
     },
     [connectWebSocket]
   );
 
+  // Keep ref in sync with state
+  useEffect(() => {
+    selectedSessionIdRef.current = selectedSessionId;
+  }, [selectedSessionId]);
+
   useEffect(() => {
     fetchSessions();
-    connectWebSocket();
+    // Only connect if a session is selected
+    if (selectedSessionId) {
+      connectWebSocket(selectedSessionId);
+    } else {
+      closeWebSocket();
+      setConnectionState("disconnected");
+    }
     return () => {
       closeWebSocket();
     };
-  }, [fetchSessions, connectWebSocket, closeWebSocket]);
+  }, [fetchSessions, connectWebSocket, closeWebSocket, selectedSessionId]);
 
   // Refresh handlers
   const handleRefreshSessions = useCallback(async () => {
@@ -252,7 +290,6 @@ export default function Playground() {
             connectionState={connectionState}
             selectedSessionId={selectedSessionId}
             onRefreshSessions={handleRefreshSessions}
-            onReconnect={reconnect}
             sessionsLoading={isLoadingSessions}
           />
         </div>
@@ -278,7 +315,6 @@ export default function Playground() {
                   connectionState={connectionState}
                   sessionId={selectedSessionId}
                   onCommand={sendCommand}
-                  onReconnect={reconnect}
                 />
               </div>
             </div>

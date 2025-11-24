@@ -395,7 +395,7 @@ export function CommandFilterDropdown({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center gap-2 rounded-lg bg-base-900/70 px-4 py-2.5 text-sm font-medium text-neutral-200 ring-1 ring-inset ring-base-700/60 transition-colors hover:bg-base-800 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
+        className="w-full flex items-center gap-2 rounded-lg bg-base-900/70 px-4 py-3.5 text-sm font-medium text-neutral-200 ring-1 ring-inset ring-base-700/60 transition-colors hover:bg-base-800 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
       >
         <Search className="h-4 w-4" />
         <span>Search commands</span>

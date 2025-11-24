@@ -25,7 +25,6 @@ export interface TerminalViewProps {
   promptLabel?: string;
   sessionId?: number | null;
   onCommand: (command: string) => void;
-  onReconnect: () => void;
 }
 
 export interface TerminalViewHandle {
@@ -47,7 +46,6 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
       promptLabel = DEFAULT_PROMPT_LABEL,
       sessionId,
       onCommand,
-      onReconnect,
     },
     ref
   ) {
@@ -56,6 +54,7 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
     const fitAddonRef = useRef<FitAddon | null>(null);
     const inputBufferRef = useRef<string>("");
     const connectionStateRef = useRef<ConnectionState>(connectionState);
+    const sessionIdRef = useRef<number | null | undefined>(sessionId);
     const [showAutocomplete, setShowAutocomplete] = useState(false);
     const [autocompleteInput, setAutocompleteInput] = useState("");
     const autocompleteTriggeredRef = useRef(false);
@@ -111,7 +110,7 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
         cursorBlink: true,
         fontSize: 14,
         theme: {
-          background: "#313844",
+          background: "#000000",
           foreground: "#f1f5f9",
         },
       });
@@ -125,6 +124,12 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
       terminal.open(container);
       fitAddon.fit();
 
+      // Ensure terminal element has matching rounded corners
+      const terminalElement = container.querySelector(".xterm");
+      if (terminalElement instanceof HTMLElement) {
+        terminalElement.style.borderRadius = "0.5rem";
+      }
+
       terminal.focus();
       terminal.writeln(welcomeMessage);
       prompt({ leadingNewline: false });
@@ -133,8 +138,11 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
       window.addEventListener("resize", resize);
 
       const dataListener = terminal.onData((data) => {
-        // Disable input when not connected (use ref to get current state)
-        if (connectionStateRef.current !== "connected") {
+        // Disable input when no session selected or not connected (use ref to get current state)
+        if (
+          !sessionIdRef.current ||
+          connectionStateRef.current !== "connected"
+        ) {
           // Allow Ctrl+C to cancel
           if (data === "\u0003") {
             terminal.write("^C");
@@ -144,9 +152,15 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
           // Show warning on Enter
           if (data === "\r") {
             terminal.write("\r\n");
-            terminal.writeln(
-              "[warn] Terminal is not connected. Please wait for connection or click Reconnect."
-            );
+            if (!sessionIdRef.current) {
+              terminal.writeln(
+                "[warn] No session selected. Please select a session from the list."
+              );
+            } else {
+              terminal.writeln(
+                "[warn] Terminal is not connected. The terminal will automatically reconnect."
+              );
+            }
             prompt();
           }
           // Block all other input
@@ -233,6 +247,11 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
       connectionStateRef.current = connectionState;
     }, [connectionState]);
 
+    // Update sessionId ref when it changes
+    useEffect(() => {
+      sessionIdRef.current = sessionId;
+    }, [sessionId]);
+
     // Close autocomplete when clicking outside
     useEffect(() => {
       if (!showAutocomplete) return;
@@ -290,12 +309,12 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
     }, []);
 
     return (
-      <div className="flex h-full min-h-0 max-h-full w-full flex-col overflow-hidden">
+      <div className="flex h-full min-h-0 max-h-full w-full flex-col overflow-hidden rounded-lg">
         {/* Terminal Body */}
-        <div className="flex min-h-0 flex-1 relative overflow-hidden">
+        <div className="flex min-h-0 flex-1 relative overflow-hidden rounded-lg">
           <div
             ref={containerRef}
-            className={`h-full w-full overflow-hidden rounded-lg bg-base-900/50 p-4 ${
+            className={`h-full w-full overflow-hidden rounded-lg bg-black p-4 ${
               !isConnected ? "opacity-75" : ""
             }`}
           />
@@ -312,14 +331,11 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
               </div>
             </div>
           )}
-          {!isConnected && (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          {!sessionId && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none backdrop-blur-sm">
               <div className="rounded-lg bg-slate-900/90 border border-slate-700/50 px-4 py-2 text-sm text-slate-300">
-                {connectionState === "connecting"
-                  ? "Connecting to terminal..."
-                  : connectionState === "error"
-                  ? "Connection error. Use Reconnect button in header to try again."
-                  : "Terminal disconnected. Use Reconnect button in header to connect."}
+                Please select a session from the list to connect to the
+                terminal.
               </div>
             </div>
           )}
