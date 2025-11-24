@@ -307,7 +307,10 @@ export default function Playground() {
           <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 xl:flex-row overflow-hidden">
             <div className="flex min-h-0 flex-1 max-h-full flex-col gap-3 overflow-hidden">
               <div className="shrink-0">
-                <CommandFilterDropdown onSelectCommand={handleSelectCommand} />
+                <CommandFilterDropdown
+                  onSelectCommand={handleSelectCommand}
+                  disabled={!selectedSessionId}
+                />
               </div>
               <div className="flex min-h-0 flex-1 overflow-hidden">
                 <TerminalView

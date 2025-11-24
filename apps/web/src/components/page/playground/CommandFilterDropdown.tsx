@@ -26,10 +26,12 @@ interface CommandResult {
 
 interface CommandFilterDropdownProps {
   onSelectCommand: (command: string) => void;
+  disabled?: boolean;
 }
 
 export function CommandFilterDropdown({
   onSelectCommand,
+  disabled = false,
 }: CommandFilterDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [filterState, setFilterState] = useState<FilterState>({
@@ -68,6 +70,12 @@ export function CommandFilterDropdown({
   const containerRef = useRef<HTMLDivElement>(null);
   const resultsContainerRef = useRef<HTMLDivElement>(null);
   const PAGE_SIZE = 50;
+
+  useEffect(() => {
+    if (disabled) {
+      setIsOpen(false);
+    }
+  }, [disabled]);
 
   // Fetch filter values when dropdown opens
   useEffect(() => {
@@ -394,8 +402,11 @@ export function CommandFilterDropdown({
     <div ref={containerRef} className="relative w-full">
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center gap-2 rounded-lg bg-base-900/70 px-4 py-3.5 text-sm font-medium text-neutral-200 ring-1 ring-inset ring-base-700/60 transition-colors hover:bg-base-800 focus:outline-none focus:ring-2 focus:ring-primary-500/50"
+        onClick={() => {
+          setIsOpen((prev) => !prev);
+        }}
+        disabled={disabled}
+        className="w-full flex items-center gap-2 rounded-lg bg-base-900/70 px-4 py-3.5 text-sm font-medium text-neutral-200 ring-1 ring-inset ring-base-700/60 transition-colors hover:bg-base-800 focus:outline-none focus:ring-2 focus:ring-primary-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <Search className="h-4 w-4" />
         <span>Search commands</span>
@@ -491,7 +502,7 @@ export function CommandFilterDropdown({
               <div
                 ref={resultsContainerRef}
                 onScroll={handleResultsScroll}
-                className="max-h-[45vh] overflow-y-auto space-y-1.5 pr-1"
+                className="max-h-[30vh] overflow-y-auto space-y-1.5 pr-1"
               >
                 {isLoading ? (
                   <div className="p-4 text-center text-sm text-neutral-400">
