@@ -41,7 +41,7 @@ export default function SideBarLayout({
           }
           title={getTitle(pathname)}
         />
-        <main className="flex w-full flex-1 min-h-0 min-w-0 overflow-hidden">
+        <main className="flex w-full flex-1 min-h-0 min-w-0 overflow-x-hidden overflow-y-auto">
           {children}
         </main>
       </div>
