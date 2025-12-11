@@ -12,6 +12,7 @@
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "prisma:generate": "yarn workspace @bas-platform/prisma prisma:generate",
-    "prisma:seed": "yarn workspace @bas-platform/prisma prisma:sseed"
+    "prisma:seed": "yarn workspace @bas-platform/prisma prisma:seed",
+    "prisma:studio": "yarn workspace @bas-platform/prisma prisma:studio"
   }
 }
