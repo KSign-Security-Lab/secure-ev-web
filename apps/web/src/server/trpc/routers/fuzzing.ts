@@ -150,6 +150,7 @@ export const fuzzingRouter = router({
       const pageSize = input?.pageSize ?? 10;
       const status = input?.status;
       const targetType = input?.targetType;
+      const fromDate = input?.fromDate;
 
       // Build where clause
       const where: any = {};
@@ -159,6 +160,9 @@ export const fuzzingRouter = router({
       if (targetType) {
         // @ts-ignore - Prisma enum filtering issue
         where.targetType = { equals: targetType as any };
+      }
+      if (fromDate) {
+        where.createdAt = { gte: new Date(fromDate) };
       }
 
       const [jobs, count] = await prisma.$transaction([

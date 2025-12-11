@@ -3,11 +3,12 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, CheckCircle2, Plug, Zap, FileText } from "lucide-react";
+import { ArrowRight, CheckCircle2, Plug, Zap, FileText, BookOpen, ExternalLink, ShieldCheck } from "lucide-react";
 import { Reveal } from "~/components/common/Reveal";
 import { Button } from "~/components/ui/button";
 import { GlassCard } from "~/components/ui/glass-card";
 import { Badge } from "~/components/ui/badge";
+import { RecentFuzzingStats } from "~/components/page/fuzzing/RecentFuzzingStats";
 
 export default function FuzzingLandingPage() {
   return (
@@ -79,7 +80,7 @@ export default function FuzzingLandingPage() {
         <Reveal width="100%">
         <div className="max-w-7xl mx-auto px-6 py-20">
             <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-70 grayscale hover:grayscale-0 transition-all duration-500">
-                {["OCPP 1.6J", "OCPP 2.0.1", "ISO 15118", "DIN 70121", "WebSocket Secure (WSS)"].map((protocol) => (
+                {["OCPP 1.6J", "OCPP 2.0.1", "ISO 15118", "WebSocket Secure (WSS)"].map((protocol) => (
                     <div key={protocol} className="flex items-center space-x-2 group cursor-default">
                         <CheckCircle2 className="w-5 h-5 text-blue-500 group-hover:text-cyan-400 transition-colors" />
                         <span className="text-lg font-bold text-slate-300 group-hover:text-white transition-colors">{protocol}</span>
@@ -87,6 +88,15 @@ export default function FuzzingLandingPage() {
                 ))}
             </div>
         </div>
+        </Reveal>
+      </section>
+
+      {/* Recent Jobs Section */}
+      <section className="w-full px-6 md:px-24 py-16 bg-slate-950 border-b border-slate-800/50">
+        <Reveal width="100%">
+          <div className="max-w-7xl mx-auto">
+             <RecentFuzzingStats />
+          </div>
         </Reveal>
       </section>
 
@@ -232,6 +242,53 @@ export default function FuzzingLandingPage() {
              </div>
           </div>
          </Reveal>
+      </section>
+
+      {/* Resources Section */}
+      <section className="w-full px-6 md:px-24 py-20 bg-slate-900 border-t border-slate-800">
+        <Reveal width="100%">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-5xl font-bold mb-4">Resources</h2>
+              <p className="text-slate-400 text-lg">Documentation and guides to help you get started.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+               <GlassCard className="p-8 hover:bg-slate-800/50 transition-colors group">
+                  <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-6 text-blue-400 group-hover:text-blue-300 group-hover:scale-110 transition-all">
+                     <BookOpen size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">Documentation</h3>
+                  <p className="text-slate-400 mb-6">Comprehensive guides on setting up your first fuzzing job and interpreting results.</p>
+                  <span className="inline-flex items-center text-slate-500 cursor-not-allowed font-medium">
+                     Coming Soon
+                  </span>
+               </GlassCard>
+
+               <GlassCard className="p-8 hover:bg-slate-800/50 transition-colors group">
+                  <div className="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center mb-6 text-purple-400 group-hover:text-purple-300 group-hover:scale-110 transition-all">
+                     <ShieldCheck size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">Vulnerability Database</h3>
+                  <p className="text-slate-400 mb-6">Explore our database of known EV charging vulnerabilities and CVEs.</p>
+                  <Link href="/abilities" className="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium">
+                     Browse Database <ArrowRight size={16} className="ml-2" />
+                  </Link>
+               </GlassCard>
+
+               <GlassCard className="p-8 hover:bg-slate-800/50 transition-colors group">
+                  <div className="w-12 h-12 bg-cyan-500/10 rounded-lg flex items-center justify-center mb-6 text-cyan-400 group-hover:text-cyan-300 group-hover:scale-110 transition-all">
+                     <ExternalLink size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">OCPP Compliance</h3>
+                  <p className="text-slate-400 mb-6">Official OCA tools and compliance testing guidelines for OCPP 1.6 & 2.0.1.</p>
+                  <a href="https://www.openchargealliance.org/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-cyan-400 hover:text-cyan-300 font-medium">
+                     Visit OCA <ExternalLink size={16} className="ml-2" />
+                  </a>
+               </GlassCard>
+            </div>
+          </div>
+        </Reveal>
       </section>
 
       {/* Stats Bar (Footer) */}

@@ -157,6 +157,7 @@ export const listFuzzingJobsInputSchema = z
     pageSize: z.number().int().positive().max(100).default(10),
     status: fuzzingJobStatusSchema.optional(),
     targetType: fuzzingTargetTypeSchema.optional(),
+    fromDate: z.string().datetime().optional(),
   })
   .optional();
 
