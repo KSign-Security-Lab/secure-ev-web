@@ -113,24 +113,20 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
   const columns: TableColumn<FuzzingRun>[] = [
     {
       label: "Type",
+      className: "w-[20%]",
       render: (run) => (
         <span className="text-neutral-400 font-mono text-xs">
           {run.type}
         </span>
       ),
-      // Custom header render logic would be ideal in Table component, 
-      // but assuming we can't change Table easily, we stick to basic headers or wrap Table?
-      // For now, simpler implementation: sort buttons are external or just inferred?
-      // The Table component accepts 'label' as string. 
-      // If we want clickable headers, we might need to modify Table or just put controls above.
-      // Let's rely on Table's standard rendering for now and add Sort controls in the toolbar if headers aren't interactive.
     },
     {
       label: "Input",
+      className: "w-[35%]",
       render: (run) => (
         <button
           onClick={() => setSelectedRun(run)}
-          className="text-primary-300 hover:text-primary-400 hover:underline text-left font-mono text-xs truncate max-w-[300px]"
+          className="text-primary-300 hover:text-primary-400 hover:underline text-left font-mono text-xs truncate w-full block"
         >
           {run.input}
         </button>
@@ -138,14 +134,16 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
     },
     {
       label: "Output",
+      className: "w-[35%]",
       render: (run) => (
-        <span className="text-neutral-200 font-mono text-xs truncate max-w-[300px] block">
+        <span className="text-neutral-200 font-mono text-xs truncate w-full block text-left">
           {run.output}
         </span>
       ),
     },
     {
       label: "Result",
+      className: "w-[10%]",
       render: (run) => (
         <Tag
           label={getRunResultLabel(run.result)}
