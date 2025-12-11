@@ -59,7 +59,7 @@ export const AbilitiesTable: React.FC<{
         <AbilityModal
           open={open}
           onClose={onClose}
-          onSave={() => console.log("Save")}
+          onSave={() => {}}
           modalData={modalData}
         />
       ) : null}

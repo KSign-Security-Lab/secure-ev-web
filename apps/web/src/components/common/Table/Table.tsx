@@ -18,14 +18,14 @@ export function Table<T>({
   columns,
   striped = true,
 }: TableProps<T>) {
-  const baseHeaderClass = "text-white text-lg font-bold text-center py-3 px-4";
-  const baseCellClass = "px-4 py-3 font-medium text-neutral-200 text-center";
+  const baseHeaderClass = "text-white text-sm font-semibold text-center py-4 px-4";
+  const baseCellClass = "px-4 py-4 font-medium text-slate-300 text-center border-b border-slate-800/50";
 
   const isEmpty = !Array.isArray(data) || data.length === 0;
 
   return (
     <table className="w-full table-fixed text-sm text-left text-white">
-      <thead className="bg-base-800 text-neutral-300 border-b border-base-700">
+      <thead className="bg-slate-900/80 text-slate-300 border-b border-slate-700/50">
         <tr>
           {columns.map((col, idx) => (
             <th key={idx} className={clsx(baseHeaderClass, col.className)}>
@@ -50,9 +50,9 @@ export function Table<T>({
               key={rowIdx}
               className={
                 striped && rowIdx % 2 === 0
-                  ? "bg-base-700"
+                  ? "bg-slate-800/30"
                   : striped
-                  ? "bg-base-800"
+                  ? "bg-transparent"
                   : ""
               }
             >

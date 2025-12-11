@@ -1,5 +1,6 @@
 import { router, publicProcedure } from "../init";
 import { env } from "~/config/env";
+import { TRPCError } from "@trpc/server";
 import {
   agentsListResponseSchema,
   agentStatisticsSchema,
@@ -17,7 +18,10 @@ export const agentsRouter = router({
     });
     if (!response.ok) {
       const text = await response.text();
-      throw new Error(`Failed to fetch agents: ${response.status} ${text}`);
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `Failed to fetch agents: ${response.status} ${text}`,
+      });
     }
     const data = await response.json();
     // Validate and parse the response
@@ -37,7 +41,10 @@ export const agentsRouter = router({
       });
       if (!response.ok) {
         const text = await response.text();
-        throw new Error(`Failed to fetch agents: ${response.status} ${text}`);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Failed to fetch agents: ${response.status} ${text}`,
+        });
       }
       const data = await response.json();
       const agents = agentsListResponseSchema.parse(data);

@@ -126,7 +126,6 @@ class WebSocketService {
       const ws = new WebSocket(socketUrl);
 
       ws.onopen = () => {
-        console.log(`WebSocket connected (${socketUrl})`);
         this.reconnectAttempts = 0;
         if (this.reconnectTimeout) {
           clearTimeout(this.reconnectTimeout);
@@ -204,9 +203,6 @@ class WebSocketService {
 
     this.reconnectTimeout = setTimeout(() => {
       this.reconnectTimeout = null;
-      console.log(
-        `Attempting to reconnect WebSocket (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`
-      );
       this.initializeSocket();
     }, delay);
   }

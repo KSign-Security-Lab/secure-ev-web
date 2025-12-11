@@ -7,6 +7,7 @@ import {
   CategoryScale,
   LinearScale,
   BarElement,
+  TooltipItem,
 } from "chart.js";
 import { Doughnut, Bar } from "react-chartjs-2";
 import type { RouterOutputs } from "~/lib/trpc";
@@ -51,13 +52,14 @@ const chartOptions = {
         size: 12,
       },
       callbacks: {
-        label: (context: any) => {
+        label: (context: TooltipItem<"doughnut" | "bar">) => {
           const label = context.label || "";
-          const value =
-            context.parsed ??
-            (typeof context.raw === "number" ? context.raw : 0);
+          const value = typeof context.raw === "number" ? context.raw : 0;
           const total = context.dataset.data.reduce(
-            (a: number, b: number) => a + b,
+            (a: number, b: number | [number, number] | null | undefined) => {
+                if (typeof b === 'number') return a + b;
+                return a;
+            },
             0
           );
           const percentage =

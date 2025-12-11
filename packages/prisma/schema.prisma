@@ -26,4 +26,53 @@ model Ability {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
+
+enum FuzzingJobStatus {
+  DRAFT
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+enum FuzzingTargetType {
+  ISO15118
+  OCPP_CHARGER
+  OCPP_SERVER
+}
+
+enum FuzzingTargetDevice {
+  CHARGER
+  CSMS
+}
+
+model FuzzingJob {
+  id                String            @id @default(uuid())
+  name              String
+  targetType        FuzzingTargetType
+  targetDevice      FuzzingTargetDevice?
+  environment       String
+  connectionConfig  Json              // Stores target-specific connection details
+  fuzzingParameters Json              // Stores fuzzing configuration parameters
+  scope             Json?             // Stores list of selected messages/scopes
+  status            FuzzingJobStatus   @default(DRAFT)
+  authTokenHash     String            // Hashed token for secure report submission
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  report            FuzzingReport?
+
+  @@index([status])
+  @@index([targetType])
+  @@index([createdAt])
+}
+
+model FuzzingReport {
+  id        String      @id @default(uuid())
+  jobId     String      @unique
+  job       FuzzingJob  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  payload   Json        // Stores the full FuzzingReport JSON structure
+  createdAt DateTime    @default(now())
+
+  @@index([jobId])
+}
  
