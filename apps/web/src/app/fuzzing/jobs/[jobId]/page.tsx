@@ -1,163 +1,195 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { JobSummary } from "~/components/page/fuzzing/JobSummary";
-import { ConfigDownload } from "~/components/page/fuzzing/ConfigDownload";
-import { ReportUpload } from "~/components/page/fuzzing/ReportUpload";
-import { VulnerabilityCharts } from "~/components/page/fuzzing/VulnerabilityCharts";
-import { FindingsList } from "~/components/page/fuzzing/FindingsList";
-import Loading from "~/components/common/Loading/Loading";
+import React, { useState } from "react";
+import { useParams } from "next/navigation";
+import { ChevronLeft, FileText, Download, LayoutDashboard, List, Loader2 } from "lucide-react";
+import Link from "next/link";
 import trpc, { type RouterOutputs } from "~/lib/trpc";
-import type { FuzzingJobWithReport } from "~/types/fuzzing";
-import { ArrowLeft, Hash, FileText } from "lucide-react";
-import { JobDetailsSkeleton } from "~/components/page/fuzzing/FuzzingSkeletons";
+import { JobStatusBadge } from "~/components/page/fuzzing/JobStatusBadge";
+import { JobSummary } from "~/components/page/fuzzing/JobSummary";
 import { FuzzingInterpretation } from "~/components/page/fuzzing/FuzzingInterpretation";
-
+import { VulnerabilityCharts } from "~/components/page/fuzzing/VulnerabilityCharts";
+import { InteractionLogTable } from "~/components/page/fuzzing/InteractionLogTable";
+import { ReportUpload } from "~/components/page/fuzzing/ReportUpload";
+import { ConfigDownload } from "~/components/page/fuzzing/ConfigDownload";
+import clsx from "clsx";
+import type { FuzzingJobWithReport } from "~/types/fuzzing";
 type JobDetail = RouterOutputs["fuzzing"]["getById"];
 
 export default function FuzzingJobDetailPage() {
   const params = useParams();
-  const router = useRouter();
-  const jobId = params.jobId as string;
+  const jobId = params?.jobId as string;
+  const [activeTab, setActiveTab] = useState<"overview" | "logs">("overview");
 
   const [job, setJob] = useState<JobDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-
   const fetchJob = async () => {
-    setIsLoading(true);
     try {
-      const jobData = await trpc.fuzzing.getById.query({ jobId });
-      setJob(jobData);
-    } catch (error) {
-      console.error("Failed to fetch job:", error);
+      const data = await trpc.fuzzing.getById.query({ jobId: jobId });
+      setJob(data);
+    } catch (err) {
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (jobId) {
-      fetchJob();
-    }
+  React.useEffect(() => {
+    if (jobId) void fetchJob();
   }, [jobId]);
 
-  const handleUploadSuccess = () => {
-    // Refresh job data after successful upload
-    fetchJob();
-  };
+  // Polling for status updates
+  React.useEffect(() => {
+    if (!job || !["RUNNING", "PENDING"].includes(job.status)) return;
+    
+    const interval = setInterval(() => {
+        void fetchJob();
+    }, 2000);
+    
+    return () => clearInterval(interval);
+  }, [job?.status]);
+  
+  const refetch = fetchJob;
 
   if (isLoading) {
     return (
-       <JobDetailsSkeleton />
+      <div className="flex h-full items-center justify-center p-8 text-neutral-400">
+         <Loader2 className="animate-spin text-primary-500 mr-2" size={24} />
+         Loading job details...
+      </div>
     );
   }
 
   if (!job) {
     return (
-      <div className="flex flex-col w-full min-h-screen bg-slate-950 p-8 items-center justify-center">
-        <div className="text-center text-slate-400 py-8">
-          Job not found or failed to load
-        </div>
-        <button
-            onClick={() => router.push("/fuzzing/jobs")}
-             className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all"
-        >
-            Back to Jobs
-        </button>
+      <div className="flex flex-col items-center justify-center h-full text-slate-400">
+        <p>Job not found</p>
+        <Link href="/fuzzing/jobs" className="text-primary-400 hover:underline mt-2">
+          Return to Fuzzing Jobs
+        </Link>
       </div>
     );
   }
-
-  const jobWithReport = job as FuzzingJobWithReport;
+  
   const hasReport = !!job.report;
 
-  const showDownloadSection =
-    (job.status === "PENDING" || job.status === "RUNNING");
-  const showUploadSection = !hasReport;
-
   return (
-
-    <div className="h-screen bg-slate-950 text-slate-200 font-sans flex flex-col overflow-hidden">
-      <div className="w-full max-w-[1600px] mx-auto flex flex-col h-full">
-         {/* Header */}
-        <div className="flex-none px-6 pt-6 pb-6 md:px-12 md:pt-8 md:pb-6 border-b border-slate-800/50">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div className="space-y-2">
-                <div className="flex items-center gap-3">
-                    <h1 className="text-3xl font-bold text-white tracking-tight truncate max-w-2xl">
-                        {job.name}
-                    </h1>
-                    <div className="px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 text-slate-500 font-mono text-xs flex items-center gap-1">
-                        <Hash size={12} />
-                        {jobId.slice(0, 8)}
-                    </div>
-                </div>
-                <p className="text-slate-400">
-                    Detailed analysis and security testing results for this session.
-                </p>
+    <div className="flex flex-col h-full bg-slate-950">
+      {/* Header */}
+      <div className="flex-none p-6 border-b border-white/5 flex items-center justify-between bg-slate-900/30 backdrop-blur-md sticky top-0 z-20">
+        <div className="flex items-center gap-4">
+          <Link
+            href="/fuzzing/jobs"
+            className="p-2 hover:bg-white/5 rounded-full text-slate-400 hover:text-white transition-colors"
+          >
+            <ChevronLeft size={20} />
+          </Link>
+          <div>
+            <div className="flex items-center gap-3">
+              <h1 className="text-xl font-bold text-white">{job.name}</h1>
+              <JobStatusBadge status={job.status} />
             </div>
-            <button
-                onClick={() => router.push("/fuzzing/jobs")}
-                className="group flex items-center gap-2 px-5 py-2.5 bg-transparent hover:bg-slate-900 border border-slate-800 text-slate-400 hover:text-white rounded-lg transition-all duration-300"
-            >
-                <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                Back to Jobs
-            </button>
-            </div>
+            <p className="text-sm text-slate-500 mt-1 font-mono">{job.id}</p>
+          </div>
         </div>
 
-        {/* Main Content Dashboard Grid */}
-        <div className="flex-1 min-h-0 grid grid-cols-12 gap-6 lg:gap-8 w-full px-6 py-6 md:px-12">
+        {hasReport && (
+            <div className="flex gap-2">
+                 <button className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-sm border border-slate-700 transition-colors">
+                    <Download size={14} />
+                    Export Report
+                 </button>
+            </div>
+        )}
+      </div>
+
+      <div className="flex-1 overflow-hidden flex flex-col md:flex-row">
+        <div className="md:w-[440px] w-full flex-none p-6 border-r border-white/5 bg-slate-900/20 overflow-y-auto">
+          <JobSummary job={job as FuzzingJobWithReport} />
           
-          {/* Left Column: Summary & Actions */}
-          <div className="col-span-12 lg:col-span-4 flex flex-col gap-6 min-w-0 overflow-y-auto pr-2">
-             <div className="p-6 rounded-3xl bg-slate-900 border border-slate-700 backdrop-blur-sm overflow-hidden flex-none">
-                <JobSummary job={jobWithReport} />
-             </div>
-            
-            {showDownloadSection && (
-               <div className="p-6 rounded-3xl bg-slate-900 border border-slate-700 backdrop-blur-sm flex-none">
-                  <ConfigDownload job={jobWithReport} />
-               </div>
-            )}
-
-            {showUploadSection && (
-              <div className="p-6 rounded-3xl bg-slate-900 border border-slate-700 backdrop-blur-sm flex-none">
-                  <ReportUpload jobId={jobId} onUploadSuccess={handleUploadSuccess} />
-               </div>
-            )}
-          </div>
-
-          {/* Right Column: Console & Results */}
-          <div className="col-span-12 lg:col-span-8 flex flex-col gap-6 h-full overflow-hidden">
-            
-            {hasReport && job.report ? (
-              <div className="flex-1 min-h-0 p-6 rounded-3xl bg-slate-900 border border-slate-700 backdrop-blur-sm flex flex-col gap-6 overflow-y-auto">
-                <div className="flex-none space-y-6">
-                    <FuzzingInterpretation report={job.report} />
-                    
-                    <div>
-                        <VulnerabilityCharts report={job.report} />
-                    </div>
+          {!hasReport && (
+            <div className="mt-8 border-t border-slate-800 pt-6 space-y-6">
+                <div>
+                   <h3 className="text-sm font-medium text-slate-400 mb-3">Fuzzer Setup</h3>
+                   <ConfigDownload job={job as FuzzingJobWithReport} />
                 </div>
-                <div className="pt-2">
-                    <FindingsList findings={job.report.findings} />
-                </div>
+               
+
+            </div>
+          )}
+        </div>
+
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col min-w-0 bg-slate-950 relative">
+            {!hasReport && !job.report ? (
+              <div className="flex-1 flex flex-col items-center justify-center p-12 text-center">
+                 <div className="w-20 h-20 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center mb-6">
+                    <FileText size={40} className="text-slate-600" />
+                 </div>
+                 <h3 className="text-xl font-medium text-white mb-2">No Report Available</h3>
+                 <p className="text-slate-400 max-w-md">
+                   {job.status === "COMPLETED" 
+                     ? "The job has completed. Please upload a report to view the analysis."
+                     : "Wait for the job to complete to view the report."}
+                 </p>
+                 <div className="mt-8 w-full max-w-sm bg-slate-900/50 p-6 rounded-xl border border-slate-800">
+                    <ReportUpload jobId={job.id} onUploadSuccess={() => refetch()} />
+                 </div>
               </div>
             ) : (
-              <div className="p-6 rounded-3xl bg-slate-900 border border-slate-700 backdrop-blur-sm flex flex-col items-center justify-center h-64 text-slate-500">
-                <div className="w-16 h-16 mb-4 rounded-full bg-slate-800/50 flex items-center justify-center">
-                    <FileText size={32} className="opacity-50" />
-                </div>
-                <p className="text-xl font-medium mb-2 text-slate-300">No Report Available</p>
-                <p className="text-sm opacity-70 max-w-sm text-center">
-                  Once the job completes, upload the generated report to view detailed vulnerability analysis.
-                </p>
-              </div>
+             <>
+               {/* Tabs Header */}
+               <div className="flex-none px-6 pt-6 pb-2 border-b border-slate-800 bg-slate-950/50 backdrop-blur sticky top-0 z-10">
+                   <div className="flex gap-6">
+                       <button
+                          onClick={() => setActiveTab("overview")}
+                          className={clsx(
+                              "pb-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors",
+                              activeTab === "overview" 
+                                ? "text-primary-400 border-primary-500" 
+                                : "text-slate-400 border-transparent hover:text-slate-200 hover:border-slate-700"
+                          )}
+                       >
+                           <LayoutDashboard size={16} />
+                           Overview
+                       </button>
+                       <button
+                          onClick={() => setActiveTab("logs")}
+                          className={clsx(
+                              "pb-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors",
+                              activeTab === "logs" 
+                                ? "text-primary-400 border-primary-500" 
+                                : "text-slate-400 border-transparent hover:text-slate-200 hover:border-slate-700"
+                          )}
+                       >
+                           <List size={16} />
+                           Interaction Log
+                       </button>
+                   </div>
+               </div>
+
+               {/* Tab Content */}
+               <div className="flex-1 overflow-hidden relative bg-slate-950">
+                  {activeTab === "overview" && job.report && (
+                      <div className="h-full overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+                          <div className="max-w-6xl mx-auto space-y-6 animate-in fade-in duration-300">
+                             <FuzzingInterpretation report={job.report} />
+                             <VulnerabilityCharts report={job.report} />
+                          </div>
+                      </div>
+                  )}
+                  
+                  {activeTab === "logs" && job.report && (
+                      <div className="h-full w-full p-6 flex flex-col min-h-0">
+                          <div className="max-w-6xl mx-auto w-full h-full animate-in slide-in-from-bottom-2 duration-300">
+                              <InteractionLogTable runs={job.report.runs} />
+                          </div>
+                      </div>
+                  )}
+               </div>
+             </>
             )}
-          </div>
         </div>
       </div>
     </div>

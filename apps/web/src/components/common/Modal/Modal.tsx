@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import clsx from "clsx";
 import { XIcon } from "lucide-react";
 
@@ -22,7 +23,12 @@ export const Modal: React.FC<ModalProps> = ({
   footer,
   className,
 }) => {
+  const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(open);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -42,18 +48,28 @@ export const Modal: React.FC<ModalProps> = ({
     return () => document.removeEventListener("keydown", handleEsc);
   }, [open, onClose]);
 
-  return (
+  if (!mounted) return null;
+
+  // Don't render anything if not open and animation finished (simplification: just relying on open for now or keep existing behavior?)
+  // Existing behavior: relies on CSS classes for visibility. But if we want to Portal, we usually only render when open.
+  // BUT the existing code rendered the div always but changed opacity.
+  // To keep animation, we should render if (open || visible).
+  // But simplisticly, let's render if open or visible.
+
+  if (!open && !visible) return null;
+
+  const modalContent = (
     <div
       className={clsx(
-        "fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm transition-opacity duration-300 ease-out h-screen",
-        open ? "opacity-100" : "opacity-0 pointer-events-none"
+        "fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 ease-out",
+        visible ? "opacity-100" : "opacity-0"
       )}
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         className={clsx(
-          "relative mx-auto my-12 w-full sm:w-[95%] md:w-[90%] lg:max-w-[1200px] bg-base-900 text-white rounded-md shadow-lg p-6 space-y-6 transition-all duration-300 ease-out transform-gpu",
+          "relative w-full sm:w-[95%] md:w-[90%] lg:max-w-[1200px] bg-base-900 text-white rounded-md shadow-lg p-6 space-y-6 transition-all duration-300 ease-out transform-gpu max-h-[90vh] overflow-y-auto m-6",
           visible
             ? "opacity-100 translate-y-0 scale-100"
             : "opacity-0 translate-y-12 scale-95",
@@ -73,4 +89,6 @@ export const Modal: React.FC<ModalProps> = ({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };

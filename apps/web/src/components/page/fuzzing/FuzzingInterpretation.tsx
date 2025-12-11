@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { Shield, ShieldAlert, ShieldCheck, AlertTriangle, CheckCircle } from "lucide-react";
+import { ShieldAlert, ShieldCheck, AlertTriangle, CheckCircle } from "lucide-react";
 import type { FuzzingReport } from "~/types/fuzzing";
+import { analyzeRuns } from "~/utils/fuzzing.client";
 
 interface FuzzingInterpretationProps {
   report: FuzzingReport;
@@ -10,62 +11,39 @@ interface FuzzingInterpretationProps {
 
 export function FuzzingInterpretation({ report }: FuzzingInterpretationProps) {
   const analysis = useMemo(() => {
-    const findings = report.findings || [];
-    const criticals = findings.filter((f) => f.severity === "critical").length;
-    const highs = findings.filter((f) => f.severity === "high").length;
-    const mediums = findings.filter((f) => f.severity === "medium").length;
-    const lows = findings.filter((f) => f.severity === "low").length;
-    const infos = findings.filter((f) => f.severity === "info").length;
-
-    let status: "critical" | "warning" | "safe" = "safe";
-    if (criticals > 0 || highs > 0) status = "critical";
-    else if (mediums > 0 || lows > 0) status = "warning";
-
-    // Most affected area
-    const locationCounts: Record<string, number> = {};
-    findings.forEach((f) => {
-      // Try to determine location from affectedMessages or title
-      const loc = f.affectedMessages?.[0] || "General";
-      locationCounts[loc] = (locationCounts[loc] || 0) + 1;
-    });
-    const topLocation = Object.entries(locationCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
-
-    return { criticals, highs, mediums, lows, infos, status, topLocation };
+    return analyzeRuns(report.runs);
   }, [report]);
 
-  const { criticals, highs, status, topLocation } = analysis;
-  const totalIssues = report.statistics.uniqueFindings;
+  const { stats } = analysis;
 
   // Dynamic Content Generation
   const getContent = () => {
-    switch (status) {
-      case "critical":
-        return {
-          title: "Critical Security Risks Detected",
+    if (stats.crashes > 0) {
+      return {
+          title: "Critical Failures Detected",
           color: "red",
           icon: ShieldAlert,
           bg: "bg-red-500/10",
           border: "border-red-500/20",
           text: "text-red-200",
           titleText: "text-red-100",
-          summary: `The fuzzing session identified ${criticals > 0 ? `${criticals} critical` : ""} ${highs > 0 ? `and ${highs} high-severity` : ""} vulnerabilities. These issues pose a significant threat to system stability and security, potentially allowing attackers to compromise the charger or cause denial of service.`,
-          action: `Immediate remediation is required for the ${topLocation ? `${topLocation} logic` : "identified vulnerabilities"}.`,
-        };
-      case "warning":
-        return {
-          title: "Moderate Security Concerns",
+          summary: `The fuzzing session identified ${stats.crashes} critical failures (crashes). These issues typically indicate severe vulnerabilities that could lead to denial of service or remote code execution.`,
+          action: "Immediate investigation of the crash logs is recommended.",
+      };
+    } else if (stats.timeouts > 0) {
+      return {
+          title: "Performance Issues Detected",
           color: "yellow",
           icon: AlertTriangle,
           bg: "bg-yellow-500/10",
           border: "border-yellow-500/20",
           text: "text-yellow-200",
           titleText: "text-yellow-100",
-          summary: `The scan detected ${analysis.mediums} medium and ${analysis.lows} low severity issues. While no critical failures occurred, these defects could lead to unexpected behavior or minor protocol deviations under stress.`,
-          action: "Review these findings in the next development cycle to improve robustness.",
-        };
-      case "safe":
-      default:
-        return {
+          summary: `The scan detected ${stats.timeouts} timeouts. While no direct crashes occurred, timeouts can indicate resource exhaustion bugs or potential denial of service vectors.`,
+          action: "Review timeout cases to ensure system responsiveness.",
+      };
+    } else {
+      return {
           title: "System Appears Secure",
           color: "green",
           icon: ShieldCheck,
@@ -73,9 +51,9 @@ export function FuzzingInterpretation({ report }: FuzzingInterpretationProps) {
           border: "border-green-500/20",
           text: "text-green-200",
           titleText: "text-green-100",
-          summary: `No significant security vulnerabilities were found across ${report.statistics.totalCases} test cases. The target demonstrated strong resilience against fuzzing attacks.`,
+          summary: `No significant issues were found across ${stats.total} test cases. The target handled all malformed inputs without crashing or timing out.`,
           action: "Continue monitoring and perform regular regression testing.",
-        };
+      };
     }
   };
 

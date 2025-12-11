@@ -55,27 +55,13 @@ export interface FuzzingParameters {
 }
 
 /**
- * Fuzzing Finding
+ * Fuzzing Run/Interaction
  */
-export interface FuzzingFinding {
-  id: string;
-  category: FindingCategory;
-  severity: FindingSeverity;
-  title: string;
-  description: string;
-  evidence?: string;
-  affectedMessages?: string[];
-  recommendation?: string;
-}
-
-/**
- * Fuzzing Report Statistics
- */
-export interface FuzzingReportStatistics {
-  totalCases: number;
-  crashes: number;
-  timeouts: number;
-  uniqueFindings: number;
+export interface FuzzingRun {
+  type: string;
+  input: string;
+  output: string;
+  result: "ok" | "error" | "timeout";
 }
 
 /**
@@ -87,8 +73,7 @@ export interface FuzzingReport {
   startedAt: string;
   finishedAt: string;
   fuzzingParameters: FuzzingParameters;
-  statistics: FuzzingReportStatistics;
-  findings: FuzzingFinding[];
+  runs: FuzzingRun[];
   rawLogLocation?: string;
 }
 
@@ -99,7 +84,7 @@ export interface FuzzingJobWithReport {
   id: string;
   name: string;
   targetType: FuzzingTargetType;
-  targetDevice?: FuzzingTargetDevice;
+  targetDevice?: FuzzingTargetDevice | null;
   environment: string;
   connectionConfig: ConnectionConfig;
   fuzzingParameters: FuzzingParameters;

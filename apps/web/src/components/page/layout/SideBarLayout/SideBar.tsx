@@ -25,6 +25,10 @@ interface SidebarProps {
 export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
   ({ menus }, ref) => {
     const pathname = usePathname();
+    const isActive = (url: string) => {
+      if (url === "/" || url === "") return pathname === url;
+      return pathname === url || pathname.startsWith(url + "/");
+    };
     const [expanded, setExpanded] = useState(true);
     const [assetOpen, setAssetOpen] = useState(false);
 
@@ -73,7 +77,7 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
                   onClick={handleAssetClick}
                   className={clsx(
                     "flex items-center py-2 px-6 cursor-pointer text-sm font-medium rounded-md transition-colors duration-200",
-                    pathname === item.url
+                    isActive(item.url)
                       ? "text-blue-500"
                       : "text-gray-700 hover:bg-gray-100",
                     !expanded ? "justify-center" : ""
@@ -102,7 +106,7 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
                   <div
                     className={clsx(
                       "flex items-center py-2 px-6 text-sm font-medium rounded-md transition-colors duration-200",
-                      pathname === item.url
+                      isActive(item.url)
                         ? "text-blue-500"
                         : "text-gray-700 hover:bg-gray-100",
                       !expanded ? "justify-center" : ""
@@ -126,7 +130,7 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
                       href={child.url}
                       className={clsx(
                         "flex items-center py-1 px-6 gap-2 rounded-md transition-colors duration-200 text-sm",
-                        pathname === child.url
+                        isActive(child.url)
                           ? "text-blue-500 font-semibold"
                           : "text-gray-700 hover:bg-gray-100"
                       )}

@@ -102,15 +102,22 @@ export const fuzzingReportStatisticsSchema = z.object({
 });
 
 // Complete Fuzzing Report Schema
+// Run/Interaction Schema
+export const fuzzingRunSchema = z.object({
+  type: z.string(),
+  input: z.string(),
+  output: z.string(),
+  result: z.enum(["ok", "error", "timeout"]),
+});
+
+// Complete Fuzzing Report Schema
 export const fuzzingReportSchema = z.object({
   jobId: z.string().uuid(),
   targetType: fuzzingTargetTypeSchema,
   startedAt: z.string(), // ISO datetime string
   finishedAt: z.string(), // ISO datetime string
   fuzzingParameters: fuzzingParametersSchema,
-  statistics: fuzzingReportStatisticsSchema,
-  findings: z.array(fuzzingFindingSchema),
-  rawLogLocation: z.string().optional(),
+  runs: z.array(fuzzingRunSchema),
 });
 
 // Job Creation Input Schema

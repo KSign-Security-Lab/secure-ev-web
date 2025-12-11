@@ -81,7 +81,7 @@ export function ReportUpload({ jobId, onUploadSuccess }: ReportUploadProps) {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-white">Upload Report</h2>
+
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-2 text-white">

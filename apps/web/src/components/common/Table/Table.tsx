@@ -25,7 +25,7 @@ export function Table<T>({
 
   return (
     <table className="w-full table-fixed text-sm text-left text-white">
-      <thead className="bg-slate-900/80 text-slate-300 border-b border-slate-700/50">
+      <thead className="bg-slate-900/90 text-slate-300 border-b border-slate-700/50 sticky top-0 z-10 backdrop-blur-md shadow-sm">
         <tr>
           {columns.map((col, idx) => (
             <th key={idx} className={clsx(baseHeaderClass, col.className)}>

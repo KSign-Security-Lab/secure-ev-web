@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from "crypto";
-import type { FuzzingReport, FuzzingFinding } from "~/types/fuzzing";
+import type { FuzzingReport } from "~/types/fuzzing";
 import { fuzzingReportSchema } from "../schemas/fuzzing";
 
 /**
@@ -35,47 +35,7 @@ export function validateToken(token: string, hash: string): boolean {
   return tokenHash === hash;
 }
 
-/**
- * Calculate a deterministic risk score from fuzzing findings
- * Formula: Weighted sum of findings by severity, normalized to 0-100
- * Weights: critical=10, high=7, medium=4, low=2, info=1
- * Multipliers: crashes and timeouts add to the score
- *
- * @param report - The fuzzing report containing findings and statistics
- * @returns Risk score from 0-100
- */
-export function calculateRiskScore(report: FuzzingReport): number {
-  const severityWeights: Record<FuzzingFinding["severity"], number> = {
-    critical: 10,
-    high: 7,
-    medium: 4,
-    low: 2,
-    info: 1,
-  };
 
-  // Calculate weighted sum of findings
-  let weightedSum = 0;
-  for (const finding of report.findings) {
-    weightedSum += severityWeights[finding.severity];
-  }
-
-  // Add multipliers for crashes and timeouts
-  const crashMultiplier = Math.min(report.statistics.crashes * 0.5, 20); // Max 20 points
-  const timeoutMultiplier = Math.min(
-    report.statistics.timeouts * 0.3,
-    15
-  ); // Max 15 points
-
-  const totalScore = weightedSum + crashMultiplier + timeoutMultiplier;
-
-  // Normalize to 0-100 scale
-  // Assuming max possible score is around 200 (20 critical findings + multipliers)
-  // This can be adjusted based on actual usage patterns
-  const maxPossibleScore = 200;
-  const normalizedScore = Math.min((totalScore / maxPossibleScore) * 100, 100);
-
-  return Math.round(normalizedScore * 100) / 100; // Round to 2 decimal places
-}
 
 /**
  * Parse and validate an uploaded JSON report file
@@ -118,50 +78,5 @@ export function parseReportFile(
   return report;
 }
 
-/**
- * Get severity color for UI display (Tag component color key)
- * @param severity - The finding severity
- * @returns Tag color key
- */
-export function getSeverityColor(
-  severity: FuzzingFinding["severity"]
-): "red" | "orange" | "yellow" | "blue" | "gray" {
-  const colors: Record<FuzzingFinding["severity"], "red" | "orange" | "yellow" | "blue" | "gray"> = {
-    critical: "red",
-    high: "orange",
-    medium: "yellow",
-    low: "blue",
-    info: "gray",
-  };
-  return colors[severity];
-}
 
-/**
- * Get severity label for UI display
- * @param severity - The finding severity
- * @returns Human-readable label
- */
-export function getSeverityLabel(
-  severity: FuzzingFinding["severity"]
-): string {
-  return severity.charAt(0).toUpperCase() + severity.slice(1);
-}
-
-/**
- * Get category label for UI display
- * @param category - The finding category
- * @returns Human-readable label
- */
-export function getCategoryLabel(
-  category: FuzzingFinding["category"]
-): string {
-  const labels: Record<FuzzingFinding["category"], string> = {
-    protocol_violation: "Protocol Violation",
-    crash: "Crash",
-    performance: "Performance",
-    security_misconfig: "Security Misconfiguration",
-    other: "Other",
-  };
-  return labels[category];
-}
 

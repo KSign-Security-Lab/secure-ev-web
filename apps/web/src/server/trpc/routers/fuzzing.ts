@@ -18,7 +18,6 @@ import prisma from "~/lib/prisma";
 import {
   generateSecureToken,
   hashToken,
-  calculateRiskScore,
 } from "../utils/fuzzing";
 import type { FuzzingReport } from "~/types/fuzzing";
 
@@ -264,11 +263,8 @@ export const fuzzingRouter = router({
       }
 
       const report = job.report.payload as unknown as FuzzingReport;
-      const riskScore = calculateRiskScore(report);
-
       return {
         ...report,
-        riskScore,
       };
     }),
 

@@ -2,83 +2,71 @@
 
 import React, { useState, useMemo } from "react";
 import { Table, type TableColumn } from "~/components/common/Table/Table";
-import { Tag, TAG_COLOR_MAP } from "~/components/common/Tag/Tag";
-import type { FuzzingFinding } from "~/types/fuzzing";
-import {
-  getSeverityColor,
-  getCategoryLabel,
-} from "~/server/trpc/utils/fuzzing";
+import { Tag } from "~/components/common/Tag/Tag";
+import type { FuzzingRun } from "~/types/fuzzing";
+import { getRunResultColor, getRunResultLabel } from "~/utils/fuzzing.client";
 import { FindingDetail } from "./FindingDetail";
 
 interface FindingsListProps {
-  findings: FuzzingFinding[];
+  runs: FuzzingRun[];
 }
 
-export function FindingsList({ findings }: FindingsListProps) {
-  const [selectedFinding, setSelectedFinding] =
-    useState<FuzzingFinding | null>(null);
-  const [severityFilter, setSeverityFilter] = useState<string>("all");
-  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+export function FindingsList({ runs }: FindingsListProps) {
+  const [selectedRun, setSelectedRun] = useState<FuzzingRun | null>(null);
+  const [resultFilter, setResultFilter] = useState<string>("all");
 
-  // Get unique severities and categories for filters
-  const severities = useMemo(
-    () => Array.from(new Set(findings.map((f) => f.severity))),
-    [findings]
-  );
-  const categories = useMemo(
-    () => Array.from(new Set(findings.map((f) => f.category))),
-    [findings]
+  // Get unique results for filter
+  const resultsPoints = useMemo(
+    () => Array.from(new Set(runs.map((r) => r.result))),
+    [runs]
   );
 
-  // Filter findings
-  const filteredFindings = useMemo(() => {
-    return findings.filter((finding) => {
-      if (severityFilter !== "all" && finding.severity !== severityFilter) {
-        return false;
-      }
-      if (categoryFilter !== "all" && finding.category !== categoryFilter) {
+  // Filter runs
+  const filteredRuns = useMemo(() => {
+    return runs.filter((run) => {
+      if (resultFilter !== "all" && run.result !== resultFilter) {
         return false;
       }
       return true;
     });
-  }, [findings, severityFilter, categoryFilter]);
+  }, [runs, resultFilter]);
 
-  const columns: TableColumn<FuzzingFinding>[] = [
+  const columns: TableColumn<FuzzingRun>[] = [
     {
-      label: "Severity",
-      render: (finding) => (
-        <Tag
-          label={finding.severity.toUpperCase()}
-          color={getSeverityColor(finding.severity)}
-          size="sm"
-        />
+      label: "Type",
+      render: (run) => (
+        <span className="text-neutral-400 font-mono text-xs">
+          {run.type}
+        </span>
       ),
     },
     {
-      label: "Title",
-      render: (finding) => (
+      label: "Input",
+      render: (run) => (
         <button
-          onClick={() => setSelectedFinding(finding)}
-          className="text-primary-300 hover:text-primary-400 hover:underline text-left"
+          onClick={() => setSelectedRun(run)}
+          className="text-primary-300 hover:text-primary-400 hover:underline text-left font-mono text-xs truncate max-w-[200px]"
         >
-          {finding.title}
+          {run.input}
         </button>
       ),
     },
     {
-      label: "Category",
-      render: (finding) => (
-        <span className="text-neutral-200">
-          {getCategoryLabel(finding.category)}
+      label: "Output",
+      render: (run) => (
+        <span className="text-neutral-200 font-mono text-xs truncate max-w-[200px] block">
+          {run.output}
         </span>
       ),
     },
     {
-      label: "Description",
-      render: (finding) => (
-        <span className="text-neutral-200 line-clamp-2">
-          {finding.description}
-        </span>
+      label: "Result",
+      render: (run) => (
+        <Tag
+          label={getRunResultLabel(run.result)}
+          color={getRunResultColor(run.result)}
+          size="sm"
+        />
       ),
     },
   ];
@@ -87,9 +75,9 @@ export function FindingsList({ findings }: FindingsListProps) {
     <>
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-             <h2 className="text-xl font-bold text-white">Findings</h2>
+             <h2 className="text-xl font-bold text-white">Interaction Log</h2>
              <div className="text-sm text-neutral-400">
-                Showing {filteredFindings.length} of {findings.length} findings
+                Showing {filteredRuns.length} of {runs.length} interactions
             </div>
         </div>
 
@@ -97,47 +85,30 @@ export function FindingsList({ findings }: FindingsListProps) {
         <div className="flex gap-4 flex-wrap">
           <div>
             <label className="block text-sm text-neutral-400 mb-1">
-              Filter by Severity
+              Filter by Result
             </label>
             <select
-              value={severityFilter}
-              onChange={(e) => setSeverityFilter(e.target.value)}
+              value={resultFilter}
+              onChange={(e) => setResultFilter(e.target.value)}
               className="bg-slate-900 p-2 rounded-lg border border-slate-700 text-slate-200 focus:outline-none focus:border-blue-500"
             >
-              <option value="all">All Severities</option>
-              {severities.map((s) => (
-                <option key={s} value={s}>
-                  {s.charAt(0).toUpperCase() + s.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm text-neutral-400 mb-1">
-              Filter by Category
-            </label>
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="bg-slate-900 p-2 rounded-lg border border-slate-700 text-slate-200 focus:outline-none focus:border-blue-500"
-            >
-              <option value="all">All Categories</option>
-              {categories.map((c) => (
-                <option key={c} value={c}>
-                  {getCategoryLabel(c)}
+              <option value="all">All Results</option>
+              {resultsPoints.map((r) => (
+                <option key={r} value={r}>
+                    {getRunResultLabel(r)}
                 </option>
               ))}
             </select>
           </div>
         </div>
 
-        <Table data={filteredFindings} columns={columns} striped />
+        <Table data={filteredRuns} columns={columns} striped />
       </div>
 
-      {selectedFinding && (
+      {selectedRun && (
         <FindingDetail
-          finding={selectedFinding}
-          onClose={() => setSelectedFinding(null)}
+          run={selectedRun}
+          onClose={() => setSelectedRun(null)}
         />
       )}
     </>
