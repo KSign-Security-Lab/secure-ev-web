@@ -1,4 +1,4 @@
-import { AttackExecutor } from "~/api/defend/defend";
+import { AttackExecutor } from "~/types/defend";
 import { useState } from "react";
 
 interface InnerContentProps {

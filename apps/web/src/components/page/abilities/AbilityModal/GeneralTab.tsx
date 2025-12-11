@@ -1,8 +1,8 @@
-import { Ability } from "~/prisma";
+import { AttackDataItem } from "~/types/defend";
 import { useState } from "react";
 
 interface GeneralTabProps {
-  data: Ability;
+  data: AttackDataItem;
 }
 
 export const GeneralTab: React.FC<GeneralTabProps> = ({ data }) => {

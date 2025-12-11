@@ -5,7 +5,7 @@ import { GeneralTab } from "./GeneralTab";
 import { ExecutorsTab } from "./ExecutorsTab";
 import { RequirementTab } from "./RequirementTab";
 import { ConfigurationTab } from "./ConfigurationTab";
-import { AttackDataItem } from "~/api/defend/defend";
+import { AttackDataItem } from "~/types/defend";
 import { Modal } from "~/components/common/Modal/Modal";
 
 enum AbilityModalTabs {
@@ -25,7 +25,7 @@ const TabContent: React.FC<TabContentProps> = ({ tab, tabData }) => {
     case AbilityModalTabs.General:
       return <GeneralTab data={tabData} />;
     case AbilityModalTabs.Executors:
-      return <ExecutorsTab data={tabData.executors} />;
+      return <ExecutorsTab data={tabData.executors ?? []} />;
     case AbilityModalTabs.Requirement:
       return <RequirementTab />;
     case AbilityModalTabs.Configuration:
