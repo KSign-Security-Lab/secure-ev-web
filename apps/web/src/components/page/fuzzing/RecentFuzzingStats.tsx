@@ -61,32 +61,32 @@ export function RecentFuzzingStats() {
       <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="text-2xl font-bold text-white flex items-center gap-2">
-                Recent Activity 
+                최근 활동
                 <span className="text-xs font-normal text-slate-500 bg-slate-800/50 px-2 py-0.5 rounded-full border border-slate-700">24H</span>
             </h3>
-            <p className="text-slate-400 text-sm mt-1">Key metrics for the last 24 hours</p>
+            <p className="text-slate-400 text-sm mt-1">지난 24시간 동안의 주요 지표</p>
           </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
         <StatsCard
-          title="Jobs Started"
+          title="생성된 작업"
           value={stats.total}
-          description="Total fuzzing sessions initiated"
+          description="시작된 전체 Fuzzing 세션"
           icon={Activity}
           variant="primary"
         />
         <StatsCard
-          title="Currently Running"
+          title="진행 중인 작업"
           value={stats.running}
-          description="Active sessions in progress"
+          description="현재 실행 중인 세션"
           icon={PlayCircle}
           variant="accent" // Cyan/Blue usually
         />
         <StatsCard
-          title="Failures"
+          title="오류 발생"
           value={stats.failed}
-          description="Jobs terminated unexpectedly"
+          description="예상치 못하게 종료된 작업"
           icon={AlertOctagon}
           variant={stats.failed > 0 ? "danger" : "success"}
         />
