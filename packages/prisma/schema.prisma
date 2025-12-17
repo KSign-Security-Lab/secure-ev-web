@@ -2,7 +2,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../../apps/web/src/prisma"
+  output   = "./src"
 }
 
 datasource db {
@@ -75,4 +75,20 @@ model FuzzingReport {
 
   @@index([jobId])
 }
- 
+
+
+enum MitrePlatform {
+ Enterprise
+ Mobile
+ ICS
+}
+
+ model Mitre {
+  id String @id @default(uuid())
+  tactic String
+  technique_id String
+  technique_name String @db.VarChar(191)
+  subtechnique_id String? @unique
+  subtechnique_name String? @unique @db.VarChar(191)
+  platform MitrePlatform
+}

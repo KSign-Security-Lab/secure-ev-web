@@ -1,5 +1,6 @@
-import { PrismaClient } from "~/prisma/client";
-import seed from "./data.json";
+import { PrismaClient } from "./src";
+import seed from "./data/data.json";
+import mitre from "./data/mitre_list.json";
 
 const filterX = (data: string): string => {
   if (data === "x" || data === "X") {
@@ -10,6 +11,9 @@ const filterX = (data: string): string => {
 
 const prisma = new PrismaClient();
 async function main() {
+  await prisma.ability.deleteMany();
+  await prisma.mitre.deleteMany();
+
   await prisma.ability.createMany({
     data: seed.map((attack) => ({
       ability_id: attack.id,
@@ -23,6 +27,16 @@ async function main() {
       shell_type: filterX(attack.shell_type ?? ""),
       type: filterX(attack.type ?? ""),
       description: filterX(attack.description ?? ""),
+    })),
+  });
+  await prisma.mitre.createMany({
+    data: mitre.map((attack) => ({
+      technique_id: attack.technique_id,
+      technique_name: attack.technique_name,
+      platform: "Enterprise",
+      tactic: "",
+      subtechnique_id: undefined,
+      subtechnique_name: undefined,
     })),
   });
 }

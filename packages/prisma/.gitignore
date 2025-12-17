@@ -1,9 +1,12 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Auto generated prisma file
+src/
 
 # db
 db/mysql/data
 
 # data
+data/
 data.json
 data.csv
 
