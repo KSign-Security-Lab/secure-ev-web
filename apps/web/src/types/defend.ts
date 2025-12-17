@@ -1,4 +1,4 @@
-import { Ability } from "~/prisma";
+import { Ability } from "@bas-platform/prisma";
 
 export interface AttackExecutor {
   platform: string;
@@ -8,7 +8,8 @@ export interface AttackExecutor {
   cleanup: number;
 }
 
-export interface AttackDataItem extends Omit<Ability, "createdAt" | "updatedAt"> {
+export interface AttackDataItem
+  extends Omit<Ability, "createdAt" | "updatedAt"> {
   createdAt: string | Date;
   updatedAt: string | Date;
   executors?: AttackExecutor[];
