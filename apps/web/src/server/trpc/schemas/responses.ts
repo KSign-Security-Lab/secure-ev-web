@@ -78,6 +78,11 @@ export const abilityStatisticsSchema = z.object({
       value: z.number().int().nonnegative(),
     })
   ),
+  mitreCoverage: z.object({
+    totalTechniques: z.number().int().nonnegative(),
+    coveredTechniques: z.number().int().nonnegative(),
+    coveragePercentage: z.number(),
+  }),
 });
 
 export const agentStatisticsSchema = z.object({

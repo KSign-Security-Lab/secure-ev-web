@@ -21,6 +21,7 @@ import Loading from "~/components/common/Loading/Loading";
 import { AbilitiesCharts } from "~/components/dashboard/AbilitiesCharts";
 import { AgentsCharts } from "~/components/dashboard/AgentsCharts";
 import { StatsCard } from "~/components/dashboard/StatsCard";
+import { MitreCoverageCharts } from "~/components/dashboard/MitreCoverageCharts";
 import trpc, { type RouterOutputs } from "~/lib/trpc";
 import Link from "next/link";
 
@@ -138,41 +139,75 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Abilities Visualization */}
-      <Card className="border-base-700/50">
-        <CardHeader className="border-b border-base-700/50 pb-4">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <CardTitle className="text-xl font-semibold text-white">
-                Abilities Distribution
-              </CardTitle>
-              <CardDescription className="text-sm text-neutral-400">
-                Visual breakdown of attack techniques and capabilities
-              </CardDescription>
+      <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-4">
+        {/* MITRE Coverage Visualization */}
+        <Card className="border-base-700/50 lg:col-span-1">
+          <CardHeader className="border-b border-base-700/50 pb-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <CardTitle className="text-xl font-semibold text-white">
+                  MITRE ATT&CK Coverage
+                </CardTitle>
+                <CardDescription className="text-sm text-neutral-400">
+                  Overall technique coverage compared to MITRE ATT&CK Matrix
+                </CardDescription>
+              </div>
             </div>
-            <Link href="/abilities">
-              <Button variant="tinted" size="sm">
-                View all
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-        </CardHeader>
-        <CardContent className="pt-6">
-          {isLoadingAbilities ? (
-            <div className="flex justify-center items-center py-16">
-              <Loading />
+          </CardHeader>
+          <CardContent className="pt-6">
+            {isLoadingAbilities ? (
+              <div className="flex justify-center items-center py-16">
+                <Loading />
+              </div>
+            ) : abilitiesStats?.mitreCoverage ? (
+              <MitreCoverageCharts data={abilitiesStats.mitreCoverage} />
+            ) : (
+              <div className="text-center text-neutral-400 py-16">
+                <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p className="text-lg font-medium">
+                  No coverage data available
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Abilities Visualization */}
+        <Card className="border-base-700/50 lg:col-span-3">
+          <CardHeader className="border-b border-base-700/50 pb-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <CardTitle className="text-xl font-semibold text-white">
+                  Abilities Distribution
+                </CardTitle>
+                <CardDescription className="text-sm text-neutral-400">
+                  Visual breakdown of attack techniques and capabilities
+                </CardDescription>
+              </div>
+              <Link href="/abilities">
+                <Button variant="tinted" size="sm">
+                  View all
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
             </div>
-          ) : abilitiesStats ? (
-            <AbilitiesCharts data={abilitiesStats} />
-          ) : (
-            <div className="text-center text-neutral-400 py-16">
-              <Database className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium">No abilities available</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardHeader>
+          <CardContent className="pt-6">
+            {isLoadingAbilities ? (
+              <div className="flex justify-center items-center py-16">
+                <Loading />
+              </div>
+            ) : abilitiesStats ? (
+              <AbilitiesCharts data={abilitiesStats} />
+            ) : (
+              <div className="text-center text-neutral-400 py-16">
+                <Database className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p className="text-lg font-medium">No abilities available</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Agents Visualization */}
       <Card className="border-base-700/50">

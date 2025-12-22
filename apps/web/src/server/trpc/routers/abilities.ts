@@ -211,7 +211,12 @@ export const abilitiesRouter = router({
 
       // Fetch all abilities with tactic, platform, and type in a single query
       const abilities = await prisma.ability.findMany({
-        select: { tactic: true, platform: true, type: true },
+        select: {
+          tactic: true,
+          platform: true,
+          type: true,
+          technique_id: true,
+        },
       });
       // Aggregate tactics, platforms, and types in one pass
       const tacticCounts: Record<string, number> = {};
@@ -240,11 +245,31 @@ export const abilitiesRouter = router({
         .sort((a, b) => b.value - a.value)
         .slice(0, 6);
 
+      // MITRE Coverage Calculation
+      const allMitre = await prisma.mitre.findMany({
+        select: { tactic: true, technique_id: true },
+      });
+      const totalTechniques = allMitre.length;
+      const uniqueAbilityTechiqueIds = new Set<string>(
+        abilities.map((ab) => ab.technique_id.split(".")[0])
+      );
+      const coveredTechniques = allMitre.filter((tech) =>
+        uniqueAbilityTechiqueIds.has(tech.technique_id)
+      ).length;
+
       return {
         totalCount,
         byTactic,
         byPlatform,
         byType,
+        mitreCoverage: {
+          totalTechniques,
+          coveredTechniques,
+          coveragePercentage:
+            totalTechniques > 0
+              ? Math.round((coveredTechniques / totalTechniques) * 100)
+              : 0,
+        },
       };
     }),
 });
