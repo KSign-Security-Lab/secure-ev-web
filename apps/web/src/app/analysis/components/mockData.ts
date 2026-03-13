@@ -43,10 +43,105 @@ export interface AnalysisResult {
   functionName: string;
   filePath: string;
   lineInfo: string;
+  startLine: number;
+  endLine: number;
   dfInfo: DfInfo;
-  snippet: string;
   evidenceRefs: string[];
 }
+
+export interface MockFile {
+  path: string;
+  type: "text" | "binary" | "large" | "unsupported";
+  content?: string;
+}
+
+export const mockFiles: MockFile[] = [
+  {
+    path: "src/parser/network.c",
+    type: "text",
+    content: `#include <stdio.h>
+#include <string.h>
+
+void init_network() {
+    printf("Network initialized.\\n");
+}
+
+int validate_packet(char* packet) {
+    if (packet == NULL) return 0;
+    return 1;
+}
+
+void process_data(char* data) {
+    printf("Processing: %s\\n", data);
+}
+
+void handle_user_input(char* input) {
+  char buffer[256];
+  // Risk: Potential buffer overflow if input length > 256
+  strcpy(buffer, input);
+  process_data(buffer);
+}
+
+int main() {
+    init_network();
+    return 0;
+}`,
+  },
+  {
+    path: "src/core/registry.c",
+    type: "text",
+    content: `#include "registry.h"
+
+#define REGISTRY_MAX_SIZE 1024
+int registry_array[REGISTRY_MAX_SIZE];
+
+void init_registry() {
+    for(int i=0; i<REGISTRY_MAX_SIZE; i++) {
+        registry_array[i] = 0;
+    }
+}
+
+int update_registry(int index, int val) {
+  if (index < 0) return -1;
+  // Risk: Upper bound check missing
+  registry_array[index] = val;
+  return 0;
+}
+
+int get_registry(int index) {
+    if (index >= 0 && index < REGISTRY_MAX_SIZE) {
+        return registry_array[index];
+    }
+    return -1;
+}`,
+  },
+  {
+    path: "src/utils/logger.c",
+    type: "text",
+    content: `#include <stdio.h>
+#include <string.h>
+
+void write_log(const char* log) {
+    printf("[LOG] %s\\n", log);
+}
+
+void log_event(const char* msg) {
+  char log_buf[512];
+  strncpy(log_buf, msg, sizeof(log_buf) - 1);
+  log_buf[sizeof(log_buf) - 1] = '\\0';
+  write_log(log_buf);
+}
+`,
+  },
+  {
+    path: "src/assets/logo.png",
+    type: "binary",
+  },
+  {
+    path: "src/data/huge_dataset.csv",
+    type: "large",
+  }
+];
 
 export const mockResults: AnalysisResult[] = [
   {
@@ -57,13 +152,9 @@ export const mockResults: AnalysisResult[] = [
     sinkKind: "COPY_FUNC",
     functionName: "handle_user_input",
     filePath: "src/parser/network.c",
-    lineInfo: "L142",
-    snippet: `void handle_user_input(char* input) {
-  char buffer[256];
-  // Risk: Potential buffer overflow if input length > 256
-  strcpy(buffer, input);
-  process_data(buffer);
-}`,
+    lineInfo: "L15",
+    startLine: 15,
+    endLine: 20,
     evidenceRefs: ["Trace #412", "CFG Node 84"],
     dfInfo: {
       destination: {
@@ -109,13 +200,9 @@ export const mockResults: AnalysisResult[] = [
     sinkKind: "INDEX_WRITE",
     functionName: "update_registry",
     filePath: "src/core/registry.c",
-    lineInfo: "L88",
-    snippet: `int update_registry(int index, int val) {
-  if (index < 0) return -1;
-  // Risk: Upper bound check missing
-  registry_array[index] = val;
-  return 0;
-}`,
+    lineInfo: "L10",
+    startLine: 10,
+    endLine: 15,
     evidenceRefs: ["Trace #88", "DFG Node 12"],
     dfInfo: {
       destination: {
@@ -161,13 +248,9 @@ export const mockResults: AnalysisResult[] = [
     sinkKind: "COPY_FUNC",
     functionName: "log_event",
     filePath: "src/utils/logger.c",
-    lineInfo: "L210",
-    snippet: `void log_event(const char* msg) {
-  char log_buf[512];
-  strncpy(log_buf, msg, sizeof(log_buf) - 1);
-  log_buf[sizeof(log_buf) - 1] = '\\0';
-  write_log(log_buf);
-}`,
+    lineInfo: "L8",
+    startLine: 8,
+    endLine: 13,
     evidenceRefs: ["Trace #12", "Commit abc1234"],
     dfInfo: {
       destination: {
