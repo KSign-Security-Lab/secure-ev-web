@@ -57,7 +57,7 @@ export default function CodeViewer({
     );
   }
 
-  const lines = file.content.split("\\n");
+  const lines = file.content.split("\n");
 
   return (
     <div className="h-full flex flex-col bg-[#0d1117] text-[#e6edf3] font-mono text-sm overflow-hidden rounded-md border border-gray-800">

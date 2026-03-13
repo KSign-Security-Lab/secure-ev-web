@@ -3,23 +3,20 @@
 import React, { useState } from "react";
 import { mockResults, mockFiles } from "./mockData";
 import { Badge } from "~/components/ui/badge";
-import { FileCode, AlertCircle, CheckCircle2, ChevronRight } from "lucide-react";
+import { File as FileIcon, ChevronDown } from "lucide-react";
 import ResultDetail from "./ResultDetail";
 import CodeViewer from "./CodeViewer";
 
 export default function ResultsView() {
-  const [selectedResultId, setSelectedResultId] = useState<string | null>(null);
-  const [selectedFilePath, setSelectedFilePath] = useState<string>(mockFiles[0].path);
+  const [selectedResultId, setSelectedResultId] = useState<string | null>(mockResults[0]?.id || null);
 
+  // Find the selected result and its corresponding file
   const selectedResult = mockResults.find((r) => r.id === selectedResultId) || null;
+  const selectedFilePath = selectedResult ? selectedResult.filePath : mockFiles[0].path;
   const selectedFile = mockFiles.find((f) => f.path === selectedFilePath) || mockFiles[0];
 
   const handleResultSelect = (id: string) => {
     setSelectedResultId(id);
-    const result = mockResults.find((r) => r.id === id);
-    if (result) {
-      setSelectedFilePath(result.filePath);
-    }
   };
 
   const getRiskBadgeColor = (risk: string) => {
@@ -33,68 +30,74 @@ export default function ResultsView() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-140px)] w-full gap-4">
-      {/* Top Bar: Vulnerability List (Horizontal scroll or compact list) */}
-      <div className="flex-shrink-0 bg-gray-900 border border-gray-800 rounded-lg overflow-hidden flex flex-col">
-        <div className="bg-gray-950 px-4 py-2 border-b border-gray-800 flex justify-between items-center text-sm">
-           <span className="font-semibold text-gray-200">Detected Vulnerabilities ({mockResults.length})</span>
-        </div>
-        <div className="flex overflow-x-auto p-2 gap-2 custom-scrollbar">
-          {mockResults.map((res) => {
-            const isSelected = selectedResultId === res.id;
-            return (
-              <button
-                key={res.id}
-                onClick={() => handleResultSelect(res.id)}
-                className={`flex flex-col flex-shrink-0 w-64 text-left p-3 rounded-md border transition-colors ${
-                  isSelected ? "bg-gray-800 border-blue-500" : "bg-gray-950 border-gray-800 hover:border-gray-700"
-                }`}
-              >
-                <div className="flex justify-between items-center mb-1">
-                  <Badge variant={getRiskBadgeColor(res.risk) as any} className="text-[10px] px-1.5 py-0">
-                    {res.risk}
-                  </Badge>
-                  <span className="text-xs text-gray-500 font-mono">{res.sinkKind}</span>
-                </div>
-                <span className="text-sm font-medium text-gray-200 truncate">{res.functionName}</span>
-                <span className="text-xs text-gray-500 truncate mt-1">{res.filePath}:{res.lineInfo}</span>
-              </button>
-            );
-          })}
+      {/* Header Area */}
+      <div className="flex justify-between items-center px-2">
+        <div>
+          <h2 className="text-xl font-bold text-gray-100 flex items-center gap-2">
+            Analysis Results
+            <Badge variant="outline" className="border-gray-700 text-gray-300 font-mono">
+              {mockResults.length} Issues Found
+            </Badge>
+          </h2>
+          <p className="text-sm text-gray-400 mt-1">Review detected issues and trace data flows.</p>
         </div>
       </div>
 
-      {/* Main Split View */}
+      {/* Main Split View: Left sidebar for Files/Issues, Center/Right for Code/Explanation */}
       <div className="flex flex-1 overflow-hidden border border-gray-800 rounded-lg">
 
-        {/* Left: File Explorer */}
-        <div className="w-64 flex-shrink-0 bg-gray-950 border-r border-gray-800 flex flex-col">
-          <div className="p-3 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-800">
-            Files
+        {/* Left: Files & Issues Explorer */}
+        <div className="w-80 flex-shrink-0 bg-gray-950 border-r border-gray-800 flex flex-col">
+          <div className="p-3 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-800 bg-gray-900">
+            Files & Issues
           </div>
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-2">
              {mockFiles.map((file) => {
                const fileVulns = mockResults.filter(r => r.filePath === file.path);
                const hasVulns = fileVulns.length > 0;
-               const isSelected = selectedFilePath === file.path;
+               const isFileSelected = selectedFilePath === file.path;
 
                return (
-                 <button
-                   key={file.path}
-                   onClick={() => setSelectedFilePath(file.path)}
-                   className={`w-full text-left flex items-center justify-between px-3 py-2 text-sm transition-colors ${
-                     isSelected ? "bg-gray-800 text-gray-200" : "text-gray-400 hover:bg-gray-900"
-                   }`}
-                 >
-                   <div className="flex items-center gap-2 overflow-hidden">
-                     <FileCode className={`w-4 h-4 shrink-0 ${hasVulns ? "text-red-400" : "text-gray-500"}`} />
-                     <span className="truncate">{file.path.split('/').pop()}</span>
+                 <div key={file.path} className="flex flex-col space-y-1">
+                   <div className={`flex items-center gap-2 px-2 py-1.5 rounded-md text-sm ${isFileSelected ? 'text-gray-200' : 'text-gray-400'}`}>
+                     <ChevronDown className="w-4 h-4 text-gray-500 shrink-0" />
+                     <FileIcon className="w-4 h-4 shrink-0" />
+                     <span className="truncate font-medium">{file.path.split('/').pop()}</span>
+                     {hasVulns && (
+                       <Badge variant="red" className="ml-auto shrink-0 h-4 min-w-[16px] px-1 py-0 flex items-center justify-center rounded-full text-[10px]">
+                         {fileVulns.length}
+                       </Badge>
+                     )}
                    </div>
+
+                   {/* Render Issues under the file */}
                    {hasVulns && (
-                     <Badge variant="red" className="ml-2 shrink-0 h-4 w-4 p-0 flex items-center justify-center rounded-full text-[10px]">
-                       {fileVulns.length}
-                     </Badge>
+                     <div className="flex flex-col pl-6 space-y-1 border-l border-gray-800 ml-4">
+                       {fileVulns.map(res => {
+                         const isSelected = selectedResultId === res.id;
+                         return (
+                           <button
+                             key={res.id}
+                             onClick={() => handleResultSelect(res.id)}
+                             className={`text-left p-2 rounded-md transition-colors text-xs flex flex-col gap-1 ${
+                               isSelected ? "bg-blue-900/30 border border-blue-500/50" : "hover:bg-gray-900 border border-transparent"
+                             }`}
+                           >
+                             <div className="flex justify-between items-center w-full">
+                               <Badge variant={getRiskBadgeColor(res.risk) as any} className="text-[9px] px-1 py-0 leading-tight">
+                                 {res.risk}
+                               </Badge>
+                               <span className="text-[10px] text-gray-500 font-mono">L{res.lineInfo.split('-')[0]}</span>
+                             </div>
+                             <span className={`truncate font-mono ${isSelected ? 'text-blue-200' : 'text-gray-300'}`}>
+                               {res.functionName}
+                             </span>
+                           </button>
+                         )
+                       })}
+                     </div>
                    )}
-                 </button>
+                 </div>
                );
              })}
           </div>

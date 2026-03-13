@@ -37,7 +37,7 @@ export interface DfInfo {
 export interface AnalysisResult {
   id: string;
   variant: string;
-  status: "New" | "Open" | "Fixed" | "False Positive";
+  status: "New" | "Open" | "Fixed" ;
   risk: "High" | "Medium" | "Low";
   sinkKind: "COPY_FUNC" | "INDEX_WRITE" | "MALLOC";
   functionName: string;

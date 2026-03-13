@@ -30,7 +30,7 @@ export default function ResultDetail({ result }: ResultDetailProps) {
   return (
     <div className="flex flex-col h-full bg-gray-900 border-l border-gray-800 w-80 md:w-96 flex-shrink-0">
       <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-gray-950">
-        <h3 className="text-sm font-semibold text-gray-200">Vulnerability Details</h3>
+        <h3 className="text-sm font-semibold text-gray-200">Issue Explanation</h3>
         <div className="flex gap-1">
            <button className="p-1.5 text-gray-400 hover:text-gray-200 hover:bg-gray-800 rounded transition" title="Add Note">
              <MessageSquare className="w-4 h-4" />
@@ -81,16 +81,6 @@ export default function ResultDetail({ result }: ResultDetailProps) {
              <div className="text-xs text-gray-400 bg-gray-950 p-2 rounded-md border border-gray-800">
                 <span className="text-gray-500">Root Cause:</span> <span className="text-orange-400">{result.dfInfo.root_cause.kind}</span>
              </div>
-          </div>
-
-          {/* Triage Actions */}
-          <div className="pt-2 border-t border-gray-800">
-             <select className="w-full bg-gray-950 border border-gray-700 text-sm text-gray-300 rounded p-2 outline-none hover:border-gray-600 transition">
-              <option value="">Update Triage Status...</option>
-              <option value="fp">Mark as False Positive</option>
-              <option value="fixed">Mark as Fixed</option>
-              <option value="review">Needs Review</option>
-            </select>
           </div>
 
           {/* Advanced / Expandable Sections */}
