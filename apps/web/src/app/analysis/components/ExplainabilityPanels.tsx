@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { AnalysisResult } from "./mockData";
 import { ArrowRight, AlertTriangle, CheckCircle2, ChevronDown, ChevronRight, HelpCircle } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/components/ui/tooltip";
+
 
 interface ExplainabilityPanelsProps {
   result: AnalysisResult;
@@ -16,8 +16,7 @@ export default function ExplainabilityPanels({ result }: ExplainabilityPanelsPro
   const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
 
   return (
-    <TooltipProvider delayDuration={300}>
-      <div className="space-y-6 max-w-3xl mx-auto">
+    <div className="space-y-6 max-w-3xl mx-auto">
 
         {/* High Level Summary (Always Visible) */}
         <div className="bg-gray-950 border border-gray-800 rounded-lg p-5">
@@ -28,12 +27,7 @@ export default function ExplainabilityPanels({ result }: ExplainabilityPanelsPro
 
           <p className="text-base text-gray-300 leading-relaxed mb-4">
             The function <code className="text-blue-400 bg-gray-900 px-1.5 py-0.5 rounded font-mono">{result.functionName}</code> performs a
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <code className="text-purple-400 bg-gray-900 px-1.5 py-0.5 mx-1 rounded font-mono cursor-help border-b border-dashed border-purple-500/50">{result.sinkKind}</code>
-              </TooltipTrigger>
-              <TooltipContent><p className="max-w-xs">A potentially dangerous operation (like copying memory or writing to an index) where an overflow could occur.</p></TooltipContent>
-            </Tooltip>
+            <code className="text-purple-400 bg-gray-900 px-1.5 py-0.5 mx-1 rounded font-mono">{result.sinkKind}</code>
             operation on the destination <code className="text-green-400 bg-gray-900 px-1.5 py-0.5 mx-1 rounded font-mono">{dfInfo.destination.expr}</code>.
           </p>
 
@@ -42,10 +36,7 @@ export default function ExplainabilityPanels({ result }: ExplainabilityPanelsPro
               <div className="text-center w-full sm:w-auto">
                 <div className="text-xs text-gray-500 uppercase tracking-wider mb-1 flex justify-center items-center gap-1">
                   Provided Capacity
-                  <Tooltip>
-                    <TooltipTrigger asChild><HelpCircle className="w-3 h-3 cursor-help"/></TooltipTrigger>
-                    <TooltipContent><p>The maximum safe size of the destination.</p></TooltipContent>
-                  </Tooltip>
+
                 </div>
                 <div className="text-xl font-mono text-green-400 font-bold">{dfInfo.capacity.value}</div>
               </div>
@@ -58,10 +49,7 @@ export default function ExplainabilityPanels({ result }: ExplainabilityPanelsPro
               <div className="text-center w-full sm:w-auto">
                 <div className="text-xs text-gray-500 uppercase tracking-wider mb-1 flex justify-center items-center gap-1">
                   Requested Size
-                  <Tooltip>
-                    <TooltipTrigger asChild><HelpCircle className="w-3 h-3 cursor-help"/></TooltipTrigger>
-                    <TooltipContent><p>The amount of data trying to be written.</p></TooltipContent>
-                  </Tooltip>
+
                 </div>
                 <div className="text-xl font-mono text-yellow-400 font-bold">{dfInfo.request.length_basis}</div>
               </div>
@@ -94,10 +82,7 @@ export default function ExplainabilityPanels({ result }: ExplainabilityPanelsPro
               <div>
                 <h5 className="text-sm font-semibold text-gray-400 mb-3 flex items-center gap-1">
                   1. Data Source (Request)
-                  <Tooltip>
-                    <TooltipTrigger asChild><HelpCircle className="w-3 h-3 text-gray-600 cursor-help hover:text-gray-400"/></TooltipTrigger>
-                    <TooltipContent><p className="max-w-xs">Where the potentially unsafe data originates.</p></TooltipContent>
-                  </Tooltip>
+
                 </h5>
                 <ul className="space-y-2 text-sm text-gray-300">
                   <li className="flex justify-between border-b border-gray-800 pb-1">
@@ -112,10 +97,7 @@ export default function ExplainabilityPanels({ result }: ExplainabilityPanelsPro
               <div>
                 <h5 className="text-sm font-semibold text-gray-400 mb-3 flex items-center gap-1">
                   2. Destination (Capacity)
-                  <Tooltip>
-                    <TooltipTrigger asChild><HelpCircle className="w-3 h-3 text-gray-600 cursor-help hover:text-gray-400"/></TooltipTrigger>
-                    <TooltipContent><p className="max-w-xs">The buffer or index being written to.</p></TooltipContent>
-                  </Tooltip>
+
                 </h5>
                 <ul className="space-y-2 text-sm text-gray-300">
                   <li className="flex justify-between border-b border-gray-800 pb-1">
@@ -130,10 +112,7 @@ export default function ExplainabilityPanels({ result }: ExplainabilityPanelsPro
               <div className="md:col-span-2">
                 <h5 className="text-sm font-semibold text-gray-400 mb-3 flex items-center gap-1">
                   3. Constraint Validation
-                  <Tooltip>
-                    <TooltipTrigger asChild><HelpCircle className="w-3 h-3 text-gray-600 cursor-help hover:text-gray-400"/></TooltipTrigger>
-                    <TooltipContent><p className="max-w-xs">Analysis of boundaries to ensure the Request does not exceed Capacity.</p></TooltipContent>
-                  </Tooltip>
+
                 </h5>
                 <div className="bg-gray-950 p-3 rounded border border-gray-800 flex flex-col sm:flex-row gap-4 justify-around text-sm">
                   <div className="text-center">
@@ -156,6 +135,5 @@ export default function ExplainabilityPanels({ result }: ExplainabilityPanelsPro
         </div>
 
       </div>
-    </TooltipProvider>
   );
 }

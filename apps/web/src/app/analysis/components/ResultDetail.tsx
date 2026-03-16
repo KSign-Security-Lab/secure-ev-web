@@ -10,7 +10,7 @@ import ExplainabilityPanels from "./ExplainabilityPanels";
 import SimilarSignatures from "./SimilarSignatures";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "~/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/components/ui/tooltip";
+
 import { HelpCircle } from "lucide-react";
 import { Button } from "~/components/ui/button";
 
@@ -60,8 +60,7 @@ export default function ResultDetail({ result }: ResultDetailProps) {
           </div>
 
           {/* Core Reasoning */}
-          <TooltipProvider delayDuration={300}>
-            <div className="space-y-3">
+          <div className="space-y-3">
                <div className="bg-gray-950 border border-gray-800 p-3 rounded-md">
                   <div className="flex items-start gap-2">
                      {isDangerous ? <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" /> : <Info className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />}
@@ -72,19 +71,9 @@ export default function ResultDetail({ result }: ResultDetailProps) {
                        <p className="text-sm text-gray-400 leading-relaxed">
                          {result.dfInfo.diagnostics.notes}.
                          The
-                         <Tooltip>
-                           <TooltipTrigger asChild>
-                             <span className="border-b border-dashed border-gray-500 cursor-help mx-1 hover:text-gray-200 transition">request basis</span>
-                           </TooltipTrigger>
-                           <TooltipContent><p className="max-w-xs text-center">The variable or value controlling the size of the incoming data</p></TooltipContent>
-                         </Tooltip>
+                         <span className="font-semibold mx-1">request basis</span>
                          is <span className="text-yellow-400 font-mono">{result.dfInfo.request.length_basis}</span> against
-                         <Tooltip>
-                           <TooltipTrigger asChild>
-                             <span className="border-b border-dashed border-gray-500 cursor-help mx-1 hover:text-gray-200 transition">capacity</span>
-                           </TooltipTrigger>
-                           <TooltipContent><p className="max-w-xs text-center">The allocated size of the destination buffer</p></TooltipContent>
-                         </Tooltip>
+                         <span className="font-semibold mx-1">capacity</span>
                          <span className="text-green-400 font-mono">{result.dfInfo.capacity.value}</span>.
                        </p>
                      </div>
@@ -94,15 +83,9 @@ export default function ResultDetail({ result }: ResultDetailProps) {
                <div className="flex items-center gap-2 text-sm text-gray-400 bg-gray-950 p-3 rounded-md border border-gray-800">
                   <span className="text-gray-500">Root Cause:</span>
                   <span className="text-orange-400 font-medium">{result.dfInfo.root_cause.kind}</span>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="w-3 h-3 text-gray-600 cursor-help hover:text-gray-300 transition" />
-                    </TooltipTrigger>
-                    <TooltipContent><p className="max-w-xs text-center">The fundamental reason why this vulnerability exists (e.g. missing bounds check before a copy)</p></TooltipContent>
-                  </Tooltip>
+
                </div>
             </div>
-          </TooltipProvider>
 
 
           {/* Advanced Sections (Modals) */}
@@ -120,17 +103,10 @@ export default function ResultDetail({ result }: ResultDetailProps) {
               </DialogTrigger>
               <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-hidden flex flex-col">
                 <DialogHeader className="shrink-0">
-                  <div className="flex items-center justify-between">
-                    <DialogTitle>Full Data Flow Analysis</DialogTitle>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <HelpCircle className="w-4 h-4 text-gray-500 mr-8 cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent><p className="max-w-sm text-center">This modal explains the path data takes from source to sink, and why the analysis flagged it as dangerous.</p></TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
+                  <DialogTitle>Full Data Flow Analysis</DialogTitle>
+                  <p className="text-sm text-gray-400 mt-2">
+                    Review how data travels through your code. This helps verify if a vulnerability is reachable and correctly diagnosed.
+                  </p>
                 </DialogHeader>
                 <div className="flex-1 overflow-hidden mt-4">
                   <Tabs defaultValue="explanation" className="h-full flex flex-col">
@@ -140,9 +116,15 @@ export default function ResultDetail({ result }: ResultDetailProps) {
                     </TabsList>
                     <div className="flex-1 overflow-y-auto custom-scrollbar mt-4 pr-2">
                       <TabsContent value="explanation" className="m-0 space-y-4">
+                        <div className="p-3 bg-blue-900/20 border border-blue-800/50 rounded-md text-sm text-blue-200 mb-4">
+                          This view provides a human-readable breakdown of the capacity vs. request relationship and identifies the root cause of the vulnerability.
+                        </div>
                         <ExplainabilityPanels result={result} />
                       </TabsContent>
                       <TabsContent value="raw" className="m-0 space-y-4">
+                        <div className="p-3 bg-purple-900/20 border border-purple-800/50 rounded-md text-sm text-purple-200 mb-4">
+                          This view displays the raw Abstract Syntax Tree (AST) and Data Flow Graph (DFG) values extracted by the analysis engine.
+                        </div>
                         <DFInfoCards dfInfo={result.dfInfo} />
                       </TabsContent>
                     </div>
@@ -168,7 +150,10 @@ export default function ResultDetail({ result }: ResultDetailProps) {
               </DialogTrigger>
               <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle>Similar Signatures & Embeddings</DialogTitle>
+                  <DialogTitle>Similar Signatures</DialogTitle>
+                  <p className="text-sm text-gray-400 mt-2">
+                    Review other code segments in your project that share similar structural or data-flow patterns to this vulnerability.
+                  </p>
                 </DialogHeader>
                 <div className="mt-4">
                   <SimilarSignatures result={result} />
