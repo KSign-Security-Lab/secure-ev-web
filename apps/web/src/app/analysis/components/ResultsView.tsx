@@ -29,7 +29,7 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
              const startL = Math.max(1, Math.floor(Math.random() * maxLine));
 
              // Clone a base mock result and adapt it to this file
-             const baseRes = mockResults[i % activeResults.length];
+             const baseRes = mockResults[i % mockResults.length];
              generated.push({
                ...baseRes,
                id: `dyn-${index}-${i}`,
