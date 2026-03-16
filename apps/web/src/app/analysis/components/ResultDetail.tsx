@@ -9,6 +9,9 @@ import DFInfoCards from "./DFInfoCards";
 import ExplainabilityPanels from "./ExplainabilityPanels";
 import SimilarSignatures from "./SimilarSignatures";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "~/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/components/ui/tooltip";
+import { HelpCircle } from "lucide-react";
 import { Button } from "~/components/ui/button";
 
 interface ResultDetailProps {
@@ -57,25 +60,49 @@ export default function ResultDetail({ result }: ResultDetailProps) {
           </div>
 
           {/* Core Reasoning */}
-          <div className="space-y-3">
-             <div className="bg-gray-950 border border-gray-800 p-3 rounded-md">
-                <div className="flex items-start gap-2">
-                   {isDangerous ? <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" /> : <Info className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />}
-                   <div>
-                     <span className="text-sm font-semibold text-gray-200 block mb-1">
-                       {result.dfInfo.diagnostics.class}
-                     </span>
-                     <p className="text-sm text-gray-400 leading-relaxed">
-                       {result.dfInfo.diagnostics.notes}. The request basis is <span className="text-yellow-400 font-mono">{result.dfInfo.request.length_basis}</span> against capacity <span className="text-green-400 font-mono">{result.dfInfo.capacity.value}</span>.
-                     </p>
-                   </div>
-                </div>
-             </div>
+          <TooltipProvider delayDuration={300}>
+            <div className="space-y-3">
+               <div className="bg-gray-950 border border-gray-800 p-3 rounded-md">
+                  <div className="flex items-start gap-2">
+                     {isDangerous ? <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" /> : <Info className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />}
+                     <div>
+                       <span className="text-sm font-semibold text-gray-200 block mb-1">
+                         {result.dfInfo.diagnostics.class}
+                       </span>
+                       <p className="text-sm text-gray-400 leading-relaxed">
+                         {result.dfInfo.diagnostics.notes}.
+                         The
+                         <Tooltip>
+                           <TooltipTrigger asChild>
+                             <span className="border-b border-dashed border-gray-500 cursor-help mx-1 hover:text-gray-200 transition">request basis</span>
+                           </TooltipTrigger>
+                           <TooltipContent><p className="max-w-xs text-center">The variable or value controlling the size of the incoming data</p></TooltipContent>
+                         </Tooltip>
+                         is <span className="text-yellow-400 font-mono">{result.dfInfo.request.length_basis}</span> against
+                         <Tooltip>
+                           <TooltipTrigger asChild>
+                             <span className="border-b border-dashed border-gray-500 cursor-help mx-1 hover:text-gray-200 transition">capacity</span>
+                           </TooltipTrigger>
+                           <TooltipContent><p className="max-w-xs text-center">The allocated size of the destination buffer</p></TooltipContent>
+                         </Tooltip>
+                         <span className="text-green-400 font-mono">{result.dfInfo.capacity.value}</span>.
+                       </p>
+                     </div>
+                  </div>
+               </div>
 
-             <div className="text-sm text-gray-400 bg-gray-950 p-3 rounded-md border border-gray-800">
-                <span className="text-gray-500">Root Cause:</span> <span className="text-orange-400">{result.dfInfo.root_cause.kind}</span>
-             </div>
-          </div>
+               <div className="flex items-center gap-2 text-sm text-gray-400 bg-gray-950 p-3 rounded-md border border-gray-800">
+                  <span className="text-gray-500">Root Cause:</span>
+                  <span className="text-orange-400 font-medium">{result.dfInfo.root_cause.kind}</span>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="w-3 h-3 text-gray-600 cursor-help hover:text-gray-300 transition" />
+                    </TooltipTrigger>
+                    <TooltipContent><p className="max-w-xs text-center">The fundamental reason why this vulnerability exists (e.g. missing bounds check before a copy)</p></TooltipContent>
+                  </Tooltip>
+               </div>
+            </div>
+          </TooltipProvider>
 
 
           {/* Advanced Sections (Modals) */}
@@ -91,22 +118,41 @@ export default function ResultDetail({ result }: ResultDetailProps) {
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </DialogTrigger>
-              <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>Full Data Flow Analysis</DialogTitle>
-                </DialogHeader>
-                <div className="mt-4 space-y-6">
-                  <ExplainabilityPanels result={result} />
-                  <div className="pt-4 border-t border-gray-800">
-                    <DFInfoCards dfInfo={result.dfInfo} />
+              <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-hidden flex flex-col">
+                <DialogHeader className="shrink-0">
+                  <div className="flex items-center justify-between">
+                    <DialogTitle>Full Data Flow Analysis</DialogTitle>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <HelpCircle className="w-4 h-4 text-gray-500 mr-8 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent><p className="max-w-sm text-center">This modal explains the path data takes from source to sink, and why the analysis flagged it as dangerous.</p></TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
-
-                <DialogFooter className="mt-6 border-t border-gray-800 pt-4">
+                </DialogHeader>
+                <div className="flex-1 overflow-hidden mt-4">
+                  <Tabs defaultValue="explanation" className="h-full flex flex-col">
+                    <TabsList className="shrink-0 grid w-full grid-cols-2 max-w-[400px]">
+                      <TabsTrigger value="explanation">Explanation</TabsTrigger>
+                      <TabsTrigger value="raw">Raw Data Flow Nodes</TabsTrigger>
+                    </TabsList>
+                    <div className="flex-1 overflow-y-auto custom-scrollbar mt-4 pr-2">
+                      <TabsContent value="explanation" className="m-0 space-y-4">
+                        <ExplainabilityPanels result={result} />
+                      </TabsContent>
+                      <TabsContent value="raw" className="m-0 space-y-4">
+                        <DFInfoCards dfInfo={result.dfInfo} />
+                      </TabsContent>
+                    </div>
+                  </Tabs>
+                </div>
+                <DialogFooter className="shrink-0 border-t border-gray-800 pt-4">
                   <DialogClose asChild>
                     <Button variant="outline">Close</Button>
                   </DialogClose>
                 </DialogFooter>
-</div>
               </DialogContent>
             </Dialog>
 
