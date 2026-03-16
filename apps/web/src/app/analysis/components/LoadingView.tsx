@@ -36,26 +36,26 @@ export default function LoadingView({ onComplete }: LoadingViewProps) {
   return (
     <div className="flex flex-col items-center justify-center w-full h-full min-h-[50vh]">
       <div className="flex flex-col items-center space-y-6">
-        <Loader2 className="w-16 h-16 text-blue-500 animate-spin" />
+        <Loader2 className="w-16 h-16 text-[#58a6ff] animate-spin" />
         <div className="text-center">
-          <h2 className="text-2xl font-semibold mb-2 text-gray-100">
+          <h2 className="text-2xl font-semibold mb-2 text-[#c9d1d9]">
             Analyzing Codebase
           </h2>
           <div className="h-6">
-            <p className="text-blue-400 font-medium animate-pulse">
+            <p className="text-[#79c0ff] font-medium animate-pulse">
               {messages[step]}
             </p>
           </div>
         </div>
 
-        <div className="w-64 bg-gray-800 rounded-full h-2 mt-8 overflow-hidden">
+        <div className="w-64 bg-[#21262d] rounded-full h-2 mt-8 overflow-hidden">
           <div
             className="bg-blue-500 h-2 transition-all duration-500 ease-out"
             style={{ width: `${Math.max(5, (step / messages.length) * 100)}%` }}
           />
         </div>
 
-        <p className="text-xs text-gray-500 mt-4">
+        <p className="text-xs text-[#8b949e] mt-4">
           This may take a few moments depending on codebase size...
         </p>
       </div>

@@ -11,7 +11,7 @@ import SimilarSignatures from "./SimilarSignatures";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "~/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 
-import { HelpCircle } from "lucide-react";
+
 import { Button } from "~/components/ui/button";
 
 interface ResultDetailProps {
@@ -23,7 +23,7 @@ export default function ResultDetail({ result }: ResultDetailProps) {
 
   if (!result) {
     return (
-      <div className="flex-1 flex items-center justify-center text-gray-500 bg-gray-950 border-l border-gray-800">
+      <div className="flex-1 flex items-center justify-center text-[#8b949e] bg-[#0d1117] border-l border-[#30363d]">
         <p className="text-sm">Select a vulnerability or code line to view details.</p>
       </div>
     );
@@ -32,9 +32,9 @@ export default function ResultDetail({ result }: ResultDetailProps) {
   const isDangerous = result.dfInfo.validation.upper_vs_capacity === "Unbounded" || result.dfInfo.validation.upper === "None";
 
   return (
-    <div className="flex flex-col h-full bg-gray-900 border-l border-gray-800 w-80 md:w-96 flex-shrink-0">
-      <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-gray-950">
-        <h3 className="text-sm font-semibold text-gray-200">Issue Explanation</h3>
+    <div className="flex flex-col h-full bg-[#161b22] border-l border-[#30363d] w-80 md:w-96 flex-shrink-0">
+      <div className="p-4 border-b border-[#30363d] flex justify-between items-center bg-[#0d1117]">
+        <h3 className="text-sm font-semibold text-[#c9d1d9]">Issue Explanation</h3>
 
       </div>
 
@@ -47,55 +47,55 @@ export default function ResultDetail({ result }: ResultDetailProps) {
               <Badge variant={result.risk === "High" ? "red" : result.risk === "Medium" ? "yellow" : "green" as any}>
                 {result.risk} Risk
               </Badge>
-              <Badge variant="outline" className="border-gray-700 text-gray-300">
+              <Badge variant="outline" className="border-[#30363d] text-[#8b949e]">
                 {result.sinkKind}
               </Badge>
             </div>
-            <h4 className="text-lg font-bold font-mono text-gray-100 break-words">
+            <h4 className="text-lg font-bold font-mono text-[#c9d1d9] break-words">
               {result.functionName}
             </h4>
-            <p className="text-sm text-gray-400 mt-1 font-mono break-all">
+            <p className="text-sm text-[#8b949e] mt-1 font-mono break-all">
               {result.filePath}:{result.startLine}-{result.endLine}
             </p>
           </div>
 
           {/* Core Reasoning */}
           <div className="space-y-3">
-               <div className="bg-gray-950 border border-gray-800 p-3 rounded-md">
+               <div className="bg-[#0d1117] border border-[#30363d] p-3 rounded-md">
                   <div className="flex items-start gap-2">
-                     {isDangerous ? <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" /> : <Info className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />}
+                     {isDangerous ? <AlertTriangle className="w-4 h-4 text-[#f85149] mt-0.5 shrink-0" /> : <Info className="w-4 h-4 text-[#58a6ff] mt-0.5 shrink-0" />}
                      <div>
-                       <span className="text-sm font-semibold text-gray-200 block mb-1">
+                       <span className="text-sm font-semibold text-[#c9d1d9] block mb-1">
                          {result.dfInfo.diagnostics.class}
                        </span>
-                       <p className="text-sm text-gray-400 leading-relaxed">
+                       <p className="text-sm text-[#8b949e] leading-relaxed">
                          {result.dfInfo.diagnostics.notes}.
                          The
                          <span className="font-semibold mx-1">request basis</span>
-                         is <span className="text-yellow-400 font-mono">{result.dfInfo.request.length_basis}</span> against
+                         is <span className="text-[#d29922] font-mono">{result.dfInfo.request.length_basis}</span> against
                          <span className="font-semibold mx-1">capacity</span>
-                         <span className="text-green-400 font-mono">{result.dfInfo.capacity.value}</span>.
+                         <span className="text-[#56d364] font-mono">{result.dfInfo.capacity.value}</span>.
                        </p>
                      </div>
                   </div>
                </div>
 
-               <div className="flex items-center gap-2 text-sm text-gray-400 bg-gray-950 p-3 rounded-md border border-gray-800">
-                  <span className="text-gray-500">Root Cause:</span>
-                  <span className="text-orange-400 font-medium">{result.dfInfo.root_cause.kind}</span>
+               <div className="flex items-center gap-2 text-sm text-[#8b949e] bg-[#0d1117] p-3 rounded-md border border-[#30363d]">
+                  <span className="text-[#8b949e]">Root Cause:</span>
+                  <span className="text-[#d29922] font-medium">{result.dfInfo.root_cause.kind}</span>
 
                </div>
             </div>
 
 
           {/* Advanced Sections (Modals) */}
-          <div className="pt-4 border-t border-gray-800 space-y-2">
+          <div className="pt-4 border-t border-[#30363d] space-y-2">
 
             <Dialog>
               <DialogTrigger asChild>
-                <button className="w-full flex items-center justify-between p-2 bg-gray-950 hover:bg-gray-900 border border-gray-800 rounded-md transition text-sm text-gray-300 font-medium">
+                <button className="w-full flex items-center justify-between p-2 bg-[#0d1117] hover:bg-[#161b22] border border-[#30363d] rounded-md transition text-sm text-[#8b949e] font-medium">
                   <span className="flex items-center gap-2">
-                     <Info className="w-4 h-4 text-gray-500" />
+                     <Info className="w-4 h-4 text-[#8b949e]" />
                      Full Data Flow Analysis
                   </span>
                   <ChevronRight className="w-4 h-4" />
@@ -104,7 +104,7 @@ export default function ResultDetail({ result }: ResultDetailProps) {
               <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-hidden flex flex-col">
                 <DialogHeader className="shrink-0">
                   <DialogTitle>Full Data Flow Analysis</DialogTitle>
-                  <p className="text-sm text-gray-400 mt-2">
+                  <p className="text-sm text-[#8b949e] mt-2">
                     Review how data travels through your code. This helps verify if a vulnerability is reachable and correctly diagnosed.
                   </p>
                 </DialogHeader>
@@ -126,7 +126,7 @@ export default function ResultDetail({ result }: ResultDetailProps) {
                     </div>
                   </Tabs>
                 </div>
-                <DialogFooter className="shrink-0 border-t border-gray-800 pt-4">
+                <DialogFooter className="shrink-0 border-t border-[#30363d] pt-4">
                   <DialogClose asChild>
                     <Button variant="outline">Close</Button>
                   </DialogClose>
@@ -136,9 +136,9 @@ export default function ResultDetail({ result }: ResultDetailProps) {
 
             <Dialog>
               <DialogTrigger asChild>
-                <button className="w-full flex items-center justify-between p-2 bg-gray-950 hover:bg-gray-900 border border-gray-800 rounded-md transition text-sm text-gray-300 font-medium">
+                <button className="w-full flex items-center justify-between p-2 bg-[#0d1117] hover:bg-[#161b22] border border-[#30363d] rounded-md transition text-sm text-[#8b949e] font-medium">
                   <span className="flex items-center gap-2">
-                     <GitCompare className="w-4 h-4 text-gray-500" />
+                     <GitCompare className="w-4 h-4 text-[#8b949e]" />
                      Similar Signatures
                   </span>
                   <ChevronRight className="w-4 h-4" />
@@ -147,14 +147,14 @@ export default function ResultDetail({ result }: ResultDetailProps) {
               <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>Similar Signatures</DialogTitle>
-                  <p className="text-sm text-gray-400 mt-2">
+                  <p className="text-sm text-[#8b949e] mt-2">
                     Review other code segments in your project that share similar structural or data-flow patterns to this vulnerability.
                   </p>
                 </DialogHeader>
                 <div className="mt-4">
                   <SimilarSignatures result={result} />
 
-                <DialogFooter className="mt-6 border-t border-gray-800 pt-4">
+                <DialogFooter className="mt-6 border-t border-[#30363d] pt-4">
                   <DialogClose asChild>
                     <Button variant="outline">Close</Button>
                   </DialogClose>

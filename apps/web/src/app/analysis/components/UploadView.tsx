@@ -87,7 +87,7 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
     <div className="flex flex-col items-center justify-center w-full max-w-2xl mx-auto h-full space-y-8">
       <div className="text-center">
         <h1 className="text-3xl font-bold mb-2">Analysis Workspace</h1>
-        <p className="text-gray-400">Upload source code files to begin</p>
+        <p className="text-[#8b949e]">Upload source code files to begin</p>
       </div>
 
       <input
@@ -100,12 +100,12 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
       />
 
       <div
-        className="w-full border-2 border-dashed border-gray-600 rounded-lg p-12 flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 transition-colors"
+        className="w-full border-2 border-dashed border-[#8b949e] rounded-lg p-12 flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 transition-colors"
         onClick={() => fileInputRef.current?.click()}
       >
-        <UploadCloud className="w-12 h-12 text-gray-400 mb-4" />
-        <p className="text-gray-300 font-medium">Click to browse or drag and drop files here</p>
-        <p className="text-gray-500 text-sm mt-1">.c, .cpp, .java or .zip archives</p>
+        <UploadCloud className="w-12 h-12 text-[#8b949e] mb-4" />
+        <p className="text-[#8b949e] font-medium">Click to browse or drag and drop files here</p>
+        <p className="text-[#8b949e] text-sm mt-1">.c, .cpp, .java or .zip archives</p>
       </div>
 
       {error && (
@@ -122,18 +122,18 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
             {files.map((file, idx) => (
               <div
                 key={idx}
-                className="flex items-center justify-between p-3 bg-gray-800 rounded-md border border-gray-700"
+                className="flex items-center justify-between p-3 bg-[#21262d] rounded-md border border-[#30363d]"
               >
                 <div className="flex items-center space-x-3 truncate mr-4">
-                  <FileIcon className="w-5 h-5 text-blue-400 shrink-0" />
+                  <FileIcon className="w-5 h-5 text-[#79c0ff] shrink-0" />
                   <div className="truncate">
-                    <p className="text-sm font-medium text-gray-200 truncate">{file.path}</p>
-                    <p className="text-xs text-gray-500">{formatSize(file.content?.length || 0)}</p>
+                    <p className="text-sm font-medium text-[#c9d1d9] truncate">{file.path}</p>
+                    <p className="text-xs text-[#8b949e]">{formatSize(file.content?.length || 0)}</p>
                   </div>
                 </div>
                 <button
                   onClick={() => removeFile(idx)}
-                  className="p-1 shrink-0 hover:bg-gray-700 rounded text-gray-400 hover:text-red-400 transition-colors"
+                  className="p-1 shrink-0 hover:bg-[#30363d] rounded text-[#8b949e] hover:text-[#ff7b72] transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

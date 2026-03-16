@@ -9,9 +9,9 @@ interface DFInfoCardsProps {
 }
 
 const PropRow = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex justify-between items-center py-1 text-sm border-b border-gray-800 last:border-0">
-    <span className="text-gray-500">{label}</span>
-    <span className="font-mono text-gray-300 truncate max-w-[60%] text-right" title={value}>
+  <div className="flex justify-between items-center py-1 text-sm border-b border-[#30363d] last:border-0">
+    <span className="text-[#8b949e]">{label}</span>
+    <span className="font-mono text-[#8b949e] truncate max-w-[60%] text-right" title={value}>
       {value}
     </span>
   </div>
@@ -21,9 +21,9 @@ export default function DFInfoCards({ dfInfo }: DFInfoCardsProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
       {/* Destination */}
-      <Card className="bg-gray-950 border-gray-800">
-        <CardHeader className="p-3 border-b border-gray-800">
-          <CardTitle className="text-sm font-semibold text-blue-400">Destination</CardTitle>
+      <Card className="bg-[#0d1117] border-[#30363d]">
+        <CardHeader className="p-3 border-b border-[#30363d]">
+          <CardTitle className="text-sm font-semibold text-[#79c0ff]">Destination</CardTitle>
         </CardHeader>
         <CardContent className="p-3">
           <PropRow label="expr" value={dfInfo.destination.expr} />
@@ -34,9 +34,9 @@ export default function DFInfoCards({ dfInfo }: DFInfoCardsProps) {
       </Card>
 
       {/* Capacity */}
-      <Card className="bg-gray-950 border-gray-800">
-        <CardHeader className="p-3 border-b border-gray-800">
-          <CardTitle className="text-sm font-semibold text-green-400">Capacity</CardTitle>
+      <Card className="bg-[#0d1117] border-[#30363d]">
+        <CardHeader className="p-3 border-b border-[#30363d]">
+          <CardTitle className="text-sm font-semibold text-[#56d364]">Capacity</CardTitle>
         </CardHeader>
         <CardContent className="p-3">
           <PropRow label="expr" value={dfInfo.capacity.expr} />
@@ -47,9 +47,9 @@ export default function DFInfoCards({ dfInfo }: DFInfoCardsProps) {
       </Card>
 
       {/* Request */}
-      <Card className="bg-gray-950 border-gray-800">
-        <CardHeader className="p-3 border-b border-gray-800">
-          <CardTitle className="text-sm font-semibold text-purple-400">Request</CardTitle>
+      <Card className="bg-[#0d1117] border-[#30363d]">
+        <CardHeader className="p-3 border-b border-[#30363d]">
+          <CardTitle className="text-sm font-semibold text-[#bc8cff]">Request</CardTitle>
         </CardHeader>
         <CardContent className="p-3">
           <PropRow label="bytes.expr" value={dfInfo.request.bytes.expr} />
@@ -60,9 +60,9 @@ export default function DFInfoCards({ dfInfo }: DFInfoCardsProps) {
       </Card>
 
       {/* Validation */}
-      <Card className="bg-gray-950 border-gray-800">
-        <CardHeader className="p-3 border-b border-gray-800">
-          <CardTitle className="text-sm font-semibold text-yellow-400">Validation</CardTitle>
+      <Card className="bg-[#0d1117] border-[#30363d]">
+        <CardHeader className="p-3 border-b border-[#30363d]">
+          <CardTitle className="text-sm font-semibold text-[#d29922]">Validation</CardTitle>
         </CardHeader>
         <CardContent className="p-3">
           <PropRow label="lower" value={dfInfo.validation.lower} />
@@ -73,9 +73,9 @@ export default function DFInfoCards({ dfInfo }: DFInfoCardsProps) {
       </Card>
 
       {/* Diagnostics */}
-      <Card className="bg-gray-950 border-gray-800">
-        <CardHeader className="p-3 border-b border-gray-800">
-          <CardTitle className="text-sm font-semibold text-red-400">Diagnostics</CardTitle>
+      <Card className="bg-[#0d1117] border-[#30363d]">
+        <CardHeader className="p-3 border-b border-[#30363d]">
+          <CardTitle className="text-sm font-semibold text-[#ff7b72]">Diagnostics</CardTitle>
         </CardHeader>
         <CardContent className="p-3">
           <PropRow label="class" value={dfInfo.diagnostics.class} />
@@ -85,9 +85,9 @@ export default function DFInfoCards({ dfInfo }: DFInfoCardsProps) {
       </Card>
 
       {/* Root Cause */}
-      <Card className="bg-gray-950 border-gray-800">
-        <CardHeader className="p-3 border-b border-gray-800">
-          <CardTitle className="text-sm font-semibold text-orange-400">Root Cause</CardTitle>
+      <Card className="bg-[#0d1117] border-[#30363d]">
+        <CardHeader className="p-3 border-b border-[#30363d]">
+          <CardTitle className="text-sm font-semibold text-[#d29922]">Root Cause</CardTitle>
         </CardHeader>
         <CardContent className="p-3">
           <PropRow label="kind" value={dfInfo.root_cause.kind} />
