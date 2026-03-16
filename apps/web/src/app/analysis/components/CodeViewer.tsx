@@ -4,6 +4,10 @@ import React, { useEffect, useRef } from "react";
 import { MockFile, AnalysisResult } from "./mockData";
 import { FileWarning, FileQuestion, FileDigit, Code2 } from "lucide-react";
 
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
+
 interface CodeViewerProps {
   file: MockFile;
   vulnerabilities: AnalysisResult[];
@@ -56,70 +60,68 @@ export default function CodeViewer({
       </div>
     );
   }
-
-  const lines = file.content.split("\n");
+  // Determine language based on file extension
+  const extension = file.path.split('.').pop() || '';
+  const languageMap: Record<string, string> = {
+    js: 'javascript', ts: 'typescript', jsx: 'jsx', tsx: 'tsx',
+    py: 'python', c: 'c', cpp: 'cpp', java: 'java', go: 'go', rs: 'rust'
+  };
+  const language = languageMap[extension] || 'text';
 
   return (
-    <div className="h-full flex flex-col bg-[#0d1117] text-[#e6edf3] font-mono text-sm overflow-hidden rounded-md border border-gray-800">
-      <div className="flex items-center px-4 py-2 bg-[#161b22] border-b border-gray-800 text-xs text-gray-400 gap-2">
+    <div className="h-full flex flex-col bg-[#1e1e1e] text-[#d4d4d4] font-mono text-sm sm:text-base overflow-hidden rounded-md border border-gray-800">
+      <div className="flex items-center px-4 py-2 bg-[#2d2d2d] border-b border-gray-800 text-xs sm:text-sm text-gray-300 gap-2">
         <Code2 className="w-4 h-4" />
         {file.path}
       </div>
-      <div className="flex-1 overflow-auto" ref={containerRef}>
-        <table className="w-full border-collapse">
-          <tbody>
-            {lines.map((line, idx) => {
-              const lineNum = idx + 1;
+      <div className="flex-1 overflow-auto custom-scrollbar" ref={containerRef}>
+        <SyntaxHighlighter
+          language={language}
+          style={vscDarkPlus}
+          showLineNumbers={true}
+          wrapLines={true}
+          lineProps={(lineNumber) => {
+            const matchingVulns = vulnerabilities.filter(
+              (v) => lineNumber >= v.startLine && lineNumber <= v.endLine
+            );
 
-              // Find if this line belongs to any vulnerability
-              const matchingVulns = vulnerabilities.filter(
-                (v) => lineNum >= v.startLine && lineNum <= v.endLine
-              );
+            const isVuln = matchingVulns.length > 0;
+            const isSelected = matchingVulns.some((v) => v.id === selectedResultId);
 
-              const isVuln = matchingVulns.length > 0;
-              const isSelected = matchingVulns.some((v) => v.id === selectedResultId);
+            const style: React.CSSProperties = { display: 'block', cursor: isVuln ? 'pointer' : 'text' };
 
-              // Determine line styling based on selection and vulnerability state
-              let rowClass = "group hover:bg-[#161b22] transition-colors";
-              let numClass = "pr-4 pl-4 text-right select-none text-gray-600 border-r border-gray-800 w-12 cursor-pointer";
-              let contentClass = "pl-4 pr-4 whitespace-pre cursor-text";
+            if (isSelected) {
+              style.backgroundColor = 'rgba(46, 160, 67, 0.15)'; // Subtle green highlight
+              style.borderLeft = '3px solid #2ea043';
+            } else if (isVuln) {
+              style.backgroundColor = 'rgba(248, 81, 73, 0.15)'; // Subtle red highlight
+              style.borderLeft = '3px solid #f85149';
+            } else {
+              style.borderLeft = '3px solid transparent';
+            }
 
-              if (isSelected) {
-                rowClass = "bg-[#2ea0431a]"; // Subtle green/highlight for selected block
-                numClass = "pr-4 pl-4 text-right select-none text-green-500 border-r border-green-500 w-12";
-                contentClass = "pl-4 pr-4 whitespace-pre";
-              } else if (isVuln) {
-                rowClass = "bg-[#f851491a] hover:bg-[#f851492a] cursor-pointer"; // Subtle red for unselected vulnerability
-                numClass = "pr-4 pl-4 text-right select-none text-red-400 border-r border-red-500 w-12";
-                contentClass = "pl-4 pr-4 whitespace-pre";
-              }
-
-              // Set ref for the top line of the selected block to scroll to
-              const isStartOfSelectedBlock = matchingVulns.some((v) => v.id === selectedResultId && v.startLine === lineNum);
-
-              return (
-                <tr
-                  key={lineNum}
-                  className={rowClass}
-                  ref={isStartOfSelectedBlock ? (selectedLineRef as any) : null}
-                  onClick={() => {
-                    if (isVuln) {
-                       // Prefer clicking the selected one if multiple overlap, otherwise just pick the first matching one
-                       const targetId = matchingVulns.find(v => v.id === selectedResultId)?.id || matchingVulns[0].id;
-                       onResultClick(targetId);
-                    }
-                  }}
-                >
-                  <td className={numClass}>{lineNum}</td>
-                  <td className={contentClass}>
-                     {line || " "}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+            return {
+              style,
+              onClick: () => {
+                if (isVuln) {
+                  const targetId = matchingVulns.find(v => v.id === selectedResultId)?.id || matchingVulns[0].id;
+                  onResultClick(targetId);
+                }
+              },
+              ref: matchingVulns.some((v) => v.id === selectedResultId && v.startLine === lineNumber) ? (selectedLineRef as any) : null
+            };
+          }}
+          customStyle={{
+            margin: 0,
+            padding: '1rem 0',
+            background: 'transparent',
+            fontSize: 'inherit'
+          }}
+        >
+          {file.content}
+        </SyntaxHighlighter>
       </div>
     </div>
   );
+
 }

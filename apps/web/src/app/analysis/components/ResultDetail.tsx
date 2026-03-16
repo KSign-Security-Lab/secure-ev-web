@@ -65,14 +65,14 @@ export default function ResultDetail({ result }: ResultDetailProps) {
                      <span className="text-sm font-semibold text-gray-200 block mb-1">
                        {result.dfInfo.diagnostics.class}
                      </span>
-                     <p className="text-xs text-gray-400 leading-relaxed">
+                     <p className="text-sm text-gray-400 leading-relaxed">
                        {result.dfInfo.diagnostics.notes}. The request basis is <span className="text-yellow-400 font-mono">{result.dfInfo.request.length_basis}</span> against capacity <span className="text-green-400 font-mono">{result.dfInfo.capacity.value}</span>.
                      </p>
                    </div>
                 </div>
              </div>
 
-             <div className="text-xs text-gray-400 bg-gray-950 p-2 rounded-md border border-gray-800">
+             <div className="text-sm text-gray-400 bg-gray-950 p-3 rounded-md border border-gray-800">
                 <span className="text-gray-500">Root Cause:</span> <span className="text-orange-400">{result.dfInfo.root_cause.kind}</span>
              </div>
           </div>

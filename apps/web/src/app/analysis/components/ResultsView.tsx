@@ -90,7 +90,7 @@ export default function ResultsView() {
       <div key={node.path} className="flex flex-col">
         <button
           onClick={() => togglePath(node.path)}
-          className={`flex items-center gap-2 py-1.5 w-full text-left rounded-md text-sm transition-colors hover:bg-gray-900 ${isFileSelected && node.type === 'file' ? 'text-gray-200 bg-gray-900/50' : 'text-gray-400'}`}
+          className={`flex items-center gap-2 py-2 w-full text-left rounded-md text-base transition-colors hover:bg-gray-900 ${isFileSelected && node.type === 'file' ? 'text-gray-200 bg-gray-900/50' : 'text-gray-400'}`}
           style={{ paddingLeft }}
         >
           {node.type === 'dir' || node.results.length > 0 ? (
@@ -139,10 +139,10 @@ export default function ResultsView() {
                     }`}
                   >
                     <div className="flex justify-between items-center w-full">
-                      <Badge variant={getRiskBadgeColor(res.risk) as any} className="text-[9px] px-1 py-0 leading-tight">
+                      <Badge variant={getRiskBadgeColor(res.risk) as any} className="text-[10px] px-1.5 py-0 leading-tight">
                         {res.risk}
                       </Badge>
-                      <span className="text-[10px] text-gray-500 font-mono">L{res.lineInfo.split('-')[0]}</span>
+                      <span className="text-xs text-gray-500 font-mono">L{res.lineInfo.split('-')[0]}</span>
                     </div>
                     <span className={`truncate font-mono ${isSelected ? 'text-blue-200' : 'text-gray-300'}`}>
                       {res.functionName}
