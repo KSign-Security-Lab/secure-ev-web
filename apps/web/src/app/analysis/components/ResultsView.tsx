@@ -13,23 +13,33 @@ interface ResultsViewProps { uploadedFiles: MockFile[] }
 
 export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
 
+
   // Generate random mock results for the uploaded files
   const [dynamicResults] = useState(() => {
     if (!uploadedFiles || uploadedFiles.length === 0) return mockResults;
     const generated: typeof mockResults = [];
 
+    const basicMock = mockResults.find(r => r.sinkKind === "HARDCODED_SECRET");
+    if (basicMock) {
+        generated.push({
+            ...basicMock,
+            id: `dyn-basic`,
+            filePath: uploadedFiles[0].path,
+            functionName: "connect_to_db"
+        });
+    }
+
     uploadedFiles.forEach((file, index) => {
-       // Give each file a 50% chance of having 1-2 vulnerabilities
-       if (Math.random() > 0.5) {
-          const numVulns = Math.floor(Math.random() * 2) + 1;
+       if (Math.random() > 0.1) { // High chance to generate memory vulns too
+          const numVulns = 1;
           for (let i = 0; i < numVulns; i++) {
-             // Pick a random line number between 1 and 20 (or less if file is smaller)
-             const linesCount = file.content?.split("\n").length || 20;
+             const linesCount = file.content?.split("
+").length || 20;
              const maxLine = Math.min(linesCount, 20);
              const startL = Math.max(1, Math.floor(Math.random() * maxLine));
 
              // Clone a base mock result and adapt it to this file
-             const baseRes = mockResults[i % mockResults.length];
+             const baseRes = mockResults.find(r => r.sinkKind !== "SQL_INJECTION" && r.sinkKind !== "HARDCODED_SECRET") || mockResults[0];
              generated.push({
                ...baseRes,
                id: `dyn-${index}-${i}`,
@@ -43,23 +53,9 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
        }
     });
 
-    // Fallback if random generation gave 0 results
-    if (generated.length === 0 && uploadedFiles.length > 0) {
-        const file = uploadedFiles[0];
-        const baseRes = mockResults[0];
-        generated.push({
-               ...baseRes,
-               id: `dyn-fallback`,
-               filePath: file.path,
-               lineInfo: `1-5`,
-               startLine: 1,
-               endLine: 5,
-               functionName: `init_${file.path.split('/').pop()?.split('.')[0]}`
-        });
-    }
-
     return generated;
   });
+
 
   const activeResults = dynamicResults;
 

@@ -145,6 +145,31 @@ void log_event(const char* msg) {
 
 export const mockResults: AnalysisResult[] = [
   {
+    id: "vuln-5",
+    variant: "Variant B",
+    status: "New",
+    risk: "Medium",
+    sinkKind: "HARDCODED_SECRET",
+    functionName: "connect_to_db",
+    filePath: "src/utils/config.js",
+    lineInfo: "10-12",
+    startLine: 10,
+    endLine: 12,
+    evidenceRefs: ["EVD-999"],
+    dfInfo: {
+      diagnostics: {
+        class: "Use of Hard-coded Credentials",
+        notes: "A hardcoded API key was detected in the source code.",
+        confidence: "High",
+        impact: "Exposure of sensitive authentication material."
+      },
+      root_cause: {
+        kind: "Hardcoded Secret",
+        class_family: "Configuration"
+      }
+    }
+  },
+  {
     id: "res-001",
     variant: "Variant A",
     status: "New",
