@@ -1,21 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { AnalysisResult } from "./mockData";
 import { Badge } from "~/components/ui/badge";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import { ChevronDown, ChevronRight, Share2, MessageSquare, AlertTriangle, Info, GitCompare } from "lucide-react";
+import { ChevronRight, Share2, MessageSquare, AlertTriangle, Info, GitCompare } from "lucide-react";
 import DFInfoCards from "./DFInfoCards";
 import ExplainabilityPanels from "./ExplainabilityPanels";
 import SimilarSignatures from "./SimilarSignatures";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 
 interface ResultDetailProps {
   result: AnalysisResult | null;
 }
 
 export default function ResultDetail({ result }: ResultDetailProps) {
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const [showSimilar, setShowSimilar] = useState(false);
+
 
   if (!result) {
     return (
@@ -83,51 +83,55 @@ export default function ResultDetail({ result }: ResultDetailProps) {
              </div>
           </div>
 
-          {/* Advanced / Expandable Sections */}
+
+          {/* Advanced Sections (Modals) */}
           <div className="pt-4 border-t border-gray-800 space-y-2">
 
-            {/* Advanced DF Info */}
-            <div className="border border-gray-800 rounded-md overflow-hidden">
-               <button
-                 onClick={() => setShowAdvanced(!showAdvanced)}
-                 className="w-full flex items-center justify-between p-2 bg-gray-950 hover:bg-gray-900 transition text-sm text-gray-300 font-medium"
-               >
-                 <span className="flex items-center gap-2">
-                    <Info className="w-4 h-4 text-gray-500" />
-                    Advanced Data Flow
-                 </span>
-                 {showAdvanced ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-               </button>
-               {showAdvanced && (
-                 <div className="p-3 bg-gray-900 border-t border-gray-800">
-                    <ExplainabilityPanels result={result} />
-                    <div className="mt-4 pt-4 border-t border-gray-800">
-                      <DFInfoCards dfInfo={result.dfInfo} />
-                    </div>
-                 </div>
-               )}
-            </div>
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="w-full flex items-center justify-between p-2 bg-gray-950 hover:bg-gray-900 border border-gray-800 rounded-md transition text-sm text-gray-300 font-medium">
+                  <span className="flex items-center gap-2">
+                     <Info className="w-4 h-4 text-gray-500" />
+                     Full Data Flow Analysis
+                  </span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Full Data Flow Analysis</DialogTitle>
+                </DialogHeader>
+                <div className="mt-4 space-y-6">
+                  <ExplainabilityPanels result={result} />
+                  <div className="pt-4 border-t border-gray-800">
+                    <DFInfoCards dfInfo={result.dfInfo} />
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
 
-            {/* Similar Signatures */}
-            <div className="border border-gray-800 rounded-md overflow-hidden">
-               <button
-                 onClick={() => setShowSimilar(!showSimilar)}
-                 className="w-full flex items-center justify-between p-2 bg-gray-950 hover:bg-gray-900 transition text-sm text-gray-300 font-medium"
-               >
-                 <span className="flex items-center gap-2">
-                    <GitCompare className="w-4 h-4 text-gray-500" />
-                    Similar Signatures
-                 </span>
-                 {showSimilar ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-               </button>
-               {showSimilar && (
-                 <div className="p-3 bg-gray-900 border-t border-gray-800">
-                    <SimilarSignatures result={result} />
-                 </div>
-               )}
-            </div>
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="w-full flex items-center justify-between p-2 bg-gray-950 hover:bg-gray-900 border border-gray-800 rounded-md transition text-sm text-gray-300 font-medium">
+                  <span className="flex items-center gap-2">
+                     <GitCompare className="w-4 h-4 text-gray-500" />
+                     Similar Signatures
+                  </span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Similar Signatures & Embeddings</DialogTitle>
+                </DialogHeader>
+                <div className="mt-4">
+                  <SimilarSignatures result={result} />
+                </div>
+              </DialogContent>
+            </Dialog>
 
           </div>
+
         </div>
       </ScrollArea>
     </div>
