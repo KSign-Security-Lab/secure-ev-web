@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { AnalysisResult } from "./mockData";
-import { ArrowRight, AlertTriangle, CheckCircle2, ChevronDown, ChevronRight, HelpCircle } from "lucide-react";
-
+import { ArrowRight, AlertTriangle, CheckCircle2, ShieldAlert, ShieldCheck, DownloadCloud, HardDrive } from "lucide-react";
+import { Badge } from "~/components/ui/badge";
 
 interface ExplainabilityPanelsProps {
   result: AnalysisResult;
@@ -13,127 +13,117 @@ export default function ExplainabilityPanels({ result }: ExplainabilityPanelsPro
   const { dfInfo } = result;
   const isDangerous = dfInfo.validation.upper_vs_capacity === "Unbounded" || dfInfo.validation.upper === "None";
 
-  const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
-
   return (
-    <div className="space-y-6 max-w-3xl mx-auto">
+    <div className="space-y-6 w-full">
 
-        {/* High Level Summary (Always Visible) */}
-        <div className="bg-gray-950 border border-gray-800 rounded-lg p-5">
-          <div className="flex items-center gap-2 mb-3">
-             {isDangerous ? <AlertTriangle className="w-5 h-5 text-red-500" /> : <CheckCircle2 className="w-5 h-5 text-green-500" />}
-             <h4 className="text-lg font-semibold text-gray-200">Analysis Summary</h4>
+      {/* Overview Status Banner */}
+      <div className={`w-full flex items-center justify-between p-4 rounded-lg border ${isDangerous ? 'bg-red-950/20 border-red-900/50' : 'bg-green-950/20 border-green-900/50'}`}>
+        <div className="flex items-center gap-3">
+          <div className={`p-2 rounded-full ${isDangerous ? 'bg-red-500/10' : 'bg-green-500/10'}`}>
+             {isDangerous ? <AlertTriangle className="w-6 h-6 text-red-500" /> : <CheckCircle2 className="w-6 h-6 text-green-500" />}
           </div>
-
-          <p className="text-base text-gray-300 leading-relaxed mb-4">
-            The function <code className="text-blue-400 bg-gray-900 px-1.5 py-0.5 rounded font-mono">{result.functionName}</code> performs a
-            <code className="text-purple-400 bg-gray-900 px-1.5 py-0.5 mx-1 rounded font-mono">{result.sinkKind}</code>
-            operation on the destination <code className="text-green-400 bg-gray-900 px-1.5 py-0.5 mx-1 rounded font-mono">{dfInfo.destination.expr}</code>.
-          </p>
-
-          <div className="bg-gray-900/50 rounded p-4 border border-gray-800">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="text-center w-full sm:w-auto">
-                <div className="text-xs text-gray-500 uppercase tracking-wider mb-1 flex justify-center items-center gap-1">
-                  Provided Capacity
-
-                </div>
-                <div className="text-xl font-mono text-green-400 font-bold">{dfInfo.capacity.value}</div>
-              </div>
-
-              <div className="flex flex-col items-center">
-                 <ArrowRight className="w-6 h-6 text-gray-600 hidden sm:block" />
-                 <span className="text-[10px] text-gray-500 mt-1 uppercase">Compared To</span>
-              </div>
-
-              <div className="text-center w-full sm:w-auto">
-                <div className="text-xs text-gray-500 uppercase tracking-wider mb-1 flex justify-center items-center gap-1">
-                  Requested Size
-
-                </div>
-                <div className="text-xl font-mono text-yellow-400 font-bold">{dfInfo.request.length_basis}</div>
-              </div>
-            </div>
-
-            <div className="mt-4 pt-4 border-t border-gray-800 text-center">
-              <p className="text-sm">
-                <span className="text-gray-400">Validation State: </span>
-                <span className={`font-bold ${isDangerous ? 'text-red-400' : 'text-green-400'}`}>
-                  {dfInfo.validation.upper_vs_capacity}
-                </span>
-              </p>
-            </div>
+          <div>
+            <h3 className="text-lg font-bold text-gray-200">
+               {isDangerous ? "Vulnerability Confirmed: Unsafe Data Flow" : "Flow Verified: Bounds Checked"}
+            </h3>
+            <p className="text-sm text-gray-400 mt-1">
+               {isDangerous ? `The requested size (${dfInfo.request.length_basis}) can exceed the destination buffer capacity (${dfInfo.capacity.value}).` : "The destination buffer is protected against overflow."}
+            </p>
           </div>
         </div>
-
-        {/* Progressive Disclosure: Technical Details */}
-        <div className="border border-gray-800 rounded-lg overflow-hidden">
-          <button
-            onClick={() => setShowTechnicalDetails(!showTechnicalDetails)}
-            className="w-full flex items-center justify-between bg-gray-950 p-4 hover:bg-gray-900 transition-colors"
-          >
-            <span className="font-semibold text-gray-300">View Detailed Data Flow Reasoning</span>
-            {showTechnicalDetails ? <ChevronDown className="w-5 h-5 text-gray-500" /> : <ChevronRight className="w-5 h-5 text-gray-500" />}
-          </button>
-
-          {showTechnicalDetails && (
-            <div className="p-4 bg-gray-900 border-t border-gray-800 grid grid-cols-1 md:grid-cols-2 gap-6">
-
-              <div>
-                <h5 className="text-sm font-semibold text-gray-400 mb-3 flex items-center gap-1">
-                  1. Data Source (Request)
-
-                </h5>
-                <ul className="space-y-2 text-sm text-gray-300">
-                  <li className="flex justify-between border-b border-gray-800 pb-1">
-                    <span className="text-gray-500">Expression:</span> <code className="font-mono">{dfInfo.request.bytes.expr}</code>
-                  </li>
-                  <li className="flex justify-between border-b border-gray-800 pb-1">
-                    <span className="text-gray-500">Value Type:</span> <code className="font-mono text-yellow-400">{dfInfo.request.value}</code>
-                  </li>
-                </ul>
-              </div>
-
-              <div>
-                <h5 className="text-sm font-semibold text-gray-400 mb-3 flex items-center gap-1">
-                  2. Destination (Capacity)
-
-                </h5>
-                <ul className="space-y-2 text-sm text-gray-300">
-                  <li className="flex justify-between border-b border-gray-800 pb-1">
-                    <span className="text-gray-500">Expression:</span> <code className="font-mono">{dfInfo.destination.expr}</code>
-                  </li>
-                  <li className="flex justify-between border-b border-gray-800 pb-1">
-                    <span className="text-gray-500">Region:</span> <span className="text-green-400">{dfInfo.destination.region}</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="md:col-span-2">
-                <h5 className="text-sm font-semibold text-gray-400 mb-3 flex items-center gap-1">
-                  3. Constraint Validation
-
-                </h5>
-                <div className="bg-gray-950 p-3 rounded border border-gray-800 flex flex-col sm:flex-row gap-4 justify-around text-sm">
-                  <div className="text-center">
-                    <span className="text-gray-500 block mb-1">Lower Bound</span>
-                    <code className="font-mono bg-gray-900 px-2 py-1 rounded">{dfInfo.validation.lower}</code>
-                  </div>
-                  <div className="text-center">
-                    <span className="text-gray-500 block mb-1">Upper Bound</span>
-                    <code className="font-mono bg-gray-900 px-2 py-1 rounded">{dfInfo.validation.upper}</code>
-                  </div>
-                  <div className="text-center">
-                    <span className="text-gray-500 block mb-1">Origin Chain</span>
-                    <code className="font-mono bg-gray-900 px-2 py-1 rounded text-orange-400">{dfInfo.validation.index_origin_chain}</code>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          )}
+        <div className="text-right">
+           <span className="text-xs uppercase tracking-wider text-gray-500 block mb-1">Root Cause</span>
+           <Badge variant={isDangerous ? "red" : "green"} className="font-mono">{dfInfo.root_cause.kind}</Badge>
         </div>
-
       </div>
+
+      {/* Visual Data Flow Diagram */}
+      <div className="w-full bg-gray-950 border border-gray-800 rounded-xl p-6 relative">
+        <h4 className="text-sm font-semibold text-gray-400 mb-6 uppercase tracking-wider">Visual Data Flow Path</h4>
+
+        {/* Connection Line (Background) */}
+        <div className="absolute top-[50%] left-0 right-0 h-0.5 bg-gray-800 -z-10 hidden md:block"></div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-0">
+
+          {/* Step 1: Source (Request) */}
+          <div className="flex flex-col relative">
+            <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 flex flex-col h-full shadow-lg overflow-hidden">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="bg-blue-500/20 p-2 rounded-md">
+                  <DownloadCloud className="w-5 h-5 text-blue-400" />
+                </div>
+                <h5 className="font-bold text-gray-200">1. Data Source</h5>
+              </div>
+              <div className="space-y-3 flex-1">
+                 <div>
+                   <span className="text-xs text-gray-500 block mb-1">Expression</span>
+                   <code className="text-xs bg-gray-950 px-2 py-1 rounded text-blue-300 font-mono block w-full truncate border border-gray-800">{dfInfo.request.bytes.expr}</code>
+                 </div>
+                 <div>
+                   <span className="text-xs text-gray-500 block mb-1">Requested Size</span>
+                   <code className="text-xs bg-gray-950 px-2 py-1 rounded text-yellow-400 font-mono block w-full truncate border border-gray-800 font-bold">{dfInfo.request.length_basis}</code>
+                 </div>
+              </div>
+            </div>
+            {/* Arrow indicator for mobile */}
+            <div className="flex justify-center md:hidden my-4"><ArrowRight className="w-6 h-6 text-gray-600 rotate-90" /></div>
+          </div>
+
+          {/* Step 2: Validation (Bounds) */}
+          <div className="flex flex-col relative">
+            <div className={`border rounded-lg p-4 flex flex-col h-full shadow-lg overflow-hidden ${isDangerous ? 'bg-red-950/10 border-red-900/30' : 'bg-green-950/10 border-green-900/30'}`}>
+              <div className="flex items-center gap-2 mb-4">
+                <div className={`p-2 rounded-md ${isDangerous ? 'bg-red-500/20' : 'bg-green-500/20'}`}>
+                  {isDangerous ? <ShieldAlert className={`w-5 h-5 ${isDangerous ? 'text-red-400' : 'text-green-400'}`} /> : <ShieldCheck className="w-5 h-5 text-green-400" />}
+                </div>
+                <h5 className="font-bold text-gray-200">2. Bounds Check</h5>
+              </div>
+              <div className="space-y-3 flex-1 flex flex-col justify-center">
+                 <div className="flex justify-between items-center border-b border-gray-800/50 pb-2">
+                   <span className="text-xs text-gray-400">Lower Bound:</span>
+                   <code className="text-xs font-mono text-gray-300">{dfInfo.validation.lower}</code>
+                 </div>
+                 <div className="flex justify-between items-center border-b border-gray-800/50 pb-2">
+                   <span className="text-xs text-gray-400">Upper Bound:</span>
+                   <code className={`text-xs font-mono font-bold ${isDangerous ? 'text-red-400' : 'text-green-400'}`}>{dfInfo.validation.upper}</code>
+                 </div>
+                 <div className="mt-2 text-center">
+                    <Badge variant={isDangerous ? "red" : "green"} className="uppercase text-[10px] tracking-wider px-2">
+                      {dfInfo.validation.upper_vs_capacity}
+                    </Badge>
+                 </div>
+              </div>
+            </div>
+            {/* Arrow indicator for mobile */}
+            <div className="flex justify-center md:hidden my-4"><ArrowRight className="w-6 h-6 text-gray-600 rotate-90" /></div>
+          </div>
+
+          {/* Step 3: Sink (Capacity) */}
+          <div className="flex flex-col relative">
+            <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 flex flex-col h-full shadow-lg overflow-hidden">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="bg-purple-500/20 p-2 rounded-md">
+                  <HardDrive className="w-5 h-5 text-purple-400" />
+                </div>
+                <h5 className="font-bold text-gray-200">3. Data Destination</h5>
+              </div>
+              <div className="space-y-3 flex-1">
+                 <div>
+                   <span className="text-xs text-gray-500 block mb-1">Target Buffer</span>
+                   <code className="text-xs bg-gray-950 px-2 py-1 rounded text-purple-300 font-mono block w-full truncate border border-gray-800">{dfInfo.destination.expr}</code>
+                 </div>
+                 <div>
+                   <span className="text-xs text-gray-500 block mb-1">Max Capacity</span>
+                   <code className="text-xs bg-gray-950 px-2 py-1 rounded text-green-400 font-mono block w-full truncate border border-gray-800 font-bold">{dfInfo.capacity.value}</code>
+                 </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
   );
 }

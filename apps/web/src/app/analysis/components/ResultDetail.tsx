@@ -116,15 +116,11 @@ export default function ResultDetail({ result }: ResultDetailProps) {
                     </TabsList>
                     <div className="flex-1 overflow-y-auto custom-scrollbar mt-4 pr-2">
                       <TabsContent value="explanation" className="m-0 space-y-4">
-                        <div className="p-3 bg-blue-900/20 border border-blue-800/50 rounded-md text-sm text-blue-200 mb-4">
-                          This view provides a human-readable breakdown of the capacity vs. request relationship and identifies the root cause of the vulnerability.
-                        </div>
+
                         <ExplainabilityPanels result={result} />
                       </TabsContent>
                       <TabsContent value="raw" className="m-0 space-y-4">
-                        <div className="p-3 bg-purple-900/20 border border-purple-800/50 rounded-md text-sm text-purple-200 mb-4">
-                          This view displays the raw Abstract Syntax Tree (AST) and Data Flow Graph (DFG) values extracted by the analysis engine.
-                        </div>
+
                         <DFInfoCards dfInfo={result.dfInfo} />
                       </TabsContent>
                     </div>
