@@ -7,14 +7,69 @@ import { File as FileIcon, ChevronDown, ChevronRight, Folder } from "lucide-reac
 import ResultDetail from "./ResultDetail";
 import CodeViewer from "./CodeViewer";
 
-export default function ResultsView() {
-  const [selectedResultId, setSelectedResultId] = useState<string | null>(mockResults[0]?.id || null);
+import { MockFile } from "./mockData";
+
+interface ResultsViewProps { uploadedFiles: MockFile[] }
+
+export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
+
+  // Generate random mock results for the uploaded files
+  const [dynamicResults] = useState(() => {
+    if (!uploadedFiles || uploadedFiles.length === 0) return mockResults;
+    const generated: typeof mockResults = [];
+
+    uploadedFiles.forEach((file, index) => {
+       // Give each file a 50% chance of having 1-2 vulnerabilities
+       if (Math.random() > 0.5) {
+          const numVulns = Math.floor(Math.random() * 2) + 1;
+          for (let i = 0; i < numVulns; i++) {
+             // Pick a random line number between 1 and 20 (or less if file is smaller)
+             const linesCount = file.content?.split("\n").length || 20;
+             const maxLine = Math.min(linesCount, 20);
+             const startL = Math.max(1, Math.floor(Math.random() * maxLine));
+
+             // Clone a base mock result and adapt it to this file
+             const baseRes = mockResults[i % activeResults.length];
+             generated.push({
+               ...baseRes,
+               id: `dyn-${index}-${i}`,
+               filePath: file.path,
+               lineInfo: `${startL}-${startL+5}`,
+               startLine: startL,
+               endLine: startL + 5,
+               functionName: `function_in_${file.path.split('/').pop()?.split('.')[0]}_${i}`
+             });
+          }
+       }
+    });
+
+    // Fallback if random generation gave 0 results
+    if (generated.length === 0 && uploadedFiles.length > 0) {
+        const file = uploadedFiles[0];
+        const baseRes = mockResults[0];
+        generated.push({
+               ...baseRes,
+               id: `dyn-fallback`,
+               filePath: file.path,
+               lineInfo: `1-5`,
+               startLine: 1,
+               endLine: 5,
+               functionName: `init_${file.path.split('/').pop()?.split('.')[0]}`
+        });
+    }
+
+    return generated;
+  });
+
+  const activeResults = dynamicResults;
+
+  const [selectedResultId, setSelectedResultId] = useState<string | null>(dynamicResults[0]?.id || null);
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set(["src", "src/parser", "src/core", "src/utils"]));
 
   // Find the selected result and its corresponding file
-  const selectedResult = mockResults.find((r) => r.id === selectedResultId) || null;
-  const selectedFilePath = selectedResult ? selectedResult.filePath : mockFiles[0].path;
-  const selectedFile = mockFiles.find((f) => f.path === selectedFilePath) || mockFiles[0];
+  const selectedResult = activeResults.find((r) => r.id === selectedResultId) || null;
+  const selectedFilePath = selectedResult ? selectedResult.filePath : (uploadedFiles[0] || mockFiles[0]).path;
+  const selectedFile = uploadedFiles.find((f) => f.path === selectedFilePath) || (uploadedFiles[0] || mockFiles[0]);
 
   const handleResultSelect = (id: string) => {
     setSelectedResultId(id);
@@ -45,11 +100,11 @@ export default function ResultsView() {
   const buildTree = () => {
     const root: any = { name: "root", path: "", type: "dir", children: {}, vulns: 0, results: [] };
 
-    mockFiles.forEach(file => {
+    uploadedFiles.forEach(file => {
       const parts = file.path.split('/');
       let current = root;
 
-      const fileVulns = mockResults.filter(r => r.filePath === file.path);
+      const fileVulns = activeResults.filter(r => r.filePath === file.path);
       root.vulns += fileVulns.length;
 
       let currentPath = '';
@@ -165,7 +220,7 @@ export default function ResultsView() {
           <h2 className="text-xl font-bold text-gray-100 flex items-center gap-2">
             Analysis Results
             <Badge variant="outline" className="border-gray-700 text-gray-300 font-mono">
-              {mockResults.length} Issues Found
+              {activeResults.length} Issues Found
             </Badge>
           </h2>
           <p className="text-sm text-gray-400 mt-1">Review detected issues and trace data flows.</p>
@@ -197,7 +252,7 @@ export default function ResultsView() {
         <div className="flex-1 overflow-hidden bg-[#0d1117] relative">
            <CodeViewer
              file={selectedFile}
-             vulnerabilities={mockResults.filter(r => r.filePath === selectedFilePath)}
+             vulnerabilities={activeResults.filter(r => r.filePath === selectedFilePath)}
              selectedResultId={selectedResultId}
              onResultClick={handleResultSelect}
            />
