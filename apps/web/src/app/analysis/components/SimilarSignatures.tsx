@@ -32,7 +32,7 @@ export default function SimilarSignatures({ result }: SimilarSignaturesProps) {
                 </div>
                 <p className="text-sm text-gray-500 font-mono">{sim.filePath}</p>
               </div>
-              <button className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded transition">
+              <button className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded transition" onClick={() => alert("Compare Runs feature is a placeholder and will be implemented later.")}>
                 Compare Runs
               </button>
             </div>

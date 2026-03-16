@@ -3,12 +3,13 @@
 import React, { useState } from "react";
 import { mockResults, mockFiles } from "./mockData";
 import { Badge } from "~/components/ui/badge";
-import { File as FileIcon, ChevronDown } from "lucide-react";
+import { File as FileIcon, ChevronDown, ChevronRight, Folder } from "lucide-react";
 import ResultDetail from "./ResultDetail";
 import CodeViewer from "./CodeViewer";
 
 export default function ResultsView() {
   const [selectedResultId, setSelectedResultId] = useState<string | null>(mockResults[0]?.id || null);
+  const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set(["src", "src/parser", "src/core", "src/utils"]));
 
   // Find the selected result and its corresponding file
   const selectedResult = mockResults.find((r) => r.id === selectedResultId) || null;
@@ -19,6 +20,18 @@ export default function ResultsView() {
     setSelectedResultId(id);
   };
 
+  const togglePath = (path: string) => {
+    setExpandedPaths(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(path)) {
+        newSet.delete(path);
+      } else {
+        newSet.add(path);
+      }
+      return newSet;
+    });
+  };
+
   const getRiskBadgeColor = (risk: string) => {
     switch (risk) {
       case "High": return "red";
@@ -26,6 +39,122 @@ export default function ResultsView() {
       case "Low": return "green";
       default: return "default";
     }
+  };
+
+  // Build a simple tree for the mock files
+  const buildTree = () => {
+    const root: any = { name: "root", path: "", type: "dir", children: {}, vulns: 0, results: [] };
+
+    mockFiles.forEach(file => {
+      const parts = file.path.split('/');
+      let current = root;
+
+      const fileVulns = mockResults.filter(r => r.filePath === file.path);
+      root.vulns += fileVulns.length;
+
+      let currentPath = '';
+      parts.forEach((part, index) => {
+        const isFile = index === parts.length - 1;
+        currentPath = currentPath ? `${currentPath}/${part}` : part;
+
+        if (!current.children[part]) {
+          current.children[part] = {
+            name: part,
+            path: currentPath,
+            type: isFile ? "file" : "dir",
+            children: {},
+            vulns: 0,
+            fileObj: isFile ? file : null,
+            results: isFile ? fileVulns : []
+          };
+        }
+        current.children[part].vulns += fileVulns.length;
+        current = current.children[part];
+      });
+    });
+    return root;
+  };
+
+  const tree = buildTree();
+
+  const renderTree = (node: any, level = 0) => {
+    if (node.name === "root") {
+      return Object.values(node.children).map((child: any) => renderTree(child, level));
+    }
+
+    const isExpanded = expandedPaths.has(node.path);
+    const isFileSelected = selectedFilePath === node.path;
+    const paddingLeft = `${level * 12 + 8}px`;
+
+    return (
+      <div key={node.path} className="flex flex-col">
+        <button
+          onClick={() => togglePath(node.path)}
+          className={`flex items-center gap-2 py-1.5 w-full text-left rounded-md text-sm transition-colors hover:bg-gray-900 ${isFileSelected && node.type === 'file' ? 'text-gray-200 bg-gray-900/50' : 'text-gray-400'}`}
+          style={{ paddingLeft }}
+        >
+          {node.type === 'dir' || node.results.length > 0 ? (
+            isExpanded ? <ChevronDown className="w-4 h-4 text-gray-500 shrink-0" /> : <ChevronRight className="w-4 h-4 text-gray-500 shrink-0" />
+          ) : (
+             <span className="w-4 h-4 shrink-0" />
+          )}
+
+          {node.type === 'dir' ? (
+            <Folder className="w-4 h-4 shrink-0 text-blue-400" />
+          ) : (
+             <FileIcon className={`w-4 h-4 shrink-0 ${node.vulns > 0 ? 'text-red-400' : 'text-gray-500'}`} />
+          )}
+
+          <span className="truncate font-medium">{node.name}</span>
+
+          {node.vulns > 0 && node.type === 'dir' && (
+            <Badge variant="outline" className="ml-auto shrink-0 h-4 min-w-[16px] px-1 py-0 flex items-center justify-center rounded-full text-[10px] border-gray-700 text-gray-400">
+              {node.vulns}
+            </Badge>
+          )}
+          {node.vulns > 0 && node.type === 'file' && (
+             <Badge variant="red" className="ml-auto shrink-0 h-4 min-w-[16px] px-1 py-0 flex items-center justify-center rounded-full text-[10px]">
+               {node.vulns}
+             </Badge>
+          )}
+        </button>
+
+        {isExpanded && node.type === 'dir' && (
+          <div className="flex flex-col">
+            {Object.values(node.children).map((child: any) => renderTree(child, level + 1))}
+          </div>
+        )}
+
+        {isExpanded && node.type === 'file' && node.results.length > 0 && (
+          <div className="flex flex-col space-y-1 my-1 pl-4" style={{ paddingLeft: `${(level + 1) * 12 + 16}px` }}>
+            <div className="border-l border-gray-800 pl-2 space-y-1">
+              {node.results.map((res: any) => {
+                const isSelected = selectedResultId === res.id;
+                return (
+                  <button
+                    key={res.id}
+                    onClick={() => handleResultSelect(res.id)}
+                    className={`text-left p-2 rounded-md transition-colors text-xs flex flex-col gap-1 w-full ${
+                      isSelected ? "bg-blue-900/30 border border-blue-500/50" : "hover:bg-gray-900 border border-transparent"
+                    }`}
+                  >
+                    <div className="flex justify-between items-center w-full">
+                      <Badge variant={getRiskBadgeColor(res.risk) as any} className="text-[9px] px-1 py-0 leading-tight">
+                        {res.risk}
+                      </Badge>
+                      <span className="text-[10px] text-gray-500 font-mono">L{res.lineInfo.split('-')[0]}</span>
+                    </div>
+                    <span className={`truncate font-mono ${isSelected ? 'text-blue-200' : 'text-gray-300'}`}>
+                      {res.functionName}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -41,6 +170,14 @@ export default function ResultsView() {
           </h2>
           <p className="text-sm text-gray-400 mt-1">Review detected issues and trace data flows.</p>
         </div>
+        <div className="flex gap-2">
+          <button
+            className="px-3 py-1.5 text-sm font-medium bg-gray-800 text-gray-200 hover:bg-gray-700 rounded-md transition"
+            onClick={() => alert("Export report feature is a placeholder and will be implemented later.")}
+          >
+            Export Report
+          </button>
+        </div>
       </div>
 
       {/* Main Split View: Left sidebar for Files/Issues, Center/Right for Code/Explanation */}
@@ -51,55 +188,8 @@ export default function ResultsView() {
           <div className="p-3 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-800 bg-gray-900">
             Files & Issues
           </div>
-          <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-2">
-             {mockFiles.map((file) => {
-               const fileVulns = mockResults.filter(r => r.filePath === file.path);
-               const hasVulns = fileVulns.length > 0;
-               const isFileSelected = selectedFilePath === file.path;
-
-               return (
-                 <div key={file.path} className="flex flex-col space-y-1">
-                   <div className={`flex items-center gap-2 px-2 py-1.5 rounded-md text-sm ${isFileSelected ? 'text-gray-200' : 'text-gray-400'}`}>
-                     <ChevronDown className="w-4 h-4 text-gray-500 shrink-0" />
-                     <FileIcon className="w-4 h-4 shrink-0" />
-                     <span className="truncate font-medium">{file.path.split('/').pop()}</span>
-                     {hasVulns && (
-                       <Badge variant="red" className="ml-auto shrink-0 h-4 min-w-[16px] px-1 py-0 flex items-center justify-center rounded-full text-[10px]">
-                         {fileVulns.length}
-                       </Badge>
-                     )}
-                   </div>
-
-                   {/* Render Issues under the file */}
-                   {hasVulns && (
-                     <div className="flex flex-col pl-6 space-y-1 border-l border-gray-800 ml-4">
-                       {fileVulns.map(res => {
-                         const isSelected = selectedResultId === res.id;
-                         return (
-                           <button
-                             key={res.id}
-                             onClick={() => handleResultSelect(res.id)}
-                             className={`text-left p-2 rounded-md transition-colors text-xs flex flex-col gap-1 ${
-                               isSelected ? "bg-blue-900/30 border border-blue-500/50" : "hover:bg-gray-900 border border-transparent"
-                             }`}
-                           >
-                             <div className="flex justify-between items-center w-full">
-                               <Badge variant={getRiskBadgeColor(res.risk) as any} className="text-[9px] px-1 py-0 leading-tight">
-                                 {res.risk}
-                               </Badge>
-                               <span className="text-[10px] text-gray-500 font-mono">L{res.lineInfo.split('-')[0]}</span>
-                             </div>
-                             <span className={`truncate font-mono ${isSelected ? 'text-blue-200' : 'text-gray-300'}`}>
-                               {res.functionName}
-                             </span>
-                           </button>
-                         )
-                       })}
-                     </div>
-                   )}
-                 </div>
-               );
-             })}
+          <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
+             {renderTree(tree)}
           </div>
         </div>
 

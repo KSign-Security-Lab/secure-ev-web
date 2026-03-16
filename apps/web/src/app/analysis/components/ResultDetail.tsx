@@ -4,11 +4,12 @@ import React from "react";
 import { AnalysisResult } from "./mockData";
 import { Badge } from "~/components/ui/badge";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import { ChevronRight, Share2, MessageSquare, AlertTriangle, Info, GitCompare } from "lucide-react";
+import { ChevronRight, AlertTriangle, Info, GitCompare } from "lucide-react";
 import DFInfoCards from "./DFInfoCards";
 import ExplainabilityPanels from "./ExplainabilityPanels";
 import SimilarSignatures from "./SimilarSignatures";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "~/components/ui/dialog";
+import { Button } from "~/components/ui/button";
 
 interface ResultDetailProps {
   result: AnalysisResult | null;
@@ -31,14 +32,7 @@ export default function ResultDetail({ result }: ResultDetailProps) {
     <div className="flex flex-col h-full bg-gray-900 border-l border-gray-800 w-80 md:w-96 flex-shrink-0">
       <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-gray-950">
         <h3 className="text-sm font-semibold text-gray-200">Issue Explanation</h3>
-        <div className="flex gap-1">
-           <button className="p-1.5 text-gray-400 hover:text-gray-200 hover:bg-gray-800 rounded transition" title="Add Note">
-             <MessageSquare className="w-4 h-4" />
-           </button>
-           <button className="p-1.5 text-gray-400 hover:text-gray-200 hover:bg-gray-800 rounded transition" title="Share/Export">
-             <Share2 className="w-4 h-4" />
-           </button>
-        </div>
+
       </div>
 
       <ScrollArea className="flex-1">
@@ -106,7 +100,13 @@ export default function ResultDetail({ result }: ResultDetailProps) {
                   <div className="pt-4 border-t border-gray-800">
                     <DFInfoCards dfInfo={result.dfInfo} />
                   </div>
-                </div>
+
+                <DialogFooter className="mt-6 border-t border-gray-800 pt-4">
+                  <DialogClose asChild>
+                    <Button variant="outline">Close</Button>
+                  </DialogClose>
+                </DialogFooter>
+</div>
               </DialogContent>
             </Dialog>
 
@@ -126,7 +126,13 @@ export default function ResultDetail({ result }: ResultDetailProps) {
                 </DialogHeader>
                 <div className="mt-4">
                   <SimilarSignatures result={result} />
-                </div>
+
+                <DialogFooter className="mt-6 border-t border-gray-800 pt-4">
+                  <DialogClose asChild>
+                    <Button variant="outline">Close</Button>
+                  </DialogClose>
+                </DialogFooter>
+</div>
               </DialogContent>
             </Dialog>
 
