@@ -93,6 +93,7 @@ export default function Playground() {
       const response = await trpc.sessions.list.query();
       setSessionsData(response);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error("Failed to fetch sessions:", error);
       setSessionsError(
         error instanceof Error ? error.message : "Failed to fetch sessions"
@@ -127,6 +128,8 @@ export default function Playground() {
     },
     [clearReconnectTimer]
   );
+
+  const connectWebSocketRef = useRef<((id?: number | null) => void) | undefined>(undefined);
 
   const connectWebSocket = useCallback(
     (sessionId?: number | null) => {
@@ -182,13 +185,14 @@ export default function Playground() {
       };
 
       ws.onerror = (event) => {
+        // eslint-disable-next-line no-console
         console.error("Terminal WebSocket error", event);
         // Don't set error state here - let onclose handle reconnection
         // The error will cause the connection to close, and onclose will handle reconnection
         appendSystemLog("error", "Connection error.");
       };
 
-      ws.onclose = (event) => {
+      ws.onclose = () => {
         // Only process close if this is still the current WebSocket
         if (wsRef.current !== ws) {
           return;
@@ -211,7 +215,7 @@ export default function Playground() {
             // Check again if session is still selected before reconnecting
             const sessionToReconnect = selectedSessionIdRef.current;
             if (sessionToReconnect && wsRef.current === null) {
-              connectWebSocket(sessionToReconnect);
+              connectWebSocketRef.current?.(sessionToReconnect);
             }
           }, 1500);
         } else if (!currentSessionId) {
@@ -219,8 +223,12 @@ export default function Playground() {
         }
       };
     },
-    [appendSystemLog, closeWebSocket]
+    [appendSystemLog, closeWebSocket, clearReconnectTimer]
   );
+
+  useEffect(() => {
+    connectWebSocketRef.current = connectWebSocket;
+  }, [connectWebSocket]);
 
   const sendCommand = useCallback(
     (command: string) => {

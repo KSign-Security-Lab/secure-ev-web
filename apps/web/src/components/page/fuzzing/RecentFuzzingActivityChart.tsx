@@ -12,7 +12,6 @@ import {
 import { Bar } from "react-chartjs-2";
 import { Loader2, TrendingUp } from "lucide-react";
 import trpc, { type RouterOutputs } from "~/lib/trpc";
-import { GlassCard } from "~/components/ui/glass-card";
 
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
@@ -49,6 +48,7 @@ export function RecentFuzzingActivityChart() {
           setJobs(response.jobs);
         }
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error("Failed to fetch activity data", error);
       } finally {
         if (!cancelled) setIsLoading(false);

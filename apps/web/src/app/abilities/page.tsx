@@ -41,8 +41,7 @@ export default function Abilities() {
         setData(response.abilities);
         setTotalPages(Math.ceil(Number(response.count) / PAGE_SIZE));
       }
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
+    } catch {
       setData(undefined);
     } finally {
       setTimeout(() => {

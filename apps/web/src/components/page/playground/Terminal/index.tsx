@@ -192,17 +192,19 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
             }
             break;
           case "\r": // Enter
-            terminal.write("\r\n");
-            const command = inputBuffer.trim();
-            inputBufferRef.current = "";
-            setShowAutocomplete(false);
-            autocompleteTriggeredRef.current = false;
-            if (command.length > 0) {
-              onCommand(command);
-            } else {
-              prompt({ leadingNewline: false });
+            {
+              terminal.write("\r\n");
+              const command = inputBuffer.trim();
+              inputBufferRef.current = "";
+              setShowAutocomplete(false);
+              autocompleteTriggeredRef.current = false;
+              if (command.length > 0) {
+                onCommand(command);
+              } else {
+                prompt({ leadingNewline: false });
+              }
+              break;
             }
-            break;
           case "\t": // Tab - trigger autocomplete (prevent default tab behavior)
             if (inputBuffer.length >= 2) {
               setShowAutocomplete(true);
@@ -308,6 +310,8 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
       autocompleteTriggeredRef.current = false;
     }, []);
 
+    const isAutocompleteFeatureEnabled = false;
+    
     return (
       <div className="flex h-full min-h-0 max-h-full w-full flex-col overflow-hidden rounded-lg">
         {/* Terminal Body */}
@@ -319,7 +323,8 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
             }`}
           />
           {/* Autocomplete hidden for now */}
-          {false && isConnected && showAutocomplete && (
+          {/* @ts-ignore */}
+          {isAutocompleteFeatureEnabled && isConnected && showAutocomplete && (
             <div className="absolute bottom-0 left-0 right-0 pointer-events-none z-10">
               <div className="pointer-events-auto px-4 pb-2">
                 <CommandAutocomplete

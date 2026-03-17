@@ -2,13 +2,8 @@
 
 import React, { useState } from "react";
 import { Download, Copy, Check } from "lucide-react";
-import type { FuzzingJobWithReport } from "~/types/fuzzing";
 
-interface ConfigDownloadProps {
-  job: FuzzingJobWithReport;
-}
-
-export function ConfigDownload({ job }: ConfigDownloadProps) {
+export function ConfigDownload() {
   const [copied, setCopied] = useState(false);
 
   // Placeholder binary URL - in production this would be a real endpoint
@@ -17,11 +12,7 @@ export function ConfigDownload({ job }: ConfigDownloadProps) {
 
   const command = `./fuzzer`;
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(command);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+
 
   return (
     <div className="space-y-4">

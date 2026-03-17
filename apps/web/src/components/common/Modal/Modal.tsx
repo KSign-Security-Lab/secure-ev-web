@@ -27,7 +27,9 @@ export const Modal: React.FC<ModalProps> = ({
   const [visible, setVisible] = useState(open);
 
   useEffect(() => {
-    setMounted(true);
+    // Making this asynchronous to avoid "setState in effect" warnings and cascading renders
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -35,7 +37,8 @@ export const Modal: React.FC<ModalProps> = ({
     if (open) {
       timeout = setTimeout(() => setVisible(true), 10);
     } else {
-      setVisible(false);
+      // Use short timeout to avoid synchronous setState in effect
+      timeout = setTimeout(() => setVisible(false), 0);
     }
     return () => clearTimeout(timeout);
   }, [open]);
@@ -61,7 +64,7 @@ export const Modal: React.FC<ModalProps> = ({
   const modalContent = (
     <div
       className={clsx(
-        "fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 ease-out",
+        "fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 ease-out",
         visible ? "opacity-100" : "opacity-0"
       )}
       onClick={onClose}
@@ -76,7 +79,7 @@ export const Modal: React.FC<ModalProps> = ({
           className
         )}
       >
-        <div className="flex justify-between items-center border-b-1 border-neutral-500 pb-6">
+        <div className="flex justify-between items-center border-b border-neutral-500 pb-6">
           <div className="text-lg font-semibold">{title}</div>
           <button onClick={onClose} className="text-xl">
             <XIcon className="w-5 h-5" />

@@ -1,5 +1,4 @@
 import { router, publicProcedure } from "../init";
-import { paginationSchema } from "../schemas/common";
 import {
   createFuzzingJobInputSchema,
   updateFuzzingJobInputSchema,
@@ -10,7 +9,6 @@ import {
   fuzzingJobWithReportSchema,
   fuzzingJobSchema,
   fuzzingReportSchema,
-  fuzzingJobListItemSchema,
 } from "../schemas/fuzzing";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -130,7 +128,7 @@ export const fuzzingRouter = router({
           where: { id },
         });
         return { success: true, id };
-      } catch (error) {
+      } catch {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: `Fuzzing job with ID ${id} not found or could not be deleted`,

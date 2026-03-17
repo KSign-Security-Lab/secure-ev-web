@@ -6,7 +6,7 @@ import { Tag } from "~/components/common/Tag/Tag";
 import type { FuzzingRun } from "~/types/fuzzing";
 import { getRunResultColor, getRunResultLabel } from "~/utils/fuzzing.client";
 import { FindingDetail } from "./FindingDetail";
-import { Search, ChevronDown, Filter } from "lucide-react";
+import { Search, ChevronDown } from "lucide-react";
 import clsx from "clsx";
 
 interface InteractionLogTableProps {

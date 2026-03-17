@@ -27,6 +27,8 @@ export interface DfInfo {
     class: string;
     overflow_risk: string;
     notes: string;
+    confidence?: string;
+    impact?: string;
   };
   root_cause: {
     kind: string;
@@ -39,7 +41,7 @@ export interface AnalysisResult {
   variant: string;
   status: "New" | "Open" | "Fixed" ;
   risk: "High" | "Medium" | "Low";
-  sinkKind: "COPY_FUNC" | "INDEX_WRITE" | "MALLOC";
+  sinkKind: "COPY_FUNC" | "INDEX_WRITE" | "MALLOC" | "SQL_INJECTION" | "HARDCODED_SECRET";
   functionName: string;
   filePath: string;
   lineInfo: string;
@@ -51,7 +53,7 @@ export interface AnalysisResult {
 
 export interface MockFile {
   path: string;
-  type: "text" | "binary" | "large" | "unsupported";
+  type: "text" | "binary" | "large" | "unsupported" | "source";
   content?: string;
 }
 
@@ -157,9 +159,34 @@ export const mockResults: AnalysisResult[] = [
     endLine: 12,
     evidenceRefs: ["EVD-999"],
     dfInfo: {
+      destination: {
+        expr: "config.api_key",
+        base_name: "api_key",
+        region: "Static",
+        path_kind: "Direct",
+      },
+      capacity: {
+        expr: "N/A",
+        token: "N/A",
+        value: "N/A",
+        length_basis: "Constant",
+      },
+      request: {
+        bytes: { expr: "N/A" },
+        token: "apiKey",
+        value: "N/A",
+        length_basis: "Literal",
+      },
+      validation: {
+        lower: "None",
+        upper: "None",
+        upper_vs_capacity: "Unbounded",
+        index_origin_chain: "Configuration file",
+      },
       diagnostics: {
         class: "Use of Hard-coded Credentials",
         notes: "A hardcoded API key was detected in the source code.",
+        overflow_risk: "Warning",
         confidence: "High",
         impact: "Exposure of sensitive authentication material."
       },

@@ -54,7 +54,7 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
            setFiles(prev => [...prev, ...newMockFiles]);
            setError(null);
         }
-      } catch (_err) {
+      } catch {
         setError("Failed to extract ZIP archive.");
       }
     } else if (isValidExtension(file.name)) {

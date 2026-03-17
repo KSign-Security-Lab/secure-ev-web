@@ -22,8 +22,7 @@ export default function Abilities() {
         if (!cancelled) {
           setData(response);
         }
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
+      } catch {
         if (!cancelled) {
           setData(undefined);
         }

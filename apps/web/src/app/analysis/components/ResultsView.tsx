@@ -31,10 +31,9 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
 
     uploadedFiles.forEach((file, index) => {
        if (Math.random() > 0.1) { // High chance to generate memory vulns too
-          const numVulns = 1;
+         const numVulns = 1;
           for (let i = 0; i < numVulns; i++) {
-             const linesCount = file.content?.split("
-").length || 20;
+             const linesCount = file.content?.split("\n").length || 20;
              const maxLine = Math.min(linesCount, 20);
              const startL = Math.max(1, Math.floor(Math.random() * maxLine));
 
@@ -128,7 +127,7 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
 
   const tree = buildTree();
 
-  const renderTree = (node: any, level = 0) => {
+  const renderTree = (node: any, level = 0): React.ReactNode => {
     if (node.name === "root") {
       return Object.values(node.children).map((child: any) => renderTree(child, level));
     }

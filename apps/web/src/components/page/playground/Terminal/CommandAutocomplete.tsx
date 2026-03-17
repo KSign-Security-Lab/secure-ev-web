@@ -48,6 +48,7 @@ export function CommandAutocomplete({
         setSuggestions(results);
         setSelectedIndex(0);
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error("Failed to search commands:", error);
         setSuggestions([]);
       } finally {

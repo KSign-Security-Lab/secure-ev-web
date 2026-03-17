@@ -55,7 +55,7 @@ export function ReportUpload({ jobId, onUploadSuccess }: ReportUploadProps) {
       let jsonContent;
       try {
         jsonContent = JSON.parse(text);
-      } catch (e) {
+      } catch {
         throw new Error("Invalid JSON file content");
       }
 
@@ -70,6 +70,7 @@ export function ReportUpload({ jobId, onUploadSuccess }: ReportUploadProps) {
         onUploadSuccess();
       }
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error(err);
       setError(
         err instanceof Error ? err.message : "Failed to upload report"
@@ -100,7 +101,7 @@ export function ReportUpload({ jobId, onUploadSuccess }: ReportUploadProps) {
 
         {error && (
           <div className="bg-red-500/20 border border-red-500/50 rounded p-3 flex items-start gap-2">
-            <AlertCircle size={16} className="text-red-400 mt-0.5 flex-shrink-0" />
+            <AlertCircle size={16} className="text-red-400 mt-0.5 shrink-0" />
             <p className="text-sm text-red-300">{error}</p>
           </div>
         )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import type { UIEvent } from "react";
 import { Search, X } from "lucide-react";
 import trpc from "~/lib/trpc";
@@ -87,6 +87,7 @@ export function CommandFilterDropdown({
         const values = await trpc.abilities.getFilterValues.query();
         setFilterValues(values);
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error("Failed to fetch filter values:", error);
       } finally {
         setIsLoadingFilters(false);
@@ -96,7 +97,7 @@ export function CommandFilterDropdown({
     fetchFilterValues();
   }, [isOpen, filterValues]);
 
-  const fetchCommands = async (pageToLoad: number, append = false) => {
+  const fetchCommands = React.useCallback(async (pageToLoad: number, append = false) => {
     const trimmedKeyword = keywordQuery.trim();
     const hasAnyFilter =
       filterState.platform ||
@@ -134,13 +135,14 @@ export function CommandFilterDropdown({
         append ? [...prev, ...response.abilities] : response.abilities
       );
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error("Failed to fetch commands:", error);
       if (!append) setCommands([]);
     } finally {
       setIsLoading(false);
       setIsLoadingMore(false);
     }
-  };
+  }, [filterState.platform, filterState.type, filterState.techniqueName, filterState.tactic, keywordQuery]);
 
   // Fetch commands when any filter/keyword changes
   useEffect(() => {
@@ -154,7 +156,6 @@ export function CommandFilterDropdown({
     // We intentionally omit fetchCommands from the dependency array because it is recreated on every render,
     // but only uses stable dependencies that are already included below. This avoids unnecessary re-renders.
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     filterState.platform,
     filterState.type,
@@ -162,6 +163,7 @@ export function CommandFilterDropdown({
     filterState.tactic,
     keywordQuery,
     isOpen,
+    fetchCommands,
   ]);
 
   const handleSelectOption = (

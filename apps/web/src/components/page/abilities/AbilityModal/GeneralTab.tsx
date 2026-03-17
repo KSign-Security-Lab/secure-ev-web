@@ -1,5 +1,4 @@
 import { AttackDataItem } from "~/types/defend";
-import { useState } from "react";
 
 interface GeneralTabProps {
   data: AttackDataItem;

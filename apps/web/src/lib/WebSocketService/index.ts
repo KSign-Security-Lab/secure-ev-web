@@ -54,12 +54,14 @@ class WebSocketService {
 
         return new URL(base).toString();
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error("Invalid NEXT_PUBLIC_WS_URL:", envUrl, error);
         return null;
       }
     }
 
     if (typeof window === "undefined") {
+      // eslint-disable-next-line no-console
       console.warn(
         "WebSocketService attempted to initialize on the server without NEXT_PUBLIC_WS_URL"
       );
@@ -80,11 +82,13 @@ class WebSocketService {
       typeof ErrorEvent !== "undefined" &&
       err instanceof ErrorEvent
     ) {
+      // eslint-disable-next-line no-console
       console.error("WebSocket error:", err.message, err.error ?? {});
       return;
     }
 
     if (err instanceof Event) {
+      // eslint-disable-next-line no-console
       console.error("WebSocket error event:", {
         type: err.type,
         target: (err.target as WebSocket | null)?.url,
@@ -92,10 +96,12 @@ class WebSocketService {
       return;
     }
 
+    // eslint-disable-next-line no-console
     console.error("WebSocket error", err);
   }
 
   private logCloseEvent(event: CloseEvent) {
+    // eslint-disable-next-line no-console
     console.warn("WebSocket disconnected", {
       code: event.code,
       reason: event.reason,
@@ -116,6 +122,7 @@ class WebSocketService {
     const socketUrl = this.getSocketUrl();
 
     if (!socketUrl) {
+      // eslint-disable-next-line no-console
       console.error(
         "Unable to initialize WebSocket: no valid URL resolved. Set NEXT_PUBLIC_WS_URL to override the default."
       );
@@ -152,15 +159,18 @@ class WebSocketService {
           if (type && typeof type === "string" && type in this.listeners) {
             this.emit(type as MessageType, payload);
           } else {
+            // eslint-disable-next-line no-console
             console.warn("Unknown WebSocket message type:", type);
           }
         } catch (e) {
+          // eslint-disable-next-line no-console
           console.error("Invalid WebSocket message:", event.data, e);
         }
       };
 
       this.socket = ws;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error("Failed to create WebSocket:", error);
       this.scheduleReconnect();
     }
@@ -192,6 +202,7 @@ class WebSocketService {
     }
 
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+      // eslint-disable-next-line no-console
       console.error(
         `WebSocket reconnection failed after ${this.maxReconnectAttempts} attempts`
       );
@@ -237,6 +248,7 @@ class WebSocketService {
         handler(payload as WebSocketMessageMap[T]);
       });
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(`Error in WebSocket handler for type "${type}":`, error);
     }
   }

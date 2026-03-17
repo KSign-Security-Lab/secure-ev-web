@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import UploadView from "./components/UploadView";
 import LoadingView from "./components/LoadingView";
 import ResultsView from "./components/ResultsView";
+import type { MockFile } from "./components/mockData";
 
 export type ViewState = "upload" | "loading" | "results";
 

@@ -27,6 +27,7 @@ export function RecentFuzzingJobs() {
           setJobs(response.jobs);
         }
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error("Failed to fetch recent fuzzing jobs:", error);
       } finally {
         if (!cancelled) {

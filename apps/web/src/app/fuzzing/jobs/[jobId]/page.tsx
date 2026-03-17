@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useParams } from "next/navigation";
 import { ChevronLeft, FileText, Download, LayoutDashboard, List, Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -24,31 +24,33 @@ export default function FuzzingJobDetailPage() {
   const [job, setJob] = useState<JobDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchJob = async () => {
+  const fetchJob = useCallback(async () => {
+    if (!jobId) return;
+
     try {
       const data = await trpc.fuzzing.getById.query({ jobId: jobId });
       setJob(data);
-    } catch (err) {
-      console.error(err);
+    } catch {
+      setJob(null);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [jobId]);
 
   React.useEffect(() => {
     if (jobId) void fetchJob();
-  }, [jobId]);
+  }, [fetchJob, jobId]);
 
   // Polling for status updates
   React.useEffect(() => {
     if (!job || !["RUNNING", "PENDING"].includes(job.status)) return;
-    
+
     const interval = setInterval(() => {
-        void fetchJob();
+      void fetchJob();
     }, 2000);
-    
+
     return () => clearInterval(interval);
-  }, [job?.status]);
+  }, [fetchJob, job]);
   
   const refetch = fetchJob;
 
@@ -112,7 +114,7 @@ export default function FuzzingJobDetailPage() {
             <div className="mt-8 border-t border-slate-800 pt-6 space-y-6">
                 <div>
                    <h3 className="text-sm font-medium text-slate-400 mb-3">Fuzzer Setup</h3>
-                   <ConfigDownload job={job as FuzzingJobWithReport} />
+                   <ConfigDownload />
                 </div>
                
 

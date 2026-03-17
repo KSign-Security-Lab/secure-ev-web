@@ -231,7 +231,7 @@ __metadata:
     "@xterm/addon-fit": "npm:^0.9.0"
     "@xterm/xterm": "npm:^5.5.0"
     "@xyflow/react": "npm:^12.10.0"
-    baseline-browser-mapping: "npm:^2.9.6"
+    baseline-browser-mapping: "npm:^2.10.8"
     chart.js: "npm:^4.5.1"
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
@@ -2894,21 +2894,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"baseline-browser-mapping@npm:^2.10.8":
+  version: 2.10.8
+  resolution: "baseline-browser-mapping@npm:2.10.8"
+  bin:
+    baseline-browser-mapping: dist/cli.cjs
+  checksum: 10c0/a77882e8ac37a900a9a0757b9bf4e50f407829ed17ee7630273ab5da0ae10d9c64ed4c5a1e03afb3490e39713440092417ded4bb856eeb9bd44856eacbd97497
+  languageName: node
+  linkType: hard
+
 "baseline-browser-mapping@npm:^2.8.19":
   version: 2.8.25
   resolution: "baseline-browser-mapping@npm:2.8.25"
   bin:
     baseline-browser-mapping: dist/cli.js
   checksum: 10c0/93d5631ef1d1770c6166c760adb75e510a2f9ea9bccc1e2f3ec97c1e946ce71f9480e6314ad37e3ed933f2edc597cc9c7a0ec98d42691028e300bd62efd9cddd
-  languageName: node
-  linkType: hard
-
-"baseline-browser-mapping@npm:^2.9.6":
-  version: 2.9.6
-  resolution: "baseline-browser-mapping@npm:2.9.6"
-  bin:
-    baseline-browser-mapping: dist/cli.js
-  checksum: 10c0/9d9bae544342c02200e0a489d4caf3611a2a517d0d7a8c97e1dd7d640ac18d2784710bf08375b5951fb9034bd18d902b50797d90218a33b88e6244ae917f881f
   languageName: node
   linkType: hard
 

@@ -49,7 +49,7 @@
     "@types/react-dom": "^19",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@types/ws": "^8.18.1",
-    "baseline-browser-mapping": "^2.9.6",
+    "baseline-browser-mapping": "^2.10.8",
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
     "globals": "^16.5.0",

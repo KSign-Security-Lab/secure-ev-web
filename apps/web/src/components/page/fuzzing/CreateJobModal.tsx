@@ -14,13 +14,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+
 import { TargetConfigForm } from "./TargetConfigForm";
 import { FuzzingParamsForm } from "./FuzzingParamsForm";
 import { MessageSelector } from "./MessageSelector";
@@ -66,12 +60,9 @@ export function CreateJobModal({
     useState<FuzzingParameters | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch job details if editing
   React.useEffect(() => {
     if (open && jobId) {
-      setIsLoading(true);
       trpc.fuzzing.getById.query({ jobId })
         .then((job) => {
             setName(job.name);
@@ -83,10 +74,10 @@ export function CreateJobModal({
             setFuzzingParameters(job.fuzzingParameters as FuzzingParameters);
         })
         .catch((err) => {
+            // eslint-disable-next-line no-console
             console.error("Failed to fetch job", err);
             setErrors({ submit: "Failed to load job details" });
-        })
-        .finally(() => setIsLoading(false));
+        });
     } else if (open && !jobId) {
         // Reset form if opening in create mode
         setName("");
@@ -99,7 +90,7 @@ export function CreateJobModal({
         setErrors({});
         setCurrentStep(1);
     }
-  }, [open, jobId, trpc]);
+  }, [open, jobId]);
 
   // Update targetType default based on targetDevice change
   React.useEffect(() => {
@@ -250,6 +241,7 @@ export function CreateJobModal({
         onSuccess(job.id);
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error("Failed to create job:", error);
       setErrors({
         submit: error instanceof Error ? error.message : "Failed to create job",
@@ -535,10 +527,10 @@ export function CreateJobModal({
       open={open}
       onClose={handleClose}
       title=""
-      className="max-w-4xl bg-slate-950 border border-slate-800 shadow-2xl !p-0 overflow-hidden [&>div:first-child]:hidden !space-y-0"
+      className="max-w-4xl bg-slate-950 border border-slate-800 shadow-2xl p-0! overflow-hidden [&>div:first-child]:hidden space-y-0!"
     >   
       {/* Custom Header with Gradient */}
-      <div className="relative w-full h-1 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600" />
+      <div className="relative w-full h-1 bg-linear-to-r from-blue-500 via-cyan-500 to-blue-600" />
       
       {/* Custom Title Bar */}
       <div className="flex items-center justify-between px-8 py-6 border-b border-slate-800/50">
@@ -556,7 +548,7 @@ export function CreateJobModal({
         {/* Step Indicator */}
         <div className="mb-10">
             <div className="flex items-center justify-between relative z-10">
-            {[1, 2, 3, 4].map((step, index) => (
+            {[1, 2, 3, 4].map((step) => (
                 <div key={step} className="flex flex-col items-center relative z-10 group">
                     <div
                         className={cn(

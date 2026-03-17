@@ -6,9 +6,7 @@ import {
   LinearScale,
   BarElement,
   Tooltip,
-  TooltipItem,
 } from "chart.js";
-import { Bar } from "react-chartjs-2";
 import type { RouterOutputs } from "~/lib/trpc";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
@@ -19,77 +17,7 @@ interface MitreCoverageChartsProps {
   data: AbilitiesStatistics["mitreCoverage"];
 }
 
-const SCIENTIFIC_COLORS = {
-  primary: "rgba(66, 140, 244, 0.8)",
-  success: "rgba(76, 175, 80, 0.8)",
-  warning: "rgba(249, 200, 81, 0.8)",
-  background: "rgba(31, 41, 55, 0.5)",
-};
 
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  indexAxis: "y" as const,
-  plugins: {
-    legend: {
-      display: false,
-    },
-    tooltip: {
-      backgroundColor: "rgba(31, 41, 55, 0.95)",
-      titleColor: "#FFFFFF",
-      bodyColor: "#D1D5DB",
-      borderColor: "rgba(75, 85, 99, 0.5)",
-      borderWidth: 1,
-      padding: 12,
-      cornerRadius: 8,
-      displayColors: false,
-      titleFont: {
-        size: 13,
-        weight: "bold" as const,
-      },
-      bodyFont: {
-        size: 12,
-      },
-      callbacks: {
-        label: (context: TooltipItem<"bar">) => {
-          // Access underlying data to show covered/total
-          // But here we are likely charting percentage.
-          // context.raw is the value.
-          return `${context.raw}% Coverage`;
-        },
-      },
-    },
-  },
-  scales: {
-    x: {
-      min: 0,
-      max: 100,
-      grid: {
-        display: true,
-        color: "rgba(75, 85, 99, 0.2)",
-        lineWidth: 1,
-        drawBorder: false,
-      },
-      ticks: {
-        color: "#9CA3AF",
-        callback: function (tickValue: number | string) {
-          return tickValue + "%";
-        },
-      },
-    },
-    y: {
-      grid: {
-        display: false,
-      },
-      ticks: {
-        color: "#D1D5DB",
-        font: {
-          weight: "bold" as const,
-        },
-      },
-    },
-  },
-};
 
 export function MitreCoverageCharts({ data }: MitreCoverageChartsProps) {
   return (

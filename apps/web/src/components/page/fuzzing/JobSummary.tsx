@@ -3,7 +3,7 @@
 import React from "react";
 import { Tag, TAG_COLOR_MAP } from "~/components/common/Tag/Tag";
 import type { FuzzingJobWithReport } from "~/types/fuzzing";
-import { Calendar, Globe, Server, Shield, Activity, Clock } from "lucide-react";
+import { Globe, Server, Activity, Clock } from "lucide-react";
 
 interface JobSummaryProps {
   job: FuzzingJobWithReport;

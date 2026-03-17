@@ -59,8 +59,7 @@ export function TargetConfigForm({
 
   useEffect(() => {
     onChange(localConfig);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [onChange, localConfig]);
 
   const handleChange = (
     field: string,

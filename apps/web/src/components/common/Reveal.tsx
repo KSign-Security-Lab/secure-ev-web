@@ -23,14 +23,15 @@ export const Reveal = ({ children, width = "fit-content", className, delay = 0 }
       { threshold: 0.15 } // Slightly higher threshold to avoid flickering at edges
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    const currentRef = ref.current;
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-        if (ref.current) {
-            observer.disconnect();
-        }
+      if (currentRef) {
+        observer.disconnect();
+      }
     };
   }, []);
 

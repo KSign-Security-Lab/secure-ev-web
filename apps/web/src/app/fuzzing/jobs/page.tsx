@@ -6,9 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CreateJobModal } from "~/components/page/fuzzing/CreateJobModal";
 import { Pagination } from "~/components/common/Pagination/Pagination";
-import Loading from "~/components/common/Loading/Loading";
 import trpc, { type RouterOutputs } from "~/lib/trpc";
-import { Button } from "~/components/ui/button";
 import { GlassCard } from "~/components/ui/glass-card";
 import { Badge } from "~/components/ui/badge";
 import { FuzzingJobsTableSkeleton } from "~/components/page/fuzzing/FuzzingSkeletons";
@@ -16,7 +14,6 @@ import { FuzzingJobsTableSkeleton } from "~/components/page/fuzzing/FuzzingSkele
 const PAGE_SIZE = 8;
 
 type FuzzingJobsList = RouterOutputs["fuzzing"]["list"];
-type FuzzingJob = RouterOutputs["fuzzing"]["list"]["jobs"][0];
 
 const getStatusVariant = (status: string) => {
   switch (status) {
@@ -76,10 +73,10 @@ export default function FuzzingJobsPage() {
     if (confirm("Are you sure you want to delete this job?")) {
         try {
             await trpc.fuzzing.delete.mutate({ id });
-            fetchData(currentPage, statusFilter, targetTypeFilter);
+            await fetchData(currentPage, statusFilter, targetTypeFilter);
             setActiveActionRowId(null);
-        } catch (error) {
-            console.error("Failed to delete job", error);
+        } catch {
+            setActiveActionRowId(null);
         }
     }
   };
@@ -109,8 +106,7 @@ export default function FuzzingJobsPage() {
             setTotalCount(response.count);
             setTotalPages(Math.ceil(response.count / PAGE_SIZE));
         }
-      } catch (error) {
-        console.error("Failed to fetch fuzzing jobs:", error);
+      } catch {
         setData([]);
         setTotalCount(0);
         setTotalPages(0);

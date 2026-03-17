@@ -15,7 +15,6 @@ import {
   ArrowRight,
   Shield,
   ShieldAlert,
-  TrendingUp,
 } from "lucide-react";
 import Loading from "~/components/common/Loading/Loading";
 import { AbilitiesCharts } from "~/components/dashboard/AbilitiesCharts";
@@ -48,8 +47,7 @@ export default function Dashboard() {
         if (!cancelled) {
           setAbilitiesStats(response);
         }
-      } catch (error) {
-        console.error("Failed to fetch abilities statistics:", error);
+      } catch {
         if (!cancelled) {
           setAbilitiesStats(undefined);
         }
@@ -67,8 +65,7 @@ export default function Dashboard() {
         if (!cancelled) {
           setAgentsStats(response);
         }
-      } catch (error) {
-        console.error("Failed to fetch agents statistics:", error);
+      } catch {
         if (!cancelled) {
           setAgentsStats(undefined);
         }
