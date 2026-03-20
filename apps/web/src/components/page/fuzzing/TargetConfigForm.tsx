@@ -7,7 +7,8 @@ import type {
   OCPPChargerConnectionConfig,
   OCPPServerConnectionConfig,
 } from "~/types/fuzzing";
-import { useI18n } from "~/i18n/I18nProvider";
+import { useLocalI18n } from "~/i18n/I18nProvider";
+import { targetConfigMessages } from "./TargetConfigForm.messages";
 
 interface TargetConfigFormProps {
   targetType: FuzzingTargetType;
@@ -29,33 +30,7 @@ export function TargetConfigForm({
   config,
   onChange,
 }: TargetConfigFormProps) {
-  const { locale } = useI18n();
-  const text =
-    locale === "ko"
-      ? {
-          chargerIp: "충전기 IP / 호스트명 *",
-          port: "포트 *",
-          tlsEnabled: "TLS 활성화",
-          certPath: "인증서 경로 (선택)",
-          keyPath: "키 경로 (선택)",
-          listenIp: "수신 IP *",
-          ocppVersion: "OCPP 버전 *",
-          websocketPath: "WebSocket 경로 *",
-          serverUrl: "서버 URL (ws/wss) *",
-          chargePointIdentity: "충전기 ID *",
-        }
-      : {
-          chargerIp: "Charger IP / Hostname *",
-          port: "Port *",
-          tlsEnabled: "TLS Enabled",
-          certPath: "Certificate Path (optional)",
-          keyPath: "Key Path (optional)",
-          listenIp: "Listen IP *",
-          ocppVersion: "OCPP Version *",
-          websocketPath: "WebSocket Path *",
-          serverUrl: "Server URL (ws/wss) *",
-          chargePointIdentity: "Charge Point Identity *",
-        };
+  const t = useLocalI18n(targetConfigMessages);
 
   const [localConfig, setLocalConfig] = useState(() => {
     if (config) return config;
@@ -105,7 +80,7 @@ export function TargetConfigForm({
         <>
           <div>
             <label className="block text-sm font-medium mb-2 text-white">
-              {text.chargerIp}
+              {t("chargerIp")}
             </label>
             <input
               type="text"
@@ -118,7 +93,7 @@ export function TargetConfigForm({
           </div>
           <div>
             <label className="block text-sm font-medium mb-2 text-white">
-              {text.port}
+              {t("port")}
             </label>
             <input
               type="number"
@@ -138,13 +113,13 @@ export function TargetConfigForm({
               onChange={(e) => handleChange("tlsEnabled", e.target.checked)}
               className="mr-2"
             />
-            <label className="text-sm text-white">{text.tlsEnabled}</label>
+            <label className="text-sm text-white">{t("tlsEnabled")}</label>
           </div>
           {(localConfig as ISO15118ConnectionConfig).tlsEnabled && (
             <>
               <div>
                 <label className="block text-sm font-medium mb-2 text-white">
-                  {text.certPath}
+                  {t("certPath")}
                 </label>
                 <input
                   type="text"
@@ -160,7 +135,7 @@ export function TargetConfigForm({
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2 text-white">
-                  {text.keyPath}
+                  {t("keyPath")}
                 </label>
                 <input
                   type="text"
@@ -179,7 +154,7 @@ export function TargetConfigForm({
         <>
           <div>
             <label className="block text-sm font-medium mb-2 text-white">
-              {text.listenIp}
+              {t("listenIp")}
             </label>
             <input
               type="text"
@@ -192,7 +167,7 @@ export function TargetConfigForm({
           </div>
           <div>
             <label className="block text-sm font-medium mb-2 text-white">
-              {text.port}
+              {t("port")}
             </label>
             <input
               type="number"
@@ -207,7 +182,7 @@ export function TargetConfigForm({
           </div>
           <div>
             <label className="block text-sm font-medium mb-2 text-white">
-              {text.ocppVersion}
+              {t("ocppVersion")}
             </label>
             <select
               value={(localConfig as OCPPChargerConnectionConfig).ocppVersion || "2.0.1"}
@@ -223,7 +198,7 @@ export function TargetConfigForm({
           </div>
           <div>
             <label className="block text-sm font-medium mb-2 text-white">
-              {text.websocketPath}
+              {t("websocketPath")}
             </label>
             <input
               type="text"
@@ -243,7 +218,7 @@ export function TargetConfigForm({
         <>
           <div>
             <label className="block text-sm font-medium mb-2 text-white">
-              {text.serverUrl}
+              {t("serverUrl")}
             </label>
             <input
               type="text"
@@ -256,7 +231,7 @@ export function TargetConfigForm({
           </div>
           <div>
             <label className="block text-sm font-medium mb-2 text-white">
-              {text.chargePointIdentity}
+              {t("chargePointIdentity")}
             </label>
             <input
               type="text"
@@ -271,7 +246,7 @@ export function TargetConfigForm({
           </div>
           <div>
             <label className="block text-sm font-medium mb-2 text-white">
-              {text.ocppVersion}
+              {t("ocppVersion")}
             </label>
             <select
               value={(localConfig as OCPPServerConnectionConfig).ocppVersion || "2.0.1"}

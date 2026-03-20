@@ -15,7 +15,11 @@ import {
   TranslationKey,
 } from "~/i18n/messages";
 
-type TranslationValues = Record<string, number | string>;
+export type TranslationValues = Record<string, number | string>;
+export type LocalizedMessages<Keys extends string> = Record<
+  Locale,
+  Record<Keys, string>
+>;
 
 interface I18nContextValue {
   locale: Locale;
@@ -94,4 +98,22 @@ export const useI18n = () => {
   }
 
   return context;
+};
+
+export const useLocalI18n = <Keys extends string>(
+  localizedMessages: LocalizedMessages<Keys>
+) => {
+  const { locale } = useI18n();
+
+  return useCallback(
+    (key: Keys, values?: TranslationValues) => {
+      const template =
+        localizedMessages[locale]?.[key] ??
+        localizedMessages[defaultLocale]?.[key] ??
+        String(key);
+
+      return formatMessage(template, values);
+    },
+    [locale, localizedMessages]
+  );
 };

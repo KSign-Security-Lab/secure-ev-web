@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import { Upload, AlertCircle } from "lucide-react";
-import { useI18n } from "~/i18n/I18nProvider";
+import { useLocalI18n } from "~/i18n/I18nProvider";
+import { reportUploadMessages } from "./ReportUpload.messages";
 
 interface ReportUploadProps {
   jobId: string;
@@ -12,33 +13,7 @@ interface ReportUploadProps {
 import trpc from "~/lib/trpc";
 
 export function ReportUpload({ jobId, onUploadSuccess }: ReportUploadProps) {
-  const { locale } = useI18n();
-  const text =
-    locale === "ko"
-      ? {
-          fileMustBeJson: "파일은 JSON 형식이어야 합니다",
-          fileTooLarge: "파일 크기는 10MB 이하여야 합니다",
-          selectFile: "파일을 선택해 주세요",
-          invalidJson: "유효하지 않은 JSON 파일 내용입니다",
-          uploadFailed: "리포트 업로드에 실패했습니다",
-          selectReport: "리포트 파일 선택 (JSON)",
-          maxSize: "최대 파일 크기: 10MB",
-          uploadSuccess: "리포트가 성공적으로 업로드되었습니다!",
-          uploading: "업로드 중...",
-          uploadReport: "리포트 업로드",
-        }
-      : {
-          fileMustBeJson: "File must be a JSON file",
-          fileTooLarge: "File size must be less than 10MB",
-          selectFile: "Please select a file",
-          invalidJson: "Invalid JSON file content",
-          uploadFailed: "Failed to upload report",
-          selectReport: "Select Report File (JSON)",
-          maxSize: "Maximum file size: 10MB",
-          uploadSuccess: "Report uploaded successfully!",
-          uploading: "Uploading...",
-          uploadReport: "Upload Report",
-        };
+  const t = useLocalI18n(reportUploadMessages);
 
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -55,11 +30,11 @@ export function ReportUpload({ jobId, onUploadSuccess }: ReportUploadProps) {
         !selectedFile.type.includes("json") &&
         !selectedFile.name.endsWith(".json")
       ) {
-        setError(text.fileMustBeJson);
+        setError(t("fileMustBeJson"));
         return;
       }
       if (selectedFile.size > 10 * 1024 * 1024) {
-        setError(text.fileTooLarge);
+        setError(t("fileTooLarge"));
         return;
       }
       setFile(selectedFile);
@@ -70,7 +45,7 @@ export function ReportUpload({ jobId, onUploadSuccess }: ReportUploadProps) {
 
   const handleUpload = async () => {
     if (!file) {
-      setError(text.selectFile);
+      setError(t("selectFile"));
       return;
     }
 
@@ -85,7 +60,7 @@ export function ReportUpload({ jobId, onUploadSuccess }: ReportUploadProps) {
       try {
         jsonContent = JSON.parse(fileContent);
       } catch {
-        throw new Error(text.invalidJson);
+        throw new Error(t("invalidJson"));
       }
 
       await trpc.fuzzing.uploadReport.mutate({
@@ -102,7 +77,7 @@ export function ReportUpload({ jobId, onUploadSuccess }: ReportUploadProps) {
       // eslint-disable-next-line no-console
       console.error(err);
       setError(
-        err instanceof Error ? err.message : text.uploadFailed
+        err instanceof Error ? err.message : t("uploadFailed")
       );
     } finally {
       setUploading(false);
@@ -115,7 +90,7 @@ export function ReportUpload({ jobId, onUploadSuccess }: ReportUploadProps) {
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-2 text-white">
-            {text.selectReport}
+            {t("selectReport")}
           </label>
           <input
             type="file"
@@ -124,7 +99,7 @@ export function ReportUpload({ jobId, onUploadSuccess }: ReportUploadProps) {
             className="w-full bg-slate-950 p-2 rounded-lg border border-slate-700 text-white file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-600 file:text-white file:hover:bg-blue-700 file:cursor-pointer hover:border-slate-600 transition-colors"
           />
           <p className="text-xs text-neutral-400 mt-1">
-            {text.maxSize}
+            {t("maxSize")}
           </p>
         </div>
 
@@ -138,7 +113,7 @@ export function ReportUpload({ jobId, onUploadSuccess }: ReportUploadProps) {
         {success && (
           <div className="bg-green-500/20 border border-green-500/50 rounded p-3">
             <p className="text-sm text-green-300">
-              {text.uploadSuccess}
+              {t("uploadSuccess")}
             </p>
           </div>
         )}
@@ -149,7 +124,7 @@ export function ReportUpload({ jobId, onUploadSuccess }: ReportUploadProps) {
           className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg transition"
         >
           <Upload size={16} />
-          {uploading ? text.uploading : text.uploadReport}
+          {uploading ? t("uploading") : t("uploadReport")}
         </button>
       </div>
     </div>

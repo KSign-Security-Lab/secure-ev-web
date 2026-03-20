@@ -39,24 +39,6 @@ const formatDate = (dateString: string, locale: "en" | "ko"): string => {
 
 export function JobSummary({ job }: JobSummaryProps) {
   const { locale, t } = useI18n();
-  const copy =
-    locale === "ko"
-      ? {
-          title: "작업 개요",
-          status: "현재 상태",
-          target: "대상",
-          environment: "환경",
-          created: "생성됨",
-          updated: "업데이트됨",
-        }
-      : {
-          title: "Job Overview",
-          status: "Current Status",
-          target: "Target",
-          environment: "Environment",
-          created: "Created",
-          updated: "Updated",
-        };
 
   const getTargetTypeLabel = (targetType: string): string => {
     switch (targetType) {
@@ -94,7 +76,9 @@ export function JobSummary({ job }: JobSummaryProps) {
         <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400">
             <Activity size={20} />
         </div>
-        <h2 className="text-xl font-bold text-white">{copy.title}</h2>
+        <h2 className="text-xl font-bold text-white">
+          {t("fuzzing.jobSummary.title")}
+        </h2>
       </div>
       
       <div className="grid grid-cols-1 gap-5">
@@ -107,7 +91,7 @@ export function JobSummary({ job }: JobSummaryProps) {
                 </div>
                 <div>
                     <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">
-                      {copy.status}
+                      {t("fuzzing.jobSummary.status")}
                     </span>
                     <div className="mt-1">
                         <Tag
@@ -128,7 +112,7 @@ export function JobSummary({ job }: JobSummaryProps) {
                 </div>
                 <div>
                     <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">
-                      {copy.target}
+                      {t("fuzzing.jobSummary.target")}
                     </span>
                     <p className="text-white font-medium mt-0.5 truncate">
                       {getTargetTypeLabel(job.targetType)}
@@ -145,7 +129,7 @@ export function JobSummary({ job }: JobSummaryProps) {
                 </div>
                 <div>
                     <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">
-                      {copy.environment}
+                      {t("fuzzing.jobSummary.environment")}
                     </span>
                     <p className="text-white font-medium mt-0.5 capitalize truncate">{job.environment}</p>
                 </div>
@@ -161,7 +145,7 @@ export function JobSummary({ job }: JobSummaryProps) {
                 <div className="flex-1">
                     <div className="flex justify-between items-center border-b border-slate-800/50 pb-2 mb-2">
                         <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">
-                          {copy.created}
+                          {t("fuzzing.jobSummary.created")}
                         </span>
                         <span className="text-white font-mono text-xs">
                           {formatDate(job.createdAt, locale)}
@@ -169,7 +153,7 @@ export function JobSummary({ job }: JobSummaryProps) {
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">
-                          {copy.updated}
+                          {t("fuzzing.jobSummary.updated")}
                         </span>
                         <span className="text-white font-mono text-xs">
                           {formatDate(job.updatedAt, locale)}

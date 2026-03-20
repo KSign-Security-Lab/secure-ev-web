@@ -1,0 +1,43 @@
+export const enFuzzingJobsPageMessages = {
+  "fuzzing.jobs.title": "Active Fuzzing Jobs",
+  "fuzzing.jobs.subtitle": "Manage and monitor your security testing sessions.",
+  "fuzzing.jobs.newJob": "New Job",
+  "fuzzing.jobs.searchPlaceholder": "Search jobs...",
+  "fuzzing.jobs.filter.allStatuses": "All Statuses",
+  "fuzzing.jobs.filter.allTargets": "All Targets",
+  "fuzzing.jobs.table.jobName": "Job Name",
+  "fuzzing.jobs.table.target": "Target",
+  "fuzzing.jobs.table.status": "Status",
+  "fuzzing.jobs.table.environment": "Environment",
+  "fuzzing.jobs.table.created": "Created",
+  "fuzzing.jobs.table.actions": "Actions",
+  "fuzzing.jobs.empty": "No jobs found matching your criteria.",
+  "fuzzing.jobs.action.editConfiguration": "Edit Configuration",
+  "fuzzing.jobs.action.deleteJob": "Delete Job",
+  "fuzzing.jobs.deleteConfirm": "Are you sure you want to delete this job?",
+  "fuzzing.jobs.environment.production": "Production",
+  "fuzzing.jobs.footer.showing": "Showing {shown} of {total} jobs",
+} as const;
+
+type FuzzingJobsPageMessageKey = keyof typeof enFuzzingJobsPageMessages;
+
+export const koFuzzingJobsPageMessages: Record<FuzzingJobsPageMessageKey, string> = {
+  "fuzzing.jobs.title": "활성 퍼징 작업",
+  "fuzzing.jobs.subtitle": "보안 테스트 세션을 관리하고 모니터링하세요.",
+  "fuzzing.jobs.newJob": "새 작업",
+  "fuzzing.jobs.searchPlaceholder": "작업 검색...",
+  "fuzzing.jobs.filter.allStatuses": "전체 상태",
+  "fuzzing.jobs.filter.allTargets": "전체 대상",
+  "fuzzing.jobs.table.jobName": "작업 이름",
+  "fuzzing.jobs.table.target": "대상",
+  "fuzzing.jobs.table.status": "상태",
+  "fuzzing.jobs.table.environment": "환경",
+  "fuzzing.jobs.table.created": "생성일",
+  "fuzzing.jobs.table.actions": "작업",
+  "fuzzing.jobs.empty": "조건에 맞는 작업이 없습니다.",
+  "fuzzing.jobs.action.editConfiguration": "설정 수정",
+  "fuzzing.jobs.action.deleteJob": "작업 삭제",
+  "fuzzing.jobs.deleteConfirm": "이 작업을 삭제하시겠습니까?",
+  "fuzzing.jobs.environment.production": "운영",
+  "fuzzing.jobs.footer.showing": "{total}개 중 {shown}개 표시",
+};
