@@ -7,12 +7,14 @@ import Loading from "~/components/common/Loading/Loading";
 import { Pagination } from "~/components/common/Pagination/Pagination";
 import trpc, { type RouterOutputs } from "~/lib/trpc";
 import { AbilitiesTable } from "~/components/page/abilities/AbilitiesTable";
+import { useI18n } from "~/i18n/I18nProvider";
 
 const PAGE_SIZE = 10;
 
 export type AbilitiesListResponse = RouterOutputs["abilities"]["list"];
 
 export default function Abilities() {
+  const { t } = useI18n();
   const [data, setData] = useState<
     AbilitiesListResponse["abilities"] | undefined
   >();
@@ -75,11 +77,15 @@ export default function Abilities() {
         <div className="flex space-x-2">
           <button className="p-2 bg-primary-300 flex items-center rounded-sm hover:bg-primary-400 transition">
             <SaveIcon color="white" className="w-4 h-4" />
-            <span className="ml-1 text-sm text-white">등록</span>
+            <span className="ml-1 text-sm text-white">
+              {t("abilities.page.register")}
+            </span>
           </button>
           <button className="p-2 bg-danger-500 flex items-center rounded-sm hover:bg-danger-600 transition">
             <Trash2 color="white" className="w-4 h-4" />
-            <span className="ml-1 text-sm text-white">삭제</span>
+            <span className="ml-1 text-sm text-white">
+              {t("abilities.page.delete")}
+            </span>
           </button>
         </div>
       </div>
@@ -92,7 +98,7 @@ export default function Abilities() {
           <AbilitiesTable data={data} />
         ) : (
           <div className="text-center text-gray-400 py-8">
-            No Data Available
+            {t("abilities.page.empty")}
           </div>
         )}
       </div>

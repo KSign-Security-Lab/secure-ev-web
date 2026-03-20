@@ -11,6 +11,7 @@ import {
 } from "chart.js";
 import { Doughnut, Bar } from "react-chartjs-2";
 import type { RouterOutputs } from "~/lib/trpc";
+import { useI18n } from "~/i18n/I18nProvider";
 
 ChartJS.register(ArcElement, Tooltip, CategoryScale, LinearScale, BarElement);
 
@@ -121,6 +122,7 @@ const barChartOptions = {
 };
 
 export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
+  const { t } = useI18n();
   const tacticChartData = {
     labels: data.byTactic.map((item) => item.name),
     datasets: [
@@ -190,7 +192,7 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
           <div className="flex items-center gap-2">
             <div className="w-1 h-5 bg-primary-400 rounded-full" />
             <h3 className="text-xs font-semibold text-neutral-200 uppercase tracking-wider">
-              By Tactic
+              {t("dashboard.chart.byTactic")}
             </h3>
           </div>
           <div className="text-xs text-neutral-400 font-mono">
@@ -205,7 +207,7 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
                 {data.totalCount.toLocaleString()}
               </div>
               <div className="text-xs text-neutral-400 uppercase tracking-wide">
-                Total
+                {t("dashboard.chart.total")}
               </div>
             </div>
           </div>
@@ -240,7 +242,7 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
           <div className="flex items-center gap-2">
             <div className="w-1 h-5 bg-accent-400 rounded-full" />
             <h3 className="text-xs font-semibold text-neutral-200 uppercase tracking-wider">
-              By Platform
+              {t("dashboard.chart.byPlatform")}
             </h3>
           </div>
           <div className="text-xs text-neutral-400 font-mono">
@@ -252,9 +254,9 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
         </div>
         {/* Summary Stats */}
         <div className="flex items-center justify-between text-xs pt-2 border-t border-base-700/30">
-          <span className="text-neutral-400">Platforms:</span>
+          <span className="text-neutral-400">{t("dashboard.chart.platforms")}</span>
           <span className="text-neutral-300 font-mono">
-            {data.byPlatform.length} unique
+            {t("dashboard.chart.unique", { count: data.byPlatform.length })}
           </span>
         </div>
       </div>
@@ -266,7 +268,7 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
             <div className="flex items-center gap-2">
               <div className="w-1 h-5 bg-secondary-400 rounded-full" />
               <h3 className="text-xs font-semibold text-neutral-200 uppercase tracking-wider">
-                By Type
+                {t("dashboard.chart.byType")}
               </h3>
             </div>
             <div className="text-xs text-neutral-400 font-mono">
@@ -278,9 +280,9 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
           </div>
           {/* Summary Stats */}
           <div className="flex items-center justify-between text-xs pt-2 border-t border-base-700/30">
-            <span className="text-neutral-400">Types:</span>
+            <span className="text-neutral-400">{t("dashboard.chart.types")}</span>
             <span className="text-neutral-300 font-mono">
-              {data.byType.length} unique
+              {t("dashboard.chart.unique", { count: data.byType.length })}
             </span>
           </div>
         </div>

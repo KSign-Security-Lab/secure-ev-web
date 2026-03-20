@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import clsx from "clsx";
+import { useI18n } from "~/i18n/I18nProvider";
 
 export interface TableColumn<T> {
   label: string;
@@ -18,6 +21,7 @@ export function Table<T>({
   columns,
   striped = true,
 }: TableProps<T>) {
+  const { t } = useI18n();
   const baseHeaderClass = "text-white text-sm font-semibold text-center py-4 px-4";
   const baseCellClass = "px-4 py-4 font-medium text-slate-300 text-center border-b border-slate-800/50";
 
@@ -41,7 +45,7 @@ export function Table<T>({
               colSpan={columns.length}
               className="text-center text-neutral-500 py-6"
             >
-              No data available
+              {t("common.noDataAvailable")}
             </td>
           </tr>
         ) : (

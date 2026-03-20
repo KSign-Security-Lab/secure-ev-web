@@ -3,6 +3,7 @@
 import { Search, X } from "lucide-react";
 import React, { useState } from "react";
 import { cn } from "~/lib/utils";
+import { useI18n } from "~/i18n/I18nProvider";
 
 interface SearchInputProps {
   onSearch: (value: string) => void;
@@ -11,8 +12,9 @@ interface SearchInputProps {
 
 export default function SearchInput({
   onSearch,
-  placeholder = "Search...",
+  placeholder,
 }: SearchInputProps) {
+  const { t } = useI18n();
   const [value, setValue] = useState("");
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -34,7 +36,7 @@ export default function SearchInput({
     <div className="flex items-center gap-2 w-full">
       <input
         type="text"
-        placeholder={placeholder}
+        placeholder={placeholder || t("common.searchPlaceholder")}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
@@ -44,11 +46,11 @@ export default function SearchInput({
         )}
       />
       {value && (
-        <button onClick={clearInput} aria-label="Clear search">
+        <button onClick={clearInput} aria-label={t("common.clearSearch")}>
           <X size={18} className="text-neutral-500" />
         </button>
       )}
-      <button onClick={handleSearch} aria-label="Search">
+      <button onClick={handleSearch} aria-label={t("common.search")}>
         <Search size={18} className="text-neutral-400" />
       </button>
     </div>

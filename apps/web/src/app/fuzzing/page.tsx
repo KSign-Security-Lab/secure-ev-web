@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -16,8 +18,11 @@ import { Button } from "~/components/ui/button";
 import { GlassCard } from "~/components/ui/glass-card";
 import { Badge } from "~/components/ui/badge";
 import { RecentFuzzingStats } from "~/components/page/fuzzing/RecentFuzzingStats";
+import { useI18n } from "~/i18n/I18nProvider";
 
 export default function FuzzingLandingPage() {
+  const { t } = useI18n();
+
   return (
     <div className="flex flex-col w-full min-h-screen bg-slate-950 text-white font-sans selection:bg-blue-500/30">
       {/* Hero Section */}
@@ -32,17 +37,16 @@ export default function FuzzingLandingPage() {
         <div className="flex-1 space-y-8 z-10">
           <Badge variant="blue" className="mt-4 border-blue-500/30">
             <span className="flex h-2 w-2 rounded-full bg-blue-400 mr-2 animate-pulse"></span>
-            OCPP 및 EV 충전 네트워크를 위한 세계 최초의 Native Fuzzer
+            {t("fuzzing.landing.badge")}
           </Badge>
           <h1 className="text-5xl md:text-6xl font-bold tracking-tight leading-tight">
-            EV 충전 인프라{" "}
+            {t("fuzzing.landing.heroTitlePrefix")}{" "}
             <span className="bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              Fuzzing
+              {t("fuzzing.landing.heroTitleHighlight")}
             </span>
           </h1>
           <p className="text-lg md:text-xl text-slate-400 max-w-lg leading-relaxed">
-            KSign의 25년 보안 전문성을 담았습니다. 차세대 전기 모빌리티를 위한
-            자동화된 취약점 탐지 솔루션입니다.
+            {t("fuzzing.landing.heroDescription")}
           </p>
           <div className="pt-4">
             <Link href="/fuzzing/jobs">
@@ -50,7 +54,7 @@ export default function FuzzingLandingPage() {
                 size="lg"
                 className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-6 text-lg rounded-full shadow-[0_0_20px_rgba(59,130,246,0.4)] hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] transition-all duration-300 border border-blue-400/20"
               >
-                Fuzzing 작업 생성
+                {t("fuzzing.landing.createJob")}
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
@@ -86,9 +90,11 @@ export default function FuzzingLandingPage() {
         <Reveal width="100%">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-bold mb-4">동작 방식</h2>
+              <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                {t("fuzzing.landing.howItWorksTitle")}
+              </h2>
               <p className="text-slate-400 text-lg">
-                3단계로 인프라를 안전하게 보호하세요.
+                {t("fuzzing.landing.howItWorksSubtitle")}
               </p>
             </div>
 
@@ -102,10 +108,10 @@ export default function FuzzingLandingPage() {
                   <Plug className="w-12 h-12 text-blue-500" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">
-                  연결 (Connect)
+                  {t("fuzzing.landing.step.connectTitle")}
                 </h3>
                 <p className="text-slate-400 leading-relaxed max-w-xs">
-                  보안 프록시를 통해 CSMS 또는 충전기(EVSE)를 연결합니다.
+                  {t("fuzzing.landing.step.connectDescription")}
                 </p>
               </div>
 
@@ -115,11 +121,10 @@ export default function FuzzingLandingPage() {
                   <Zap className="w-12 h-12 text-cyan-500" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">
-                  공격 (Attack)
+                  {t("fuzzing.landing.step.attackTitle")}
                 </h3>
                 <p className="text-slate-400 leading-relaxed max-w-xs">
-                  사전 구축된 Fuzzing 벡터(SQL Injection, Buffer Overflow,
-                  Malformed Packets)를 선택합니다.
+                  {t("fuzzing.landing.step.attackDescription")}
                 </p>
               </div>
 
@@ -129,10 +134,10 @@ export default function FuzzingLandingPage() {
                   <FileText className="w-12 h-12 text-blue-500" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">
-                  분석 (Analyze)
+                  {t("fuzzing.landing.step.analyzeTitle")}
                 </h3>
                 <p className="text-slate-400 leading-relaxed max-w-xs">
-                  구체적인 해결 방안이 포함된 실시간 리포트를 받아보세요.
+                  {t("fuzzing.landing.step.analyzeDescription")}
                 </p>
               </div>
             </div>
@@ -145,12 +150,14 @@ export default function FuzzingLandingPage() {
         <Reveal width="100%">
           <div className="max-w-4xl mx-auto text-center mb-8 space-y-8 py-6">
             <h2 className="text-3xl md:text-5xl font-bold">
-              단순한 <span className="text-blue-400">규정 준수</span>, 그 이상
+              {t("fuzzing.landing.whyTitlePrefix")}{" "}
+              <span className="text-blue-400">
+                {t("fuzzing.landing.whyTitleHighlight")}
+              </span>
+              {t("fuzzing.landing.whyTitleSuffix")}
             </h2>
             <p className="text-xl text-slate-400 leading-relaxed max-w-2xl mx-auto">
-              공격자는 명세서를 따르지 않습니다. 보안 테스트도 마찬가지여야
-              합니다. 표준 유효성 검사기가 놓치는 OCPP 구현의 제로데이 취약점을
-              식별합니다.
+              {t("fuzzing.landing.whyDescription")}
             </p>
           </div>
         </Reveal>
@@ -180,11 +187,10 @@ export default function FuzzingLandingPage() {
                 />
               </div>
               <h3 className="text-xl font-bold text-white mb-3">
-                Protocol Fuzzing
+                {t("fuzzing.landing.feature.protocolTitle")}
               </h3>
               <p className="text-slate-400 leading-relaxed">
-                OCPP 1.6/2.0.1 및 커스텀 구현 로직을 심층 분석하여 프로토콜
-                레벨의 결함을 찾아냅니다.
+                {t("fuzzing.landing.feature.protocolDescription")}
               </p>
             </GlassCard>
 
@@ -208,10 +214,11 @@ export default function FuzzingLandingPage() {
                   className="object-contain w-full h-full p-2"
                 />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">취약점 탐지</h3>
+              <h3 className="text-xl font-bold text-white mb-3">
+                {t("fuzzing.landing.feature.vulnerabilityTitle")}
+              </h3>
               <p className="text-slate-400 leading-relaxed">
-                버퍼 오버플로우, 인젝션 공격, 로직 우회 등을 실시간으로 자동
-                탐지합니다.
+                {t("fuzzing.landing.feature.vulnerabilityDescription")}
               </p>
             </GlassCard>
 
@@ -235,10 +242,11 @@ export default function FuzzingLandingPage() {
                   className="object-contain w-full h-full p-2"
                 />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">OCPP 보안</h3>
+              <h3 className="text-xl font-bold text-white mb-3">
+                {t("fuzzing.landing.feature.ocppSecurityTitle")}
+              </h3>
               <p className="text-slate-400 leading-relaxed">
-                EV 충전 인프라에 특화된 유효성 한계 및 보안 적합성 테스트를
-                수행합니다.
+                {t("fuzzing.landing.feature.ocppSecurityDescription")}
               </p>
             </GlassCard>
           </div>
@@ -281,29 +289,26 @@ export default function FuzzingLandingPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-slate-800/50">
               <div className="flex flex-col items-center text-center space-y-2 pt-4 md:pt-0">
                 <h4 className="text-xl font-bold text-white mb-2">
-                  자동화된 효율성
+                  {t("fuzzing.landing.protocolStrip.automationTitle")}
                 </h4>
                 <p className="text-sm text-slate-400 max-w-xs mx-auto">
-                  CI/CD를 위해 설계된 완전 자율 Fuzzing 파이프라인으로 수동
-                  테스트 노력을 줄이세요.
+                  {t("fuzzing.landing.protocolStrip.automationDescription")}
                 </p>
               </div>
               <div className="flex flex-col items-center text-center space-y-2 pt-4 md:pt-0">
                 <h4 className="text-xl font-bold text-blue-400 mb-2">
-                  정밀 검사
+                  {t("fuzzing.landing.protocolStrip.precisionTitle")}
                 </h4>
                 <p className="text-sm text-slate-400 max-w-xs mx-auto">
-                  OCPP 1.6J, 2.0.1 및 ISO 15118 메시지 구조에 대한 포괄적인
-                  분석.
+                  {t("fuzzing.landing.protocolStrip.precisionDescription")}
                 </p>
               </div>
               <div className="flex flex-col items-center text-center space-y-2 pt-4 md:pt-0">
                 <h4 className="text-xl font-bold text-white mb-2">
-                  정확한 결과
+                  {t("fuzzing.landing.protocolStrip.accuracyTitle")}
                 </h4>
                 <p className="text-sm text-slate-400 max-w-xs mx-auto">
-                  결정론적 로직을 통해 모든 결과가 재현 가능한 취약점임을
-                  보장합니다.
+                  {t("fuzzing.landing.protocolStrip.accuracyDescription")}
                 </p>
               </div>
             </div>
@@ -316,9 +321,11 @@ export default function FuzzingLandingPage() {
         <Reveal width="100%">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-bold mb-4">참고 자료</h2>
+              <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                {t("fuzzing.landing.resourcesTitle")}
+              </h2>
               <p className="text-slate-400 text-lg">
-                시작 가이드 및 상세 문서입니다.
+                {t("fuzzing.landing.resourcesSubtitle")}
               </p>
             </div>
 
@@ -327,13 +334,14 @@ export default function FuzzingLandingPage() {
                 <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-6 text-blue-400 group-hover:text-blue-300 group-hover:scale-110 transition-all">
                   <BookOpen size={24} />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">문서</h3>
+                <h3 className="text-xl font-bold text-white mb-2">
+                  {t("fuzzing.landing.resource.docsTitle")}
+                </h3>
                 <p className="text-slate-400 mb-6">
-                  첫 Fuzzing 작업 설정 및 결과 해석에 대한 포괄적인
-                  가이드입니다.
+                  {t("fuzzing.landing.resource.docsDescription")}
                 </p>
                 <span className="inline-flex items-center text-slate-500 cursor-not-allowed font-medium">
-                  준비 중
+                  {t("fuzzing.landing.resource.comingSoon")}
                 </span>
               </GlassCard>
 
@@ -342,16 +350,16 @@ export default function FuzzingLandingPage() {
                   <ShieldCheck size={24} />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2">
-                  취약점 데이터베이스
+                  {t("fuzzing.landing.resource.vulnDbTitle")}
                 </h3>
                 <p className="text-slate-400 mb-6">
-                  알려진 EV 충전 취약점 및 CVE 데이터베이스를 탐색하세요.
+                  {t("fuzzing.landing.resource.vulnDbDescription")}
                 </p>
                 <Link
                   href="/abilities"
                   className="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium"
                 >
-                  데이터베이스 찾아보기{" "}
+                  {t("fuzzing.landing.resource.vulnDbCta")}{" "}
                   <ArrowRight size={16} className="ml-2" />
                 </Link>
               </GlassCard>
@@ -361,11 +369,10 @@ export default function FuzzingLandingPage() {
                   <ExternalLink size={24} />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2">
-                  OCPP 규정 준수
+                  {t("fuzzing.landing.resource.ocppTitle")}
                 </h3>
                 <p className="text-slate-400 mb-6">
-                  OCPP 1.6 및 2.0.1을 위한 공식 OCA 도구 및 규정 준수 테스트
-                  가이드입니다.
+                  {t("fuzzing.landing.resource.ocppDescription")}
                 </p>
                 <a
                   href="https://www.openchargealliance.org/"
@@ -373,7 +380,8 @@ export default function FuzzingLandingPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center text-cyan-400 hover:text-cyan-300 font-medium"
                 >
-                  OCA 방문하기 <ExternalLink size={16} className="ml-2" />
+                  {t("fuzzing.landing.resource.ocppCta")}{" "}
+                  <ExternalLink size={16} className="ml-2" />
                 </a>
               </GlassCard>
             </div>

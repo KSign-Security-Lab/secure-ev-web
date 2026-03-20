@@ -7,6 +7,7 @@ import { RequirementTab } from "./RequirementTab";
 import { ConfigurationTab } from "./ConfigurationTab";
 import { AttackDataItem } from "~/types/defend";
 import { Modal } from "~/components/common/Modal/Modal";
+import { useI18n } from "~/i18n/I18nProvider";
 
 enum AbilityModalTabs {
   General = "General",
@@ -48,26 +49,42 @@ const AbilityModal: React.FC<AbilityModalProps> = ({
   modalData,
   onSave,
 }) => {
+  const { t } = useI18n();
   const [tab, setTab] = useState<AbilityModalTabs>(AbilityModalTabs.General);
+
+  const tabLabel = (tabValue: AbilityModalTabs) => {
+    switch (tabValue) {
+      case AbilityModalTabs.General:
+        return t("abilities.modal.general");
+      case AbilityModalTabs.Executors:
+        return t("abilities.modal.executors");
+      case AbilityModalTabs.Requirement:
+        return t("abilities.modal.requirement");
+      case AbilityModalTabs.Configuration:
+        return t("abilities.modal.configuration");
+      default:
+        return tabValue;
+    }
+  };
 
   return (
     <Modal
       open={open}
       onClose={onClose}
-      title="Find atypical open ports"
+      title={t("abilities.modal.title")}
       footer={
         <div className="flex justify-end space-x-2">
           <button
             className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded"
             onClick={onSave}
           >
-            저장
+            {t("abilities.modal.save")}
           </button>
           <button
             className="bg-gray-500 hover:bg-neutral-500 px-4 py-2 rounded"
             onClick={onClose}
           >
-            취소
+            {t("abilities.modal.cancel")}
           </button>
         </div>
       }
@@ -83,7 +100,7 @@ const AbilityModal: React.FC<AbilityModalProps> = ({
             }`}
             onClick={() => setTab(t)}
           >
-            {t}
+            {tabLabel(t)}
           </button>
         ))}
       </div>

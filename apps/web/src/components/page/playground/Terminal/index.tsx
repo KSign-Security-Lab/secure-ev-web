@@ -12,6 +12,7 @@ import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import "@xterm/xterm/css/xterm.css";
 import { CommandAutocomplete } from "./CommandAutocomplete";
+import { useI18n } from "~/i18n/I18nProvider";
 
 export type ConnectionState =
   | "connecting"
@@ -34,21 +35,20 @@ export interface TerminalViewHandle {
   setCommand: (command: string) => void;
 }
 
-const DEFAULT_WELCOME_MESSAGE =
-  "Interactive terminal. Type a command and press Enter to execute.";
 const DEFAULT_PROMPT_LABEL = "$ ";
 
 export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
   function TerminalView(
     {
       connectionState,
-      welcomeMessage = DEFAULT_WELCOME_MESSAGE,
+      welcomeMessage,
       promptLabel = DEFAULT_PROMPT_LABEL,
       sessionId,
       onCommand,
     },
     ref
   ) {
+    const { t } = useI18n();
     const containerRef = useRef<HTMLDivElement | null>(null);
     const termRef = useRef<Terminal | null>(null);
     const fitAddonRef = useRef<FitAddon | null>(null);
@@ -131,7 +131,9 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
       }
 
       terminal.focus();
-      terminal.writeln(welcomeMessage);
+      terminal.writeln(
+        welcomeMessage || t("playground.terminal.welcome")
+      );
       prompt({ leadingNewline: false });
 
       const resize = () => fitAddon.fit();
@@ -151,17 +153,17 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
           }
           // Show warning on Enter
           if (data === "\r") {
-            terminal.write("\r\n");
-            if (!sessionIdRef.current) {
-              terminal.writeln(
-                "[warn] No session selected. Please select a session from the list."
-              );
-            } else {
-              terminal.writeln(
-                "[warn] Terminal is not connected. The terminal will automatically reconnect."
-              );
-            }
-            prompt();
+              terminal.write("\r\n");
+              if (!sessionIdRef.current) {
+                terminal.writeln(
+                  t("playground.terminal.warnNoSession")
+                );
+              } else {
+                terminal.writeln(
+                  t("playground.terminal.warnDisconnected")
+                );
+              }
+              prompt();
           }
           // Block all other input
           return;
@@ -242,7 +244,7 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
         termRef.current = null;
         fitAddonRef.current = null;
       };
-    }, [welcomeMessage, promptLabel, prompt, onCommand]);
+    }, [welcomeMessage, promptLabel, prompt, onCommand, t]);
 
     // Update connection state ref when it changes
     useEffect(() => {
@@ -339,8 +341,7 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
           {!sessionId && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none backdrop-blur-sm">
               <div className="rounded-lg bg-slate-900/90 border border-slate-700/50 px-4 py-2 text-sm text-slate-300">
-                Please select a session from the list to connect to the
-                terminal.
+                {t("playground.terminal.selectSessionPrompt")}
               </div>
             </div>
           )}

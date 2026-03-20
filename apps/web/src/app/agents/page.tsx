@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import Loading from "~/components/common/Loading/Loading";
 import { AgentsTable } from "~/components/page/agents/AgentsTable";
 import trpc, { type RouterOutputs } from "~/lib/trpc";
+import { useI18n } from "~/i18n/I18nProvider";
 
 export type AgentsListResponse = RouterOutputs["agents"]["list"];
 
 export default function Abilities() {
+  const { t } = useI18n();
   const [data, setData] = useState<AgentsListResponse | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -52,7 +54,7 @@ export default function Abilities() {
           <AgentsTable data={data} />
         ) : (
           <div className="text-center text-gray-400 py-8">
-            No Data Available
+            {t("agents.page.empty")}
           </div>
         )}
       </div>

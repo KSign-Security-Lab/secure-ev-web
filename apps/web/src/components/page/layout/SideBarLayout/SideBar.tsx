@@ -1,11 +1,13 @@
 "use client";
 
 import React, { forwardRef, useImperativeHandle, useState } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Globe } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
+import { useI18n } from "~/i18n/I18nProvider";
+import { isLocale } from "~/i18n/messages";
 
 export interface MenuItemType {
   name: string;
@@ -24,6 +26,7 @@ interface SidebarProps {
 
 export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
   ({ menus }, ref) => {
+    const { locale, setLocale, t } = useI18n();
     const pathname = usePathname();
     const isActive = (url: string) => {
       if (url === "/" || url === "") return pathname === url;
@@ -49,10 +52,22 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
       }
     };
 
+    const handleLocaleChange = (value: string) => {
+      if (!isLocale(value)) {
+        return;
+      }
+
+      setLocale(value);
+    };
+
+    const toggleLocale = () => {
+      setLocale(locale === "en" ? "ko" : "en");
+    };
+
     return (
       <div
         className={clsx(
-          "h-screen bg-white border-r transition-all duration-300",
+          "h-screen bg-white border-r transition-all duration-300 flex flex-col",
           expanded ? "w-56" : "w-16"
         )}
       >
@@ -69,7 +84,7 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
           </div>
         </Link>
 
-        <nav className="mt-5 space-y-2">
+        <nav className="mt-5 space-y-2 flex-1 overflow-y-auto">
           {menus.map((item) => (
             <div key={item.url} className="relative group">
               {item.children ? (
@@ -162,6 +177,48 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
             </div>
           ))}
         </nav>
+
+        <div
+          className={clsx(
+            "border-t border-gray-200",
+            expanded ? "px-3 py-4" : "p-2 flex justify-center"
+          )}
+        >
+          {expanded ? (
+            <div className="space-y-1">
+              <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                {t("sidebar.language")}
+              </label>
+              <div className="flex items-center gap-2">
+                <Globe size={16} className="text-gray-500 shrink-0" />
+                <select
+                  value={locale}
+                  onChange={(event) => handleLocaleChange(event.target.value)}
+                  className="w-full rounded-md border border-gray-200 bg-white px-2 py-1.5 text-sm text-gray-700 focus:border-blue-500 focus:outline-none"
+                  aria-label={t("sidebar.toggleLanguage")}
+                >
+                  <option value="en">{t("language.english")}</option>
+                  <option value="ko">{t("language.korean")}</option>
+                </select>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={toggleLocale}
+              className="group/item relative flex h-9 w-9 items-center justify-center rounded-md text-gray-700 hover:bg-gray-100"
+              aria-label={t("sidebar.toggleLanguage")}
+            >
+              <Globe size={18} />
+              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-xs font-semibold text-gray-900 shadow-xl whitespace-nowrap opacity-0 group-hover/item:opacity-100 group-hover/item:translate-x-1 transition-all pointer-events-none z-50">
+                {t("sidebar.language")}:{" "}
+                {locale === "en" ? t("language.english") : t("language.korean")}
+                <div className="absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 border-y-[6px] border-y-transparent border-r-[6px] border-r-gray-200" />
+                <div className="absolute left-px top-1/2 -translate-x-full -translate-y-1/2 border-y-[5px] border-y-transparent border-r-[5px] border-r-white" />
+              </div>
+            </button>
+          )}
+        </div>
       </div>
     );
   }

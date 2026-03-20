@@ -1,4 +1,5 @@
 import React from "react";
+import { useI18n } from "~/i18n/I18nProvider";
 
 interface DummyAbilityFlags {
   singleton: boolean;
@@ -13,10 +14,11 @@ const dummyData: DummyAbilityFlags = {
 };
 
 export const ConfigurationTab = () => {
+  const { t } = useI18n();
   const config: { key: keyof DummyAbilityFlags; label: string }[] = [
-    { key: "singleton", label: "Singleton:" },
-    { key: "repeatable", label: "Repeatable:" },
-    { key: "deletePayload", label: "Delete payload:" },
+    { key: "singleton", label: t("abilities.configuration.singleton") },
+    { key: "repeatable", label: t("abilities.configuration.repeatable") },
+    { key: "deletePayload", label: t("abilities.configuration.deletePayload") },
   ];
 
   return (

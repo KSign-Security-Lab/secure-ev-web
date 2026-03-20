@@ -14,9 +14,11 @@ import { ReportUpload } from "~/components/page/fuzzing/ReportUpload";
 import { ConfigDownload } from "~/components/page/fuzzing/ConfigDownload";
 import clsx from "clsx";
 import type { FuzzingJobWithReport } from "~/types/fuzzing";
+import { useI18n } from "~/i18n/I18nProvider";
 type JobDetail = RouterOutputs["fuzzing"]["getById"];
 
 export default function FuzzingJobDetailPage() {
+  const { t } = useI18n();
   const params = useParams();
   const jobId = params?.jobId as string;
   const [activeTab, setActiveTab] = useState<"overview" | "logs">("overview");
@@ -58,7 +60,7 @@ export default function FuzzingJobDetailPage() {
     return (
       <div className="flex h-full items-center justify-center p-8 text-neutral-400">
          <Loader2 className="animate-spin text-primary-500 mr-2" size={24} />
-         Loading job details...
+         {t("fuzzing.jobDetail.loading")}
       </div>
     );
   }
@@ -66,9 +68,9 @@ export default function FuzzingJobDetailPage() {
   if (!job) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-slate-400">
-        <p>Job not found</p>
+        <p>{t("fuzzing.jobDetail.notFound")}</p>
         <Link href="/fuzzing/jobs" className="text-primary-400 hover:underline mt-2">
-          Return to Fuzzing Jobs
+          {t("fuzzing.jobDetail.returnToJobs")}
         </Link>
       </div>
     );
@@ -100,7 +102,7 @@ export default function FuzzingJobDetailPage() {
             <div className="flex gap-2">
                  <button className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-sm border border-slate-700 transition-colors">
                     <Download size={14} />
-                    Export Report
+                    {t("fuzzing.jobDetail.exportReport")}
                  </button>
             </div>
         )}
@@ -113,7 +115,9 @@ export default function FuzzingJobDetailPage() {
           {!hasReport && (
             <div className="mt-8 border-t border-slate-800 pt-6 space-y-6">
                 <div>
-                   <h3 className="text-sm font-medium text-slate-400 mb-3">Fuzzer Setup</h3>
+                   <h3 className="text-sm font-medium text-slate-400 mb-3">
+                     {t("fuzzing.jobDetail.fuzzerSetup")}
+                   </h3>
                    <ConfigDownload />
                 </div>
                
@@ -129,11 +133,13 @@ export default function FuzzingJobDetailPage() {
                  <div className="w-20 h-20 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center mb-6">
                     <FileText size={40} className="text-slate-600" />
                  </div>
-                 <h3 className="text-xl font-medium text-white mb-2">No Report Available</h3>
+                 <h3 className="text-xl font-medium text-white mb-2">
+                   {t("fuzzing.jobDetail.noReportTitle")}
+                 </h3>
                  <p className="text-slate-400 max-w-md">
                    {job.status === "COMPLETED" 
-                     ? "The job has completed. Please upload a report to view the analysis."
-                     : "Wait for the job to complete to view the report."}
+                     ? t("fuzzing.jobDetail.noReportCompleted")
+                     : t("fuzzing.jobDetail.noReportPending")}
                  </p>
                  <div className="mt-8 w-full max-w-sm bg-slate-900/50 p-6 rounded-xl border border-slate-800">
                     <ReportUpload jobId={job.id} onUploadSuccess={() => refetch()} />
@@ -154,7 +160,7 @@ export default function FuzzingJobDetailPage() {
                           )}
                        >
                            <LayoutDashboard size={16} />
-                           Overview
+                           {t("fuzzing.jobDetail.tab.overview")}
                        </button>
                        <button
                           onClick={() => setActiveTab("logs")}
@@ -166,7 +172,7 @@ export default function FuzzingJobDetailPage() {
                           )}
                        >
                            <List size={16} />
-                           Interaction Log
+                           {t("fuzzing.jobDetail.tab.logs")}
                        </button>
                    </div>
                </div>

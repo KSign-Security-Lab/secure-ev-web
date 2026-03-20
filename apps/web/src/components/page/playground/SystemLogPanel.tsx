@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { cn } from "~/lib/utils";
+import { useI18n } from "~/i18n/I18nProvider";
 
 type LogLevel = "info" | "success" | "warning" | "error";
 
@@ -26,6 +27,7 @@ const levelStyles: Record<LogLevel, string> = {
 };
 
 export default function SystemLogPanel({ logs, onClear, className }: Props) {
+  const { t } = useI18n();
   const timeFormatter = useMemo(
     () =>
       new Intl.DateTimeFormat(undefined, {
@@ -45,7 +47,7 @@ export default function SystemLogPanel({ logs, onClear, className }: Props) {
     >
       <div className="flex shrink-0 items-center justify-between border-b border-base-700/50 px-3 py-2">
         <span className="text-xs font-semibold uppercase tracking-wide text-neutral-300">
-          System Log
+          {t("playground.systemLog.title")}
         </span>
         {onClear && logs.length > 0 && (
           <button
@@ -53,13 +55,15 @@ export default function SystemLogPanel({ logs, onClear, className }: Props) {
             onClick={onClear}
             className="text-[10px] font-medium text-neutral-400 transition-colors hover:text-neutral-200"
           >
-            Clear
+            {t("playground.systemLog.clear")}
           </button>
         )}
       </div>
       <div className="flex flex-col min-h-0 flex-1 overflow-y-auto px-3 py-3 space-y-1">
         {logs.length === 0 ? (
-          <p className="text-xs text-neutral-500">No recent events.</p>
+          <p className="text-xs text-neutral-500">
+            {t("playground.systemLog.noEvents")}
+          </p>
         ) : (
           <ul className="space-y-2 text-xs">
             {logs

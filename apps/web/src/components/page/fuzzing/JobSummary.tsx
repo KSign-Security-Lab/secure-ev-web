@@ -4,6 +4,7 @@ import React from "react";
 import { Tag, TAG_COLOR_MAP } from "~/components/common/Tag/Tag";
 import type { FuzzingJobWithReport } from "~/types/fuzzing";
 import { Globe, Server, Activity, Clock } from "lucide-react";
+import { useI18n } from "~/i18n/I18nProvider";
 
 interface JobSummaryProps {
   job: FuzzingJobWithReport;
@@ -26,22 +27,9 @@ const getStatusColor = (status: string): keyof typeof TAG_COLOR_MAP => {
   }
 };
 
-const getTargetTypeLabel = (targetType: string): string => {
-  switch (targetType) {
-    case "ISO15118":
-      return "ISO 15118 Charger";
-    case "OCPP_CHARGER":
-      return "Charger via OCPP";
-    case "OCPP_SERVER":
-      return "OCPP Server";
-    default:
-      return targetType;
-  }
-};
-
-const formatDate = (dateString: string): string => {
+const formatDate = (dateString: string, locale: "en" | "ko"): string => {
   const date = new Date(dateString);
-  return date.toLocaleString("en-US", {
+  return date.toLocaleString(locale === "ko" ? "ko-KR" : "en-US", {
     month: "short",
     day: "numeric",
     hour: "2-digit",
@@ -50,13 +38,63 @@ const formatDate = (dateString: string): string => {
 };
 
 export function JobSummary({ job }: JobSummaryProps) {
+  const { locale, t } = useI18n();
+  const copy =
+    locale === "ko"
+      ? {
+          title: "작업 개요",
+          status: "현재 상태",
+          target: "대상",
+          environment: "환경",
+          created: "생성됨",
+          updated: "업데이트됨",
+        }
+      : {
+          title: "Job Overview",
+          status: "Current Status",
+          target: "Target",
+          environment: "Environment",
+          created: "Created",
+          updated: "Updated",
+        };
+
+  const getTargetTypeLabel = (targetType: string): string => {
+    switch (targetType) {
+      case "ISO15118":
+        return t("fuzzing.target.iso15118Charger");
+      case "OCPP_CHARGER":
+        return t("fuzzing.target.ocppCharger");
+      case "OCPP_SERVER":
+        return t("fuzzing.target.ocppServer");
+      default:
+        return targetType;
+    }
+  };
+
+  const getStatusLabel = (status: string): string => {
+    switch (status) {
+      case "RUNNING":
+        return t("status.running");
+      case "COMPLETED":
+        return t("status.completed");
+      case "FAILED":
+        return t("status.failed");
+      case "PENDING":
+        return t("status.pending");
+      case "DRAFT":
+        return t("status.draft");
+      default:
+        return status;
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
         <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400">
             <Activity size={20} />
         </div>
-        <h2 className="text-xl font-bold text-white">Job Overview</h2>
+        <h2 className="text-xl font-bold text-white">{copy.title}</h2>
       </div>
       
       <div className="grid grid-cols-1 gap-5">
@@ -68,9 +106,15 @@ export function JobSummary({ job }: JobSummaryProps) {
                     <Activity size={18} />
                 </div>
                 <div>
-                    <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">Current Status</span>
+                    <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">
+                      {copy.status}
+                    </span>
                     <div className="mt-1">
-                        <Tag label={job.status} color={getStatusColor(job.status)} size="sm" />
+                        <Tag
+                          label={getStatusLabel(job.status)}
+                          color={getStatusColor(job.status)}
+                          size="sm"
+                        />
                     </div>
                 </div>
             </div>
@@ -83,8 +127,12 @@ export function JobSummary({ job }: JobSummaryProps) {
                     <Server size={18} />
                 </div>
                 <div>
-                    <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">Target</span>
-                    <p className="text-white font-medium mt-0.5 truncate">{getTargetTypeLabel(job.targetType)}</p>
+                    <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">
+                      {copy.target}
+                    </span>
+                    <p className="text-white font-medium mt-0.5 truncate">
+                      {getTargetTypeLabel(job.targetType)}
+                    </p>
                 </div>
             </div>
         </div>
@@ -96,7 +144,9 @@ export function JobSummary({ job }: JobSummaryProps) {
                     <Globe size={18} />
                 </div>
                 <div>
-                    <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">Environment</span>
+                    <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">
+                      {copy.environment}
+                    </span>
                     <p className="text-white font-medium mt-0.5 capitalize truncate">{job.environment}</p>
                 </div>
             </div>
@@ -110,12 +160,20 @@ export function JobSummary({ job }: JobSummaryProps) {
                 </div>
                 <div className="flex-1">
                     <div className="flex justify-between items-center border-b border-slate-800/50 pb-2 mb-2">
-                        <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">Created</span>
-                        <span className="text-white font-mono text-xs">{formatDate(job.createdAt)}</span>
+                        <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">
+                          {copy.created}
+                        </span>
+                        <span className="text-white font-mono text-xs">
+                          {formatDate(job.createdAt, locale)}
+                        </span>
                     </div>
                     <div className="flex justify-between items-center">
-                        <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">Updated</span>
-                        <span className="text-white font-mono text-xs">{formatDate(job.updatedAt)}</span>
+                        <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">
+                          {copy.updated}
+                        </span>
+                        <span className="text-white font-mono text-xs">
+                          {formatDate(job.updatedAt, locale)}
+                        </span>
                     </div>
                 </div>
             </div>

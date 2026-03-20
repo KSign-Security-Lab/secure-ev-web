@@ -4,9 +4,10 @@ import React from "react";
 import { Modal } from "~/components/common/Modal/Modal";
 import { Tag } from "~/components/common/Tag/Tag";
 import type { FuzzingRun } from "~/types/fuzzing";
-import { getRunResultColor, getRunResultLabel } from "~/utils/fuzzing.client";
+import { getRunResultColor } from "~/utils/fuzzing.client";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { useI18n } from "~/i18n/I18nProvider";
 
 interface FindingDetailProps {
   run: FuzzingRun;
@@ -23,20 +24,35 @@ const formatContent = (content: string) => {
 };
 
 export function FindingDetail({ run, onClose }: FindingDetailProps) {
+  const { t } = useI18n();
+
+  const getLocalizedResultLabel = (result: FuzzingRun["result"]) => {
+    switch (result) {
+      case "ok":
+        return t("fuzzing.runResult.ok");
+      case "error":
+        return t("fuzzing.runResult.error");
+      case "timeout":
+        return t("fuzzing.runResult.timeout");
+    }
+  };
+
   return (
     <Modal
       open={true}
       onClose={onClose}
-      title="Interaction Details"
+      title={t("fuzzing.findingDetail.title")}
       className="max-w-4xl"
     >
       <div className="space-y-6">
         <div className="flex gap-4">
           <div>
-            <label className="text-sm text-neutral-400">Result</label>
+            <label className="text-sm text-neutral-400">
+              {t("fuzzing.findingDetail.result")}
+            </label>
             <div className="mt-1">
               <Tag
-                label={getRunResultLabel(run.result)}
+                label={getLocalizedResultLabel(run.result)}
                 color={getRunResultColor(run.result)}
                 size="md"
               />
@@ -45,7 +61,9 @@ export function FindingDetail({ run, onClose }: FindingDetailProps) {
         </div>
 
         <div>
-          <label className="text-sm text-neutral-400">Input Payload</label>
+          <label className="text-sm text-neutral-400">
+            {t("fuzzing.findingDetail.inputPayload")}
+          </label>
           <div className="mt-1 bg-slate-900 border border-slate-700 rounded-lg overflow-hidden">
              <SyntaxHighlighter
                 language="json"
@@ -59,7 +77,9 @@ export function FindingDetail({ run, onClose }: FindingDetailProps) {
         </div>
 
         <div>
-          <label className="text-sm text-neutral-400">Output Response</label>
+          <label className="text-sm text-neutral-400">
+            {t("fuzzing.findingDetail.outputResponse")}
+          </label>
            <div className="mt-1 bg-slate-900 border border-slate-700 rounded-lg overflow-hidden">
              <SyntaxHighlighter
                 language="json"
@@ -75,4 +95,3 @@ export function FindingDetail({ run, onClose }: FindingDetailProps) {
     </Modal>
   );
 }
-

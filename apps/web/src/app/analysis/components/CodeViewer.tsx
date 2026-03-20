@@ -6,6 +6,7 @@ import { FileWarning, FileQuestion, FileDigit, Code2 } from "lucide-react";
 
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useI18n } from "~/i18n/I18nProvider";
 
 
 interface CodeViewerProps {
@@ -21,6 +22,7 @@ export default function CodeViewer({
   selectedResultId,
   onResultClick,
 }: CodeViewerProps) {
+  const { t } = useI18n();
   const containerRef = useRef<HTMLDivElement>(null);
   const selectedLineRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +37,7 @@ export default function CodeViewer({
     return (
       <div className="flex flex-col items-center justify-center h-full text-[#8b949e] bg-[#0d1117]">
         <FileDigit className="w-12 h-12 mb-4 text-gray-700" />
-        <p>This is a binary file and cannot be previewed.</p>
+        <p>{t("analysis.codeViewer.binaryUnavailable")}</p>
       </div>
     );
   }
@@ -44,9 +46,9 @@ export default function CodeViewer({
     return (
       <div className="flex flex-col items-center justify-center h-full text-[#8b949e] bg-[#0d1117]">
         <FileWarning className="w-12 h-12 mb-4 text-yellow-600" />
-        <p>This file is too large to render completely.</p>
+        <p>{t("analysis.codeViewer.largeUnavailable")}</p>
         <button className="mt-4 px-4 py-2 bg-[#21262d] text-[#8b949e] rounded hover:bg-[#30363d] transition">
-          Load Truncated Preview
+          {t("analysis.codeViewer.loadTruncatedPreview")}
         </button>
       </div>
     );
@@ -56,7 +58,7 @@ export default function CodeViewer({
     return (
       <div className="flex flex-col items-center justify-center h-full text-[#8b949e] bg-[#0d1117]">
         <FileQuestion className="w-12 h-12 mb-4 text-gray-700" />
-        <p>File content unavailable.</p>
+        <p>{t("analysis.codeViewer.contentUnavailable")}</p>
       </div>
     );
   }

@@ -6,6 +6,7 @@ import { UploadCloud, File as FileIcon, Trash2, AlertCircle } from "lucide-react
 import { Button } from "~/components/ui/button";
 import { MockFile } from "./mockData";
 import JSZip from "jszip";
+import { useI18n } from "~/i18n/I18nProvider";
 
 interface UploadViewProps {
   onStartAnalysis: (files: MockFile[]) => void;
@@ -14,6 +15,7 @@ interface UploadViewProps {
 const ALLOWED_EXTENSIONS = ['.c', '.cpp', '.cc', '.h', '.hpp', '.java'];
 
 export default function UploadView({ onStartAnalysis }: UploadViewProps) {
+  const { t } = useI18n();
   const [files, setFiles] = useState<MockFile[]>([]);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -49,13 +51,13 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
         }
 
         if (newMockFiles.length === 0) {
-           setError("The ZIP archive did not contain any valid C/C++/Java source files.");
+           setError(t("analysis.upload.error.zipNoValidFiles"));
         } else {
            setFiles(prev => [...prev, ...newMockFiles]);
            setError(null);
         }
       } catch {
-        setError("Failed to extract ZIP archive.");
+        setError(t("analysis.upload.error.zipExtractFailed"));
       }
     } else if (isValidExtension(file.name)) {
        const text = await file.text();
@@ -66,7 +68,9 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
        }]);
        setError(null);
     } else {
-       setError(`File type not allowed: ${file.name}. Only C/C++/Java files and ZIPs are supported.`);
+       setError(
+        t("analysis.upload.error.invalidFileType", { fileName: file.name })
+       );
     }
   };
 
@@ -86,8 +90,8 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-2xl mx-auto h-full space-y-8">
       <div className="text-center">
-        <h1 className="text-3xl font-bold mb-2">Analysis Workspace</h1>
-        <p className="text-[#8b949e]">Upload source code files to begin</p>
+        <h1 className="text-3xl font-bold mb-2">{t("analysis.upload.title")}</h1>
+        <p className="text-[#8b949e]">{t("analysis.upload.subtitle")}</p>
       </div>
 
       <input
@@ -104,8 +108,12 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
         onClick={() => fileInputRef.current?.click()}
       >
         <UploadCloud className="w-12 h-12 text-[#8b949e] mb-4" />
-        <p className="text-[#8b949e] font-medium">Click to browse or drag and drop files here</p>
-        <p className="text-[#8b949e] text-sm mt-1">.c, .cpp, .java or .zip archives</p>
+        <p className="text-[#8b949e] font-medium">
+          {t("analysis.upload.dropzoneInstruction")}
+        </p>
+        <p className="text-[#8b949e] text-sm mt-1">
+          {t("analysis.upload.dropzoneFormats")}
+        </p>
       </div>
 
       {error && (
@@ -117,7 +125,9 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
 
       {files.length > 0 && (
         <div className="w-full">
-          <h3 className="text-lg font-semibold mb-3">Uploaded Files</h3>
+          <h3 className="text-lg font-semibold mb-3">
+            {t("analysis.upload.uploadedFiles")}
+          </h3>
           <div className="space-y-2 mb-6 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
             {files.map((file, idx) => (
               <div
@@ -143,7 +153,7 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
 
           <div className="flex justify-end">
             <Button size="lg" onClick={() => onStartAnalysis(files)}>
-              Run Analysis
+              {t("analysis.upload.runAnalysis")}
             </Button>
           </div>
         </div>
