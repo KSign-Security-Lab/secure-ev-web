@@ -8,6 +8,7 @@ import {
   MenuIcon,
   Server,
   Zap,
+  SearchCode,
 } from "lucide-react";
 import { MenuItemType, Sidebar, SidebarRef } from "./SideBar";
 import Topbar from "./TopBar";
@@ -19,7 +20,7 @@ const MENU_ITEMS: MenuItemType[] = [
   { name: "Agents", icon: <Server />, url: "/agents" },
   { name: "Abilities", icon: <Database />, url: "/abilities" },
   { name: "Playground", icon: <FlaskConical />, url: "/playground" },
-  { name: "Analysis Workspace", icon: <Database />, url: "/analysis" },
+  { name: "Analysis Workspace", icon: <SearchCode />, url: "/analysis" },
 ];
 
 export default function SideBarLayout({
