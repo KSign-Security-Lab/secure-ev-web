@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import type { FuzzingParameters } from "~/types/fuzzing";
+import { useLocalI18n } from "~/i18n/I18nProvider";
+import { fuzzingParamsMessages } from "./FuzzingParamsForm.messages";
 
 interface FuzzingParamsFormProps {
   parameters: FuzzingParameters | null;
@@ -12,6 +14,8 @@ export function FuzzingParamsForm({
   parameters,
   onChange,
 }: FuzzingParamsFormProps) {
+  const t = useLocalI18n(fuzzingParamsMessages);
+
   const [localParams, setLocalParams] = useState<FuzzingParameters>(
     parameters || {
       aggressivenessLevel: "medium",
@@ -30,7 +34,7 @@ export function FuzzingParamsForm({
     <div className="space-y-4">
       <div>
         <label className="block text-sm font-medium mb-2 text-white">
-          Duration (seconds)
+          {t("duration")}
         </label>
         <input
           type="number"
@@ -43,13 +47,13 @@ export function FuzzingParamsForm({
           min="1"
         />
         <p className="text-xs text-neutral-400 mt-1">
-          Leave empty for unlimited duration
+          {t("durationHint")}
         </p>
       </div>
 
       <div>
         <label className="block text-sm font-medium mb-2 text-white">
-          Max Test Cases
+          {t("maxCases")}
         </label>
         <input
           type="number"
@@ -65,13 +69,13 @@ export function FuzzingParamsForm({
           min="1"
         />
         <p className="text-xs text-neutral-400 mt-1">
-          Leave empty for unlimited test cases
+          {t("maxCasesHint")}
         </p>
       </div>
 
       <div>
         <label className="block text-sm font-medium mb-2 text-white">
-          Aggressiveness Level
+          {t("aggressiveness")}
         </label>
         <select
           value={localParams.aggressivenessLevel || "medium"}
@@ -83,9 +87,9 @@ export function FuzzingParamsForm({
           }
           className="w-full bg-base-800 p-2 rounded border border-base-850 text-white"
         >
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
+          <option value="low">{t("low")}</option>
+          <option value="medium">{t("medium")}</option>
+          <option value="high">{t("high")}</option>
         </select>
       </div>
 
@@ -96,7 +100,7 @@ export function FuzzingParamsForm({
           onChange={(e) => handleChange("mutatePayloadFields", e.target.checked)}
           className="mr-2"
         />
-        <label className="text-sm text-white">Mutate Payload Fields</label>
+        <label className="text-sm text-white">{t("mutate")}</label>
       </div>
 
       <div className="flex items-center">
@@ -106,9 +110,8 @@ export function FuzzingParamsForm({
           onChange={(e) => handleChange("timingJitter", e.target.checked)}
           className="mr-2"
         />
-        <label className="text-sm text-white">Timing Jitter</label>
+        <label className="text-sm text-white">{t("jitter")}</label>
       </div>
     </div>
   );
 }
-

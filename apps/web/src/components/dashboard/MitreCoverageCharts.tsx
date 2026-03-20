@@ -8,6 +8,7 @@ import {
   Tooltip,
 } from "chart.js";
 import type { RouterOutputs } from "~/lib/trpc";
+import { useI18n } from "~/i18n/I18nProvider";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
 
@@ -20,6 +21,7 @@ interface MitreCoverageChartsProps {
 
 
 export function MitreCoverageCharts({ data }: MitreCoverageChartsProps) {
+  const { t } = useI18n();
   return (
     <div className="h-full">
       {/* Overall Stats */}
@@ -53,7 +55,7 @@ export function MitreCoverageCharts({ data }: MitreCoverageChartsProps) {
                 {data.coveragePercentage}%
               </span>
               <span className="text-xs text-neutral-400 uppercase tracking-widest mt-1">
-                Covered
+                {t("dashboard.chart.covered")}
               </span>
             </div>
           </div>
@@ -63,13 +65,17 @@ export function MitreCoverageCharts({ data }: MitreCoverageChartsProps) {
               <div className="text-2xl font-bold text-white">
                 {data.coveredTechniques}
               </div>
-              <div className="text-xs text-neutral-400">Covered Techniques</div>
+              <div className="text-xs text-neutral-400">
+                {t("dashboard.chart.coveredTechniques")}
+              </div>
             </div>
             <div className="p-3">
               <div className="text-2xl font-bold text-neutral-300">
                 {data.totalTechniques}
               </div>
-              <div className="text-xs text-neutral-400">Total Techniques</div>
+              <div className="text-xs text-neutral-400">
+                {t("dashboard.chart.totalTechniques")}
+              </div>
             </div>
           </div>
         </div>

@@ -2,20 +2,22 @@
 
 import React, { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useI18n } from "~/i18n/I18nProvider";
 
 interface LoadingViewProps {
   onComplete: () => void;
 }
 
 export default function LoadingView({ onComplete }: LoadingViewProps) {
+  const { t } = useI18n();
   const [step, setStep] = useState(0);
   const messages = [
-    "Initializing analysis engines...",
-    "Parsing Abstract Syntax Trees (AST)...",
-    "Constructing Control Flow Graphs (CFG)...",
-    "Running Data Flow (DF) analysis...",
-    "Extracting similarity signatures...",
-    "Generating report and evidence...",
+    t("analysis.loading.step.initializing"),
+    t("analysis.loading.step.parsing"),
+    t("analysis.loading.step.cfg"),
+    t("analysis.loading.step.df"),
+    t("analysis.loading.step.signatures"),
+    t("analysis.loading.step.report"),
   ];
 
   useEffect(() => {
@@ -39,7 +41,7 @@ export default function LoadingView({ onComplete }: LoadingViewProps) {
         <Loader2 className="w-16 h-16 text-[#58a6ff] animate-spin" />
         <div className="text-center">
           <h2 className="text-2xl font-semibold mb-2 text-[#c9d1d9]">
-            Analyzing Codebase
+            {t("analysis.loading.title")}
           </h2>
           <div className="h-6">
             <p className="text-[#79c0ff] font-medium animate-pulse">
@@ -56,7 +58,7 @@ export default function LoadingView({ onComplete }: LoadingViewProps) {
         </div>
 
         <p className="text-xs text-[#8b949e] mt-4">
-          This may take a few moments depending on codebase size...
+          {t("analysis.loading.hint")}
         </p>
       </div>
     </div>

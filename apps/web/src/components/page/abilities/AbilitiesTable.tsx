@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { Table, TableColumn } from "~/components/common/Table/Table";
 import AbilityModal from "./AbilityModal";
 import type { AbilitiesListResponse } from "~/app/abilities/page";
+import { useI18n } from "~/i18n/I18nProvider";
 
 export const AbilitiesTable: React.FC<{
   data: AbilitiesListResponse["abilities"];
 }> = ({ data }) => {
+  const { t } = useI18n();
   const [modalData, setModalData] = useState<
     AbilitiesListResponse["abilities"][number] | null
   >(null);
@@ -13,25 +15,25 @@ export const AbilitiesTable: React.FC<{
 
   const columns: TableColumn<AbilitiesListResponse["abilities"][number]>[] = [
     {
-      label: "Ability Name",
+      label: t("abilities.table.abilityName"),
       render: (item) => (
         <button onClick={() => onOpen(item)}>{item.ability_name}</button>
       ),
     },
     {
-      label: "Tactics",
+      label: t("abilities.table.tactics"),
       render: (item) => item.tactic,
     },
     {
-      label: "Technique ID",
+      label: t("abilities.table.techniqueId"),
       render: (item) => item.technique_id,
     },
     {
-      label: "Technique Name",
+      label: t("abilities.table.techniqueName"),
       render: (item) => item.technique_name,
     },
     {
-      label: "Type",
+      label: t("abilities.table.type"),
       render: (item) => item.type,
     },
   ];
@@ -53,7 +55,7 @@ export const AbilitiesTable: React.FC<{
       {data ? (
         <Table data={data} columns={columns} />
       ) : (
-        <span className="text-center">No Data Available</span>
+        <span className="text-center">{t("abilities.page.empty")}</span>
       )}
       {modalData ? (
         <AbilityModal

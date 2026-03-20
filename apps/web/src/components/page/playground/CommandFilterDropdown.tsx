@@ -5,6 +5,7 @@ import type { UIEvent } from "react";
 import { Search, X } from "lucide-react";
 import trpc from "~/lib/trpc";
 import { cn } from "~/lib/utils";
+import { useI18n } from "~/i18n/I18nProvider";
 
 interface FilterState {
   platform: string | null;
@@ -33,6 +34,7 @@ export function CommandFilterDropdown({
   onSelectCommand,
   disabled = false,
 }: CommandFilterDropdownProps) {
+  const { t } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const [filterState, setFilterState] = useState<FilterState>({
     platform: null,
@@ -339,7 +341,7 @@ export function CommandFilterDropdown({
               {label}
             </span>
             <span className="text-sm truncate font-medium">
-              {value || "Any"}
+              {value || t("playground.filter.any")}
             </span>
           </div>
           {value && (
@@ -370,7 +372,7 @@ export function CommandFilterDropdown({
                       [filterType]: e.target.value,
                     }))
                   }
-                  placeholder="Search..."
+                  placeholder={t("common.searchPlaceholder")}
                   className="w-full rounded-md border border-base-700/60 bg-base-800/80 pl-8 pr-3 py-2 text-sm text-neutral-100 placeholder:text-neutral-500 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
                   autoFocus
                 />
@@ -378,8 +380,8 @@ export function CommandFilterDropdown({
             </div>
             <div className="overflow-y-auto max-h-56 py-1 pr-1">
               {options.length === 0 ? (
-                <div className="p-3 text-center text-xs text-neutral-400">
-                  No options found
+                  <div className="p-3 text-center text-xs text-neutral-400">
+                  {t("playground.filter.noOptionsFound")}
                 </div>
               ) : (
                 options.map((option) => (
@@ -411,12 +413,12 @@ export function CommandFilterDropdown({
         className="w-full flex items-center gap-2 rounded-lg bg-base-900/70 px-4 py-3.5 text-sm font-medium text-neutral-200 ring-1 ring-inset ring-base-700/60 transition-colors hover:bg-base-800 focus:outline-none focus:ring-2 focus:ring-primary-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <Search className="h-4 w-4" />
-        <span>Search commands</span>
+        <span>{t("playground.filter.searchCommands")}</span>
         {isOpen && (
           <span className="ml-auto flex items-center gap-2 text-xs text-neutral-400">
             <span className="inline-flex items-center rounded-full bg-base-800 px-2 py-0.5 text-[10px] text-neutral-300 ring-1 ring-inset ring-base-700">
-              {activeFilterCount || "No"} filter
-              {activeFilterCount === 1 ? "" : "s"}
+              {activeFilterCount || t("playground.filter.noFilters")}{" "}
+              {t("playground.filter.filters")}
             </span>
           </span>
         )}
@@ -428,7 +430,7 @@ export function CommandFilterDropdown({
             {/* Header */}
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                Filter Commands
+                {t("playground.filter.title")}
               </h3>
               <button
                 type="button"
@@ -442,7 +444,7 @@ export function CommandFilterDropdown({
             {/* Keyword search */}
             <div className="mb-4">
               <label className="text-[11px] font-semibold uppercase tracking-wide text-neutral-400">
-                Keyword
+                {t("common.keyword")}
               </label>
               <div className="mt-2 relative">
                 <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-400" />
@@ -450,7 +452,7 @@ export function CommandFilterDropdown({
                   type="text"
                   value={keywordQuery}
                   onChange={(e) => setKeywordQuery(e.target.value)}
-                  placeholder="Search by name, command, description..."
+                  placeholder={t("playground.filter.searchByKeyword")}
                   className="w-full rounded-md border border-base-700/60 bg-base-900/80 pl-8 pr-3 py-2 text-sm text-neutral-100 placeholder:text-neutral-500 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
                 />
               </div>
@@ -458,28 +460,28 @@ export function CommandFilterDropdown({
 
             {/* Filters Grid */}
             {isLoadingFilters ? (
-              <div className="p-4 text-center text-sm text-neutral-400">
-                Loading filters...
+                <div className="p-4 text-center text-sm text-neutral-400">
+                {t("playground.filter.loadingFilters")}
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-3 mb-4">
                 <FilterDropdown
-                  label="Platform"
+                  label={t("playground.filter.platform")}
                   filterType="platform"
                   value={filterState.platform}
                 />
                 <FilterDropdown
-                  label="Type"
+                  label={t("playground.filter.type")}
                   filterType="type"
                   value={filterState.type}
                 />
                 <FilterDropdown
-                  label="Technique"
+                  label={t("playground.filter.technique")}
                   filterType="technique"
                   value={filterState.techniqueName}
                 />
                 <FilterDropdown
-                  label="Tactic"
+                  label={t("playground.filter.tactic")}
                   filterType="tactic"
                   value={filterState.tactic}
                 />
@@ -490,14 +492,14 @@ export function CommandFilterDropdown({
             <div className="border-t border-base-700/60 pt-4">
               <div className="flex items-center justify-between mb-3">
                 <h4 className="text-[10px] font-semibold text-neutral-400 tracking-[0.08em] uppercase">
-                  Results
+                  {t("common.results")}
                 </h4>
                 <button
                   type="button"
                   onClick={handleReset}
                   className="text-xs text-neutral-400 hover:text-neutral-200 underline-offset-4 hover:underline"
                 >
-                  Reset All
+                  {t("common.resetAll")}
                 </button>
               </div>
 
@@ -508,18 +510,18 @@ export function CommandFilterDropdown({
               >
                 {isLoading ? (
                   <div className="p-4 text-center text-sm text-neutral-400">
-                    Searching commands...
+                    {t("playground.autocomplete.searching")}
                   </div>
                 ) : commands.length === 0 ? (
                   <div className="p-4 text-center text-sm text-neutral-400">
                     {keywordQuery.trim()
-                      ? "No commands found for that keyword."
+                      ? t("playground.filter.noCommandsByKeyword")
                       : filterState.platform ||
                         filterState.type ||
                         filterState.techniqueName ||
                         filterState.tactic
-                      ? "No commands found. Try adjusting your filters."
-                      : "Type a keyword or select filters to search for commands."}
+                      ? t("playground.filter.noCommandsByFilter")
+                      : t("playground.filter.searchKeywordHint")}
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -553,7 +555,7 @@ export function CommandFilterDropdown({
                     ))}
                     {isLoadingMore && (
                       <div className="px-4 py-2 text-center text-xs text-neutral-400">
-                        Loading more...
+                        {t("playground.filter.loadingMore")}
                       </div>
                     )}
                   </div>

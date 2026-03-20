@@ -11,6 +11,7 @@ import {
 } from "chart.js";
 import { Doughnut, Bar } from "react-chartjs-2";
 import type { RouterOutputs } from "~/lib/trpc";
+import { useI18n } from "~/i18n/I18nProvider";
 
 ChartJS.register(ArcElement, Tooltip, CategoryScale, LinearScale, BarElement);
 
@@ -114,13 +115,14 @@ const barChartOptions = {
 };
 
 export function AgentsCharts({ data }: AgentsChartsProps) {
+  const { t } = useI18n();
   const trustPercentage =
     data.totalCount > 0
       ? ((data.trustedCount / data.totalCount) * 100).toFixed(1)
       : "0.0";
 
   const trustChartData = {
-    labels: ["Trusted", "Untrusted"],
+    labels: [t("dashboard.chart.trusted"), t("dashboard.chart.untrusted")],
     datasets: [
       {
         data: [data.trustedCount, data.untrustedCount],
@@ -205,7 +207,7 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
           <div className="flex items-center gap-2">
             <div className="w-1 h-5 bg-green-400 rounded-full" />
             <h3 className="text-xs font-semibold text-neutral-200 uppercase tracking-wider">
-              Trust Status
+              {t("dashboard.chart.trustStatus")}
             </h3>
           </div>
           <div className="text-xs text-neutral-400 font-mono">
@@ -220,7 +222,7 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
                 {trustPercentage}%
               </div>
               <div className="text-xs text-neutral-400 uppercase tracking-wide">
-                Trusted
+                {t("dashboard.chart.trusted")}
               </div>
             </div>
           </div>
@@ -232,7 +234,9 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
               className="w-2.5 h-2.5 rounded-full shrink-0"
               style={{ backgroundColor: SCIENTIFIC_COLORS.trusted }}
             />
-            <span className="text-neutral-300 flex-1 text-xs">Trusted</span>
+            <span className="text-neutral-300 flex-1 text-xs">
+              {t("dashboard.chart.trusted")}
+            </span>
             <span className="text-neutral-400 font-mono text-xs">
               {data.trustedCount}
             </span>
@@ -242,7 +246,9 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
               className="w-2.5 h-2.5 rounded-full shrink-0"
               style={{ backgroundColor: SCIENTIFIC_COLORS.untrusted }}
             />
-            <span className="text-neutral-300 flex-1 text-xs">Untrusted</span>
+            <span className="text-neutral-300 flex-1 text-xs">
+              {t("dashboard.chart.untrusted")}
+            </span>
             <span className="text-neutral-400 font-mono text-xs">
               {data.untrustedCount}
             </span>
@@ -256,7 +262,7 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
           <div className="flex items-center gap-2">
             <div className="w-1 h-5 bg-primary-400 rounded-full" />
             <h3 className="text-xs font-semibold text-neutral-200 uppercase tracking-wider">
-              By Platform
+              {t("dashboard.chart.byPlatform")}
             </h3>
           </div>
           <div className="text-xs text-neutral-400 font-mono">
@@ -268,9 +274,9 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
         </div>
         {/* Summary Stats */}
         <div className="flex items-center justify-between text-xs pt-2 border-t border-base-700/30">
-          <span className="text-neutral-400">Platforms:</span>
+          <span className="text-neutral-400">{t("dashboard.chart.platforms")}</span>
           <span className="text-neutral-300 font-mono">
-            {data.byPlatform.length} unique
+            {t("dashboard.chart.unique", { count: data.byPlatform.length })}
           </span>
         </div>
       </div>
@@ -282,7 +288,7 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
             <div className="flex items-center gap-2">
               <div className="w-1 h-5 bg-accent-400 rounded-full" />
               <h3 className="text-xs font-semibold text-neutral-200 uppercase tracking-wider">
-                By Group
+                {t("dashboard.chart.byGroup")}
               </h3>
             </div>
             <div className="text-xs text-neutral-400 font-mono">
@@ -294,9 +300,9 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
           </div>
           {/* Summary Stats */}
           <div className="flex items-center justify-between text-xs pt-2 border-t border-base-700/30">
-            <span className="text-neutral-400">Groups:</span>
+            <span className="text-neutral-400">{t("dashboard.chart.groups")}</span>
             <span className="text-neutral-300 font-mono">
-              {data.byGroup.length} unique
+              {t("dashboard.chart.unique", { count: data.byGroup.length })}
             </span>
           </div>
         </div>
@@ -309,7 +315,7 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
             <div className="flex items-center gap-2">
               <div className="w-1 h-5 bg-green-400 rounded-full" />
               <h3 className="text-xs font-semibold text-neutral-200 uppercase tracking-wider">
-                By Privilege
+                {t("dashboard.chart.byPrivilege")}
               </h3>
             </div>
             <div className="text-xs text-neutral-400 font-mono">
@@ -321,9 +327,11 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
           </div>
           {/* Summary Stats */}
           <div className="flex items-center justify-between text-xs pt-2 border-t border-base-700/30">
-            <span className="text-neutral-400">Privilege Levels:</span>
+            <span className="text-neutral-400">
+              {t("dashboard.chart.privilegeLevels")}
+            </span>
             <span className="text-neutral-300 font-mono">
-              {data.byPrivilege.length} unique
+              {t("dashboard.chart.unique", { count: data.byPrivilege.length })}
             </span>
           </div>
         </div>

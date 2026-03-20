@@ -1,0 +1,43 @@
+export const enDashboardPageMessages = {
+  "dashboard.stats.totalAbilities": "Total Abilities",
+  "dashboard.stats.totalAbilitiesDesc": "Available attack techniques",
+  "dashboard.stats.totalAgents": "Total Agents",
+  "dashboard.stats.totalAgentsDesc": "Active agents in system",
+  "dashboard.stats.trustedAgents": "Trusted Agents",
+  "dashboard.stats.trustedAgentsDesc": "Verified and trusted",
+  "dashboard.stats.untrustedAgents": "Untrusted Agents",
+  "dashboard.stats.untrustedAgentsDesc": "Require verification",
+  "dashboard.mitre.title": "MITRE ATT&CK Coverage",
+  "dashboard.mitre.desc": "Overall technique coverage compared to MITRE ATT&CK Matrix",
+  "dashboard.mitre.empty": "No coverage data available",
+  "dashboard.abilities.title": "Abilities Distribution",
+  "dashboard.abilities.desc": "Visual breakdown of attack techniques and capabilities",
+  "dashboard.abilities.empty": "No abilities available",
+  "dashboard.agents.title": "Agents Distribution",
+  "dashboard.agents.desc": "Visual breakdown of active agents in the system",
+  "dashboard.agents.empty": "No agents available",
+  "dashboard.viewAll": "View all",
+} as const;
+
+type DashboardPageMessageKey = keyof typeof enDashboardPageMessages;
+
+export const koDashboardPageMessages: Record<DashboardPageMessageKey, string> = {
+  "dashboard.stats.totalAbilities": "전체 능력",
+  "dashboard.stats.totalAbilitiesDesc": "사용 가능한 공격 기법",
+  "dashboard.stats.totalAgents": "전체 에이전트",
+  "dashboard.stats.totalAgentsDesc": "시스템 내 활성 에이전트",
+  "dashboard.stats.trustedAgents": "신뢰 에이전트",
+  "dashboard.stats.trustedAgentsDesc": "검증 및 신뢰됨",
+  "dashboard.stats.untrustedAgents": "비신뢰 에이전트",
+  "dashboard.stats.untrustedAgentsDesc": "검증 필요",
+  "dashboard.mitre.title": "MITRE ATT&CK 커버리지",
+  "dashboard.mitre.desc": "MITRE ATT&CK 매트릭스 대비 전체 기법 커버리지",
+  "dashboard.mitre.empty": "커버리지 데이터가 없습니다",
+  "dashboard.abilities.title": "능력 분포",
+  "dashboard.abilities.desc": "공격 기법 및 기능의 시각적 분포",
+  "dashboard.abilities.empty": "능력 데이터가 없습니다",
+  "dashboard.agents.title": "에이전트 분포",
+  "dashboard.agents.desc": "시스템 내 활성 에이전트의 시각적 분포",
+  "dashboard.agents.empty": "에이전트 데이터가 없습니다",
+  "dashboard.viewAll": "전체 보기",
+};

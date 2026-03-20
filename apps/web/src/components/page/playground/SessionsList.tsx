@@ -5,6 +5,7 @@ import { Monitor } from "lucide-react";
 import SearchInput from "~/components/common/SearchInput/SearchInput";
 import { Pagination } from "~/components/common/Pagination/Pagination";
 import type { RouterOutputs } from "~/lib/trpc";
+import { useI18n } from "~/i18n/I18nProvider";
 
 type SessionsListResponse = RouterOutputs["sessions"]["list"];
 
@@ -42,6 +43,7 @@ export function SessionsList({
   selectedSessionId,
   onSelect,
 }: Props) {
+  const { t } = useI18n();
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -79,11 +81,18 @@ export function SessionsList({
       <div className="sticky shrink-0 top-0 z-10 border-b border-base-700/50 bg-base-900/60 backdrop-blur px-3 py-2">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-sm font-semibold text-white">Sessions</h2>
+            <h2 className="text-sm font-semibold text-white">
+              {t("playground.sessions.title")}
+            </h2>
             {data && (
               <p className="mt-0.5 text-xs text-neutral-400">
-                {data.sessions.length} total
-                {searchQuery && ` • ${filteredSessions.length} found`}
+                {t("playground.sessions.total", {
+                  count: data.sessions.length,
+                })}
+                {searchQuery &&
+                  ` • ${t("playground.sessions.found", {
+                    count: filteredSessions.length,
+                  })}`}
               </p>
             )}
           </div>
@@ -108,19 +117,26 @@ export function SessionsList({
           <div className="flex flex-1 items-center justify-center">
             <div className="text-center">
               <div className="mx-auto mb-2 h-8 w-8 rounded-full bg-base-800/70" />
-              <p className="text-xs text-neutral-400">No sessions</p>
+              <p className="text-xs text-neutral-400">
+                {t("playground.sessions.none")}
+              </p>
             </div>
           </div>
         ) : (
           <>
             <div className="mb-2 shrink-0">
-              <SearchInput onSearch={handleSearch} placeholder="Search..." />
+              <SearchInput
+                onSearch={handleSearch}
+                placeholder={t("common.searchPlaceholder")}
+              />
             </div>
             {filteredSessions.length === 0 ? (
               <div className="flex flex-1 items-center justify-center">
                 <div className="text-center">
                   <div className="mx-auto mb-2 h-8 w-8 rounded-full bg-base-800/70" />
-                  <p className="text-xs text-neutral-400">No matches</p>
+                  <p className="text-xs text-neutral-400">
+                    {t("playground.sessions.noMatches")}
+                  </p>
                 </div>
               </div>
             ) : (

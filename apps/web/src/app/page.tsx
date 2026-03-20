@@ -23,11 +23,13 @@ import { StatsCard } from "~/components/dashboard/StatsCard";
 import { MitreCoverageCharts } from "~/components/dashboard/MitreCoverageCharts";
 import trpc, { type RouterOutputs } from "~/lib/trpc";
 import Link from "next/link";
+import { useI18n } from "~/i18n/I18nProvider";
 
 type AbilitiesStatistics = RouterOutputs["abilities"]["statistics"];
 type AgentsStatistics = RouterOutputs["agents"]["statistics"];
 
 export default function Dashboard() {
+  const { t } = useI18n();
   const [abilitiesStats, setAbilitiesStats] = useState<
     AbilitiesStatistics | undefined
   >();
@@ -90,25 +92,25 @@ export default function Dashboard() {
       {/* Statistics Cards */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <StatsCard
-          title="Total Abilities"
+          title={t("dashboard.stats.totalAbilities")}
           value={abilitiesStats?.totalCount ?? 0}
-          description="Available attack techniques"
+          description={t("dashboard.stats.totalAbilitiesDesc")}
           icon={Database}
           variant="primary"
         />
 
         <StatsCard
-          title="Total Agents"
+          title={t("dashboard.stats.totalAgents")}
           value={agentsStats?.totalCount ?? 0}
-          description="Active agents in system"
+          description={t("dashboard.stats.totalAgentsDesc")}
           icon={Server}
           variant="accent"
         />
 
         <StatsCard
-          title="Trusted Agents"
+          title={t("dashboard.stats.trustedAgents")}
           value={agentsStats?.trustedCount ?? 0}
-          description="Verified and trusted"
+          description={t("dashboard.stats.trustedAgentsDesc")}
           icon={Shield}
           variant="success"
           trend={
@@ -121,9 +123,9 @@ export default function Dashboard() {
         />
 
         <StatsCard
-          title="Untrusted Agents"
+          title={t("dashboard.stats.untrustedAgents")}
           value={agentsStats?.untrustedCount ?? 0}
-          description="Require verification"
+          description={t("dashboard.stats.untrustedAgentsDesc")}
           icon={ShieldAlert}
           variant="danger"
           trend={
@@ -143,10 +145,10 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <CardTitle className="text-xl font-semibold text-white">
-                  MITRE ATT&CK Coverage
+                  {t("dashboard.mitre.title")}
                 </CardTitle>
                 <CardDescription className="text-sm text-neutral-400">
-                  Overall technique coverage compared to MITRE ATT&CK Matrix
+                  {t("dashboard.mitre.desc")}
                 </CardDescription>
               </div>
             </div>
@@ -162,7 +164,7 @@ export default function Dashboard() {
               <div className="text-center text-neutral-400 py-16">
                 <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />
                 <p className="text-lg font-medium">
-                  No coverage data available
+                  {t("dashboard.mitre.empty")}
                 </p>
               </div>
             )}
@@ -175,15 +177,15 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <CardTitle className="text-xl font-semibold text-white">
-                  Abilities Distribution
+                  {t("dashboard.abilities.title")}
                 </CardTitle>
                 <CardDescription className="text-sm text-neutral-400">
-                  Visual breakdown of attack techniques and capabilities
+                  {t("dashboard.abilities.desc")}
                 </CardDescription>
               </div>
               <Link href="/abilities">
                 <Button variant="tinted" size="sm">
-                  View all
+                  {t("dashboard.viewAll")}
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
@@ -199,7 +201,9 @@ export default function Dashboard() {
             ) : (
               <div className="text-center text-neutral-400 py-16">
                 <Database className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p className="text-lg font-medium">No abilities available</p>
+                <p className="text-lg font-medium">
+                  {t("dashboard.abilities.empty")}
+                </p>
               </div>
             )}
           </CardContent>
@@ -212,15 +216,15 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <CardTitle className="text-xl font-semibold text-white">
-                Agents Distribution
+                {t("dashboard.agents.title")}
               </CardTitle>
               <CardDescription className="text-sm text-neutral-400">
-                Visual breakdown of active agents in the system
+                {t("dashboard.agents.desc")}
               </CardDescription>
             </div>
             <Link href="/agents">
               <Button variant="tinted" size="sm">
-                View all
+                {t("dashboard.viewAll")}
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
@@ -236,7 +240,9 @@ export default function Dashboard() {
           ) : (
             <div className="text-center text-neutral-400 py-16">
               <Server className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium">No agents available</p>
+              <p className="text-lg font-medium">
+                {t("dashboard.agents.empty")}
+              </p>
             </div>
           )}
         </CardContent>

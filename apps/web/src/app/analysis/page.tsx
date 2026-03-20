@@ -13,7 +13,7 @@ export default function AnalysisWorkspacePage() {
   const [uploadedFiles, setUploadedFiles] = useState<MockFile[]>([]);
 
   return (
-    <div className="flex flex-col w-full h-full min-h-[calc(100vh-100px)] p-6 gap-6">
+    <div className="flex flex-col flex-1 w-full min-h-0 gap-6">
       {viewState === "upload" && (
         <UploadView onStartAnalysis={(files) => { setUploadedFiles(files); setViewState("loading"); }} />
       )}

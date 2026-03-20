@@ -4,10 +4,11 @@ import React, { useState, useMemo } from "react";
 import { Table, type TableColumn } from "~/components/common/Table/Table";
 import { Tag } from "~/components/common/Tag/Tag";
 import type { FuzzingRun } from "~/types/fuzzing";
-import { getRunResultColor, getRunResultLabel } from "~/utils/fuzzing.client";
+import { getRunResultColor } from "~/utils/fuzzing.client";
 import { FindingDetail } from "./FindingDetail";
 import { Search, ChevronDown } from "lucide-react";
 import clsx from "clsx";
+import { useI18n } from "~/i18n/I18nProvider";
 
 interface InteractionLogTableProps {
   runs: FuzzingRun[];
@@ -17,6 +18,7 @@ type SortField = "type" | "result" | "input" | "none";
 type SortDirection = "asc" | "desc";
 
 export function InteractionLogTable({ runs }: InteractionLogTableProps) {
+  const { t } = useI18n();
   const [selectedRun, setSelectedRun] = useState<FuzzingRun | null>(null);
   
   // Filters
@@ -109,10 +111,20 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
       setCurrentPage(1);
   }, [resultFilter, typeFilter, searchQuery, pageSize]);
 
+  const getLocalizedResultLabel = (result: FuzzingRun["result"]) => {
+    switch (result) {
+      case "ok":
+        return t("fuzzing.runResult.ok");
+      case "error":
+        return t("fuzzing.runResult.error");
+      case "timeout":
+        return t("fuzzing.runResult.timeout");
+    }
+  };
 
   const columns: TableColumn<FuzzingRun>[] = [
     {
-      label: "Type",
+      label: t("fuzzing.logs.column.type"),
       className: "w-[20%]",
       render: (run) => (
         <span className="text-neutral-400 font-mono text-xs">
@@ -121,7 +133,7 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
       ),
     },
     {
-      label: "Input",
+      label: t("fuzzing.logs.column.input"),
       className: "w-[35%]",
       render: (run) => (
         <button
@@ -133,7 +145,7 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
       ),
     },
     {
-      label: "Output",
+      label: t("fuzzing.logs.column.output"),
       className: "w-[35%]",
       render: (run) => (
         <span className="text-neutral-200 font-mono text-xs truncate w-full block text-left">
@@ -142,11 +154,11 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
       ),
     },
     {
-      label: "Result",
+      label: t("fuzzing.logs.column.result"),
       className: "w-[10%]",
       render: (run) => (
         <Tag
-          label={getRunResultLabel(run.result)}
+          label={getLocalizedResultLabel(run.result)}
           color={getRunResultColor(run.result)}
           size="sm"
         />
@@ -163,7 +175,7 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
                 <input 
                    type="text"
-                   placeholder="Search logs..."
+                   placeholder={t("fuzzing.logs.searchPlaceholder")}
                    value={searchQuery}
                    onChange={(e) => setSearchQuery(e.target.value)}
                    className="w-full bg-slate-950 border border-slate-700 rounded-lg py-2 pl-10 pr-4 text-sm text-white focus:ring-1 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
@@ -177,8 +189,8 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
                     onChange={(e) => setResultFilter(e.target.value)}
                     className="bg-slate-950 border border-slate-700 rounded-lg py-2 px-3 text-sm text-slate-300 outline-none focus:border-primary-500"
                  >
-                    <option value="all">All Results</option>
-                    {resultsPoints.map(r => <option key={r} value={r}>{getRunResultLabel(r)}</option>)}
+                    <option value="all">{t("fuzzing.logs.allResults")}</option>
+                    {resultsPoints.map(r => <option key={r} value={r}>{getLocalizedResultLabel(r)}</option>)}
                  </select>
 
                  <select
@@ -186,27 +198,33 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
                     onChange={(e) => setTypeFilter(e.target.value)}
                     className="bg-slate-950 border border-slate-700 rounded-lg py-2 px-3 text-sm text-slate-300 outline-none focus:border-primary-500"
                  >
-                    <option value="all">All Types</option>
-                    {typesPoints.map(t => <option key={t} value={t}>{t}</option>)}
+                    <option value="all">{t("fuzzing.logs.allTypes")}</option>
+                    {typesPoints.map((typeName) => (
+                      <option key={typeName} value={typeName}>
+                        {typeName}
+                      </option>
+                    ))}
                  </select>
                  
                  {/* Explicit Sort Control since Table headers might not be clickable */}
                  <div className="flex items-center gap-2 bg-slate-950 border border-slate-700 rounded-lg px-2">
-                    <span className="text-xs text-slate-500 px-1">Sort by:</span>
+                    <span className="text-xs text-slate-500 px-1">
+                      {t("fuzzing.logs.sortBy")}
+                    </span>
                     <select
                         value={sortField}
                         onChange={(e) => handleSort(e.target.value as SortField)}
                         className="bg-transparent text-sm text-slate-300 outline-none py-2"
                     >
-                        <option value="none">Default</option>
-                        <option value="type">Type</option>
-                        <option value="result">Result</option>
-                        <option value="input">Input</option>
+                        <option value="none">{t("fuzzing.logs.sortDefault")}</option>
+                        <option value="type">{t("fuzzing.logs.sortType")}</option>
+                        <option value="result">{t("fuzzing.logs.sortResult")}</option>
+                        <option value="input">{t("fuzzing.logs.sortInput")}</option>
                     </select>
                     <button 
                         onClick={() => setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')}
                         className="p-1 hover:bg-slate-800 rounded text-slate-400"
-                        title="Toggle Sort Direction"
+                        title={t("fuzzing.logs.toggleSortDirection")}
                     >
                         <ChevronDown className={clsx("w-4 h-4 transition-transform", sortDirection === 'desc' && "rotate-180")} />
                     </button>
@@ -222,7 +240,11 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
       {/* Pagination Controls */}
       <div className="flex-none flex justify-between items-center px-2 py-2">
           <div className="text-sm text-slate-400">
-              Showing {Math.min(filteredRuns.length, (currentPage - 1) * pageSize + 1)} to {Math.min(filteredRuns.length, currentPage * pageSize)} of {filteredRuns.length} entries
+              {t("fuzzing.logs.showingEntries", {
+                start: Math.min(filteredRuns.length, (currentPage - 1) * pageSize + 1),
+                end: Math.min(filteredRuns.length, currentPage * pageSize),
+                total: filteredRuns.length,
+              })}
           </div>
           
           <div className="flex gap-2 items-center">
@@ -231,9 +253,9 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
                 onChange={(e) => setPageSize(Number(e.target.value))}
                 className="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-slate-300 outline-none mr-4"
              >
-                <option value={20}>20 / page</option>
-                <option value={50}>50 / page</option>
-                <option value={100}>100 / page</option>
+                <option value={20}>{t("fuzzing.logs.perPage", { count: 20 })}</option>
+                <option value={50}>{t("fuzzing.logs.perPage", { count: 50 })}</option>
+                <option value={100}>{t("fuzzing.logs.perPage", { count: 100 })}</option>
              </select>
 
              <button
@@ -241,17 +263,20 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
                 disabled={currentPage === 1}
                 className="px-3 py-1 bg-slate-800 border border-slate-700 rounded text-sm text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-700"
              >
-                Previous
+                {t("common.previous")}
              </button>
              <span className="text-sm text-white px-2">
-                 Page {currentPage} of {totalPages || 1}
+                 {t("fuzzing.logs.pageOf", {
+                   page: currentPage,
+                   total: totalPages || 1,
+                 })}
              </span>
              <button
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages || totalPages === 0}
                 className="px-3 py-1 bg-slate-800 border border-slate-700 rounded text-sm text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-700"
              >
-                 Next
+                 {t("common.next")}
              </button>
           </div>
       </div>

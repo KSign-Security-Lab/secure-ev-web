@@ -8,12 +8,44 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import trpc, { type RouterOutputs } from "~/lib/trpc";
 import { Reveal } from "~/components/common/Reveal";
+import { useI18n } from "~/i18n/I18nProvider";
 
 type FuzzingJob = RouterOutputs["fuzzing"]["list"]["jobs"][0];
 
 export function RecentFuzzingJobs() {
+  const { locale, t } = useI18n();
   const [jobs, setJobs] = useState<FuzzingJob[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const getTargetTypeLabel = (targetType: string) => {
+    switch (targetType) {
+      case "ISO15118":
+        return t("fuzzing.target.iso15118Charger");
+      case "OCPP_CHARGER":
+        return t("fuzzing.target.ocppCharger");
+      case "OCPP_SERVER":
+        return t("fuzzing.target.ocppServer");
+      default:
+        return targetType;
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case "DRAFT":
+        return t("status.draft");
+      case "PENDING":
+        return t("status.pending");
+      case "RUNNING":
+        return t("status.running");
+      case "COMPLETED":
+        return t("status.completed");
+      case "FAILED":
+        return t("status.failed");
+      default:
+        return status;
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -57,11 +89,15 @@ export function RecentFuzzingJobs() {
     return (
        <div className="w-full text-center py-12 bg-slate-900/30 rounded-2xl border border-slate-800/50">
           <Shield className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-slate-300">No Recent Jobs</h3>
-          <p className="text-slate-500 mb-6">Start your first fuzzing session to see it here.</p>
+          <h3 className="text-xl font-bold text-slate-300">
+            {t("fuzzing.recentJobs.emptyTitle")}
+          </h3>
+          <p className="text-slate-500 mb-6">
+            {t("fuzzing.recentJobs.emptyDescription")}
+          </p>
           <Link href="/fuzzing/jobs">
             <Button variant="outline" className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10 hover:text-blue-300">
-              Go to Jobs Dashboard
+              {t("fuzzing.recentJobs.goToDashboard")}
             </Button>
           </Link>
        </div>
@@ -71,9 +107,11 @@ export function RecentFuzzingJobs() {
   return (
     <div className="w-full space-y-6">
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-2xl font-bold text-white">Recent Activity</h3>
+        <h3 className="text-2xl font-bold text-white">
+          {t("fuzzing.recentJobs.title")}
+        </h3>
         <Link href="/fuzzing/jobs" className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors">
-          View all jobs <ArrowRight size={14} />
+          {t("fuzzing.recentJobs.viewAll")} <ArrowRight size={14} />
         </Link>
       </div>
 
@@ -97,14 +135,14 @@ export function RecentFuzzingJobs() {
                 <div className="pl-3">
                   <div className="flex justify-between items-start mb-4">
                     <Badge variant="outline" className="bg-slate-950/50 border-slate-700 text-slate-400 text-xs">
-                      {job.targetType.replace('_', ' ')}
+                      {getTargetTypeLabel(job.targetType)}
                     </Badge>
                     <span className={`text-xs font-mono px-2 py-0.5 rounded ${
                         job.status === 'RUNNING' ? 'bg-blue-500/20 text-blue-300 animate-pulse' :
                         job.status === 'COMPLETED' ? 'bg-green-500/20 text-green-300' :
                         'bg-slate-800 text-slate-400'
                     }`}>
-                        {job.status}
+                        {getStatusLabel(job.status)}
                     </span>
                   </div>
 
@@ -115,7 +153,7 @@ export function RecentFuzzingJobs() {
                   <div className="flex items-center gap-4 text-xs text-slate-500 mt-auto pt-4 border-t border-slate-800/50">
                     <span className="flex items-center gap-1">
                       <Clock size={12} />
-                      {new Date(job.createdAt).toLocaleDateString()}
+                      {new Date(job.createdAt).toLocaleDateString(locale === "ko" ? "ko-KR" : "en-US")}
                     </span>
                     <span className="flex items-center gap-1 ml-auto">
                         <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-blue-400" />

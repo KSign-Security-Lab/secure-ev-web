@@ -1,0 +1,41 @@
+export const enDashboardChartMessages = {
+  "dashboard.chart.byTactic": "By Tactic",
+  "dashboard.chart.byPlatform": "By Platform",
+  "dashboard.chart.byType": "By Type",
+  "dashboard.chart.total": "Total",
+  "dashboard.chart.platforms": "Platforms:",
+  "dashboard.chart.types": "Types:",
+  "dashboard.chart.unique": "{count} unique",
+  "dashboard.chart.trustStatus": "Trust Status",
+  "dashboard.chart.trusted": "Trusted",
+  "dashboard.chart.untrusted": "Untrusted",
+  "dashboard.chart.byGroup": "By Group",
+  "dashboard.chart.byPrivilege": "By Privilege",
+  "dashboard.chart.groups": "Groups:",
+  "dashboard.chart.privilegeLevels": "Privilege Levels:",
+  "dashboard.chart.covered": "Covered",
+  "dashboard.chart.coveredTechniques": "Covered Techniques",
+  "dashboard.chart.totalTechniques": "Total Techniques",
+} as const;
+
+type DashboardChartMessageKey = keyof typeof enDashboardChartMessages;
+
+export const koDashboardChartMessages: Record<DashboardChartMessageKey, string> = {
+  "dashboard.chart.byTactic": "전술별",
+  "dashboard.chart.byPlatform": "플랫폼별",
+  "dashboard.chart.byType": "유형별",
+  "dashboard.chart.total": "총계",
+  "dashboard.chart.platforms": "플랫폼:",
+  "dashboard.chart.types": "유형:",
+  "dashboard.chart.unique": "{count}개",
+  "dashboard.chart.trustStatus": "신뢰 상태",
+  "dashboard.chart.trusted": "신뢰",
+  "dashboard.chart.untrusted": "비신뢰",
+  "dashboard.chart.byGroup": "그룹별",
+  "dashboard.chart.byPrivilege": "권한별",
+  "dashboard.chart.groups": "그룹:",
+  "dashboard.chart.privilegeLevels": "권한 수준:",
+  "dashboard.chart.covered": "커버됨",
+  "dashboard.chart.coveredTechniques": "커버된 기법",
+  "dashboard.chart.totalTechniques": "전체 기법",
+};

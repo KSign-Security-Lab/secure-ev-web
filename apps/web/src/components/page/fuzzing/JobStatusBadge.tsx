@@ -1,11 +1,26 @@
 import React from "react";
 import clsx from "clsx";
+import { useI18n } from "~/i18n/I18nProvider";
 
 interface JobStatusBadgeProps {
   status: string;
 }
 
 export function JobStatusBadge({ status }: JobStatusBadgeProps) {
+  const { t } = useI18n();
+  const statusLabel =
+    status === "RUNNING"
+      ? t("status.running")
+      : status === "COMPLETED"
+      ? t("status.completed")
+      : status === "FAILED"
+      ? t("status.failed")
+      : status === "PENDING"
+      ? t("status.pending")
+      : status === "DRAFT"
+      ? t("status.draft")
+      : status;
+
   return (
     <span
       className={clsx(
@@ -19,7 +34,7 @@ export function JobStatusBadge({ status }: JobStatusBadgeProps) {
         }
       )}
     >
-      {status}
+      {statusLabel}
     </span>
   );
 }

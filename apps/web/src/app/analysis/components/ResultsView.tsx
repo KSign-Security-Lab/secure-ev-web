@@ -7,11 +7,13 @@ import { File as FileIcon, ChevronDown, ChevronRight, Folder } from "lucide-reac
 import ResultDetail from "./ResultDetail";
 import CodeViewer from "./CodeViewer";
 
-import { MockFile } from "./mockData";
+import { AnalysisResult, MockFile } from "./mockData";
+import { useI18n } from "~/i18n/I18nProvider";
 
 interface ResultsViewProps { uploadedFiles: MockFile[] }
 
 export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
+  const { t } = useI18n();
 
 
   // Generate random mock results for the uploaded files
@@ -82,12 +84,25 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
     });
   };
 
-  const getRiskBadgeColor = (risk: string) => {
+  const getRiskBadgeColor = (risk: AnalysisResult["risk"]) => {
     switch (risk) {
       case "High": return "red";
       case "Medium": return "yellow";
       case "Low": return "green";
       default: return "default";
+    }
+  };
+
+  const getRiskLabel = (risk: AnalysisResult["risk"]) => {
+    switch (risk) {
+      case "High":
+        return t("risk.high");
+      case "Medium":
+        return t("risk.medium");
+      case "Low":
+        return t("risk.low");
+      default:
+        return risk;
     }
   };
 
@@ -190,7 +205,7 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
                   >
                     <div className="flex justify-between items-center w-full">
                       <Badge variant={getRiskBadgeColor(res.risk) as any} className="text-[10px] px-1.5 py-0 leading-tight">
-                        {res.risk}
+                        {getRiskLabel(res.risk)}
                       </Badge>
                       <span className="text-xs text-[#8b949e] font-mono">L{res.lineInfo.split('-')[0]}</span>
                     </div>
@@ -208,25 +223,19 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-140px)] w-full gap-4">
+    <div className="flex flex-col flex-1 w-full min-h-0 gap-4">
       {/* Header Area */}
       <div className="flex justify-between items-center px-2">
         <div>
           <h2 className="text-xl font-bold text-[#c9d1d9] flex items-center gap-2">
-            Analysis Results
+            {t("analysis.results.title")}
             <Badge variant="outline" className="border-[#30363d] text-[#8b949e] font-mono">
-              {activeResults.length} Issues Found
+              {t("analysis.results.issuesFound", { count: activeResults.length })}
             </Badge>
           </h2>
-          <p className="text-sm text-[#8b949e] mt-1">Review detected issues and trace data flows.</p>
-        </div>
-        <div className="flex gap-2">
-          <button
-            className="px-3 py-1.5 text-sm font-medium bg-[#21262d] text-[#c9d1d9] hover:bg-[#30363d] rounded-md transition"
-            onClick={() => alert("Export report feature is a placeholder and will be implemented later.")}
-          >
-            Export Report
-          </button>
+          <p className="text-sm text-[#8b949e] mt-1">
+            {t("analysis.results.subtitle")}
+          </p>
         </div>
       </div>
 
@@ -234,9 +243,9 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
       <div className="flex flex-1 overflow-hidden border border-[#30363d] rounded-lg">
 
         {/* Left: Files & Issues Explorer */}
-        <div className="w-80 flex-shrink-0 bg-[#0d1117] border-r border-[#30363d] flex flex-col">
+        <div className="w-80 shrink-0 bg-[#0d1117] border-r border-[#30363d] flex flex-col">
           <div className="p-3 text-xs font-semibold text-[#8b949e] uppercase tracking-wider border-b border-[#30363d] bg-[#161b22]">
-            Files & Issues
+            {t("analysis.results.filesAndIssues")}
           </div>
           <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
              {renderTree(tree)}
