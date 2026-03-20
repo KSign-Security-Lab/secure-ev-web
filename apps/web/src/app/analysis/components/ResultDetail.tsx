@@ -93,12 +93,16 @@ export default function ResultDetail({ result }: ResultDetailProps) {
 
             <Dialog>
               <DialogTrigger asChild>
-                <button className="w-full flex items-center justify-between p-2 bg-[#0d1117] hover:bg-[#161b22] border border-[#30363d] rounded-md transition text-sm text-[#8b949e] font-medium">
-                  <span className="flex items-center gap-2">
-                     <Info className="w-4 h-4 text-[#8b949e]" />
-                     Full Data Flow Analysis
+                <button className="w-full flex items-center justify-between p-3 bg-blue-900/20 hover:bg-blue-800/30 border border-blue-500/30 hover:border-blue-500/60 rounded-lg transition-all group shadow-[0_0_15px_-5px_rgba(59,130,246,0.1)]">
+                  <span className="flex items-center gap-3">
+                     <div className="p-2 rounded-md bg-blue-500/20 text-[#79c0ff] group-hover:bg-blue-500/30 group-hover:text-white border border-blue-500/30 transition-all">
+                        <Info className="w-4 h-4" />
+                     </div>
+                     <span className="text-sm font-semibold text-[#c9d1d9] group-hover:text-white transition-colors">
+                        Full Data Flow Analysis
+                     </span>
                   </span>
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-4 h-4 text-[#79c0ff]/60 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
                 </button>
               </DialogTrigger>
               <DialogContent className="max-w-4xl h-[85vh] flex flex-col p-6 overflow-hidden">
@@ -136,12 +140,16 @@ export default function ResultDetail({ result }: ResultDetailProps) {
 
             <Dialog>
               <DialogTrigger asChild>
-                <button className="w-full flex items-center justify-between p-2 bg-[#0d1117] hover:bg-[#161b22] border border-[#30363d] rounded-md transition text-sm text-[#8b949e] font-medium">
-                  <span className="flex items-center gap-2">
-                     <GitCompare className="w-4 h-4 text-[#8b949e]" />
-                     Similar Signatures
+                <button className="w-full flex items-center justify-between p-3 bg-purple-900/20 hover:bg-purple-800/30 border border-purple-500/30 hover:border-purple-500/60 rounded-lg transition-all group shadow-[0_0_15px_-5px_rgba(168,85,247,0.1)]">
+                  <span className="flex items-center gap-3">
+                     <div className="p-2 rounded-md bg-purple-500/20 text-[#d2a8ff] group-hover:bg-purple-500/30 group-hover:text-white border border-purple-500/30 transition-all">
+                        <GitCompare className="w-4 h-4" />
+                     </div>
+                     <span className="text-sm font-semibold text-[#c9d1d9] group-hover:text-white transition-colors">
+                        Similar Signatures
+                     </span>
                   </span>
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-4 h-4 text-[#d2a8ff]/60 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
                 </button>
               </DialogTrigger>
               <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
