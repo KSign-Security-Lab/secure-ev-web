@@ -47,7 +47,7 @@ export default function Abilities() {
   return (
     <div className="flex flex-col w-full bg-base-900 p-8 rounded-xl">
       {/* Main Content */}
-      <div className="mt-4 flex flex-col space-y-6 min-h-[700px]">
+      <div className="mt-4 flex flex-col flex-1 space-y-6 min-h-0">
         {isLoading ? (
           <Loading />
         ) : data ? (

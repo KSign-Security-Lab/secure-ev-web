@@ -223,7 +223,7 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-140px)] w-full gap-4">
+    <div className="flex flex-col flex-1 w-full min-h-0 gap-4">
       {/* Header Area */}
       <div className="flex justify-between items-center px-2">
         <div>
