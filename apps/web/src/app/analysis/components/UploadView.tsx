@@ -18,6 +18,7 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
   const { t } = useI18n();
   const [files, setFiles] = useState<MockFile[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isValidExtension = (filename: string) => {
@@ -87,6 +88,34 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
     setFiles(files.filter((_, i) => i !== index));
   };
 
+  const removeAll = () => {
+    setFiles([]);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      for (let i = 0; i < e.dataTransfer.files.length; i++) {
+        await processFile(e.dataTransfer.files[i]);
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-2xl mx-auto h-full space-y-8">
       <div className="text-center">
@@ -104,14 +133,21 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
       />
 
       <div
-        className="w-full border-2 border-dashed border-[#8b949e] rounded-lg p-12 flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 transition-colors"
+        className={`w-full border-2 border-dashed rounded-lg p-12 flex flex-col items-center justify-center cursor-pointer transition-all duration-200 ${
+          isDragging
+            ? "border-blue-500 bg-blue-500/10 scale-[1.01] shadow-[0_0_20px_-5px_rgba(59,130,246,0.3)]"
+            : "border-[#8b949e] hover:border-blue-500 bg-transparent"
+        }`}
         onClick={() => fileInputRef.current?.click()}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
       >
-        <UploadCloud className="w-12 h-12 text-[#8b949e] mb-4" />
-        <p className="text-[#8b949e] font-medium">
+        <UploadCloud className={`w-12 h-12 mb-4 transition-colors ${isDragging ? "text-blue-400" : "text-[#8b949e]"}`} />
+        <p className={`font-medium transition-colors ${isDragging ? "text-blue-200" : "text-[#8b949e]"}`}>
           {t("analysis.upload.dropzoneInstruction")}
         </p>
-        <p className="text-[#8b949e] text-sm mt-1">
+        <p className={`text-sm mt-1 transition-colors ${isDragging ? "text-blue-300/60" : "text-[#8b949e]"}`}>
           {t("analysis.upload.dropzoneFormats")}
         </p>
       </div>
@@ -125,9 +161,18 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
 
       {files.length > 0 && (
         <div className="w-full">
-          <h3 className="text-lg font-semibold mb-3">
-            {t("analysis.upload.uploadedFiles")}
-          </h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-semibold">
+              {t("analysis.upload.uploadedFiles")}
+            </h3>
+            <button
+              onClick={removeAll}
+              className="text-xs text-[#8b949e] hover:text-[#ff7b72] flex items-center gap-1 transition-colors group"
+            >
+              <Trash2 className="w-3 h-3 transition-colors group-hover:text-[#ff7b72]" />
+              {t("analysis.upload.deleteAll")}
+            </button>
+          </div>
           <div className="space-y-2 mb-6 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
             {files.map((file, idx) => (
               <div

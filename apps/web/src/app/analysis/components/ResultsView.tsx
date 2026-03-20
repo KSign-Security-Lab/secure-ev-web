@@ -237,21 +237,13 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
             {t("analysis.results.subtitle")}
           </p>
         </div>
-        <div className="flex gap-2">
-          <button
-            className="px-3 py-1.5 text-sm font-medium bg-[#21262d] text-[#c9d1d9] hover:bg-[#30363d] rounded-md transition"
-            onClick={() => alert(t("analysis.results.exportPlaceholder"))}
-          >
-            {t("analysis.results.exportReport")}
-          </button>
-        </div>
       </div>
 
       {/* Main Split View: Left sidebar for Files/Issues, Center/Right for Code/Explanation */}
       <div className="flex flex-1 overflow-hidden border border-[#30363d] rounded-lg">
 
         {/* Left: Files & Issues Explorer */}
-        <div className="w-80 flex-shrink-0 bg-[#0d1117] border-r border-[#30363d] flex flex-col">
+        <div className="w-80 shrink-0 bg-[#0d1117] border-r border-[#30363d] flex flex-col">
           <div className="p-3 text-xs font-semibold text-[#8b949e] uppercase tracking-wider border-b border-[#30363d] bg-[#161b22]">
             {t("analysis.results.filesAndIssues")}
           </div>
