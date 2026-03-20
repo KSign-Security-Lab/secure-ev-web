@@ -11,7 +11,7 @@ interface ExplainabilityPanelsProps {
 const InfoRow = ({ label, value }: { label: string; value?: string }) => (
   <div className="flex items-center justify-between text-sm text-[#8b949e] py-1">
     <span>{label}</span>
-    <span className="font-mono text-[#c9d1d9] truncate max-w-[60%] text-right" title={value || "N/A"}>
+    <span className="font-mono text-[#c9d1d9] text-right wrap-break-word" title={value || "N/A"}>
       {value || "N/A"}
     </span>
   </div>
@@ -38,10 +38,10 @@ export default function ExplainabilityPanels({ result }: ExplainabilityPanelsPro
             <Icon className={tone === "danger" ? "text-[#f85149]" : tone === "safe" ? "text-[#56d364]" : "text-[#d29922]"} size={16} />
             <span className="font-semibold text-[#c9d1d9]">{label}</span>
           </div>
-          <CardTitle className="text-base text-[#c9d1d9]">{functionName}</CardTitle>
+          <CardTitle className="text-base text-[#c9d1d9] wrap-break-word">{functionName}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 pt-4">
-          <p className="text-sm text-[#8b949e] leading-relaxed">
+          <p className="text-sm text-[#8b949e] leading-relaxed wrap-break-word">
             {dfInfo.diagnostics?.notes || "Data flow analysis summary not available."}
           </p>
           <div className="grid grid-cols-2 gap-3">

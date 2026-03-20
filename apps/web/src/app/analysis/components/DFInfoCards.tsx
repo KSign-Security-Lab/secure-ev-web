@@ -11,7 +11,7 @@ interface DFInfoCardsProps {
 const PropRow = ({ label, value }: { label: string; value: string }) => (
   <div className="flex justify-between items-center py-1 text-sm border-b border-[#30363d] last:border-0">
     <span className="text-[#8b949e]">{label}</span>
-    <span className="font-mono text-[#8b949e] truncate max-w-[60%] text-right" title={value}>
+    <span className="font-mono text-[#8b949e] text-right wrap-break-word" title={value}>
       {value}
     </span>
   </div>

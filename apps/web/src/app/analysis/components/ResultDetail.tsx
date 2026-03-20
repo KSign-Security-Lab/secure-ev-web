@@ -23,8 +23,8 @@ export default function ResultDetail({ result }: ResultDetailProps) {
 
   if (!result) {
     return (
-      <div className="flex-1 flex items-center justify-center text-[#8b949e] bg-[#0d1117] border-l border-[#30363d]">
-        <p className="text-sm">Select a vulnerability or code line to view details.</p>
+      <div className="w-80 md:w-96 shrink-0 flex items-center justify-center text-[#8b949e] bg-[#0d1117] border-l border-[#30363d]">
+        <p className="text-sm text-center px-6">Select a vulnerability or code line to view details.</p>
       </div>
     );
   }
@@ -32,29 +32,29 @@ export default function ResultDetail({ result }: ResultDetailProps) {
   const isDangerous = result.dfInfo.validation.upper_vs_capacity === "Unbounded" || result.dfInfo.validation.upper === "None";
 
   return (
-    <div className="flex flex-col h-full bg-[#161b22] border-l border-[#30363d] w-80 md:w-96 flex-shrink-0">
+    <div className="flex flex-col h-full bg-[#161b22] border-l border-[#30363d] w-80 md:w-96 shrink-0 overflow-hidden">
       <div className="p-4 border-b border-[#30363d] flex justify-between items-center bg-[#0d1117]">
         <h3 className="text-sm font-semibold text-[#c9d1d9]">Issue Explanation</h3>
 
       </div>
 
-      <ScrollArea className="flex-1">
-        <div className="p-4 space-y-6">
+      <ScrollArea className="flex-1 w-full">
+        <div className="p-4 space-y-6 w-full overflow-hidden">
 
           {/* Header Info */}
-          <div>
-            <div className="flex items-center gap-2 mb-2">
+          <div className="max-w-full overflow-hidden">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
               <Badge variant={result.risk === "High" ? "red" : result.risk === "Medium" ? "yellow" : "green" as any}>
                 {result.risk} Risk
               </Badge>
-              <Badge variant="outline" className="border-[#30363d] text-[#8b949e]">
+              <Badge variant="outline" className="border-[#30363d] text-[#8b949e] truncate">
                 {result.sinkKind}
               </Badge>
             </div>
-            <h4 className="text-lg font-bold font-mono text-[#c9d1d9] break-words">
+            <h4 className="text-lg font-bold font-mono text-[#c9d1d9] break-all whitespace-normal">
               {result.functionName}
             </h4>
-            <p className="text-sm text-[#8b949e] mt-1 font-mono break-all">
+            <p className="text-sm text-[#8b949e] mt-1 font-mono break-all whitespace-normal">
               {result.filePath}:{result.startLine}-{result.endLine}
             </p>
           </div>
@@ -65,24 +65,24 @@ export default function ResultDetail({ result }: ResultDetailProps) {
                   <div className="flex items-start gap-2">
                      {isDangerous ? <AlertTriangle className="w-4 h-4 text-[#f85149] mt-0.5 shrink-0" /> : <Info className="w-4 h-4 text-[#58a6ff] mt-0.5 shrink-0" />}
                      <div>
-                       <span className="text-sm font-semibold text-[#c9d1d9] block mb-1">
+                       <span className="text-sm font-semibold text-[#c9d1d9] block mb-1 break-all whitespace-normal">
                          {result.dfInfo.diagnostics.class}
                        </span>
-                       <p className="text-sm text-[#8b949e] leading-relaxed">
-                         {result.dfInfo.diagnostics.notes}.
+                       <div className="text-sm text-[#8b949e] leading-relaxed wrap-break-word whitespace-normal">
+                         <p className="inline wrap-break-word">{result.dfInfo.diagnostics.notes}. </p>
                          The
                          <span className="font-semibold mx-1">request basis</span>
-                         is <span className="text-[#d29922] font-mono">{result.dfInfo.request.length_basis}</span> against
+                         is <span className="text-[#d29922] font-mono break-all">{result.dfInfo.request.length_basis}</span> against
                          <span className="font-semibold mx-1">capacity</span>
-                         <span className="text-[#56d364] font-mono">{result.dfInfo.capacity.value}</span>.
-                       </p>
+                         <span className="text-[#56d364] font-mono break-all">{result.dfInfo.capacity.value}</span>.
+                       </div>
                      </div>
                   </div>
                </div>
 
                <div className="flex items-center gap-2 text-sm text-[#8b949e] bg-[#0d1117] p-3 rounded-md border border-[#30363d]">
                   <span className="text-[#8b949e]">Root Cause:</span>
-                  <span className="text-[#d29922] font-medium">{result.dfInfo.root_cause.kind}</span>
+                  <span className="text-[#d29922] font-medium break-all">{result.dfInfo.root_cause.kind}</span>
 
                </div>
             </div>
@@ -101,32 +101,32 @@ export default function ResultDetail({ result }: ResultDetailProps) {
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </DialogTrigger>
-              <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-hidden flex flex-col">
+              <DialogContent className="max-w-4xl h-[85vh] flex flex-col p-6 overflow-hidden">
                 <DialogHeader className="shrink-0">
                   <DialogTitle>Full Data Flow Analysis</DialogTitle>
-                  <p className="text-sm text-[#8b949e] mt-2">
+                  <p className="text-sm text-[#8b949e] mt-2 wrap-break-word">
                     Review how data travels through your code. This helps verify if a vulnerability is reachable and correctly diagnosed.
                   </p>
                 </DialogHeader>
-                <div className="flex-1 overflow-hidden mt-4">
+                <div className="flex-1 min-h-0 mt-6 overflow-hidden">
                   <Tabs defaultValue="explanation" className="h-full flex flex-col">
                     <TabsList className="shrink-0 grid w-full grid-cols-2 max-w-[400px]">
                       <TabsTrigger value="explanation">Explanation</TabsTrigger>
                       <TabsTrigger value="raw">Raw Data Flow Nodes</TabsTrigger>
                     </TabsList>
-                    <div className="flex-1 overflow-y-auto custom-scrollbar mt-4 pr-2">
-                      <TabsContent value="explanation" className="m-0 space-y-4">
-
+                    <TabsContent value="explanation" className="flex-1 overflow-y-auto custom-scrollbar mt-4 pr-2 focus-visible:ring-0">
+                      <div className="space-y-4">
                         <ExplainabilityPanels result={result} />
-                      </TabsContent>
-                      <TabsContent value="raw" className="m-0 space-y-4">
-
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="raw" className="flex-1 overflow-y-auto custom-scrollbar mt-4 pr-2 focus-visible:ring-0">
+                       <div className="space-y-4">
                         <DFInfoCards dfInfo={result.dfInfo} />
-                      </TabsContent>
-                    </div>
+                      </div>
+                    </TabsContent>
                   </Tabs>
                 </div>
-                <DialogFooter className="shrink-0 border-t border-[#30363d] pt-4">
+                <DialogFooter className="shrink-0 border-t border-[#30363d] pt-4 mt-6">
                   <DialogClose asChild>
                     <Button variant="outline">Close</Button>
                   </DialogClose>
@@ -144,7 +144,7 @@ export default function ResultDetail({ result }: ResultDetailProps) {
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </DialogTrigger>
-              <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>Similar Signatures</DialogTitle>
                   <p className="text-sm text-[#8b949e] mt-2">
