@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Checkbox } from "~/components/ui/checkbox";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Label } from "~/components/ui/label";
 import { cn } from "~/lib/utils";
 import { ChevronRight, ChevronDown } from "lucide-react";
+import { useI18n } from "~/i18n/I18nProvider";
 
 interface MessageSelectorProps {
   messages: Record<string, string[]>;
@@ -18,8 +19,10 @@ export function MessageSelector({
   messages, 
   selectedMessages, 
   onChange,
-  title = "Select Messages"
+  title
 }: MessageSelectorProps) {
+  const { t } = useI18n();
+  const resolvedTitle = title ?? t("fuzzing.messageSelector.selectMessages");
 
   const allMessages = Object.values(messages).flat();
   const allSelected = allMessages.every(m => selectedMessages.includes(m)) && allMessages.length > 0;
@@ -72,13 +75,15 @@ export function MessageSelector({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between px-1">
-        <Label className="text-slate-300 font-medium text-xs uppercase tracking-wider">{title}</Label>
+        <Label className="text-slate-300 font-medium text-xs uppercase tracking-wider">{resolvedTitle}</Label>
         <button
           onClick={handleSelectAll}
           type="button"
           className="text-[10px] uppercase font-bold text-blue-400 hover:text-blue-300 transition-colors tracking-wide"
         >
-          {allSelected ? "Deselect All" : "Select All"}
+          {allSelected
+            ? t("fuzzing.messageSelector.deselectAll")
+            : t("fuzzing.messageSelector.selectAll")}
         </button>
       </div>
 
@@ -159,8 +164,16 @@ export function MessageSelector({
           </div>
         </ScrollArea>
         <div className="px-3 py-2 border-t border-slate-800 flex justify-between items-center text-[10px] text-slate-500 bg-slate-900/50">
-           <span className="font-medium text-slate-400">{selectedMessages.length} selected</span>
-           <span>{allMessages.length} total messages</span>
+           <span className="font-medium text-slate-400">
+             {t("fuzzing.messageSelector.selectedCount", {
+               count: selectedMessages.length,
+             })}
+           </span>
+           <span>
+             {t("fuzzing.messageSelector.totalMessages", {
+               count: allMessages.length,
+             })}
+           </span>
         </div>
       </div>
     </div>

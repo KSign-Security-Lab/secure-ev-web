@@ -4,12 +4,14 @@ import React, { useMemo } from "react";
 import { ShieldAlert, ShieldCheck, AlertTriangle, CheckCircle } from "lucide-react";
 import type { FuzzingReport } from "~/types/fuzzing";
 import { analyzeRuns } from "~/utils/fuzzing.client";
+import { useI18n } from "~/i18n/I18nProvider";
 
 interface FuzzingInterpretationProps {
   report: FuzzingReport;
 }
 
 export function FuzzingInterpretation({ report }: FuzzingInterpretationProps) {
+  const { t } = useI18n();
   const analysis = useMemo(() => {
     return analyzeRuns(report.runs);
   }, [report]);
@@ -20,39 +22,45 @@ export function FuzzingInterpretation({ report }: FuzzingInterpretationProps) {
   const getContent = () => {
     if (stats.crashes > 0) {
       return {
-          title: "Critical Failures Detected",
+          title: t("fuzzing.interpretation.criticalTitle"),
           color: "red",
           icon: ShieldAlert,
           bg: "bg-red-500/10",
           border: "border-red-500/20",
           text: "text-red-200",
           titleText: "text-red-100",
-          summary: `The fuzzing session identified ${stats.crashes} critical failures (crashes). These issues typically indicate severe vulnerabilities that could lead to denial of service or remote code execution.`,
-          action: "Immediate investigation of the crash logs is recommended.",
+          summary: t("fuzzing.interpretation.criticalSummary", {
+            count: stats.crashes,
+          }),
+          action: t("fuzzing.interpretation.criticalAction"),
       };
     } else if (stats.timeouts > 0) {
       return {
-          title: "Performance Issues Detected",
+          title: t("fuzzing.interpretation.performanceTitle"),
           color: "yellow",
           icon: AlertTriangle,
           bg: "bg-yellow-500/10",
           border: "border-yellow-500/20",
           text: "text-yellow-200",
           titleText: "text-yellow-100",
-          summary: `The scan detected ${stats.timeouts} timeouts. While no direct crashes occurred, timeouts can indicate resource exhaustion bugs or potential denial of service vectors.`,
-          action: "Review timeout cases to ensure system responsiveness.",
+          summary: t("fuzzing.interpretation.performanceSummary", {
+            count: stats.timeouts,
+          }),
+          action: t("fuzzing.interpretation.performanceAction"),
       };
     } else {
       return {
-          title: "System Appears Secure",
+          title: t("fuzzing.interpretation.secureTitle"),
           color: "green",
           icon: ShieldCheck,
           bg: "bg-green-500/10",
           border: "border-green-500/20",
           text: "text-green-200",
           titleText: "text-green-100",
-          summary: `No significant issues were found across ${stats.total} test cases. The target handled all malformed inputs without crashing or timing out.`,
-          action: "Continue monitoring and perform regular regression testing.",
+          summary: t("fuzzing.interpretation.secureSummary", {
+            count: stats.total,
+          }),
+          action: t("fuzzing.interpretation.secureAction"),
       };
     }
   };

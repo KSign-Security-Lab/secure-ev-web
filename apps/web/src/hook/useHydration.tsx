@@ -13,13 +13,13 @@ export function useHydration<T extends PersistableStore>(store: T): boolean {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    const unsub = store.persist.onFinishHydration(() => {
+    if (store.persist.hasHydrated()) {
+      setTimeout(() => setHydrated(true), 0);
+    }
+    
+    return store.persist.onFinishHydration(() => {
       setHydrated(true);
     });
-
-    setHydrated(store.persist.hasHydrated());
-
-    return () => unsub();
   }, [store]);
 
   return hydrated;

@@ -1,5 +1,6 @@
 import { AttackExecutor } from "~/types/defend";
 import { useState } from "react";
+import { useI18n } from "~/i18n/I18nProvider";
 
 interface InnerContentProps {
   execData: AttackExecutor;
@@ -10,6 +11,7 @@ const InnerContent: React.FC<InnerContentProps> = ({
   execData,
   availablePlatforms,
 }) => {
+  const { t } = useI18n();
   return (
     <>
       {/* Platform Radio */}
@@ -41,7 +43,7 @@ const InnerContent: React.FC<InnerContentProps> = ({
       <div>
         <textarea
           className="bg-base-800 p-2 w-full rounded resize-none"
-          placeholder="내용..."
+          placeholder={t("abilities.executors.payloadPlaceholder")}
           rows={3}
           defaultValue={execData.payloads.join("\n")}
         />
@@ -49,7 +51,9 @@ const InnerContent: React.FC<InnerContentProps> = ({
 
       {/* Command block */}
       <div>
-        <label className="block text-sm font-medium mb-1">Command</label>
+        <label className="block text-sm font-medium mb-1">
+          {t("abilities.executors.command")}
+        </label>
         <textarea
           className="bg-base-800 p-2 w-full rounded resize-none font-mono text-sm leading-relaxed"
           rows={6}
@@ -60,7 +64,9 @@ const InnerContent: React.FC<InnerContentProps> = ({
       {/* Timeout + Cleanup */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Timeout</label>
+          <label className="block text-sm font-medium mb-1">
+            {t("abilities.executors.timeout")}
+          </label>
           <input
             type="number"
             className="bg-base-800 p-2 rounded w-full"
@@ -68,7 +74,9 @@ const InnerContent: React.FC<InnerContentProps> = ({
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Cleanup</label>
+          <label className="block text-sm font-medium mb-1">
+            {t("abilities.executors.cleanup")}
+          </label>
           <input
             type="number"
             className="bg-base-800 p-2 rounded w-full"
@@ -85,6 +93,7 @@ interface ExecutorsTabProps {
 }
 
 export const ExecutorsTab: React.FC<ExecutorsTabProps> = ({ data }) => {
+  const { t } = useI18n();
   const [executorData, setExecutorData] = useState<AttackExecutor | null>(null);
 
   return (
@@ -99,7 +108,7 @@ export const ExecutorsTab: React.FC<ExecutorsTabProps> = ({ data }) => {
         >
           {data?.map((_, index) => (
             <option key={index} value={index}>
-              Executor Index: {index}
+              {t("abilities.executors.executorIndex", { index })}
             </option>
           ))}
         </select>

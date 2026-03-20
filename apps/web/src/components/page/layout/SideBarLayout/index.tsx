@@ -8,29 +8,33 @@ import {
   MenuIcon,
   Server,
   Zap,
+  SearchCode,
 } from "lucide-react";
 import { MenuItemType, Sidebar, SidebarRef } from "./SideBar";
 import Topbar from "./TopBar";
 import { usePathname } from "next/navigation";
-
-const MENU_ITEMS: MenuItemType[] = [
-  { name: "Dashboard", icon: <Gauge />, url: "/" },
-  { name: "Fuzzing", icon: <Zap />, url: "/fuzzing" },
-  { name: "Agents", icon: <Server />, url: "/agents" },
-  { name: "Abilities", icon: <Database />, url: "/abilities" },
-  { name: "Playground", icon: <FlaskConical />, url: "/playground" },
-];
+import { useI18n } from "~/i18n/I18nProvider";
 
 export default function SideBarLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { t } = useI18n();
   const sidebarRef = useRef<SidebarRef>(null);
   const pathname = usePathname();
-  
-  const getTitle = (pathname: string) => {
-    const menu = MENU_ITEMS.find((menu) => menu.url === pathname);
+
+  const menuItems: MenuItemType[] = [
+    { name: t("menu.dashboard"), icon: <Gauge />, url: "/" },
+    { name: t("menu.fuzzing"), icon: <Zap />, url: "/fuzzing" },
+    { name: t("menu.agents"), icon: <Server />, url: "/agents" },
+    { name: t("menu.abilities"), icon: <Database />, url: "/abilities" },
+    { name: t("menu.playground"), icon: <FlaskConical />, url: "/playground" },
+    { name: t("menu.analysisWorkspace"), icon: <SearchCode />, url: "/analysis" },
+  ];
+
+  const getTitle = (currentPathname: string) => {
+    const menu = menuItems.find((item) => item.url === currentPathname);
     return menu?.name || "";
   };
 
@@ -39,7 +43,7 @@ export default function SideBarLayout({
 
   return (
     <div className="flex h-screen min-h-screen overflow-hidden text-white">
-      <Sidebar ref={sidebarRef} menus={MENU_ITEMS} />
+      <Sidebar ref={sidebarRef} menus={menuItems} />
       
       <div
         className={`flex w-full flex-1 flex-col bg-base-950 min-w-0 min-h-0 overflow-hidden ${

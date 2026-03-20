@@ -4,10 +4,12 @@ import React, { useEffect, useState } from "react";
 import trpc, { type RouterOutputs } from "~/lib/trpc";
 import { StatsCard } from "~/components/dashboard/StatsCard";
 import { Activity, PlayCircle, AlertOctagon } from "lucide-react";
+import { useI18n } from "~/i18n/I18nProvider";
 
 type FuzzingJob = RouterOutputs["fuzzing"]["list"]["jobs"][0];
 
 export function RecentFuzzingStats() {
+  const { t } = useI18n();
   const [jobs, setJobs] = useState<FuzzingJob[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -29,6 +31,7 @@ export function RecentFuzzingStats() {
           setJobs(response.jobs);
         }
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error("Failed to fetch activity data", error);
       } finally {
         if (!cancelled) setIsLoading(false);
@@ -61,32 +64,34 @@ export function RecentFuzzingStats() {
       <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="text-2xl font-bold text-white flex items-center gap-2">
-                최근 활동
+                {t("fuzzing.recentStats.title")}
                 <span className="text-xs font-normal text-slate-500 bg-slate-800/50 px-2 py-0.5 rounded-full border border-slate-700">24H</span>
             </h3>
-            <p className="text-slate-400 text-sm mt-1">지난 24시간 동안의 주요 지표</p>
+            <p className="text-slate-400 text-sm mt-1">
+              {t("fuzzing.recentStats.subtitle")}
+            </p>
           </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
         <StatsCard
-          title="생성된 작업"
+          title={t("fuzzing.recentStats.totalCreatedTitle")}
           value={stats.total}
-          description="시작된 전체 Fuzzing 세션"
+          description={t("fuzzing.recentStats.totalCreatedDesc")}
           icon={Activity}
           variant="primary"
         />
         <StatsCard
-          title="진행 중인 작업"
+          title={t("fuzzing.recentStats.runningTitle")}
           value={stats.running}
-          description="현재 실행 중인 세션"
+          description={t("fuzzing.recentStats.runningDesc")}
           icon={PlayCircle}
           variant="accent" // Cyan/Blue usually
         />
         <StatsCard
-          title="오류 발생"
+          title={t("fuzzing.recentStats.failedTitle")}
           value={stats.failed}
-          description="예상치 못하게 종료된 작업"
+          description={t("fuzzing.recentStats.failedDesc")}
           icon={AlertOctagon}
           variant={stats.failed > 0 ? "danger" : "success"}
         />

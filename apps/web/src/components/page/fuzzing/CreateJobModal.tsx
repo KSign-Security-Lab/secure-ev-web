@@ -14,13 +14,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+
 import { TargetConfigForm } from "./TargetConfigForm";
 import { FuzzingParamsForm } from "./FuzzingParamsForm";
 import { MessageSelector } from "./MessageSelector";
@@ -38,6 +32,7 @@ import {
 } from "~/server/trpc/schemas/fuzzing";
 import { MESSAGES_FROM_CHARGER_GROUPS, MESSAGES_FROM_SERVER_GROUPS } from "~/constants/fuzzingMessages";
 import { cn } from "~/lib/utils";
+import { useI18n } from "~/i18n/I18nProvider";
 
 interface CreateJobModalProps {
   open: boolean;
@@ -54,6 +49,7 @@ export function CreateJobModal({
   onSuccess,
   jobId,
 }: CreateJobModalProps) {
+  const { t } = useI18n();
   const [currentStep, setCurrentStep] = useState<Step>(1);
   const [name, setName] = useState("");
   const [environment, setEnvironment] = useState("dev");
@@ -66,12 +62,9 @@ export function CreateJobModal({
     useState<FuzzingParameters | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch job details if editing
   React.useEffect(() => {
     if (open && jobId) {
-      setIsLoading(true);
       trpc.fuzzing.getById.query({ jobId })
         .then((job) => {
             setName(job.name);
@@ -83,10 +76,10 @@ export function CreateJobModal({
             setFuzzingParameters(job.fuzzingParameters as FuzzingParameters);
         })
         .catch((err) => {
+            // eslint-disable-next-line no-console
             console.error("Failed to fetch job", err);
-            setErrors({ submit: "Failed to load job details" });
-        })
-        .finally(() => setIsLoading(false));
+            setErrors({ submit: t("fuzzing.create.error.loadJob") });
+        });
     } else if (open && !jobId) {
         // Reset form if opening in create mode
         setName("");
@@ -99,7 +92,7 @@ export function CreateJobModal({
         setErrors({});
         setCurrentStep(1);
     }
-  }, [open, jobId, trpc]);
+  }, [open, jobId, t]);
 
   // Update targetType default based on targetDevice change
   React.useEffect(() => {
@@ -118,18 +111,18 @@ export function CreateJobModal({
 
     if (step === 1) {
       if (!name.trim()) {
-        newErrors.name = "Job name is required";
+        newErrors.name = t("fuzzing.create.validation.jobNameRequired");
       }
       if (!environment.trim()) {
-        newErrors.environment = "Environment is required";
+        newErrors.environment = t("fuzzing.create.validation.environmentRequired");
       }
     } else if (step === 2) {
       if (!targetDevice) {
-         newErrors.targetDevice = "Please select a target device";
+         newErrors.targetDevice = t("fuzzing.create.validation.targetDeviceRequired");
       } else {
         // Only validate config if device is selected
         if (!connectionConfig) {
-            newErrors.connectionConfig = "Connection configuration is required";
+            newErrors.connectionConfig = t("fuzzing.create.validation.connectionConfigRequired");
         } else {
             let result;
             if (targetType === "ISO15118") {
@@ -148,7 +141,7 @@ export function CreateJobModal({
     } else if (step === 3) {
       // Validation for Fuzzing Config step
       if (targetType !== "ISO15118" && scope.length === 0) {
-        newErrors.scope = "At least one message must be selected";
+        newErrors.scope = t("fuzzing.create.validation.scopeRequired");
       }
     }
 
@@ -250,9 +243,10 @@ export function CreateJobModal({
         onSuccess(job.id);
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error("Failed to create job:", error);
       setErrors({
-        submit: error instanceof Error ? error.message : "Failed to create job",
+        submit: error instanceof Error ? error.message : t("fuzzing.create.error.createJob"),
       });
     } finally {
       setIsSubmitting(false);
@@ -278,13 +272,13 @@ export function CreateJobModal({
   const getStepTitle = (step: Step): string => {
     switch (step) {
       case 1:
-        return "Basic Information";
+        return t("fuzzing.create.step.basicInfo");
       case 2:
-        return "Target Configuration";
+        return t("fuzzing.create.step.targetConfig");
       case 3:
-        return "Fuzzing Configuration";
+        return t("fuzzing.create.step.scopeConfig");
       case 4:
-        return "Fuzzing Parameters";
+        return t("fuzzing.create.step.fuzzingParams");
       default:
         return "";
     }
@@ -293,18 +287,18 @@ export function CreateJobModal({
   const getStepDescription = (step: Step): string => {
     switch (step) {
       case 1:
-        return "Enter the basic details for your fuzzing job";
+        return t("fuzzing.create.stepDesc.basicInfo");
       case 2:
-        return "Configure the target device, protocol, and connection settings";
+        return t("fuzzing.create.stepDesc.targetConfig");
       case 3:
         if (targetType === "ISO15118") {
-          return "Review scope configuration";
+          return t("fuzzing.create.stepDesc.scopeIso");
         }
         return targetDevice === "CHARGER" 
-          ? "Select messages aimed at the Charger (Server -> Charger flow)."
-          : "Select messages aimed at the CSMS (Charger -> Server flow).";
+          ? t("fuzzing.create.stepDesc.scopeCharger")
+          : t("fuzzing.create.stepDesc.scopeCsms");
       case 4:
-        return "Set optional fuzzing parameters (or use defaults)";
+        return t("fuzzing.create.stepDesc.fuzzingParams");
       default:
         return "";
     }
@@ -317,13 +311,13 @@ export function CreateJobModal({
           <div className="space-y-6">
             <div className="space-y-3">
               <Label htmlFor="name" className="text-slate-300">
-                Job Name <span className="text-blue-500">*</span>
+                {t("fuzzing.create.form.jobName")} <span className="text-blue-500">*</span>
               </Label>
               <Input
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. OCPP 1.6 Stability Test"
+                placeholder={t("fuzzing.create.placeholder.jobName")}
                 required
                 aria-invalid={!!errors.name}
               />
@@ -334,16 +328,16 @@ export function CreateJobModal({
 
             <div className="space-y-3">
               <Label htmlFor="environment" className="text-slate-300">
-                Environment <span className="text-blue-500">*</span>
+                {t("fuzzing.create.form.environment")} <span className="text-blue-500">*</span>
               </Label>
               <Select value={environment} onValueChange={setEnvironment}>
                 <SelectTrigger id="environment" className="w-full bg-slate-900 border-slate-700 text-white focus:ring-blue-500/20">
-                  <SelectValue placeholder="Select environment" />
+                  <SelectValue placeholder={t("fuzzing.create.placeholder.environment")} />
                 </SelectTrigger>
                 <SelectContent className="bg-slate-900 border-slate-700 text-white">
-                  <SelectItem value="dev" className="focus:bg-slate-800 focus:text-white">Development</SelectItem>
-                  <SelectItem value="stage" className="focus:bg-slate-800 focus:text-white">Staging</SelectItem>
-                  <SelectItem value="prod" className="focus:bg-slate-800 focus:text-white">Production</SelectItem>
+                  <SelectItem value="dev" className="focus:bg-slate-800 focus:text-white">{t("fuzzing.environment.dev")}</SelectItem>
+                  <SelectItem value="stage" className="focus:bg-slate-800 focus:text-white">{t("fuzzing.environment.stage")}</SelectItem>
+                  <SelectItem value="prod" className="focus:bg-slate-800 focus:text-white">{t("fuzzing.environment.prod")}</SelectItem>
                 </SelectContent>
               </Select>
               {errors.environment && (
@@ -358,7 +352,7 @@ export function CreateJobModal({
         return (
           <div className="space-y-8">
             <div className="space-y-3">
-              <Label className="text-slate-300">Target Device <span className="text-blue-500">*</span></Label>
+              <Label className="text-slate-300">{t("fuzzing.create.form.targetDevice")} <span className="text-blue-500">*</span></Label>
               <div className="grid grid-cols-2 gap-4">
                  <div
                     onClick={() => {
@@ -373,7 +367,7 @@ export function CreateJobModal({
                     )}
                  >
                     <Zap size={24} />
-                    <span className="font-semibold">Fuzz Charger</span>
+                    <span className="font-semibold">{t("fuzzing.create.form.targetDeviceCharger")}</span>
                  </div>
                  <div
                     onClick={() => {
@@ -388,7 +382,7 @@ export function CreateJobModal({
                     )}
                  >
                     <Server size={24} />
-                    <span className="font-semibold">Fuzz CSMS</span>
+                    <span className="font-semibold">{t("fuzzing.create.form.targetDeviceCsms")}</span>
                  </div>
               </div>
               {errors.targetDevice && (
@@ -399,7 +393,7 @@ export function CreateJobModal({
             {targetDevice && (
             <div className="space-y-8 animate-in fade-in slide-in-from-top-4 duration-500">
             <div className="space-y-4">
-              <Label className="text-slate-300">Target Protocol <span className="text-blue-500">*</span></Label>
+              <Label className="text-slate-300">{t("fuzzing.create.form.targetProtocol")} <span className="text-blue-500">*</span></Label>
               <RadioGroup
                 value={targetType}
                 onValueChange={(value) => {
@@ -421,7 +415,7 @@ export function CreateJobModal({
                         <Zap size={24} />
                     </div>
                     <Label htmlFor="iso15118" className="font-medium text-white text-center pointer-events-none">
-                        ISO 15118<br/><span className="text-xs text-slate-400 font-normal">EV Charger</span>
+                        ISO 15118<br/><span className="text-xs text-slate-400 font-normal">{t("fuzzing.create.form.protocolIsoSubtitle")}</span>
                     </Label>
                     </div>
 
@@ -436,7 +430,7 @@ export function CreateJobModal({
                         <Server size={24} />
                     </div>
                     <Label htmlFor="ocpp-charger" className="font-medium text-white text-center pointer-events-none">
-                        OCPP<br/><span className="text-xs text-slate-400 font-normal">Charger Station</span>
+                        OCPP<br/><span className="text-xs text-slate-400 font-normal">{t("fuzzing.create.form.protocolOcppChargerSubtitle")}</span>
                     </Label>
                     </div>
                     </>
@@ -454,7 +448,7 @@ export function CreateJobModal({
                         <Shield size={24} />
                     </div>
                     <Label htmlFor="ocpp-server" className="font-medium text-white text-center pointer-events-none">
-                        OCPP<br/><span className="text-xs text-slate-400 font-normal">Central System</span>
+                        OCPP<br/><span className="text-xs text-slate-400 font-normal">{t("fuzzing.create.form.protocolOcppServerSubtitle")}</span>
                     </Label>
                     </div>
                 )}
@@ -462,7 +456,7 @@ export function CreateJobModal({
             </div>
 
             <div className="space-y-4">
-              <Label className="text-slate-300">Connection Details <span className="text-blue-500">*</span></Label>
+              <Label className="text-slate-300">{t("fuzzing.create.form.connectionDetails")} <span className="text-blue-500">*</span></Label>
               <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-6">
                 <TargetConfigForm
                   key={targetType}
@@ -489,8 +483,8 @@ export function CreateJobModal({
              {targetType === "ISO15118" ? (
                 <div className="h-40 flex items-center justify-center rounded-lg border border-dashed border-slate-700 bg-slate-900/30 text-slate-400">
                     <div className="text-center">
-                        <p className="text-lg font-medium text-slate-300">Not Supported</p>
-                        <p className="text-sm mt-1">Granular message selection is not currently supported for ISO15118.</p>
+                        <p className="text-lg font-medium text-slate-300">{t("fuzzing.create.scope.notSupportedTitle")}</p>
+                        <p className="text-sm mt-1">{t("fuzzing.create.scope.notSupportedDescription")}</p>
                     </div>
                 </div>
              ) : (
@@ -499,7 +493,7 @@ export function CreateJobModal({
                     messages={targetDevice === "CHARGER" ? MESSAGES_FROM_SERVER_GROUPS : MESSAGES_FROM_CHARGER_GROUPS}
                     selectedMessages={scope}
                     onChange={setScope}
-                    title={targetDevice === "CHARGER" ? "Available Messages (From Server)" : "Available Messages (From Charger)"}
+                    title={targetDevice === "CHARGER" ? t("fuzzing.create.scope.serverToCharger") : t("fuzzing.create.scope.chargerToServer")}
                 />
                 {errors.scope && (
                   <p className="text-sm text-red-400 mt-2">{errors.scope}</p>
@@ -513,7 +507,7 @@ export function CreateJobModal({
         return (
           <div className="space-y-6">
             <div className="rounded-lg bg-slate-900/50 p-4 border border-slate-800 text-sm text-slate-400">
-               Configure advanced fuzzing parameters such as scan duration, aggressiveness, and mutation strategies. Defaults are safe for most environments.
+               {t("fuzzing.create.params.note")}
             </div>
 
             <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-6">
@@ -535,19 +529,21 @@ export function CreateJobModal({
       open={open}
       onClose={handleClose}
       title=""
-      className="max-w-4xl bg-slate-950 border border-slate-800 shadow-2xl !p-0 overflow-hidden [&>div:first-child]:hidden !space-y-0"
+      className="max-w-4xl bg-slate-950 border border-slate-800 shadow-2xl p-0! overflow-hidden [&>div:first-child]:hidden space-y-0!"
     >   
       {/* Custom Header with Gradient */}
-      <div className="relative w-full h-1 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600" />
+      <div className="relative w-full h-1 bg-linear-to-r from-blue-500 via-cyan-500 to-blue-600" />
       
       {/* Custom Title Bar */}
       <div className="flex items-center justify-between px-8 py-6 border-b border-slate-800/50">
-        <h2 className="text-xl font-bold text-white">{jobId ? 'Edit Fuzzing Job' : 'Create Fuzzing Job'}</h2>
+        <h2 className="text-xl font-bold text-white">
+          {jobId ? t("fuzzing.create.titleEdit") : t("fuzzing.create.titleCreate")}
+        </h2>
         <button 
             onClick={handleClose}
             className="text-slate-400 hover:text-white transition-colors"
         >
-            <div className="sr-only">Close</div>
+            <div className="sr-only">{t("fuzzing.create.close")}</div>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
         </button>
       </div>
@@ -556,7 +552,7 @@ export function CreateJobModal({
         {/* Step Indicator */}
         <div className="mb-10">
             <div className="flex items-center justify-between relative z-10">
-            {[1, 2, 3, 4].map((step, index) => (
+            {[1, 2, 3, 4].map((step) => (
                 <div key={step} className="flex flex-col items-center relative z-10 group">
                     <div
                         className={cn(
@@ -633,7 +629,7 @@ export function CreateJobModal({
                 className="text-slate-400 hover:text-white hover:bg-slate-900"
             >
                 <ChevronLeft className="w-4 h-4 mr-2" />
-                Back
+                {t("fuzzing.create.button.back")}
             </Button>
 
             <div className="flex gap-4">
@@ -644,7 +640,7 @@ export function CreateJobModal({
                 disabled={isSubmitting}
                 className="text-slate-400 hover:text-white hover:bg-slate-900"
                 >
-                Cancel
+                {t("fuzzing.create.button.cancel")}
                 </Button>
                 {currentStep < totalSteps ? (
                 <Button
@@ -653,7 +649,7 @@ export function CreateJobModal({
                     disabled={isSubmitting || isStepTransitioning}
                     className="bg-blue-600 hover:bg-blue-500 text-white min-w-[120px]"
                 >
-                    Next Step
+                    {t("fuzzing.create.button.next")}
                     <ChevronRight className="w-4 h-4 ml-2" />
                 </Button>
                 ) : (
@@ -665,10 +661,10 @@ export function CreateJobModal({
                     {isSubmitting ? (
                         <div className="flex items-center gap-2">
                              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                             <span>Creating...</span>
+                             <span>{t("fuzzing.create.button.creating")}</span>
                         </div>
                     ) : (
-                        jobId ? "Save Changes" : "Launch Job"
+                        jobId ? t("fuzzing.create.button.saveChanges") : t("fuzzing.create.button.launch")
                     )}
                 </Button>
                 )}

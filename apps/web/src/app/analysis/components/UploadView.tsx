@@ -1,0 +1,208 @@
+
+"use client";
+
+import React, { useState, useRef } from "react";
+import { UploadCloud, File as FileIcon, Trash2, AlertCircle } from "lucide-react";
+import { Button } from "~/components/ui/button";
+import { MockFile } from "./mockData";
+import JSZip from "jszip";
+import { useI18n } from "~/i18n/I18nProvider";
+
+interface UploadViewProps {
+  onStartAnalysis: (files: MockFile[]) => void;
+}
+
+const ALLOWED_EXTENSIONS = ['.c', '.cpp', '.cc', '.h', '.hpp', '.java'];
+
+export default function UploadView({ onStartAnalysis }: UploadViewProps) {
+  const { t } = useI18n();
+  const [files, setFiles] = useState<MockFile[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const isValidExtension = (filename: string) => {
+    return ALLOWED_EXTENSIONS.some(ext => filename.toLowerCase().endsWith(ext));
+  };
+
+  const formatSize = (bytes: number) => {
+    if (bytes === 0) return "0 B";
+    const k = 1024;
+    const sizes = ["B", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+  };
+
+  const processFile = async (file: File) => {
+    if (file.name.toLowerCase().endsWith('.zip')) {
+      try {
+        const zip = new JSZip();
+        const zipData = await zip.loadAsync(file);
+        const newMockFiles: MockFile[] = [];
+
+        for (const [relativePath, zipEntry] of Object.entries(zipData.files)) {
+          if (!zipEntry.dir && isValidExtension(relativePath)) {
+            const content = await zipEntry.async("string");
+            newMockFiles.push({
+              path: relativePath,
+              content: content,
+              type: "source"
+            });
+          }
+        }
+
+        if (newMockFiles.length === 0) {
+           setError(t("analysis.upload.error.zipNoValidFiles"));
+        } else {
+           setFiles(prev => [...prev, ...newMockFiles]);
+           setError(null);
+        }
+      } catch {
+        setError(t("analysis.upload.error.zipExtractFailed"));
+      }
+    } else if (isValidExtension(file.name)) {
+       const text = await file.text();
+       setFiles(prev => [...prev, {
+         path: file.name,
+         content: text,
+         type: "source"
+       }]);
+       setError(null);
+    } else {
+       setError(
+        t("analysis.upload.error.invalidFileType", { fileName: file.name })
+       );
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      for (let i = 0; i < e.target.files.length; i++) {
+        await processFile(e.target.files[i]);
+      }
+    }
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const removeFile = (index: number) => {
+    setFiles(files.filter((_, i) => i !== index));
+  };
+
+  const removeAll = () => {
+    setFiles([]);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      for (let i = 0; i < e.dataTransfer.files.length; i++) {
+        await processFile(e.dataTransfer.files[i]);
+      }
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center w-full max-w-2xl mx-auto h-full space-y-8">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold mb-2">{t("analysis.upload.title")}</h1>
+        <p className="text-[#8b949e]">{t("analysis.upload.subtitle")}</p>
+      </div>
+
+      <input
+        type="file"
+        multiple
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        className="hidden"
+        accept=".c,.cpp,.cc,.h,.hpp,.java,.zip"
+      />
+
+      <div
+        className={`w-full border-2 border-dashed rounded-lg p-12 flex flex-col items-center justify-center cursor-pointer transition-all duration-200 ${
+          isDragging
+            ? "border-blue-500 bg-blue-500/10 scale-[1.01] shadow-[0_0_20px_-5px_rgba(59,130,246,0.3)]"
+            : "border-[#8b949e] hover:border-blue-500 bg-transparent"
+        }`}
+        onClick={() => fileInputRef.current?.click()}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        <UploadCloud className={`w-12 h-12 mb-4 transition-colors ${isDragging ? "text-blue-400" : "text-[#8b949e]"}`} />
+        <p className={`font-medium transition-colors ${isDragging ? "text-blue-200" : "text-[#8b949e]"}`}>
+          {t("analysis.upload.dropzoneInstruction")}
+        </p>
+        <p className={`text-sm mt-1 transition-colors ${isDragging ? "text-blue-300/60" : "text-[#8b949e]"}`}>
+          {t("analysis.upload.dropzoneFormats")}
+        </p>
+      </div>
+
+      {error && (
+        <div className="w-full p-4 bg-red-900/30 border border-red-800 text-red-200 rounded-md flex items-center gap-3">
+           <AlertCircle className="w-5 h-5 shrink-0" />
+           <p className="text-sm">{error}</p>
+        </div>
+      )}
+
+      {files.length > 0 && (
+        <div className="w-full">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-semibold">
+              {t("analysis.upload.uploadedFiles")}
+            </h3>
+            <button
+              onClick={removeAll}
+              className="text-xs text-[#8b949e] hover:text-[#ff7b72] flex items-center gap-1 transition-colors group"
+            >
+              <Trash2 className="w-3 h-3 transition-colors group-hover:text-[#ff7b72]" />
+              {t("analysis.upload.deleteAll")}
+            </button>
+          </div>
+          <div className="space-y-2 mb-6 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+            {files.map((file, idx) => (
+              <div
+                key={idx}
+                className="flex items-center justify-between p-3 bg-[#21262d] rounded-md border border-[#30363d]"
+              >
+                <div className="flex items-center space-x-3 truncate mr-4">
+                  <FileIcon className="w-5 h-5 text-[#79c0ff] shrink-0" />
+                  <div className="truncate">
+                    <p className="text-sm font-medium text-[#c9d1d9] truncate">{file.path}</p>
+                    <p className="text-xs text-[#8b949e]">{formatSize(file.content?.length || 0)}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => removeFile(idx)}
+                  className="p-1 shrink-0 hover:bg-[#30363d] rounded text-[#8b949e] hover:text-[#ff7b72] transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-end">
+            <Button size="lg" onClick={() => onStartAnalysis(files)}>
+              {t("analysis.upload.runAnalysis")}
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -6,17 +6,15 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CreateJobModal } from "~/components/page/fuzzing/CreateJobModal";
 import { Pagination } from "~/components/common/Pagination/Pagination";
-import Loading from "~/components/common/Loading/Loading";
 import trpc, { type RouterOutputs } from "~/lib/trpc";
-import { Button } from "~/components/ui/button";
 import { GlassCard } from "~/components/ui/glass-card";
 import { Badge } from "~/components/ui/badge";
 import { FuzzingJobsTableSkeleton } from "~/components/page/fuzzing/FuzzingSkeletons";
+import { useI18n } from "~/i18n/I18nProvider";
 
 const PAGE_SIZE = 8;
 
 type FuzzingJobsList = RouterOutputs["fuzzing"]["list"];
-type FuzzingJob = RouterOutputs["fuzzing"]["list"]["jobs"][0];
 
 const getStatusVariant = (status: string) => {
   switch (status) {
@@ -33,20 +31,8 @@ const getStatusVariant = (status: string) => {
   }
 };
 
-const getTargetTypeLabel = (targetType: string) => {
-  switch (targetType) {
-    case "ISO15118":
-      return "ISO 15118 Charger";
-    case "OCPP_CHARGER":
-      return "OCPP Charger";
-    case "OCPP_SERVER":
-      return "OCPP Server";
-    default:
-      return targetType;
-  }
-};
-
 export default function FuzzingJobsPage() {
+  const { locale, t } = useI18n();
   const router = useRouter();
   const [data, setData] = useState<FuzzingJobsList["jobs"] | undefined>();
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -58,6 +44,36 @@ export default function FuzzingJobsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingJobId, setEditingJobId] = useState<string | null>(null);
   const [activeActionRowId, setActiveActionRowId] = useState<string | null>(null);
+
+  const getTargetTypeLabel = (targetType: string) => {
+    switch (targetType) {
+      case "ISO15118":
+        return t("fuzzing.target.iso15118Charger");
+      case "OCPP_CHARGER":
+        return t("fuzzing.target.ocppCharger");
+      case "OCPP_SERVER":
+        return t("fuzzing.target.ocppServer");
+      default:
+        return targetType;
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case "DRAFT":
+        return t("status.draft");
+      case "PENDING":
+        return t("status.pending");
+      case "RUNNING":
+        return t("status.running");
+      case "COMPLETED":
+        return t("status.completed");
+      case "FAILED":
+        return t("status.failed");
+      default:
+        return status;
+    }
+  };
 
   // Close actions dropdown when clicking outside
   useEffect(() => {
@@ -73,13 +89,13 @@ export default function FuzzingJobsPage() {
   const handleDeleteSub = async (id: string, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (confirm("Are you sure you want to delete this job?")) {
+    if (confirm(t("fuzzing.jobs.deleteConfirm"))) {
         try {
             await trpc.fuzzing.delete.mutate({ id });
-            fetchData(currentPage, statusFilter, targetTypeFilter);
+            await fetchData(currentPage, statusFilter, targetTypeFilter);
             setActiveActionRowId(null);
-        } catch (error) {
-            console.error("Failed to delete job", error);
+        } catch {
+            setActiveActionRowId(null);
         }
     }
   };
@@ -109,8 +125,7 @@ export default function FuzzingJobsPage() {
             setTotalCount(response.count);
             setTotalPages(Math.ceil(response.count / PAGE_SIZE));
         }
-      } catch (error) {
-        console.error("Failed to fetch fuzzing jobs:", error);
+      } catch {
         setData([]);
         setTotalCount(0);
         setTotalPages(0);
@@ -142,8 +157,12 @@ export default function FuzzingJobsPage() {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">Active Fuzzing Jobs</h1>
-            <p className="text-slate-400 mt-1">Manage and monitor your security testing sessions.</p>
+            <h1 className="text-3xl font-bold text-white tracking-tight">
+              {t("fuzzing.jobs.title")}
+            </h1>
+            <p className="text-slate-400 mt-1">
+              {t("fuzzing.jobs.subtitle")}
+            </p>
           </div>
           <button
             onClick={() => {
@@ -153,7 +172,7 @@ export default function FuzzingJobsPage() {
             className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:shadow-[0_0_25px_rgba(59,130,246,0.5)] transition-all duration-300 font-medium"
           >
             <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
-            New Job
+            {t("fuzzing.jobs.newJob")}
           </button>
         </div>
 
@@ -164,7 +183,7 @@ export default function FuzzingJobsPage() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                     <input 
                         type="text" 
-                        placeholder="Search jobs..." 
+                        placeholder={t("fuzzing.jobs.searchPlaceholder")} 
                         className="w-full bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-lg pl-10 pr-4 py-2 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none placeholder:text-slate-600"
                     />
                  </div>
@@ -181,12 +200,12 @@ export default function FuzzingJobsPage() {
                         }}
                         className="appearance-none bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-lg pl-10 pr-8 py-2 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none cursor-pointer"
                     >
-                        <option value="all">All Statuses</option>
-                        <option value="DRAFT">Draft</option>
-                        <option value="PENDING">Pending</option>
-                        <option value="RUNNING">Running</option>
-                        <option value="COMPLETED">Completed</option>
-                        <option value="FAILED">Failed</option>
+                        <option value="all">{t("fuzzing.jobs.filter.allStatuses")}</option>
+                        <option value="DRAFT">{t("status.draft")}</option>
+                        <option value="PENDING">{t("status.pending")}</option>
+                        <option value="RUNNING">{t("status.running")}</option>
+                        <option value="COMPLETED">{t("status.completed")}</option>
+                        <option value="FAILED">{t("status.failed")}</option>
                     </select>
                 </div>
 
@@ -200,10 +219,10 @@ export default function FuzzingJobsPage() {
                         }}
                          className="appearance-none bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-lg pl-10 pr-8 py-2 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none cursor-pointer"
                     >
-                        <option value="all">All Targets</option>
-                        <option value="ISO15118">ISO 15118</option>
-                        <option value="OCPP_CHARGER">OCPP Charger</option>
-                        <option value="OCPP_SERVER">OCPP Server</option>
+                        <option value="all">{t("fuzzing.jobs.filter.allTargets")}</option>
+                        <option value="ISO15118">{t("fuzzing.target.iso15118Charger")}</option>
+                        <option value="OCPP_CHARGER">{t("fuzzing.target.ocppCharger")}</option>
+                        <option value="OCPP_SERVER">{t("fuzzing.target.ocppServer")}</option>
                     </select>
                 </div>
             </div>
@@ -215,12 +234,12 @@ export default function FuzzingJobsPage() {
              <table className="w-full text-left">
                 <thead>
                     <tr className="bg-slate-800 border-b border-slate-700">
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider rounded-tl-3xl">Job Name</th>
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Target</th>
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Status</th>
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Environment</th>
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Created</th>
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right rounded-tr-3xl">Actions</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider rounded-tl-3xl">{t("fuzzing.jobs.table.jobName")}</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">{t("fuzzing.jobs.table.target")}</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">{t("fuzzing.jobs.table.status")}</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">{t("fuzzing.jobs.table.environment")}</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">{t("fuzzing.jobs.table.created")}</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right rounded-tr-3xl">{t("fuzzing.jobs.table.actions")}</th>
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/50">
@@ -229,7 +248,7 @@ export default function FuzzingJobsPage() {
                     ) : !data || data.length === 0 ? (
                         <tr>
                             <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
-                                No jobs found matching your criteria.
+                                {t("fuzzing.jobs.empty")}
                             </td>
                         </tr>
                     ) : (
@@ -255,14 +274,14 @@ export default function FuzzingJobsPage() {
                                 <td className="px-6 py-4">
                                   <Badge variant={getStatusVariant(job.status) as any}>
                                         <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${job.status === 'RUNNING' ? 'bg-current animate-pulse' : 'bg-current'}`}></span>
-                                        {job.status}
+                                        {getStatusLabel(job.status)}
                                   </Badge>
                                 </td>
                                 <td className="px-6 py-4 text-slate-400">
-                                    {job.environment || 'Production'}
+                                    {job.environment || t("fuzzing.jobs.environment.production")}
                                 </td>
                                 <td className="px-6 py-4 text-slate-400 tabular-nums text-sm">
-                                    {new Date(job.createdAt).toLocaleDateString()} <span className="text-slate-600 text-xs">{new Date(job.createdAt).toLocaleTimeString()}</span>
+                                    {new Date(job.createdAt).toLocaleDateString(locale === "ko" ? "ko-KR" : "en-US")} <span className="text-slate-600 text-xs">{new Date(job.createdAt).toLocaleTimeString(locale === "ko" ? "ko-KR" : "en-US")}</span>
                                 </td>
                                 <td className="px-6 py-4 text-right relative">
                                      <div className="relative actions-menu">
@@ -285,14 +304,14 @@ export default function FuzzingJobsPage() {
                                                         className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-slate-800 hover:text-white flex items-center gap-2"
                                                     >
                                                         <Edit size={14} />
-                                                        Edit Configuration
+                                                        {t("fuzzing.jobs.action.editConfiguration")}
                                                     </button>
                                                     <button
                                                         onClick={(e) => handleDeleteSub(job.id, e)}
                                                         className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 flex items-center gap-2"
                                                     >
                                                         <Trash2 size={14} />
-                                                        Delete Job
+                                                        {t("fuzzing.jobs.action.deleteJob")}
                                                     </button>
                                                 </div>
                                             </div>
@@ -310,7 +329,10 @@ export default function FuzzingJobsPage() {
            <div className="px-6 py-4 border-t border-slate-800/50 bg-slate-900/30 rounded-b-3xl">
              <div className="flex items-center justify-between">
                 <div className="text-sm text-slate-500">
-                    Showing <span className="text-white font-medium">{data?.length || 0}</span> of <span className="text-white font-medium">{totalCount}</span> jobs
+                    {t("fuzzing.jobs.footer.showing", {
+                      shown: data?.length || 0,
+                      total: totalCount,
+                    })}
                 </div>
                 {totalPages > 1 && (
                     <Pagination 

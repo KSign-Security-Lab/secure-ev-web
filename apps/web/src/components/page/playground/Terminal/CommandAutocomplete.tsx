@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { Check } from "lucide-react";
 import trpc from "~/lib/trpc";
 import { cn } from "~/lib/utils";
+import { useI18n } from "~/i18n/I18nProvider";
 
 interface CommandSuggestion {
   id: string;
@@ -25,6 +26,7 @@ export function CommandAutocomplete({
   onSelect,
   onClose,
 }: CommandAutocompleteProps) {
+  const { t } = useI18n();
   const [suggestions, setSuggestions] = useState<CommandSuggestion[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -48,6 +50,7 @@ export function CommandAutocomplete({
         setSuggestions(results);
         setSelectedIndex(0);
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error("Failed to search commands:", error);
         setSuggestions([]);
       } finally {
@@ -130,7 +133,7 @@ export function CommandAutocomplete({
     >
       {isLoading ? (
         <div className="p-4 text-center text-sm text-slate-400">
-          Searching commands...
+          {t("playground.autocomplete.searching")}
         </div>
       ) : (
         <div className="py-2">
@@ -164,7 +167,7 @@ export function CommandAutocomplete({
                       {isSelected && (
                         <div className="flex items-center gap-1 text-primary-400 text-xs font-medium shrink-0">
                           <Check size={14} className="text-primary-400" />
-                          <span>Selected</span>
+                          <span>{t("common.selected")}</span>
                         </div>
                       )}
                     </div>
@@ -187,12 +190,15 @@ export function CommandAutocomplete({
         <span>
           {suggestions.length > 0 && (
             <span className="text-slate-400">
-              {selectedIndex + 1} of {suggestions.length} selected
+              {t("playground.autocomplete.selectedCount", {
+                current: selectedIndex + 1,
+                total: suggestions.length,
+              })}
             </span>
           )}
         </span>
         <span>
-          ↑↓ navigate • Tab/Enter select • Esc close • Click to select
+          {t("playground.autocomplete.navigationHint")}
         </span>
       </div>
     </div>

@@ -79,12 +79,10 @@ export async function POST(request: NextRequest) {
       { message: "Report submitted successfully", jobId },
       { status: 200 }
     );
-  } catch (error) {
-    console.error("Error in report submission endpoint:", error);
+  } catch {
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
     );
   }
 }
-

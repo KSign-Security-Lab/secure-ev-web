@@ -13,6 +13,22 @@ import PageHeader from "~/components/page/playground/PageHeader";
 import SessionsList from "~/components/page/playground/SessionsList";
 import SystemLogPanel from "~/components/page/playground/SystemLogPanel";
 import { CommandFilterDropdown } from "~/components/page/playground/CommandFilterDropdown";
+import { useI18n } from "~/i18n/I18nProvider";
+
+function TerminalLoadingFallback() {
+  const { t } = useI18n();
+
+  return (
+    <div className="flex h-full flex-col gap-4">
+      <div className="flex items-center justify-between rounded-md border border-slate-700 bg-slate-900/60 px-4 py-2 text-sm text-slate-200">
+        <span>{t("playground.page.dynamic.statusLoading")}</span>
+      </div>
+      <div className="h-[540px] w-full overflow-hidden rounded-md border border-slate-800 bg-black shadow-lg flex items-center justify-center">
+        <p className="text-slate-400">{t("playground.page.dynamic.loadingTerminal")}</p>
+      </div>
+    </div>
+  );
+}
 
 const TerminalView = dynamic(
   () =>
@@ -21,19 +37,7 @@ const TerminalView = dynamic(
     ),
   {
     ssr: false,
-    loading: () => (
-      <div className="flex h-full flex-col gap-4">
-        <div className="flex items-center justify-between rounded-md border border-slate-700 bg-slate-900/60 px-4 py-2 text-sm text-slate-200">
-          <span>
-            Status:{" "}
-            <strong className="font-semibold capitalize">loading</strong>
-          </span>
-        </div>
-        <div className="h-[540px] w-full overflow-hidden rounded-md border border-slate-800 bg-black shadow-lg flex items-center justify-center">
-          <p className="text-slate-400">Loading terminal...</p>
-        </div>
-      </div>
-    ),
+    loading: () => <TerminalLoadingFallback />,
   }
 );
 
@@ -47,6 +51,7 @@ type SystemLogEntry = {
 };
 
 export default function Playground() {
+  const { t } = useI18n();
   const terminalRef = useRef<TerminalViewHandle | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -93,15 +98,16 @@ export default function Playground() {
       const response = await trpc.sessions.list.query();
       setSessionsData(response);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error("Failed to fetch sessions:", error);
       setSessionsError(
-        error instanceof Error ? error.message : "Failed to fetch sessions"
+        error instanceof Error ? error.message : t("playground.page.errorFetchSessions")
       );
       setSessionsData(null);
     } finally {
       setIsLoadingSessions(false);
     }
-  }, []);
+  }, [t]);
 
   const clearReconnectTimer = useCallback(() => {
     if (reconnectTimerRef.current) {
@@ -127,6 +133,8 @@ export default function Playground() {
     },
     [clearReconnectTimer]
   );
+
+  const connectWebSocketRef = useRef<((id?: number | null) => void) | undefined>(undefined);
 
   const connectWebSocket = useCallback(
     (sessionId?: number | null) => {
@@ -161,7 +169,10 @@ export default function Playground() {
         }
       }
 
-      appendSystemLog("info", `Connecting to session #${sessionId}...`);
+      appendSystemLog(
+        "info",
+        t("playground.page.log.connecting", { id: sessionId })
+      );
       setConnectionState("connecting");
 
       const ws = new WebSocket(url);
@@ -169,7 +180,10 @@ export default function Playground() {
 
       ws.onopen = () => {
         setConnectionState("connected");
-        appendSystemLog("success", `Connected to session #${sessionId}.`);
+        appendSystemLog(
+          "success",
+          t("playground.page.log.connected", { id: sessionId })
+        );
         terminalRef.current?.prompt();
       };
 
@@ -182,13 +196,14 @@ export default function Playground() {
       };
 
       ws.onerror = (event) => {
+        // eslint-disable-next-line no-console
         console.error("Terminal WebSocket error", event);
         // Don't set error state here - let onclose handle reconnection
         // The error will cause the connection to close, and onclose will handle reconnection
-        appendSystemLog("error", "Connection error.");
+        appendSystemLog("error", t("playground.page.log.connectionError"));
       };
 
-      ws.onclose = (event) => {
+      ws.onclose = () => {
         // Only process close if this is still the current WebSocket
         if (wsRef.current !== ws) {
           return;
@@ -201,7 +216,10 @@ export default function Playground() {
         // Only reconnect if we still have a session selected and no timer is already set
         const currentSessionId = selectedSessionIdRef.current;
         if (currentSessionId && !reconnectTimerRef.current) {
-          appendSystemLog("warning", "Connection closed. Reconnecting...");
+          appendSystemLog(
+            "warning",
+            t("playground.page.log.connectionClosedReconnect")
+          );
           reconnectTimerRef.current = setTimeout(() => {
             // Double-check we still need to reconnect
             if (!reconnectTimerRef.current) {
@@ -211,34 +229,38 @@ export default function Playground() {
             // Check again if session is still selected before reconnecting
             const sessionToReconnect = selectedSessionIdRef.current;
             if (sessionToReconnect && wsRef.current === null) {
-              connectWebSocket(sessionToReconnect);
+              connectWebSocketRef.current?.(sessionToReconnect);
             }
           }, 1500);
         } else if (!currentSessionId) {
-          appendSystemLog("warning", "Connection closed.");
+          appendSystemLog("warning", t("playground.page.log.connectionClosed"));
         }
       };
     },
-    [appendSystemLog, closeWebSocket]
+    [appendSystemLog, closeWebSocket, clearReconnectTimer, t]
   );
+
+  useEffect(() => {
+    connectWebSocketRef.current = connectWebSocket;
+  }, [connectWebSocket]);
 
   const sendCommand = useCallback(
     (command: string) => {
       const ws = wsRef.current;
       if (ws?.readyState === WebSocket.OPEN) {
         ws.send(command);
-        appendSystemLog("info", `Command: ${command}`);
+        appendSystemLog("info", t("playground.page.log.command", { command }));
       } else {
         terminalRef.current?.writeln(
-          "\r\n[warn] Not connected. The terminal will automatically reconnect."
+          `\r\n${t("playground.page.warnNotConnected")}`
         );
         appendSystemLog(
           "warning",
-          "Cannot send command: terminal is disconnected."
+          t("playground.page.log.cannotSend")
         );
       }
     },
-    [appendSystemLog]
+    [appendSystemLog, t]
   );
 
   const handleSessionClick = useCallback(

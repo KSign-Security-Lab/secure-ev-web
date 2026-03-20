@@ -12,7 +12,7 @@ import {
 import { Bar } from "react-chartjs-2";
 import { Loader2, TrendingUp } from "lucide-react";
 import trpc, { type RouterOutputs } from "~/lib/trpc";
-import { GlassCard } from "~/components/ui/glass-card";
+import { useI18n } from "~/i18n/I18nProvider";
 
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
@@ -27,6 +27,7 @@ const CHART_COLORS = {
 };
 
 export function RecentFuzzingActivityChart() {
+  const { t } = useI18n();
   const [jobs, setJobs] = useState<FuzzingJob[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -49,6 +50,7 @@ export function RecentFuzzingActivityChart() {
           setJobs(response.jobs);
         }
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error("Failed to fetch activity data", error);
       } finally {
         if (!cancelled) setIsLoading(false);
@@ -127,10 +129,14 @@ export function RecentFuzzingActivityChart() {
         displayColors: false,
         callbacks: {
           title: (items: TooltipItem<"bar">[]) => {
-             return `${items[0].label} - Activity`; 
+             return t("fuzzing.activity.tooltipTitle", {
+               hour: items[0].label,
+             }); 
           },
           label: (context: TooltipItem<"bar">) => {
-            return `${context.raw} Jobs Started`;
+            return t("fuzzing.activity.tooltipJobsStarted", {
+              count: typeof context.raw === "number" ? context.raw : 0,
+            });
           }
         }
       },
@@ -183,17 +189,21 @@ export function RecentFuzzingActivityChart() {
         <div className="flex items-center justify-between mb-6">
             <div>
                 <h3 className="text-2xl font-bold text-white flex items-center gap-2">
-                    Recent Activity 
+                    {t("fuzzing.activity.title")} 
                     <span className="text-xs font-normal text-slate-500 bg-slate-800/50 px-2 py-0.5 rounded-full border border-slate-700">24H</span>
                 </h3>
-                <p className="text-slate-400 text-sm mt-1">Fuzzing jobs started over time</p>
+                <p className="text-slate-400 text-sm mt-1">
+                  {t("fuzzing.activity.subtitle")}
+                </p>
             </div>
             <div className="text-right">
                 <div className="text-2xl font-bold text-blue-400 flex items-center justify-end gap-2">
                     {isLoading ? <Loader2 className="animate-spin" size={20} /> : totalJobs24h}
                     <TrendingUp size={20} className="text-blue-500/50" />
                 </div>
-                <div className="text-xs text-slate-500">Total Jobs</div>
+                <div className="text-xs text-slate-500">
+                  {t("fuzzing.activity.totalJobs")}
+                </div>
             </div>
         </div>
 
