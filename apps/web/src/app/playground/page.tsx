@@ -25,7 +25,7 @@ const TerminalView = dynamic(
       <div className="flex h-full flex-col gap-4">
         <div className="flex items-center justify-between rounded-md border border-slate-700 bg-slate-900/60 px-4 py-2 text-sm text-slate-200">
           <span>
-            Status:{" "}
+            상태:{" "}
             <strong className="font-semibold capitalize">loading</strong>
           </span>
         </div>

@@ -15,12 +15,12 @@ import Topbar from "./TopBar";
 import { usePathname } from "next/navigation";
 
 const MENU_ITEMS: MenuItemType[] = [
-  { name: "Dashboard", icon: <Gauge />, url: "/" },
+  { name: "대시보드 (Dashboard)", icon: <Gauge />, url: "/" },
   { name: "Fuzzing", icon: <Zap />, url: "/fuzzing" },
-  { name: "Agents", icon: <Server />, url: "/agents" },
-  { name: "Abilities", icon: <Database />, url: "/abilities" },
-  { name: "Playground", icon: <FlaskConical />, url: "/playground" },
-  { name: "Analysis Workspace", icon: <SearchCode />, url: "/analysis" },
+  { name: "에이전트 (Agents)", icon: <Server />, url: "/agents" },
+  { name: "취약점 (Abilities)", icon: <Database />, url: "/abilities" },
+  { name: "플레이그라운드 (Playground)", icon: <FlaskConical />, url: "/playground" },
+  { name: "분석 워크스페이스 (Analysis)", icon: <SearchCode />, url: "/analysis" },
 ];
 
 export default function SideBarLayout({

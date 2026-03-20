@@ -90,7 +90,7 @@ export default function Dashboard() {
       {/* Statistics Cards */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <StatsCard
-          title="Total Abilities"
+          title="전체 취약점 (Total Abilities)"
           value={abilitiesStats?.totalCount ?? 0}
           description="Available attack techniques"
           icon={Database}
@@ -98,15 +98,15 @@ export default function Dashboard() {
         />
 
         <StatsCard
-          title="Total Agents"
+          title="전체 에이전트 (Total Agents)"
           value={agentsStats?.totalCount ?? 0}
-          description="Active agents in system"
+          description="시스템의 활성 에이전트"
           icon={Server}
           variant="accent"
         />
 
         <StatsCard
-          title="Trusted Agents"
+          title="신뢰할 수 있는 에이전트 (Trusted Agents)"
           value={agentsStats?.trustedCount ?? 0}
           description="Verified and trusted"
           icon={Shield}
@@ -121,7 +121,7 @@ export default function Dashboard() {
         />
 
         <StatsCard
-          title="Untrusted Agents"
+          title="신뢰할 수 없는 에이전트 (Untrusted Agents)"
           value={agentsStats?.untrustedCount ?? 0}
           description="Require verification"
           icon={ShieldAlert}
@@ -143,10 +143,10 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <CardTitle className="text-xl font-semibold text-white">
-                  MITRE ATT&CK Coverage
+                  MITRE ATT&CK 커버리지 (MITRE ATT&CK Coverage)
                 </CardTitle>
                 <CardDescription className="text-sm text-neutral-400">
-                  Overall technique coverage compared to MITRE ATT&CK Matrix
+                  MITRE ATT&CK Matrix와 비교한 전체 기법 커버리지
                 </CardDescription>
               </div>
             </div>
@@ -212,10 +212,10 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <CardTitle className="text-xl font-semibold text-white">
-                Agents Distribution
+                에이전트 분포 (Agents Distribution)
               </CardTitle>
               <CardDescription className="text-sm text-neutral-400">
-                Visual breakdown of active agents in the system
+                시스템 내 활성 에이전트의 시각적 분류
               </CardDescription>
             </div>
             <Link href="/agents">
@@ -236,7 +236,7 @@ export default function Dashboard() {
           ) : (
             <div className="text-center text-neutral-400 py-16">
               <Server className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium">No agents available</p>
+              <p className="text-lg font-medium">사용 가능한 에이전트가 없습니다</p>
             </div>
           )}
         </CardContent>

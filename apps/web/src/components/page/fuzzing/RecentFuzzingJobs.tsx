@@ -57,7 +57,7 @@ export function RecentFuzzingJobs() {
     return (
        <div className="w-full text-center py-12 bg-slate-900/30 rounded-2xl border border-slate-800/50">
           <Shield className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-slate-300">No Recent Jobs</h3>
+          <h3 className="text-xl font-bold text-slate-300">No 최근 작업 (Recent Jobs)</h3>
           <p className="text-slate-500 mb-6">Start your first fuzzing session to see it here.</p>
           <Link href="/fuzzing/jobs">
             <Button variant="outline" className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10 hover:text-blue-300">

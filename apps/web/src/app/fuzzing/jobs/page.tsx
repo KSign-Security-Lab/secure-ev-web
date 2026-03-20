@@ -70,7 +70,7 @@ export default function FuzzingJobsPage() {
   const handleDeleteSub = async (id: string, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (confirm("Are you sure you want to delete this job?")) {
+    if (confirm("이 작업을 삭제하시겠습니까?")) {
         try {
             await trpc.fuzzing.delete.mutate({ id });
             await fetchData(currentPage, statusFilter, targetTypeFilter);
@@ -138,8 +138,8 @@ export default function FuzzingJobsPage() {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">Active Fuzzing Jobs</h1>
-            <p className="text-slate-400 mt-1">Manage and monitor your security testing sessions.</p>
+            <h1 className="text-3xl font-bold text-white tracking-tight">활성 Fuzzing 작업</h1>
+            <p className="text-slate-400 mt-1">보안 테스트 세션을 관리하고 모니터링합니다.</p>
           </div>
           <button
             onClick={() => {
@@ -160,7 +160,7 @@ export default function FuzzingJobsPage() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                     <input 
                         type="text" 
-                        placeholder="Search jobs..." 
+                        placeholder="작업 검색..."
                         className="w-full bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-lg pl-10 pr-4 py-2 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none placeholder:text-slate-600"
                     />
                  </div>
@@ -177,12 +177,12 @@ export default function FuzzingJobsPage() {
                         }}
                         className="appearance-none bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-lg pl-10 pr-8 py-2 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none cursor-pointer"
                     >
-                        <option value="all">All Statuses</option>
-                        <option value="DRAFT">Draft</option>
-                        <option value="PENDING">Pending</option>
-                        <option value="RUNNING">Running</option>
-                        <option value="COMPLETED">Completed</option>
-                        <option value="FAILED">Failed</option>
+                        <option value="all">모든 상태</option>
+                        <option value="DRAFT">초안</option>
+                        <option value="PENDING">대기 중</option>
+                        <option value="RUNNING">진행 중</option>
+                        <option value="COMPLETED">완료</option>
+                        <option value="FAILED">실패</option>
                     </select>
                 </div>
 
@@ -196,7 +196,7 @@ export default function FuzzingJobsPage() {
                         }}
                          className="appearance-none bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-lg pl-10 pr-8 py-2 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none cursor-pointer"
                     >
-                        <option value="all">All Targets</option>
+                        <option value="all">모든 대상</option>
                         <option value="ISO15118">ISO 15118</option>
                         <option value="OCPP_CHARGER">OCPP Charger</option>
                         <option value="OCPP_SERVER">OCPP Server</option>
@@ -211,12 +211,12 @@ export default function FuzzingJobsPage() {
              <table className="w-full text-left">
                 <thead>
                     <tr className="bg-slate-800 border-b border-slate-700">
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider rounded-tl-3xl">Job Name</th>
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Target</th>
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Status</th>
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Environment</th>
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Created</th>
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right rounded-tr-3xl">Actions</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider rounded-tl-3xl">작업 이름</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">대상</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">상태</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">환경</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">생성일</th>
+                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right rounded-tr-3xl">작업</th>
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/50">
@@ -306,7 +306,7 @@ export default function FuzzingJobsPage() {
            <div className="px-6 py-4 border-t border-slate-800/50 bg-slate-900/30 rounded-b-3xl">
              <div className="flex items-center justify-between">
                 <div className="text-sm text-slate-500">
-                    Showing <span className="text-white font-medium">{data?.length || 0}</span> of <span className="text-white font-medium">{totalCount}</span> jobs
+                    표시 중: <span className="text-white font-medium">{data?.length || 0}</span> / 전체 <span className="text-white font-medium">{totalCount}</span> 개 작업
                 </div>
                 {totalPages > 1 && (
                     <Pagination 
