@@ -76,7 +76,7 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
                 <div
                   onClick={handleAssetClick}
                   className={clsx(
-                    "flex items-center py-2 px-6 cursor-pointer text-sm font-medium rounded-md transition-colors duration-200",
+                    "flex items-center py-2 px-6 cursor-pointer text-sm font-medium rounded-md transition-colors duration-200 group/item relative",
                     isActive(item.url)
                       ? "text-blue-500"
                       : "text-gray-700 hover:bg-gray-100",
@@ -100,12 +100,21 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
                       </div>
                     </div>
                   )}
+
+                  {!expanded && (
+                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-xs font-semibold text-gray-900 shadow-xl whitespace-nowrap opacity-0 group-hover/item:opacity-100 group-hover/item:translate-x-1 transition-all pointer-events-none z-50">
+                      {item.name}
+                      {/* Tooltip Arrow */}
+                      <div className="absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 border-y-[6px] border-y-transparent border-r-[6px] border-r-gray-200" />
+                      <div className="absolute left-px top-1/2 -translate-x-full -translate-y-1/2 border-y-[5px] border-y-transparent border-r-[5px] border-r-white" />
+                    </div>
+                  )}
                 </div>
               ) : (
                 <Link href={item.url}>
                   <div
                     className={clsx(
-                      "flex items-center py-2 px-6 text-sm font-medium rounded-md transition-colors duration-200",
+                      "flex items-center py-2 px-6 text-sm font-medium rounded-md transition-colors duration-200 group/item relative",
                       isActive(item.url)
                         ? "text-blue-500"
                         : "text-gray-700 hover:bg-gray-100",
@@ -117,6 +126,15 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
                       <span className="ml-3 whitespace-nowrap">
                         {item.name}
                       </span>
+                    )}
+
+                    {!expanded && (
+                      <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-xs font-semibold text-gray-900 shadow-xl whitespace-nowrap opacity-0 group-hover/item:opacity-100 group-hover/item:translate-x-1 transition-all pointer-events-none z-50">
+                        {item.name}
+                        {/* Tooltip Arrow */}
+                        <div className="absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 border-y-[6px] border-y-transparent border-r-[6px] border-r-gray-200" />
+                        <div className="absolute left-px top-1/2 -translate-x-full -translate-y-1/2 border-y-[5px] border-y-transparent border-r-[5px] border-r-white" />
+                      </div>
                     )}
                   </div>
                 </Link>
@@ -139,12 +157,6 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
                       <span className="whitespace-nowrap">{child.name}</span>
                     </Link>
                   ))}
-                </div>
-              )}
-
-              {!expanded && (
-                <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1 rounded bg-gray-800 text-sm shadow-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-50">
-                  {item.name}
                 </div>
               )}
             </div>
