@@ -8,7 +8,7 @@ import { I18nProvider } from "~/i18n/I18nProvider";
 import { defaultLocale, isLocale } from "~/i18n/messages";
 
 export const metadata: Metadata = {
-  title: "BAS Platform",
+  title: "secure-ev-web",
   description: "Breach and Attack Simulation",
   icons: {
     icon: [{ url: "/favicon.ico" }, { url: "/icon.png", type: "image/png" }],

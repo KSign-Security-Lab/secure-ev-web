@@ -1,5 +1,5 @@
 {
-  "name": "@bas-platform/prisma",
+  "name": "@secure-ev-web/prisma",
   "version": "1.0.0",
   "main": "src/index.js",
   "types": "src/index.d.ts",

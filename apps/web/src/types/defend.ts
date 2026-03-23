@@ -1,4 +1,4 @@
-import { Ability } from "@bas-platform/prisma";
+import { Ability } from "@secure-ev-web/prisma";
 
 export interface AttackExecutor {
   platform: string;

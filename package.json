@@ -1,5 +1,5 @@
 {
-  "name": "bas-platform",
+  "name": "secure-ev-web",
   "version": "0.1.0",
   "private": true,
   "workspaces": [
@@ -7,13 +7,13 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "yarn workspace @bas-platform/web dev",
+    "dev": "yarn workspace @secure-ev-web/web dev",
     "lint": "yarn workspaces foreach run lint",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
-    "prisma:generate": "yarn workspace @bas-platform/prisma prisma:generate",
-    "prisma:seed": "yarn workspace @bas-platform/prisma prisma:seed",
-    "prisma:studio": "yarn workspace @bas-platform/prisma prisma:studio"
+    "prisma:generate": "yarn workspace @secure-ev-web/prisma prisma:generate",
+    "prisma:seed": "yarn workspace @secure-ev-web/prisma prisma:seed",
+    "prisma:studio": "yarn workspace @secure-ev-web/prisma prisma:studio"
   },
   "packageManager": "yarn@4.12.0"
 }
