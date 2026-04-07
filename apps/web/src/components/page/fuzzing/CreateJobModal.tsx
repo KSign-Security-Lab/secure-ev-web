@@ -55,12 +55,13 @@ export function CreateJobModal({
   const [environment, setEnvironment] = useState("dev");
   const [targetDevice, setTargetDevice] = useState<FuzzingTargetDevice | null>(null);
   const [scope, setScope] = useState<string[]>([]);
-  const [targetType, setTargetType] = useState<FuzzingTargetType>("ISO15118");
+  const [targetType, setTargetType] = useState<FuzzingTargetType>("OCPP_CHARGER");
   const [connectionConfig, setConnectionConfig] =
     useState<ConnectionConfig | null>(null);
   const [fuzzingParameters, setFuzzingParameters] =
     useState<FuzzingParameters | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [connectionStatus, setConnectionStatus] = useState<'idle' | 'generating' | 'waiting'>('idle');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   React.useEffect(() => {
@@ -86,7 +87,7 @@ export function CreateJobModal({
         setEnvironment("dev");
         setTargetDevice(null);
         setScope([]);
-        setTargetType("ISO15118");
+        setTargetType("OCPP_CHARGER");
         setConnectionConfig(null);
         setFuzzingParameters(null);
         setErrors({});
@@ -100,7 +101,7 @@ export function CreateJobModal({
       setTargetType("OCPP_SERVER");
     } else if (targetDevice === "CHARGER" && targetType === "OCPP_SERVER") {
        // Only reset if we were in server mode
-      setTargetType("ISO15118");
+      setTargetType("OCPP_CHARGER");
     }
   }, [targetDevice, targetType]);
 
@@ -135,6 +136,8 @@ export function CreateJobModal({
 
             if (!result.success) {
             newErrors.connectionConfig = result.error.issues[0].message;
+            } else if (targetType === "OCPP_CHARGER" && connectionStatus !== "waiting") {
+            newErrors.connectionConfig = t("fuzzing.create.validation.connectionWait");
             }
         }
       }
@@ -231,7 +234,7 @@ export function CreateJobModal({
       setEnvironment("dev");
       setTargetDevice(null);
       setScope([]);
-      setTargetType("ISO15118");
+      setTargetType("OCPP_CHARGER");
       setConnectionConfig(null);
       setFuzzingParameters(null);
       setErrors({});
@@ -260,7 +263,7 @@ export function CreateJobModal({
       setEnvironment("dev");
       setTargetDevice(null);
       setScope([]);
-      setTargetType("ISO15118");
+      setTargetType("OCPP_CHARGER");
       setConnectionConfig(null);
       setFuzzingParameters(null);
       setErrors({});
@@ -399,22 +402,23 @@ export function CreateJobModal({
                 onValueChange={(value) => {
                   setTargetType(value as FuzzingTargetType);
                   setConnectionConfig(null);
+                  setConnectionStatus('idle');
                 }}
                 className="grid grid-cols-1 md:grid-cols-3 gap-4"
               >
                 { targetDevice === "CHARGER" && (
                     <>
                     <div className={cn(
-                        "relative flex flex-col items-center gap-3 rounded-xl border-2 p-4 transition-all duration-200 hover:bg-slate-800/50",
+                        "relative flex flex-col items-center gap-3 rounded-xl border-2 p-4 transition-all duration-200 opacity-50 cursor-not-allowed",
                         targetType === "ISO15118"
                             ? "border-blue-500 bg-blue-500/5"
-                            : "border-slate-800 bg-slate-900/50 hover:border-slate-700"
+                            : "border-slate-800 bg-slate-900/50"
                     )}>
-                    <RadioGroupItem value="ISO15118" id="iso15118" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                    <RadioGroupItem value="ISO15118" id="iso15118" disabled className="absolute inset-0 w-full h-full opacity-0 cursor-not-allowed" />
                     <div className={cn("p-3 rounded-full bg-slate-900", targetType === "ISO15118" ? "text-blue-400 ring-2 ring-blue-500/20" : "text-slate-500")}>
                         <Zap size={24} />
                     </div>
-                    <Label htmlFor="iso15118" className="font-medium text-white text-center pointer-events-none">
+                    <Label htmlFor="iso15118" className="font-medium text-white text-center pointer-events-none opacity-50">
                         ISO 15118<br/><span className="text-xs text-slate-400 font-normal">{t("fuzzing.create.form.protocolIsoSubtitle")}</span>
                     </Label>
                     </div>
@@ -463,6 +467,7 @@ export function CreateJobModal({
                   targetType={targetType}
                   config={connectionConfig}
                   onChange={setConnectionConfig}
+                  onStatusChange={setConnectionStatus}
                 />
               </div>
               {errors.connectionConfig && (
@@ -643,11 +648,11 @@ export function CreateJobModal({
                 {t("fuzzing.create.button.cancel")}
                 </Button>
                 {currentStep < totalSteps ? (
-                <Button
+                 <Button
                     type="button"
                     onClick={handleNext}
-                    disabled={isSubmitting || isStepTransitioning}
-                    className="bg-blue-600 hover:bg-blue-500 text-white min-w-[120px]"
+                    disabled={isSubmitting || isStepTransitioning || (currentStep === 2 && targetType === "OCPP_CHARGER" && connectionStatus !== "waiting")}
+                    className="bg-blue-600 hover:bg-blue-500 text-white min-w-[120px] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                     {t("fuzzing.create.button.next")}
                     <ChevronRight className="w-4 h-4 ml-2" />

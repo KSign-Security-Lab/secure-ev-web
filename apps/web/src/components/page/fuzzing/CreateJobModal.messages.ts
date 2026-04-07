@@ -42,6 +42,7 @@ export const enFuzzingCreateJobModalMessages = {
   "fuzzing.create.validation.targetDeviceRequired": "Please select a target device",
   "fuzzing.create.validation.connectionConfigRequired": "Connection configuration is required",
   "fuzzing.create.validation.scopeRequired": "At least one message must be selected",
+  "fuzzing.create.validation.connectionWait": "Please wait for the charger to connect before proceeding",
 } as const;
 
 type FuzzingCreateJobModalMessageKey = keyof typeof enFuzzingCreateJobModalMessages;
@@ -90,4 +91,5 @@ export const koFuzzingCreateJobModalMessages: Record<FuzzingCreateJobModalMessag
   "fuzzing.create.validation.targetDeviceRequired": "대상 장치를 선택하세요",
   "fuzzing.create.validation.connectionConfigRequired": "연결 설정은 필수입니다",
   "fuzzing.create.validation.scopeRequired": "최소 하나의 메시지를 선택해야 합니다",
+  "fuzzing.create.validation.connectionWait": "진행하기 전에 충전기가 연결될 때까지 기다려 주세요",
 };
