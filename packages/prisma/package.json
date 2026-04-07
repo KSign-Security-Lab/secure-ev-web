@@ -1,8 +1,8 @@
 {
   "name": "@secure-ev-web/prisma",
   "version": "1.0.0",
-  "main": "src/index.js",
-  "types": "src/index.d.ts",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
   "license": "MIT",
   "scripts": {
     "prisma:pull": "prisma db pull",
