@@ -35,12 +35,12 @@ export default function SideBarLayout({
         {
           name: t("menu.agentTerminal"),
           icon: <Terminal />,
-          url: "/playground/agents",
+          url: "/playground/connect-agent",
         },
         {
           name: t("menu.agents"),
           icon: <Users />,
-          url: "/playground/agents-list",
+          url: "/playground/agents",
         },
         {
           name: t("menu.abilities"),

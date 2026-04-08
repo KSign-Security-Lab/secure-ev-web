@@ -7,7 +7,7 @@ export default function PlaygroundRedirect() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace("/playground/agents");
+    router.replace("/playground/connect-agent");
   }, [router]);
 
   return null;

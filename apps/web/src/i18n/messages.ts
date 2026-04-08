@@ -13,8 +13,8 @@ import { enFuzzingJobDetailPageMessages, koFuzzingJobDetailPageMessages } from "
 import { enFuzzingJobsPageMessages, koFuzzingJobsPageMessages } from "~/app/fuzzing/jobs/page.messages";
 import { enFuzzingLandingPageMessages, koFuzzingLandingPageMessages } from "~/app/fuzzing/page.messages";
 import { enDashboardPageMessages, koDashboardPageMessages } from "~/app/page.messages";
-import { enAgentsPageMessages, koAgentsPageMessages } from "~/app/playground/agents-list/page.messages";
-import { enPlaygroundPageMessages, koPlaygroundPageMessages } from "~/app/playground/agents/page.messages";
+import { enAgentsPageMessages, koAgentsPageMessages } from "~/app/playground/agents/page.messages";
+import { enPlaygroundPageMessages, koPlaygroundPageMessages } from "~/app/playground/connect-agent/page.messages";
 import { enDashboardChartMessages, koDashboardChartMessages } from "~/components/dashboard/chart.messages";
 import { enAbilitiesTableMessages, koAbilitiesTableMessages } from "~/components/page/abilities/AbilitiesTable.messages";
 import { enAbilityModalMessages, koAbilityModalMessages } from "~/components/page/abilities/AbilityModal/AbilityModal.messages";
