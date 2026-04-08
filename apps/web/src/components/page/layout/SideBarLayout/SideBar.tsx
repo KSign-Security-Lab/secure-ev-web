@@ -1,6 +1,6 @@
 "use client";
 
-import React, { forwardRef, useImperativeHandle, useState, useEffect } from "react";
+import React, { forwardRef, useImperativeHandle, useState, useEffect, useCallback } from "react";
 import { ChevronDown, ChevronRight, Globe } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -28,22 +28,23 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
   ({ menus }, ref) => {
     const { locale, setLocale, t } = useI18n();
     const pathname = usePathname();
-    const isActive = (url: string) => {
+    const isActive = useCallback((url: string) => {
       if (url === "/" || url === "") return pathname === url;
       return pathname === url || pathname.startsWith(url + "/");
-    };
+    }, [pathname]);
     const [expanded, setExpanded] = useState(true);
     const [assetOpen, setAssetOpen] = useState(false);
 
-    // Auto-expand if a child is active
+    // Auto-expand if a child is active (only on navigation)
     useEffect(() => {
       const hasActiveChild = menus.some((item) =>
         item.children?.some((child) => isActive(child.url))
       );
-      if (hasActiveChild && !assetOpen) {
+      if (hasActiveChild) {
         setAssetOpen(true);
       }
-    }, [pathname, menus, assetOpen]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pathname]); // Only trigger when pathname changes
 
     useImperativeHandle(ref, () => ({
       toggle: () => setExpanded((prev) => !prev),
@@ -82,7 +83,7 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
       >
         <Link href={"/"}>
           <div className="flex items-center justify-between p-4 ml-1">
-            <div className={clsx("relative h-10", expanded ? "w-56" : "w-16")}>
+            <div className={clsx("relative h-10", expanded ? "w-full" : "w-16")}>
               <Image
                 src={expanded ? "/assets/logo-dark.png" : "/assets/logo-sm.png"}
                 alt="Logo"
