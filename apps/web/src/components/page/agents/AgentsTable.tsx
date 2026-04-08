@@ -1,5 +1,5 @@
 import React from "react";
-import { AgentsListResponse } from "~/app/agents/page";
+import { AgentsListResponse } from "~/app/playground/agents-list/page";
 import { Table, TableColumn } from "~/components/common/Table/Table";
 import { Tag } from "~/components/common/Tag/Tag";
 import { useI18n } from "~/i18n/I18nProvider";

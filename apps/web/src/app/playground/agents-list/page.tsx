@@ -8,7 +8,7 @@ import { useI18n } from "~/i18n/I18nProvider";
 
 export type AgentsListResponse = RouterOutputs["agents"]["list"];
 
-export default function Abilities() {
+export default function Agents() {
   const { t } = useI18n();
   const [data, setData] = useState<AgentsListResponse | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);

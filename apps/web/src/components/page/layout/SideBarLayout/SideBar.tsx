@@ -1,6 +1,6 @@
 "use client";
 
-import React, { forwardRef, useImperativeHandle, useState } from "react";
+import React, { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import { ChevronDown, ChevronRight, Globe } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -35,6 +35,16 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
     const [expanded, setExpanded] = useState(true);
     const [assetOpen, setAssetOpen] = useState(false);
 
+    // Auto-expand if a child is active
+    useEffect(() => {
+      const hasActiveChild = menus.some((item) =>
+        item.children?.some((child) => isActive(child.url))
+      );
+      if (hasActiveChild && !assetOpen) {
+        setAssetOpen(true);
+      }
+    }, [pathname, menus, assetOpen]);
+
     useImperativeHandle(ref, () => ({
       toggle: () => setExpanded((prev) => !prev),
     }));
@@ -56,7 +66,6 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
       if (!isLocale(value)) {
         return;
       }
-
       setLocale(value);
     };
 
@@ -88,40 +97,66 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
           {menus.map((item) => (
             <div key={item.url} className="relative group">
               {item.children ? (
-                <div
-                  onClick={handleAssetClick}
-                  className={clsx(
-                    "flex items-center py-2 px-6 cursor-pointer text-sm font-medium rounded-md transition-colors duration-200 group/item relative",
-                    isActive(item.url)
-                      ? "text-blue-500"
-                      : "text-gray-700 hover:bg-gray-100",
-                    !expanded ? "justify-center" : ""
-                  )}
-                >
-                  <div className="w-6 h-6">{item.icon}</div>
-                  {expanded && (
-                    <div className="flex flex-row items-center justify-between w-full">
-                      <div>
-                        <span className="ml-3 whitespace-nowrap">
-                          {item.name}
-                        </span>
+                <div className="flex flex-col">
+                  <div
+                    onClick={handleAssetClick}
+                    className={clsx(
+                      "flex items-center py-2 px-6 cursor-pointer text-sm font-medium rounded-md transition-colors duration-200 group/item relative",
+                      isActive(item.url)
+                        ? "text-blue-500"
+                        : "text-gray-700 hover:bg-gray-100",
+                      !expanded ? "justify-center" : ""
+                    )}
+                  >
+                    <div className="w-6 h-6">{item.icon}</div>
+                    {expanded && (
+                      <div className="flex flex-row items-center justify-between w-full">
+                        <div>
+                          <span className="ml-3 whitespace-nowrap">
+                            {item.name}
+                          </span>
+                        </div>
+                        <div>
+                          {assetOpen ? (
+                            <ChevronDown size={16} />
+                          ) : (
+                            <ChevronRight size={16} />
+                          )}
+                        </div>
                       </div>
-                      <div>
-                        {assetOpen ? (
-                          <ChevronDown size={16} />
-                        ) : (
-                          <ChevronRight size={16} />
-                        )}
-                      </div>
-                    </div>
-                  )}
+                    )}
 
-                  {!expanded && (
-                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-xs font-semibold text-gray-900 shadow-xl whitespace-nowrap opacity-0 group-hover/item:opacity-100 group-hover/item:translate-x-1 transition-all pointer-events-none z-50">
-                      {item.name}
-                      {/* Tooltip Arrow */}
-                      <div className="absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 border-y-[6px] border-y-transparent border-r-[6px] border-r-gray-200" />
-                      <div className="absolute left-px top-1/2 -translate-x-full -translate-y-1/2 border-y-[5px] border-y-transparent border-r-[5px] border-r-white" />
+                    {!expanded && (
+                      <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-xs font-semibold text-gray-900 shadow-xl whitespace-nowrap opacity-0 group-hover/item:opacity-100 group-hover/item:translate-x-1 transition-all pointer-events-none z-50">
+                        {item.name}
+                        <div className="absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 border-y-[6px] border-y-transparent border-r-[6px] border-r-gray-200" />
+                        <div className="absolute left-px top-1/2 -translate-x-full -translate-y-1/2 border-y-[5px] border-y-transparent border-r-[5px] border-r-white" />
+                      </div>
+                    )}
+                  </div>
+
+                  {item.children && expanded && assetOpen && (
+                    <div className="flex flex-col space-y-0.5 mt-0.5">
+                      {item.children.map((child) => (
+                        <Link
+                          key={child.url}
+                          href={child.url}
+                          className={clsx(
+                            "flex items-center py-2 pr-6 gap-3 rounded-md transition-colors duration-200 text-sm group",
+                            isActive(child.url)
+                              ? "text-blue-500 font-semibold bg-gray-50"
+                              : "text-gray-700 hover:bg-gray-100"
+                          )}
+                          style={{ paddingLeft: "2.5rem" }}
+                        >
+                          <div className="w-5 h-5 shrink-0 flex items-center justify-center">
+                            {child.icon}
+                          </div>
+                          <span className="whitespace-nowrap truncate">
+                            {child.name}
+                          </span>
+                        </Link>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -146,33 +181,12 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
                     {!expanded && (
                       <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-xs font-semibold text-gray-900 shadow-xl whitespace-nowrap opacity-0 group-hover/item:opacity-100 group-hover/item:translate-x-1 transition-all pointer-events-none z-50">
                         {item.name}
-                        {/* Tooltip Arrow */}
                         <div className="absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 border-y-[6px] border-y-transparent border-r-[6px] border-r-gray-200" />
                         <div className="absolute left-px top-1/2 -translate-x-full -translate-y-1/2 border-y-[5px] border-y-transparent border-r-[5px] border-r-white" />
                       </div>
                     )}
                   </div>
                 </Link>
-              )}
-
-              {item.children && expanded && assetOpen && (
-                <div className="flex flex-col space-y-1 mt-1">
-                  {item.children.map((child) => (
-                    <Link
-                      key={child.url}
-                      href={child.url}
-                      className={clsx(
-                        "flex items-center py-1 px-6 gap-2 rounded-md transition-colors duration-200 text-sm",
-                        isActive(child.url)
-                          ? "text-blue-500 font-semibold"
-                          : "text-gray-700 hover:bg-gray-100"
-                      )}
-                    >
-                      <div className="w-4 h-4">{child.icon}</div>
-                      <span className="whitespace-nowrap">{child.name}</span>
-                    </Link>
-                  ))}
-                </div>
               )}
             </div>
           ))}
@@ -223,3 +237,5 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
     );
   }
 );
+
+Sidebar.displayName = "Sidebar";

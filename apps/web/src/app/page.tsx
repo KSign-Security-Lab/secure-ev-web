@@ -183,7 +183,7 @@ export default function Dashboard() {
                   {t("dashboard.abilities.desc")}
                 </CardDescription>
               </div>
-              <Link href="/abilities">
+              <Link href="/playground/abilities">
                 <Button variant="tinted" size="sm">
                   {t("dashboard.viewAll")}
                   <ArrowRight className="h-4 w-4" />
@@ -222,7 +222,7 @@ export default function Dashboard() {
                 {t("dashboard.agents.desc")}
               </CardDescription>
             </div>
-            <Link href="/agents">
+            <Link href="/playground/agents">
               <Button variant="tinted" size="sm">
                 {t("dashboard.viewAll")}
                 <ArrowRight className="h-4 w-4" />

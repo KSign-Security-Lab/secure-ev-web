@@ -1,7 +1,6 @@
 import { enNavigationMessages, koNavigationMessages } from "~/components/page/layout/SideBarLayout/messages";
 import { enCommonMessages, koCommonMessages } from "~/components/common/messages";
-import { enAbilitiesPageMessages, koAbilitiesPageMessages } from "~/app/abilities/page.messages";
-import { enAgentsPageMessages, koAgentsPageMessages } from "~/app/agents/page.messages";
+import { enAbilitiesPageMessages, koAbilitiesPageMessages } from "~/app/playground/abilities/page.messages";
 import { enAnalysisCodeViewerMessages, koAnalysisCodeViewerMessages } from "~/app/analysis/components/CodeViewer.messages";
 import { enAnalysisDFInfoCardsMessages, koAnalysisDFInfoCardsMessages } from "~/app/analysis/components/DFInfoCards.messages";
 import { enAnalysisExplainabilityPanelsMessages, koAnalysisExplainabilityPanelsMessages } from "~/app/analysis/components/ExplainabilityPanels.messages";
@@ -14,7 +13,8 @@ import { enFuzzingJobDetailPageMessages, koFuzzingJobDetailPageMessages } from "
 import { enFuzzingJobsPageMessages, koFuzzingJobsPageMessages } from "~/app/fuzzing/jobs/page.messages";
 import { enFuzzingLandingPageMessages, koFuzzingLandingPageMessages } from "~/app/fuzzing/page.messages";
 import { enDashboardPageMessages, koDashboardPageMessages } from "~/app/page.messages";
-import { enPlaygroundPageMessages, koPlaygroundPageMessages } from "~/app/playground/page.messages";
+import { enAgentsPageMessages, koAgentsPageMessages } from "~/app/playground/agents-list/page.messages";
+import { enPlaygroundPageMessages, koPlaygroundPageMessages } from "~/app/playground/agents/page.messages";
 import { enDashboardChartMessages, koDashboardChartMessages } from "~/components/dashboard/chart.messages";
 import { enAbilitiesTableMessages, koAbilitiesTableMessages } from "~/components/page/abilities/AbilitiesTable.messages";
 import { enAbilityModalMessages, koAbilityModalMessages } from "~/components/page/abilities/AbilityModal/AbilityModal.messages";
@@ -54,7 +54,6 @@ const enMessages = {
   ...enNavigationMessages,
   ...enCommonMessages,
   ...enAbilitiesPageMessages,
-  ...enAgentsPageMessages,
   ...enAnalysisCodeViewerMessages,
   ...enAnalysisDFInfoCardsMessages,
   ...enAnalysisExplainabilityPanelsMessages,
@@ -67,6 +66,7 @@ const enMessages = {
   ...enFuzzingJobsPageMessages,
   ...enFuzzingLandingPageMessages,
   ...enDashboardPageMessages,
+  ...enAgentsPageMessages,
   ...enPlaygroundPageMessages,
   ...enDashboardChartMessages,
   ...enAbilitiesTableMessages,
@@ -104,7 +104,6 @@ const koMessages: Record<TranslationKey, string> = {
   ...koNavigationMessages,
   ...koCommonMessages,
   ...koAbilitiesPageMessages,
-  ...koAgentsPageMessages,
   ...koAnalysisCodeViewerMessages,
   ...koAnalysisDFInfoCardsMessages,
   ...koAnalysisExplainabilityPanelsMessages,
@@ -117,6 +116,7 @@ const koMessages: Record<TranslationKey, string> = {
   ...koFuzzingJobsPageMessages,
   ...koFuzzingLandingPageMessages,
   ...koDashboardPageMessages,
+  ...koAgentsPageMessages,
   ...koPlaygroundPageMessages,
   ...koDashboardChartMessages,
   ...koAbilitiesTableMessages,

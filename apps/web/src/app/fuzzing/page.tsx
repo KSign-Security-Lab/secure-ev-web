@@ -100,7 +100,7 @@ export default function FuzzingLandingPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
               {/* Connector Line (Desktop) */}
-              <div className="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-gradient-to-r from-blue-900/0 via-blue-500/30 to-blue-900/0 -z-10" />
+              <div className="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-linear-to-r from-blue-900/0 via-blue-500/30 to-blue-900/0 -z-10" />
 
               {/* Step 1 */}
               <div className="relative flex flex-col items-center text-center group">
@@ -356,7 +356,7 @@ export default function FuzzingLandingPage() {
                   {t("fuzzing.landing.resource.vulnDbDescription")}
                 </p>
                 <Link
-                  href="/abilities"
+                  href="/playground/abilities"
                   className="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium"
                 >
                   {t("fuzzing.landing.resource.vulnDbCta")}{" "}

@@ -2,13 +2,13 @@
 
 import React, { useRef } from "react";
 import {
-  Database,
   FlaskConical,
   Gauge,
   MenuIcon,
-  Server,
   Zap,
   SearchCode,
+  Terminal,
+  Users,
 } from "lucide-react";
 import { MenuItemType, Sidebar, SidebarRef } from "./SideBar";
 import Topbar from "./TopBar";
@@ -27,15 +27,44 @@ export default function SideBarLayout({
   const menuItems: MenuItemType[] = [
     { name: t("menu.dashboard"), icon: <Gauge />, url: "/" },
     { name: t("menu.fuzzing"), icon: <Zap />, url: "/fuzzing" },
-    { name: t("menu.agents"), icon: <Server />, url: "/agents" },
-    { name: t("menu.abilities"), icon: <Database />, url: "/abilities" },
-    { name: t("menu.playground"), icon: <FlaskConical />, url: "/playground" },
-    { name: t("menu.analysisWorkspace"), icon: <SearchCode />, url: "/analysis" },
+    {
+      name: t("menu.playground"),
+      icon: <FlaskConical />,
+      url: "/playground",
+      children: [
+        {
+          name: t("menu.agentTerminal"),
+          icon: <Terminal />,
+          url: "/playground/agents",
+        },
+        {
+          name: t("menu.agents"),
+          icon: <Users />,
+          url: "/playground/agents-list",
+        },
+        {
+          name: t("menu.abilities"),
+          icon: <Zap />,
+          url: "/playground/abilities",
+        },
+      ],
+    },
+    {
+      name: t("menu.analysisWorkspace"),
+      icon: <SearchCode />,
+      url: "/analysis",
+    },
   ];
 
   const getTitle = (currentPathname: string) => {
-    const menu = menuItems.find((item) => item.url === currentPathname);
-    return menu?.name || "";
+    for (const item of menuItems) {
+      if (item.url === currentPathname) return item.name;
+      if (item.children) {
+        const child = item.children.find((c) => c.url === currentPathname);
+        if (child) return child.name;
+      }
+    }
+    return "";
   };
 
   // Check if current page is within the fuzzing section (Landing or Jobs)
