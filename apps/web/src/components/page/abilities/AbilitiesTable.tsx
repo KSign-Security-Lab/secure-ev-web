@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Table, TableColumn } from "~/components/common/Table/Table";
 import AbilityModal from "./AbilityModal";
-import type { AbilitiesListResponse } from "~/app/abilities/page";
+import type { AbilitiesListResponse } from "~/app/playground/abilities/page";
 import { useI18n } from "~/i18n/I18nProvider";
 
 export const AbilitiesTable: React.FC<{

@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "next dev --turbo",
+    "dev": "next dev --turbo -p 4000",
+    "start": "next start",
     "build": "next build",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
