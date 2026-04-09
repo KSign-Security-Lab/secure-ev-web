@@ -9,6 +9,7 @@ import {
   SearchCode,
   Terminal,
   Users,
+  Database,
 } from "lucide-react";
 import { MenuItemType, Sidebar, SidebarRef } from "./SideBar";
 import Topbar from "./TopBar";
@@ -50,9 +51,21 @@ export default function SideBarLayout({
       ],
     },
     {
-      name: t("menu.analysisWorkspace"),
+      name: t("menu.analysis"),
       icon: <SearchCode />,
       url: "/analysis",
+      children: [
+        {
+          name: t("menu.inspectCode"),
+          icon: <SearchCode />,
+          url: "/analysis/inspect-code",
+        },
+        {
+          name: t("menu.vulnDb"),
+          icon: <Database />,
+          url: "/analysis/vuln-db",
+        },
+      ],
     },
   ];
 

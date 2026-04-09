@@ -33,15 +33,15 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
       return pathname === url || pathname.startsWith(url + "/");
     }, [pathname]);
     const [expanded, setExpanded] = useState(true);
-    const [assetOpen, setAssetOpen] = useState(false);
+    const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
     // Auto-expand if a child is active (only on navigation)
     useEffect(() => {
-      const hasActiveChild = menus.some((item) =>
+      const activeParent = menus.find((item) =>
         item.children?.some((child) => isActive(child.url))
       );
-      if (hasActiveChild) {
-        setAssetOpen(true);
+      if (activeParent) {
+        setOpenMenus((prev) => ({ ...prev, [activeParent.url]: true }));
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pathname]); // Only trigger when pathname changes
@@ -50,16 +50,16 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
       toggle: () => setExpanded((prev) => !prev),
     }));
 
-    const handleAssetClick = () => {
+    const handleAssetClick = (menuUrl: string) => {
       if (!expanded) {
         setExpanded(true);
-        if (!assetOpen) {
+        if (!openMenus[menuUrl]) {
           setTimeout(() => {
-            setAssetOpen(true);
+            setOpenMenus((prev) => ({ ...prev, [menuUrl]: true }));
           }, 300);
         }
       } else {
-        setAssetOpen((prev) => !prev);
+        setOpenMenus((prev) => ({ ...prev, [menuUrl]: !prev[menuUrl] }));
       }
     };
 
@@ -100,7 +100,7 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
               {item.children ? (
                 <div className="flex flex-col">
                   <div
-                    onClick={handleAssetClick}
+                    onClick={() => handleAssetClick(item.url)}
                     className={clsx(
                       "flex items-center py-2 px-6 cursor-pointer text-sm font-medium rounded-md transition-colors duration-200 group/item relative",
                       isActive(item.url)
@@ -118,7 +118,7 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
                           </span>
                         </div>
                         <div>
-                          {assetOpen ? (
+                          {openMenus[item.url] ? (
                             <ChevronDown size={16} />
                           ) : (
                             <ChevronRight size={16} />
@@ -136,7 +136,7 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
                     )}
                   </div>
 
-                  {item.children && expanded && assetOpen && (
+                  {item.children && expanded && openMenus[item.url] && (
                     <div className="flex flex-col space-y-0.5 mt-0.5">
                       {item.children.map((child) => (
                         <Link
