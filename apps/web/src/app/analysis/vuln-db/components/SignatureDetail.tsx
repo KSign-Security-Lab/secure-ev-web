@@ -2,206 +2,330 @@
 
 import React from "react";
 import { 
-  SignatureDetail as SignatureDetailType
-} from "../mockData";
+  ArrowRight, 
+  ShieldAlert, 
+  Cpu, 
+  Activity, 
+  Code2, 
+  AlertTriangle,
+  ShieldCheck,
+  CheckCircle,
+  X,
+  FileCode,
+  ListTree,
+  Terminal,
+  Zap,
+  Lock,
+  Unlock,
+  ShieldX
+} from "lucide-react";
+import { SignatureDetail as SignatureDetailType } from "../mockData";
 import { cn } from "~/lib/utils";
+import { ScrollArea } from "~/components/ui/scroll-area";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { Tag } from "~/components/common/Tag/Tag";
 
 interface SignatureDetailProps {
   data: SignatureDetailType;
-  onBack?: () => void;
+  onClose?: () => void;
 }
 
-export function SignatureDetail({ data, onBack }: SignatureDetailProps) {
+export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
   return (
-    <div className="flex flex-col gap-6 animate-in fade-in duration-500 w-full text-slate-200">
-      {/* Top Action Bar */}
-      <div className="flex justify-between items-center px-1">
-        <button 
-            onClick={onBack}
-            className="text-xs font-bold text-neutral-500 hover:text-white transition-colors flex items-center gap-1.5 uppercase tracking-widest"
-        >
-          <span className="text-lg">←</span> Back to Signatures
-        </button>
-      </div>
-
-      {/* Pattern Identity Bar (Updated to Badge Header) */}
-      <div className="flex flex-col gap-4">
-        <div>
-            <h2 className="text-2xl font-bold text-white leading-tight font-mono">{data.patternId}</h2>
-            <p className="text-[11px] font-mono text-neutral-500 uppercase tracking-widest mt-1">{data.sid}</p>
-        </div>
-
-        <div className="h-px bg-base-850 w-full" />
-
-        <div className="grid grid-cols-4 gap-4">
-            <header className="border border-base-850 p-3 bg-base-900/50 flex flex-col gap-1">
-                <span className="text-xs font-bold text-white uppercase tracking-tighter">{data.cwe}</span>
-                <span className="text-[9px] font-mono text-neutral-600 uppercase">Stack BO</span>
-            </header>
-            <header className="border border-base-850 p-3 bg-base-900/50 flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                    <div className={cn("w-2 h-2 rounded-full", data.risk === "HIGH" ? "bg-red-500" : data.risk === "MEDIUM" ? "bg-yellow-500" : "bg-green-500")} />
-                    <span className="text-xs font-bold text-white uppercase tracking-tighter">{data.risk}</span>
-                </div>
-                <span className="text-[9px] font-mono text-neutral-600 uppercase">Risk Level</span>
-            </header>
-            <header className="border border-base-850 p-3 bg-base-900/50 flex flex-col gap-1">
-                <span className="text-xs font-bold text-white uppercase tracking-tighter">{data.sinkMode}</span>
-                <span className="text-[9px] font-mono text-neutral-600 uppercase">Sink Mode</span>
-            </header>
-            <header className="border border-base-850 p-3 bg-base-900/50 flex flex-col gap-1">
-                <span className="text-xs font-bold text-white uppercase tracking-tighter">{data.region}</span>
-                <span className="text-[9px] font-mono text-neutral-600 uppercase">Memory Region</span>
-            </header>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        {/* Vulnerability Analysis */}
-        <div className="flex flex-col gap-6">
-          <SectionTitle title="Vulnerability Analysis" />
-          
-          <div className="space-y-4">
-            <div className="flex flex-col">
-              <label className="text-[10px] font-black uppercase tracking-widest mb-2 text-neutral-500">Sink Statement</label>
-              <div className="bg-base-950 p-4 border border-base-850 font-mono text-blue-400 text-sm shadow-inner overflow-x-auto">
-                {data.sinkStatement}
-              </div>
-            </div>
-
-            <div className="flex flex-col">
-              <label className="text-[10px] font-black uppercase tracking-widest mb-2 text-neutral-500">Buffer vs Request</label>
-              <div className="bg-base-900/50 p-5 border border-base-850 space-y-5">
-                  <div className="grid grid-cols-[100px_1fr_100px] gap-4 items-center h-16">
-                      <div className="flex flex-col gap-1">
-                          <span className="text-[10px] text-neutral-500 uppercase font-bold">Capacity</span>
-                          <span className="text-[10px] text-neutral-500 uppercase font-bold">Request</span>
-                      </div>
-                      <div className="flex flex-col gap-2 flex-1">
-                          <div className="h-6 w-full bg-base-950 flex relative border border-base-850">
-                             <div 
-                                className="h-full bg-slate-200 transition-all duration-1000" 
-                                style={{ width: `${(data.bufferVsRequest.capacity / data.bufferVsRequest.request) * 100}%` }}
-                             />
-                             <div className="absolute inset-0 flex items-center justify-end px-2 mix-blend-difference pointer-events-none">
-                                <div className="w-px h-full bg-white/20" />
-                             </div>
-                          </div>
-                          <div className="h-6 w-full bg-base-950 flex border border-base-850">
-                             <div className="h-full bg-slate-400 w-[110%] transition-all duration-1000 bg-opacity-30 flex pattern-grid-slate-400" />
-                          </div>
-                      </div>
-                      <div className="flex flex-col gap-1 text-right font-mono text-[11px]">
-                          <span className="text-white">{data.bufferVsRequest.capacity} bytes</span>
-                          <span className="text-white">{data.bufferVsRequest.request} bytes</span>
-                      </div>
-                  </div>
-                  <div className="flex items-center gap-3 text-[11px] text-neutral-400 border-t border-base-850/50 pt-3">
-                      <span className="text-red-500">△</span> {data.bufferVsRequest.details}
-                  </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col">
-              <label className="text-[10px] font-black uppercase tracking-widest mb-2 text-neutral-500">Diagnostic</label>
-              <div className="bg-base-900/50 p-4 border border-base-850 space-y-4">
-                  <div className="grid grid-cols-2 gap-8">
-                     <div className="flex items-baseline gap-4">
-                        <span className="text-[10px] text-neutral-600 font-bold uppercase w-16">Class:</span>
-                        <span className="text-xs font-mono text-slate-300">{data.diagnostic.class}</span>
-                     </div>
-                     <div className="flex items-baseline gap-4">
-                        <span className="text-[10px] text-neutral-600 font-bold uppercase w-16">Taint:</span>
-                        <span className="text-xs font-mono text-slate-300">{data.diagnostic.taint}</span>
-                     </div>
-                  </div>
-                  <div className="flex items-center gap-8">
-                      <div className="flex items-center gap-2">
-                          <span className="text-[10px] text-neutral-600 font-bold uppercase">Validation:</span>
-                          <div className="flex items-center gap-3">
-                              <span className="text-xs text-slate-400 font-mono">upper {data.diagnostic.validation.upper ? "✓" : "✗"}</span>
-                              <span className="text-xs text-slate-400 font-mono">lower {data.diagnostic.validation.lower ? "✓" : "✗"}</span>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Code Context & Flow */}
-        <div className="flex flex-col gap-6 font-mono">
-            <div className="flex flex-col h-fit">
-                <SectionTitle title="Code Context" subtitle="Embedding Snippet" />
-                <div className="border border-base-850 overflow-hidden bg-base-950 mt-4 p-4">
-                    <div className="relative">
-                        <SyntaxHighlighter 
-                            language="cpp" 
-                            style={atomDark}
-                            customStyle={{ margin: 0, padding: 0, background: 'transparent' }}
-                            codeTagProps={{ className: 'font-mono text-[11px] leading-relaxed' }}
-                        >
-                            {data.codeContext}
-                        </SyntaxHighlighter>
-                    </div>
-                </div>
-            </div>
-
-            <div className="flex flex-col flex-1 min-h-0">
-                <SectionTitle title="Statement Flow" />
-                <div className="border border-base-850 overflow-hidden mt-4 flex-1">
-                    <table className="w-full text-left border-collapse">
-                        <tbody className="font-mono text-[10px]">
-                            {data.statementFlow.map((step) => (
-                                <tr key={step.id} className={cn("transition-colors", step.step === "SINK" ? "bg-red-500/10 text-white" : "text-neutral-400 hover:bg-white/5")}>
-                                    <td className="px-4 py-1.5 w-10 text-right font-bold opacity-50">
-                                      {step.id}
-                                    </td>
-                                    <td className="px-4 py-1.5 flex items-center gap-2">
-                                      {step.step === "SINK" && <span className="text-blue-500">▶</span>}
-                                      <span className="font-bold opacity-70 w-16">{step.step}</span>
-                                      <span className="text-slate-200">{step.description}</span>
-                                    </td>
-                                    <td className="px-4 py-1.5 text-right opacity-60">
-                                      (weight: {step.weight.toFixed(2)})
-                                    </td>
-                                    <td className="px-4 py-1.5 text-blue-400/50 font-black">
-                                      {step.tags.length > 0 ? `[${step.tags.join(":")}]` : "."}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-      </div>
-
-      {/* Footer Tags */}
-      <div className="flex flex-col gap-4">
-        <SectionTitle title="Semantic Tags" />
-        <div className="flex flex-wrap gap-2">
-            {data.semanticTags.map(tag => (
-                <span key={tag} className="font-mono text-[10px] text-neutral-500 uppercase font-black px-2 py-1 tracking-tight">
-                    [{tag}]
+    <div className="flex flex-col bg-slate-950 text-slate-300 w-full h-full overflow-hidden animate-in fade-in duration-500">
+      
+      {/* 1. Integrated Header */}
+      <header className="px-8 py-3 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md flex justify-between items-center shrink-0 shadow-lg">
+        <div className="flex flex-col">
+            <div className="flex items-center gap-4">
+                <h1 className="text-3xl font-black text-white tracking-tighter leading-none uppercase italic">{data.patternId}</h1>
+                <span className="px-3 py-1 rounded-sm bg-red-500/10 border border-red-500/20 text-[10px] font-black text-red-500 uppercase tracking-[0.2em] leading-none">
+                    CRITICAL_ANALYSIS
                 </span>
-            ))}
+            </div>
+            <div className="flex items-center gap-3 text-sm font-mono text-slate-500 uppercase tracking-widest font-bold mt-1.5">
+                <span>SID: {data.sid}</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-800" />
+                <span>CWE: {data.cwe}</span>
+            </div>
         </div>
-      </div>
+
+        <div className="flex items-center gap-4">
+            <button className="px-5 py-2 rounded bg-slate-900 border border-slate-800 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-white transition-all shadow-sm">EDIT</button>
+            <button onClick={onClose} className="p-1 text-slate-500 hover:text-white transition-colors">
+                <X size={24} />
+            </button>
+        </div>
+      </header>
+
+      <ScrollArea className="flex-1">
+        <div className="max-w-7xl mx-auto p-6 space-y-4">
+          
+          {/* 2. Top-Level Metrics Row */}
+          <div className="grid grid-cols-4 gap-4">
+              <DashMetric label="CWE CLASS" value={data.cwe} icon={ShieldCheck} color="blue" />
+              <DashMetric label="REGION" value={data.region} icon={Activity} color="slate" />
+              <DashMetric label="VECTOR" value={data.sinkMode} icon={Cpu} color="purple" />
+              <DashMetric label="RISK" value={data.risk} icon={ShieldAlert} color="red" />
+          </div>
+
+          {/* 3. Primary Analysis Dashboard: STRICTLY HORIZONTAL PACKING */}
+          <div className="bg-slate-900/40 border border-slate-800 rounded-xl overflow-hidden shadow-2xl">
+              
+              {/* Technical Verdict Banner (Forced full width at top only) */}
+              <div className="p-6 bg-red-500/5 border-b border-slate-800">
+                  <div className="flex items-start gap-5">
+                      <div className="w-11 h-11 rounded-lg bg-red-600 border border-red-500 flex items-center justify-center shrink-0 mt-0.5 shadow-[0_0_15px_rgba(239,68,68,0.3)]">
+                          <ShieldX size={22} className="text-white" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-3 mb-1.5">
+                              <span className="text-xs font-black text-red-500 uppercase tracking-[0.2em]">INTEGRITY VIOLATION DETECTED</span>
+                              <div className="flex-1 h-px bg-red-500/10" />
+                          </div>
+                          <p className="text-xl font-bold text-red-100 leading-tight mb-2">
+                              Critical Memory Overrun: Unvalidated source reaches {data.sinkMode} in {data.region} space.
+                          </p>
+                      </div>
+                  </div>
+              </div>
+
+              {/* FORCED 2-COLUMN GRID (Analysis | Evidence) - NO VERTICAL STACKING CONTAINERS */}
+              <div className="grid grid-cols-[1fr_450px] divide-x divide-slate-800">
+                  
+                  {/* LEFT COLUMN: Technical Flow (Sink -> Memory) */}
+                  <div className="divide-y divide-slate-800/50">
+                      {/* Sink Statement Segment */}
+                      <div className="p-6">
+                          <header className="flex items-center gap-3 mb-4">
+                              <Code2 size={16} className="text-blue-500 opacity-50" />
+                              <span className="text-xs font-black text-slate-500 uppercase tracking-widest">Sink Statement execution</span>
+                          </header>
+                          <div className="bg-slate-950/50 p-6 rounded-lg border border-slate-800/30">
+                              <code className="text-xl font-mono font-bold text-blue-400 block tracking-tight">
+                                  {data.sinkStatement}
+                              </code>
+                          </div>
+                      </div>
+
+                      {/* Memory Row: STRICTLY HORIZONTAL (Bar | Pointers) */}
+                      <div className="p-6">
+                           <header className="flex items-center gap-3 mb-6">
+                              <Activity size={16} className="text-blue-500 opacity-50" />
+                              <span className="text-xs font-black text-slate-500 uppercase tracking-widest leading-none">Integrity Analysis</span>
+                          </header>
+                          
+                          {/* THE ZERO-VOID PACKING ROW */}
+                          <div className="flex items-start gap-12">
+                              {/* Left: Constrained Memory Bar (300px) */}
+                              <div className="w-[300px] shrink-0">
+                                <IntegrityGaugeRestored 
+                                    capacity={data.bufferVsRequest.capacity} 
+                                    request={data.bufferVsRequest.request} 
+                                />
+                              </div>
+                              
+                              {/* Right: Filling the void with Pointers (Horizontal Packing) */}
+                              <div className="flex-1 font-mono pt-1">
+                                  <div className="flex items-center gap-2 mb-3">
+                                      <Terminal size={12} className="text-slate-600" />
+                                      <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest font-sans">Object Specification</span>
+                                  </div>
+                                  <div className="grid grid-cols-1 gap-4">
+                                      <div className="p-4 rounded-lg bg-slate-950/40 border border-slate-800/40 space-y-1.5">
+                                          <span className="text-blue-500 font-bold uppercase text-[9px] tracking-widest">DST_PTR snippet:</span>
+                                          <p className="text-xs text-slate-400 leading-relaxed font-bold italic truncate block">{data.bufferVsRequest.destSnippet}</p>
+                                      </div>
+                                      <div className="p-4 rounded-lg bg-slate-950/40 border border-slate-800/40 space-y-1.5">
+                                          <span className="text-red-500 font-bold uppercase text-[9px] tracking-widest">SRC_BUF snippet:</span>
+                                          <p className="text-xs text-slate-200 leading-relaxed font-bold italic truncate block">{data.bufferVsRequest.srcSnippet}</p>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  {/* RIGHT COLUMN: Evidence Sidebar (Filled with "Below" Info) */}
+                  <div className="bg-slate-900/10 flex flex-col divide-y divide-slate-800/50">
+                      
+                      {/* Analysis Status (FAILED = RED) */}
+                      <div className="p-6 space-y-3">
+                          <span className="text-xs font-black text-slate-600 uppercase tracking-widest block">Validation Outcome</span>
+                          <div className="flex items-center gap-3 px-4 py-2 rounded-md bg-red-600/15 border border-red-600/30 text-red-500 font-black text-xs uppercase tracking-tight shadow-md inline-flex">
+                              <ShieldX size={16} />
+                              <span>BOUNDARY_CHECK_FAILED</span>
+                          </div>
+                      </div>
+
+                      {/* Source Evidence (Code Context moved to fill the right section) */}
+                      <div className="p-6 flex-1 min-h-0 flex flex-col space-y-4">
+                          <header className="flex items-center justify-between">
+                             <div className="flex items-center gap-2">
+                                <FileCode size={16} className="text-slate-600" />
+                                <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Source Context Evidence</span>
+                             </div>
+                             <button className="text-[9px] font-black text-blue-500 hover:text-blue-400 uppercase tracking-widest">FULL_SCREEN</button>
+                          </header>
+                          <div className="border border-slate-800 rounded-lg overflow-hidden bg-slate-950 shadow-2xl flex-1 max-h-[460px]">
+                              <SyntaxHighlighter 
+                                  language="cpp" 
+                                  style={vscDarkPlus}
+                                  customStyle={{ margin: 0, padding: '1.25rem', background: 'transparent', fontSize: '13px' }}
+                                  codeTagProps={{ className: 'font-mono leading-relaxed' }}
+                                  showLineNumbers
+                                  lineNumberStyle={{ minWidth: '3.5em', paddingRight: '1rem', color: '#4b5563', fontSize: '10px' }}
+                              >
+                                  {data.codeContext}
+                              </SyntaxHighlighter>
+                          </div>
+                      </div>
+
+                      {/* Triage Recommendation */}
+                      <div className="p-6 space-y-3 bg-red-600/[0.03]">
+                          <div className="flex items-center gap-2">
+                             <AlertTriangle size={14} className="text-red-500" />
+                             <span className="text-xs font-black text-red-500/80 uppercase tracking-widest">Triage Plan</span>
+                          </div>
+                          <p className="text-xs font-bold text-slate-300 leading-relaxed italic pr-4">
+                             Apply strict size validation (<code className="text-blue-400 not-italic">strnlen()</code>) to destination pointer before copy to mitigate buffer overrun.
+                          </p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          {/* 4. Technical Flow: Instruction Trace */}
+          <div className="pb-16 pt-4">
+                <EvidenceCard label="TECHNICAL INSTRUCTION TRACE" icon={ListTree}>
+                    <div className="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/10 shadow-2xl">
+                        <table className="w-full text-left text-sm font-mono">
+                            <thead className="bg-slate-900 border-b border-slate-800 text-slate-600 uppercase tracking-[0.2em] font-black">
+                                <tr>
+                                    <th className="p-4 w-12 text-center opacity-30 text-[10px]">#</th>
+                                    <th className="p-4 text-[10px]">Execution Path Trace</th>
+                                    <th className="p-4 text-right w-24 text-[10px]">Weight</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-800/30">
+                                {data.statementFlow.map((step, idx) => (
+                                    <tr key={step.id} className={cn("hover:bg-slate-800/30 group", step.step === "SINK" && "bg-red-600/10")}>
+                                        <td className="p-4 text-center opacity-30 italic">s{idx + 1}</td>
+                                        <td className="p-4">
+                                            <div className="flex flex-col gap-1.5">
+                                                <span className={cn("text-slate-300 font-bold group-hover:text-white transition-colors", step.step === "SINK" && "text-red-500 text-base font-black")}>{step.description}</span>
+                                                <div className="flex gap-2.5 text-[10px] text-blue-500/60 uppercase font-black tracking-widest font-sans">
+                                                    {step.tags.map(t => <span key={t}>[{t}]</span>)}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="p-4 text-right text-slate-500 group-hover:text-slate-300 font-bold">{step.weight.toFixed(3)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </EvidenceCard>
+          </div>
+
+        </div>
+      </ScrollArea>
     </div>
   );
 }
 
-function SectionTitle({ title, subtitle }: { title: string, subtitle?: string }) {
+/* --- Modular Visual Patterns (Forced-Packing & No-Stack Pass) --- */
+
+/**
+ * Technical Integrity Gauge
+ * Now constrained by the parent width (forced 300px slot).
+ */
+function IntegrityGaugeRestored({ capacity, request }: { capacity: number, request: number }) {
+    const isOverflow = request > capacity;
+    const overflowAmt = Math.max(0, request - capacity);
+
     return (
-        <div className="flex items-center gap-3 w-full">
-            <span className="text-lg text-neutral-500">---</span>
-            <h2 className="text-xs font-bold text-white uppercase tracking-widest whitespace-nowrap">{title}</h2>
-            {subtitle && <span className="text-[10px] text-neutral-600 font-bold uppercase tracking-widest">({subtitle})</span>}
-            <div className="flex-1 h-px bg-base-850/30" />
-            <span className="text-lg text-neutral-500">---</span>
+        <div className="flex flex-col gap-4">
+            {/* Numerical Readout */}
+            <div className="flex justify-between items-end">
+                <div className="flex flex-col">
+                    <span className="text-[9px] font-black text-slate-700 uppercase tracking-widest leading-none mb-1.5 font-sans">Security Boundary</span>
+                    <div className="flex items-center gap-3 font-mono font-black text-base">
+                        <span className="text-blue-500/80">{capacity} B</span>
+                        <ArrowRight size={14} className="text-slate-800" />
+                        <span className={cn(isOverflow ? "text-red-500" : "text-green-500")}>{request} B</span>
+                    </div>
+                </div>
+                {isOverflow && (
+                   <div className="flex flex-col items-end">
+                       <span className="text-[8px] font-black text-red-500 uppercase leading-none mb-1 font-sans">OVERRUN</span>
+                       <span className="text-sm font-black text-red-600 font-mono">+{overflowAmt} B</span>
+                   </div>
+                )}
+            </div>
+
+            {/* The Visual Bar */}
+            <div className="h-4 w-full bg-slate-900 border border-slate-800 rounded-sm overflow-hidden flex relative shadow-inner">
+                {/* 80% Wall Marker */}
+                <div className="absolute inset-0 flex pointer-events-none z-30">
+                     <div className="w-[80%] h-full border-r-2 border-white/30" />
+                </div>
+
+                {/* Safe Segment: BRIGHT GREEN */}
+                <div 
+                    className={cn("h-full relative z-10 transition-all duration-1000", isOverflow ? "bg-green-600/70 shadow-inner" : "bg-green-500 shadow-lg")}
+                    style={{ width: isOverflow ? '80%' : `${(request / capacity) * 80}%` }}
+                />
+
+                {/* Violation Segment: BRIGHT RED */}
+                {isOverflow && (
+                    <div 
+                        className="h-full bg-red-600 relative z-20 shadow-[0_0_15px_rgba(239,68,68,0.5)] animate-pulse"
+                        style={{ width: '20%' }}
+                    >
+                        <div className="absolute inset-0 bg-red-400/20 backdrop-blur-[1px]" />
+                    </div>
+                )}
+            </div>
+
+            <div className="flex justify-between text-[8px] font-black text-slate-700 uppercase tracking-[0.2em] font-sans">
+                <span>BASELINE</span>
+                <span>LIMIT_CEILING</span>
+                <span>VIOLATION</span>
+            </div>
+        </div>
+    );
+}
+
+function DashMetric({ label, value, icon: Icon, color }: { label: string, value: string, icon: any, color: "blue" | "red" | "purple" | "slate" }) {
+    const variants = {
+        blue: "text-blue-500 bg-blue-500/10 border-blue-500/20",
+        red: "text-red-500 bg-red-500/10 border-red-500/20",
+        purple: "text-purple-500 bg-purple-500/10 border-purple-500/20",
+        slate: "text-slate-500 bg-slate-500/10 border-slate-800"
+    };
+    return (
+        <div className="py-3 px-5 rounded-lg border border-slate-800 bg-slate-950/40 flex items-center justify-between transition-all hover:border-slate-600 shadow-md">
+            <div className="flex flex-col overflow-hidden">
+                <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1.5 leading-none">{label}</span>
+                <span className="text-lg font-black text-white uppercase italic tracking-tighter truncate">{value}</span>
+            </div>
+            <div className={cn("w-8 h-8 flex items-center justify-center rounded-lg border shrink-0", variants[color])}>
+                <Icon size={14} />
+            </div>
+        </div>
+    );
+}
+
+function EvidenceCard({ label, icon: Icon, children }: { label: string, icon: any, children: React.ReactNode }) {
+    return (
+        <div className="space-y-4 pt-4">
+            <div className="flex items-center gap-3">
+                <Icon size={14} className="text-slate-600" />
+                <h3 className="text-xs font-black text-slate-500 uppercase tracking-[0.4em]">{label}</h3>
+            </div>
+            {children}
         </div>
     );
 }

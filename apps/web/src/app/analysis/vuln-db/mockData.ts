@@ -28,6 +28,8 @@ export interface SignatureDetail extends Signature {
     request: number;
     unit: string;
     details: string;
+    destSnippet?: string;
+    srcSnippet?: string;
   };
   diagnostic: {
     class: string;
@@ -151,6 +153,8 @@ export const mockSignatureDetails: Record<string, SignatureDetail> = {
       request: 11,
       unit: "bytes",
       details: "capacity exceeded: 11B > 10B",
+      destSnippet: "dst: malloc(10 * sizeof(char))",
+      srcSnippet: "src: char source[10+1]",
     },
     diagnostic: {
       class: "size_gt_capacity",

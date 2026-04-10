@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import { ShieldAlert } from "lucide-react";
 import { 
   mockSignatures, 
   Signature, 
@@ -17,6 +18,7 @@ import {
   SelectValue 
 } from "~/components/ui/select";
 import { cn } from "~/lib/utils";
+import { useI18n } from "~/i18n/I18nProvider";
 
 interface SignatureListProps {
   onSelect: (signature: Signature) => void;
@@ -31,6 +33,7 @@ const riskVariants: Record<RiskLevel, "red" | "yellow" | "blue" | "green"> = {
 const PAGE_SIZE = 10;
 
 export function SignatureList({ onSelect }: SignatureListProps) {
+  const { t } = useI18n();
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [riskFilter, setRiskFilter] = useState("all");
@@ -76,12 +79,19 @@ export function SignatureList({ onSelect }: SignatureListProps) {
     <div className="flex flex-col gap-6 animate-in fade-in duration-700 bg-base-900 p-8 rounded-xl border border-base-800">
       {/* Header Section */}
       <div className="flex justify-between items-center w-full">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-bold tracking-tight text-white italic">
-            Signature Database
-          </h1>
-          <div className="flex items-center gap-4 text-xs text-neutral-500 font-mono tracking-tighter">
-            <span>{counts.total} signatures</span>
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-blue-500/10 rounded border border-blue-500/20 group-hover:bg-blue-500/20 transition-all flex items-center justify-center">
+                <ShieldAlert className="text-blue-500" size={20} />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black tracking-[0.3em] text-blue-500/50 uppercase leading-none mb-1">SecureEV</span>
+              <h1 className="text-2xl font-black tracking-tighter text-white uppercase italic leading-none">
+                {t("vulndb.title")} <span className="text-neutral-700 not-italic ml-2">/</span> <span className="text-neutral-400 not-italic ml-2 font-light tracking-wide normal-case">{t("vulndb.signatures")}</span>
+              </h1>
+            </div>
+          </div>
+          <div className="flex items-center gap-6 text-sm text-neutral-500 font-mono tracking-tighter">
+            <span>{counts.total} {t("vulndb.list.count")}</span>
             <span className="opacity-30">·</span>
             {Object.entries(counts.cweCounts).map(([cwe, count], idx) => (
                 <React.Fragment key={cwe}>
@@ -90,17 +100,16 @@ export function SignatureList({ onSelect }: SignatureListProps) {
                 </React.Fragment>
             ))}
             <span className="opacity-30">·</span>
-            <span className="flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-[#ff7b72]" /> HIGH: {counts.riskCounts.HIGH}</span>
-            <span className="flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-[#d29922]" /> MED: {counts.riskCounts.MEDIUM}</span>
-            <span className="flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-[#56d364]" /> LOW: {counts.riskCounts.LOW}</span>
+            <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#ff7b72]" /> HIGH: {counts.riskCounts.HIGH}</span>
+            <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#d29922]" /> MED: {counts.riskCounts.MEDIUM}</span>
+            <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#56d364]" /> LOW: {counts.riskCounts.LOW}</span>
           </div>
         </div>
-      </div>
 
       {/* Controls Section */}
       <div className="flex justify-between items-center w-full gap-4">
         <div className="flex-1 max-w-xl">
-          <SearchInput onSearch={handleSearch} placeholder="Search pattern, API, variant ID..." />
+          <SearchInput onSearch={handleSearch} placeholder={t("vulndb.list.searchPlaceholder")} />
         </div>
         <div className="flex items-center gap-2">
             <FilterSelect 
@@ -140,12 +149,12 @@ export function SignatureList({ onSelect }: SignatureListProps) {
           <table className="w-full table-fixed text-sm text-left">
             <thead className="bg-slate-900/90 text-slate-300 border-b border-slate-700/50">
               <tr>
-                <th className="p-4 font-semibold text-center uppercase tracking-wider text-xs">Pattern ID</th>
-                <th className="p-4 font-semibold text-center uppercase tracking-wider text-xs">CWE</th>
-                <th className="p-4 font-semibold text-center uppercase tracking-wider text-xs">Risk</th>
-                <th className="p-4 font-semibold text-center uppercase tracking-wider text-xs">Sink Mode</th>
-                <th className="p-4 font-semibold text-center uppercase tracking-wider text-xs">API</th>
-                <th className="p-4 font-semibold text-center uppercase tracking-wider text-xs">Region</th>
+                <th className="p-4 font-semibold text-center uppercase tracking-wider text-sm">{t("vulndb.columns.patternId")}</th>
+                <th className="p-4 font-semibold text-center uppercase tracking-wider text-sm">{t("vulndb.columns.cwe")}</th>
+                <th className="p-4 font-semibold text-center uppercase tracking-wider text-sm">{t("vulndb.columns.risk")}</th>
+                <th className="p-4 font-semibold text-center uppercase tracking-wider text-sm">{t("vulndb.columns.sinkMode")}</th>
+                <th className="p-4 font-semibold text-center uppercase tracking-wider text-sm">{t("vulndb.columns.api")}</th>
+                <th className="p-4 font-semibold text-center uppercase tracking-wider text-sm">{t("vulndb.columns.region")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/30">
@@ -163,13 +172,13 @@ export function SignatureList({ onSelect }: SignatureListProps) {
                     {item.patternId}
                   </td>
                   <td className="p-4 font-medium text-slate-300 text-center">
-                    <Badge variant="outline" className="border-slate-700 font-mono text-[10px] text-slate-400">
+                    <Badge variant="outline" className="border-slate-700 font-mono text-xs text-slate-400">
                       {item.cwe}
                     </Badge>
                   </td>
                   <td className="p-4 text-center">
                     <div className="flex flex-col items-center gap-1 w-24 mx-auto">
-                        <Badge variant={riskVariants[item.risk]} className="justify-center w-full text-[10px] py-0">
+                        <Badge variant={riskVariants[item.risk]} className="justify-center w-full text-xs py-0">
                             {item.risk}
                         </Badge>
                         <div className="h-1 w-full bg-slate-800 rounded-full overflow-hidden">
@@ -201,7 +210,7 @@ export function SignatureList({ onSelect }: SignatureListProps) {
           </table>
           {pagedData.length === 0 && (
             <div className="p-12 text-center text-slate-500">
-                No signatures found matching your criteria.
+                {t("vulndb.list.empty")}
             </div>
           )}
         </div>
@@ -209,7 +218,7 @@ export function SignatureList({ onSelect }: SignatureListProps) {
         {/* Footer Area */}
         <div className="mt-6 flex justify-between items-center px-2">
             <div className="text-xs text-neutral-500 font-medium">
-                Showing <span className="text-neutral-300 font-bold">{pagedData.length}</span> of <span className="text-neutral-400">{filtered.length} signatures</span>
+                {t("vulndb.list.showing")} <span className="text-neutral-300 font-bold">{pagedData.length}</span> {t("vulndb.list.of")} <span className="text-neutral-400">{filtered.length} {t("vulndb.list.count")}</span>
             </div>
             {totalPages > 1 && (
                 <Pagination 
@@ -237,13 +246,14 @@ function FilterSelect({
     options: string[], 
     showAll?: boolean 
 }) {
+    const { t } = useI18n();
     return (
         <Select value={value} onValueChange={onValueChange}>
-            <SelectTrigger size="sm" className="min-w-[110px] border-slate-700 bg-slate-800/50 text-[10px] font-bold uppercase text-slate-400 hover:border-slate-500 transition-all">
+            <SelectTrigger size="sm" className="min-w-[120px] border-slate-700 bg-slate-800/50 text-xs font-bold uppercase text-slate-400 hover:border-slate-500 transition-all">
                 <SelectValue placeholder={`[${label}]`} />
             </SelectTrigger>
             <SelectContent className="bg-slate-900 border-slate-700">
-                {showAll && <SelectItem value="all" className="text-xs uppercase font-bold text-slate-500 italic">All {label}s</SelectItem>}
+                {showAll && <SelectItem value="all" className="text-xs uppercase font-bold text-slate-500 italic">{t("vulndb.filters.all")} {label}s</SelectItem>}
                 {options.map(opt => (
                     <SelectItem key={opt} value={opt} className="text-xs font-mono">{opt}</SelectItem>
                 ))}

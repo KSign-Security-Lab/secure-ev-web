@@ -13,6 +13,7 @@ interface ModalProps {
   children: React.ReactNode;
   footer?: React.ReactNode;
   className?: string;
+  hideHeader?: boolean;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -22,6 +23,7 @@ export const Modal: React.FC<ModalProps> = ({
   children,
   footer,
   className,
+  hideHeader = false,
 }) => {
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(open);
@@ -79,12 +81,14 @@ export const Modal: React.FC<ModalProps> = ({
           className
         )}
       >
-        <div className="flex justify-between items-center border-b border-neutral-500 pb-6">
-          <div className="text-lg font-semibold">{title}</div>
-          <button onClick={onClose} className="text-xl">
-            <XIcon className="w-5 h-5" />
-          </button>
-        </div>
+        {!hideHeader && (
+          <div className="flex justify-between items-center border-b border-neutral-500 pb-6">
+            <div className="text-lg font-semibold">{title}</div>
+            <button onClick={onClose} className="text-xl">
+              <XIcon className="w-5 h-5" />
+            </button>
+          </div>
+        )}
 
         <div className="gap-4 flex flex-col">{children}</div>
 

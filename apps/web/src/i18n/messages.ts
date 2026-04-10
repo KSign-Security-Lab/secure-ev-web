@@ -1,4 +1,5 @@
 import { enNavigationMessages, koNavigationMessages } from "~/components/page/layout/SideBarLayout/messages";
+import { enVulnDBMessages, koVulnDBMessages } from "~/app/analysis/vuln-db/vuln-db.messages";
 import { enCommonMessages, koCommonMessages } from "~/components/common/messages";
 import { enAbilitiesPageMessages, koAbilitiesPageMessages } from "~/app/playground/abilities/page.messages";
 import { enAnalysisCodeViewerMessages, koAnalysisCodeViewerMessages } from "~/app/analysis/components/CodeViewer.messages";
@@ -52,6 +53,7 @@ export const defaultLocale: Locale = "en";
 
 const enMessages = {
   ...enNavigationMessages,
+  ...enVulnDBMessages,
   ...enCommonMessages,
   ...enAbilitiesPageMessages,
   ...enAnalysisCodeViewerMessages,
@@ -102,6 +104,7 @@ export type TranslationKey = keyof typeof enMessages;
 
 const koMessages: Record<TranslationKey, string> = {
   ...koNavigationMessages,
+  ...koVulnDBMessages,
   ...koCommonMessages,
   ...koAbilitiesPageMessages,
   ...koAnalysisCodeViewerMessages,
