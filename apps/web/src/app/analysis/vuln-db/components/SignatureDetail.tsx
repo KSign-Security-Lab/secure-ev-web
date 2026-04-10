@@ -25,6 +25,7 @@ import { ScrollArea } from "~/components/ui/scroll-area";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Tag } from "~/components/common/Tag/Tag";
+import { useI18n } from "~/i18n/I18nProvider";
 
 interface SignatureDetailProps {
   data: SignatureDetailType;
@@ -32,6 +33,7 @@ interface SignatureDetailProps {
 }
 
 export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
+  const { t } = useI18n();
   return (
     <div className="flex flex-col bg-slate-950 text-slate-300 w-full h-full overflow-hidden animate-in fade-in duration-500">
       
@@ -41,7 +43,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
             <div className="flex items-center gap-4">
                 <h1 className="text-3xl font-black text-white tracking-tighter leading-none uppercase italic">{data.patternId}</h1>
                 <span className="px-3 py-1 rounded-sm bg-red-500/10 border border-red-500/20 text-[10px] font-black text-red-500 uppercase tracking-[0.2em] leading-none">
-                    CRITICAL_ANALYSIS
+                    {t("vulndb.detail.criticalAnalysis")}
                 </span>
             </div>
             <div className="flex items-center gap-3 text-sm font-mono text-slate-500 uppercase tracking-widest font-bold mt-1.5">
@@ -52,7 +54,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
         </div>
 
         <div className="flex items-center gap-4">
-            <button className="px-5 py-2 rounded bg-slate-900 border border-slate-800 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-white transition-all shadow-sm">EDIT</button>
+            <button className="px-5 py-2 rounded bg-slate-900 border border-slate-800 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-white transition-all shadow-sm">{t("vulndb.detail.edit")}</button>
             <button onClick={onClose} className="p-1 text-slate-500 hover:text-white transition-colors">
                 <X size={24} />
             </button>
@@ -64,10 +66,10 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
           
           {/* 2. Top-Level Metrics Row */}
           <div className="grid grid-cols-4 gap-4">
-              <DashMetric label="CWE CLASS" value={data.cwe} icon={ShieldCheck} color="blue" />
-              <DashMetric label="REGION" value={data.region} icon={Activity} color="slate" />
-              <DashMetric label="VECTOR" value={data.sinkMode} icon={Cpu} color="purple" />
-              <DashMetric label="RISK" value={data.risk} icon={ShieldAlert} color="red" />
+              <DashMetric label={t("vulndb.detail.metrics.cweClass")} value={data.cwe} icon={ShieldCheck} color="blue" />
+              <DashMetric label={t("vulndb.detail.metrics.region")} value={data.region} icon={Activity} color="slate" />
+              <DashMetric label={t("vulndb.detail.metrics.vector")} value={data.sinkMode} icon={Cpu} color="purple" />
+              <DashMetric label={t("vulndb.detail.metrics.risk")} value={data.risk} icon={ShieldAlert} color="red" />
           </div>
 
           {/* 3. Primary Analysis Dashboard: STRICTLY HORIZONTAL PACKING */}
@@ -81,11 +83,11 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                       </div>
                       <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 mb-1.5">
-                              <span className="text-xs font-black text-red-500 uppercase tracking-[0.2em]">INTEGRITY VIOLATION DETECTED</span>
+                              <span className="text-xs font-black text-red-500 uppercase tracking-[0.2em]">{t("vulndb.detail.violation.detected")}</span>
                               <div className="flex-1 h-px bg-red-500/10" />
                           </div>
                           <p className="text-xl font-bold text-red-100 leading-tight mb-2">
-                              Critical Memory Overrun: Unvalidated source reaches {data.sinkMode} in {data.region} space.
+                              {t("vulndb.detail.violation.description", { sinkMode: data.sinkMode, region: data.region })}
                           </p>
                       </div>
                   </div>
@@ -100,7 +102,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                       <div className="p-6">
                           <header className="flex items-center gap-3 mb-4">
                               <Code2 size={16} className="text-blue-500 opacity-50" />
-                              <span className="text-xs font-black text-slate-500 uppercase tracking-widest">Sink Statement execution</span>
+                              <span className="text-xs font-black text-slate-500 uppercase tracking-widest">{t("vulndb.detail.execution.sink")}</span>
                           </header>
                           <div className="bg-slate-950/50 p-6 rounded-lg border border-slate-800/30">
                               <code className="text-xl font-mono font-bold text-blue-400 block tracking-tight">
@@ -113,7 +115,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                       <div className="p-6">
                            <header className="flex items-center gap-3 mb-6">
                               <Activity size={16} className="text-blue-500 opacity-50" />
-                              <span className="text-xs font-black text-slate-500 uppercase tracking-widest leading-none">Integrity Analysis</span>
+                              <span className="text-xs font-black text-slate-500 uppercase tracking-widest leading-none">{t("vulndb.detail.analysis.integrity")}</span>
                           </header>
                           
                           {/* THE ZERO-VOID PACKING ROW */}
@@ -130,15 +132,15 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                               <div className="flex-1 font-mono pt-1">
                                   <div className="flex items-center gap-2 mb-3">
                                       <Terminal size={12} className="text-slate-600" />
-                                      <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest font-sans">Object Specification</span>
+                                      <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest font-sans">{t("vulndb.detail.objects.specification")}</span>
                                   </div>
                                   <div className="grid grid-cols-1 gap-4">
                                       <div className="p-4 rounded-lg bg-slate-950/40 border border-slate-800/40 space-y-1.5">
-                                          <span className="text-blue-500 font-bold uppercase text-[9px] tracking-widest">DST_PTR snippet:</span>
+                                          <span className="text-blue-500 font-bold uppercase text-[9px] tracking-widest">{t("vulndb.detail.objects.dstPtr")}</span>
                                           <p className="text-xs text-slate-400 leading-relaxed font-bold italic truncate block">{data.bufferVsRequest.destSnippet}</p>
                                       </div>
                                       <div className="p-4 rounded-lg bg-slate-950/40 border border-slate-800/40 space-y-1.5">
-                                          <span className="text-red-500 font-bold uppercase text-[9px] tracking-widest">SRC_BUF snippet:</span>
+                                          <span className="text-red-500 font-bold uppercase text-[9px] tracking-widest">{t("vulndb.detail.objects.srcBuf")}</span>
                                           <p className="text-xs text-slate-200 leading-relaxed font-bold italic truncate block">{data.bufferVsRequest.srcSnippet}</p>
                                       </div>
                                   </div>
@@ -152,10 +154,10 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                       
                       {/* Analysis Status (FAILED = RED) */}
                       <div className="p-6 space-y-3">
-                          <span className="text-xs font-black text-slate-600 uppercase tracking-widest block">Validation Outcome</span>
+                          <span className="text-xs font-black text-slate-600 uppercase tracking-widest block">{t("vulndb.detail.outcome.label")}</span>
                           <div className="flex items-center gap-3 px-4 py-2 rounded-md bg-red-600/15 border border-red-600/30 text-red-500 font-black text-xs uppercase tracking-tight shadow-md inline-flex">
                               <ShieldX size={16} />
-                              <span>BOUNDARY_CHECK_FAILED</span>
+                              <span>{t("vulndb.detail.outcome.failed")}</span>
                           </div>
                       </div>
 
@@ -164,9 +166,9 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                           <header className="flex items-center justify-between">
                              <div className="flex items-center gap-2">
                                 <FileCode size={16} className="text-slate-600" />
-                                <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Source Context Evidence</span>
+                                <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{t("vulndb.detail.evidence.title")}</span>
                              </div>
-                             <button className="text-[9px] font-black text-blue-500 hover:text-blue-400 uppercase tracking-widest">FULL_SCREEN</button>
+                             <button className="text-[9px] font-black text-blue-500 hover:text-blue-400 uppercase tracking-widest">{t("vulndb.detail.evidence.fullScreen")}</button>
                           </header>
                           <div className="border border-slate-800 rounded-lg overflow-hidden bg-slate-950 shadow-2xl flex-1 max-h-[460px]">
                               <SyntaxHighlighter 
@@ -186,7 +188,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                       <div className="p-6 space-y-3 bg-red-600/[0.03]">
                           <div className="flex items-center gap-2">
                              <AlertTriangle size={14} className="text-red-500" />
-                             <span className="text-xs font-black text-red-500/80 uppercase tracking-widest">Triage Plan</span>
+                             <span className="text-xs font-black text-red-500/80 uppercase tracking-widest">{t("vulndb.detail.triage.plan")}</span>
                           </div>
                           <p className="text-xs font-bold text-slate-300 leading-relaxed italic pr-4">
                              Apply strict size validation (<code className="text-blue-400 not-italic">strnlen()</code>) to destination pointer before copy to mitigate buffer overrun.
@@ -198,14 +200,14 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
 
           {/* 4. Technical Flow: Instruction Trace */}
           <div className="pb-16 pt-4">
-                <EvidenceCard label="TECHNICAL INSTRUCTION TRACE" icon={ListTree}>
+                <EvidenceCard label={t("vulndb.detail.trace.title")} icon={ListTree}>
                     <div className="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/10 shadow-2xl">
                         <table className="w-full text-left text-sm font-mono">
                             <thead className="bg-slate-900 border-b border-slate-800 text-slate-600 uppercase tracking-[0.2em] font-black">
                                 <tr>
                                     <th className="p-4 w-12 text-center opacity-30 text-[10px]">#</th>
-                                    <th className="p-4 text-[10px]">Execution Path Trace</th>
-                                    <th className="p-4 text-right w-24 text-[10px]">Weight</th>
+                                    <th className="p-4 text-[10px]">{t("vulndb.detail.trace.executionPath")}</th>
+                                    <th className="p-4 text-right w-24 text-[10px]">{t("vulndb.detail.trace.weight")}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-800/30">
@@ -242,6 +244,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
  * Now constrained by the parent width (forced 300px slot).
  */
 function IntegrityGaugeRestored({ capacity, request }: { capacity: number, request: number }) {
+    const { t } = useI18n();
     const isOverflow = request > capacity;
     const overflowAmt = Math.max(0, request - capacity);
 
@@ -250,7 +253,7 @@ function IntegrityGaugeRestored({ capacity, request }: { capacity: number, reque
             {/* Numerical Readout */}
             <div className="flex justify-between items-end">
                 <div className="flex flex-col">
-                    <span className="text-[9px] font-black text-slate-700 uppercase tracking-widest leading-none mb-1.5 font-sans">Security Boundary</span>
+                    <span className="text-[9px] font-black text-slate-700 uppercase tracking-widest leading-none mb-1.5 font-sans">{t("vulndb.detail.gauge.boundary")}</span>
                     <div className="flex items-center gap-3 font-mono font-black text-base">
                         <span className="text-blue-500/80">{capacity} B</span>
                         <ArrowRight size={14} className="text-slate-800" />
@@ -259,7 +262,7 @@ function IntegrityGaugeRestored({ capacity, request }: { capacity: number, reque
                 </div>
                 {isOverflow && (
                    <div className="flex flex-col items-end">
-                       <span className="text-[8px] font-black text-red-500 uppercase leading-none mb-1 font-sans">OVERRUN</span>
+                       <span className="text-[8px] font-black text-red-500 uppercase leading-none mb-1 font-sans">{t("vulndb.detail.gauge.overrun")}</span>
                        <span className="text-sm font-black text-red-600 font-mono">+{overflowAmt} B</span>
                    </div>
                 )}
@@ -290,9 +293,9 @@ function IntegrityGaugeRestored({ capacity, request }: { capacity: number, reque
             </div>
 
             <div className="flex justify-between text-[8px] font-black text-slate-700 uppercase tracking-[0.2em] font-sans">
-                <span>BASELINE</span>
-                <span>LIMIT_CEILING</span>
-                <span>VIOLATION</span>
+                <span>{t("vulndb.detail.gauge.baseline")}</span>
+                <span>{t("vulndb.detail.gauge.limit")}</span>
+                <span>{t("vulndb.detail.gauge.violation")}</span>
             </div>
         </div>
     );

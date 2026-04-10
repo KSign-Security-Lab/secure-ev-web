@@ -100,9 +100,9 @@ export function SignatureList({ onSelect }: SignatureListProps) {
                 </React.Fragment>
             ))}
             <span className="opacity-30">·</span>
-            <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#ff7b72]" /> HIGH: {counts.riskCounts.HIGH}</span>
-            <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#d29922]" /> MED: {counts.riskCounts.MEDIUM}</span>
-            <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#56d364]" /> LOW: {counts.riskCounts.LOW}</span>
+            <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#ff7b72]" /> {t("risk.high")}: {counts.riskCounts.HIGH}</span>
+            <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#d29922]" /> {t("risk.medium")}: {counts.riskCounts.MEDIUM}</span>
+            <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#56d364]" /> {t("risk.low")}: {counts.riskCounts.LOW}</span>
           </div>
         </div>
 
@@ -179,7 +179,7 @@ export function SignatureList({ onSelect }: SignatureListProps) {
                   <td className="p-4 text-center">
                     <div className="flex flex-col items-center gap-1 w-24 mx-auto">
                         <Badge variant={riskVariants[item.risk]} className="justify-center w-full text-xs py-0">
-                            {item.risk}
+                            {t(`risk.${item.risk.toLowerCase()}` as any)}
                         </Badge>
                         <div className="h-1 w-full bg-slate-800 rounded-full overflow-hidden">
                             <div 
