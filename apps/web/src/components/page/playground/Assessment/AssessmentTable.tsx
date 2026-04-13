@@ -31,7 +31,7 @@ export const AssessmentTable: React.FC<AssessmentTableProps> = ({ data, isLoadin
     {
       label: t("assessment.table.name"),
       render: (item) => (
-        <button className="text-left text-blue-400 hover:text-blue-300 font-bold transition-colors">
+        <button className="text-blue-400 hover:text-blue-300 font-bold transition-colors">
           {item.name}
         </button>
       ),

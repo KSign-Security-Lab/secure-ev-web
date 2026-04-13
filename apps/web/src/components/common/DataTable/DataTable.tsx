@@ -75,7 +75,7 @@ export function DataTable<T>({
                 <th
                   key={idx}
                   className={cn(
-                    "px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] leading-none",
+                    "px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] leading-none text-center",
                     col.headerClassName,
                     idx === 0 && "rounded-tl-3xl",
                     idx === columns.length - 1 && "rounded-tr-3xl"
@@ -114,7 +114,7 @@ export function DataTable<T>({
                     <td
                       key={colIdx}
                       className={cn(
-                        "px-6 py-4 text-sm font-medium text-slate-300 group-hover:text-white transition-colors",
+                        "px-6 py-4 text-sm font-medium text-slate-300 group-hover:text-white transition-colors text-center",
                         col.className
                       )}
                     >

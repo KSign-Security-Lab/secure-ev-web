@@ -29,8 +29,11 @@ export const AgentsTable: React.FC<AgentsTableProps> = ({ data, isLoading }) => 
     },
     {
       label: t("agents.table.platform"),
-      className: "uppercase text-[10px] font-black tracking-widest text-blue-400/80 bg-blue-400/5 px-2 py-0.5 rounded border border-blue-400/10 inline-block",
-      render: (item) => item.platform,
+      render: (item) => (
+        <span className="uppercase text-[10px] font-black tracking-widest text-blue-400/80 bg-blue-400/5 px-3 py-1 rounded border border-blue-400/10 inline-flex items-center">
+            {item.platform}
+        </span>
+      ),
     },
     {
       label: t("agents.table.contact"),

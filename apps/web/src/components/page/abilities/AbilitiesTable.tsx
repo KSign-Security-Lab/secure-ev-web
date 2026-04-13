@@ -36,7 +36,7 @@ export const AbilitiesTable: React.FC<AbilitiesTableProps> = ({
       render: (item) => (
         <button 
           onClick={() => onOpen(item)}
-          className="text-blue-400 hover:text-blue-300 font-bold transition-colors text-left"
+          className="text-blue-400 hover:text-blue-300 font-bold transition-colors mx-auto"
         >
           {item.ability_name}
         </button>

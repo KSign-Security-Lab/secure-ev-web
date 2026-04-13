@@ -228,8 +228,8 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                             <thead className="bg-slate-950/80 border-b border-slate-800/50 text-slate-500 uppercase tracking-widest font-black text-[9px]">
                                 <tr>
                                     <th className="p-6 w-16 text-center opacity-40">#</th>
-                                    <th className="p-6">{t("vulndb.detail.trace.executionPath")}</th>
-                                    <th className="p-6 text-right w-32">{t("vulndb.detail.trace.weight")}</th>
+                                    <th className="p-6 text-center">{t("vulndb.detail.trace.executionPath")}</th>
+                                    <th className="p-6 text-center w-32">{t("vulndb.detail.trace.weight")}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-800/40">
@@ -238,15 +238,15 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                                         <td className="p-6 text-center opacity-30 text-sm italic">
                                             {String(idx + 1).padStart(2, '0')}
                                         </td>
-                                        <td className="p-6">
-                                            <div className="flex flex-col gap-3">
+                                        <td className="p-6 text-center">
+                                            <div className="flex flex-col items-center gap-3">
                                                 <span className={cn(
-                                                    "text-slate-200 font-medium group-hover:text-white transition-colors text-base", 
+                                                    "text-slate-200 font-medium group-hover:text-white transition-colors text-base text-center", 
                                                     step.step === "SINK" && "text-red-400 font-black tracking-tight"
                                                 )}>
                                                     {step.description}
                                                 </span>
-                                                <div className="flex flex-wrap gap-2.5">
+                                                <div className="flex flex-wrap justify-center gap-2.5">
                                                     {step.tags.map(t => (
                                                         <span key={t} className="px-2 py-0.5 rounded-lg bg-slate-950/80 border border-slate-800/60 text-[9px] text-blue-400 font-bold uppercase tracking-widest font-sans">
                                                             {t}
