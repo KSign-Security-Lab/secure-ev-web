@@ -14,6 +14,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { Reveal } from "~/components/common/Reveal";
+import { IconCard } from "~/components/common/IconCard/IconCard";
 import { Button } from "~/components/ui/button";
 import { GlassCard } from "~/components/ui/glass-card";
 import { Badge } from "~/components/ui/badge";
@@ -330,60 +331,31 @@ export default function FuzzingLandingPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <GlassCard className="p-8 hover:bg-slate-800/50 transition-colors group">
-                <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-6 text-blue-400 group-hover:text-blue-300 group-hover:scale-110 transition-all">
-                  <BookOpen size={24} />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2">
-                  {t("fuzzing.landing.resource.docsTitle")}
-                </h3>
-                <p className="text-slate-400 mb-6">
-                  {t("fuzzing.landing.resource.docsDescription")}
-                </p>
-                <span className="inline-flex items-center text-slate-500 cursor-not-allowed font-medium">
-                  {t("fuzzing.landing.resource.comingSoon")}
-                </span>
-              </GlassCard>
+              <IconCard 
+                icon={BookOpen}
+                title={t("fuzzing.landing.resource.docsTitle")}
+                description={t("fuzzing.landing.resource.docsDescription")}
+                comingSoon
+                variant="blue"
+              />
 
-              <GlassCard className="p-8 hover:bg-slate-800/50 transition-colors group">
-                <div className="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center mb-6 text-purple-400 group-hover:text-purple-300 group-hover:scale-110 transition-all">
-                  <ShieldCheck size={24} />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2">
-                  {t("fuzzing.landing.resource.vulnDbTitle")}
-                </h3>
-                <p className="text-slate-400 mb-6">
-                  {t("fuzzing.landing.resource.vulnDbDescription")}
-                </p>
-                <Link
-                  href="/playground/abilities"
-                  className="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium"
-                >
-                  {t("fuzzing.landing.resource.vulnDbCta")}{" "}
-                  <ArrowRight size={16} className="ml-2" />
-                </Link>
-              </GlassCard>
+              <IconCard 
+                icon={ShieldCheck}
+                title={t("fuzzing.landing.resource.vulnDbTitle")}
+                description={t("fuzzing.landing.resource.vulnDbDescription")}
+                href="/playground/abilities"
+                ctaText={t("fuzzing.landing.resource.vulnDbCta")}
+                variant="purple"
+              />
 
-              <GlassCard className="p-8 hover:bg-slate-800/50 transition-colors group">
-                <div className="w-12 h-12 bg-cyan-500/10 rounded-lg flex items-center justify-center mb-6 text-cyan-400 group-hover:text-cyan-300 group-hover:scale-110 transition-all">
-                  <ExternalLink size={24} />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2">
-                  {t("fuzzing.landing.resource.ocppTitle")}
-                </h3>
-                <p className="text-slate-400 mb-6">
-                  {t("fuzzing.landing.resource.ocppDescription")}
-                </p>
-                <a
-                  href="https://www.openchargealliance.org/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-cyan-400 hover:text-cyan-300 font-medium"
-                >
-                  {t("fuzzing.landing.resource.ocppCta")}{" "}
-                  <ExternalLink size={16} className="ml-2" />
-                </a>
-              </GlassCard>
+              <IconCard 
+                icon={ExternalLink}
+                title={t("fuzzing.landing.resource.ocppTitle")}
+                description={t("fuzzing.landing.resource.ocppDescription")}
+                href="https://www.openchargealliance.org/"
+                ctaText={t("fuzzing.landing.resource.ocppCta")}
+                variant="cyan"
+              />
             </div>
           </div>
         </Reveal>

@@ -1,39 +1,25 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
-import { Plus, Search, Filter, MoreHorizontal, FileText, Server, Zap, Edit, Trash2 } from "lucide-react";
+import { Plus, Filter, MoreHorizontal, FileText, Server, Zap, Edit, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { CreateJobModal } from "~/components/page/fuzzing/CreateJobModal";
-import { Pagination } from "~/components/common/Pagination/Pagination";
+import { PageHeader } from "~/components/common/PageHeader/PageHeader";
+import { FilterBar, FilterSelect } from "~/components/common/FilterBar/FilterBar";
+import { DataTable, type DataTableColumn } from "~/components/common/DataTable/DataTable";
+import { StatusBadge } from "~/components/common/StatusBadge/StatusBadge";
+import { ConfirmationDialog } from "~/components/common/ConfirmationDialog/ConfirmationDialog";
 import trpc, { type RouterOutputs } from "~/lib/trpc";
-import { GlassCard } from "~/components/ui/glass-card";
-import { Badge } from "~/components/ui/badge";
-import { FuzzingJobsTableSkeleton } from "~/components/page/fuzzing/FuzzingSkeletons";
 import { useI18n } from "~/i18n/I18nProvider";
 
 const PAGE_SIZE = 8;
 
 type FuzzingJobsList = RouterOutputs["fuzzing"]["list"];
 
-const getStatusVariant = (status: string) => {
-  switch (status) {
-    case "COMPLETED":
-      return "green";
-    case "RUNNING":
-      return "blue";
-    case "FAILED":
-      return "red";
-    case "PENDING":
-      return "yellow";
-    default:
-      return "outline";
-  }
-};
-
 export default function FuzzingJobsPage() {
   const { locale, t } = useI18n();
   const router = useRouter();
+  
   const [data, setData] = useState<FuzzingJobsList["jobs"] | undefined>();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -44,6 +30,8 @@ export default function FuzzingJobsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingJobId, setEditingJobId] = useState<string | null>(null);
   const [activeActionRowId, setActiveActionRowId] = useState<string | null>(null);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [jobToDelete, setJobToDelete] = useState<string | null>(null);
 
   const getTargetTypeLabel = (targetType: string) => {
     switch (targetType) {
@@ -57,57 +45,6 @@ export default function FuzzingJobsPage() {
         return targetType;
     }
   };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case "DRAFT":
-        return t("status.draft");
-      case "PENDING":
-        return t("status.pending");
-      case "RUNNING":
-        return t("status.running");
-      case "COMPLETED":
-        return t("status.completed");
-      case "FAILED":
-        return t("status.failed");
-      default:
-        return status;
-    }
-  };
-
-  // Close actions dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (activeActionRowId && !(event.target as Element).closest('.actions-menu')) {
-        setActiveActionRowId(null);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [activeActionRowId]);
-
-  const handleDeleteSub = async (id: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (confirm(t("fuzzing.jobs.deleteConfirm"))) {
-        try {
-            await trpc.fuzzing.delete.mutate({ id });
-            await fetchData(currentPage, statusFilter, targetTypeFilter);
-            setActiveActionRowId(null);
-        } catch {
-            setActiveActionRowId(null);
-        }
-    }
-  };
-
-  const handleEditSub = (id: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setEditingJobId(id);
-    setIsCreateModalOpen(true);
-    setActiveActionRowId(null);
-  };
-
 
   const fetchData = useCallback(
     async (page = 1, status = "all", targetType = "all") => {
@@ -138,6 +75,46 @@ export default function FuzzingJobsPage() {
     []
   );
 
+  // Close actions dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (activeActionRowId && !(event.target as Element).closest('.actions-menu')) {
+        setActiveActionRowId(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [activeActionRowId]);
+
+  const handleDeleteClick = (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setJobToDelete(id);
+    setIsDeleteConfirmOpen(true);
+    setActiveActionRowId(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!jobToDelete) return;
+    try {
+      await trpc.fuzzing.delete.mutate({ id: jobToDelete });
+      await fetchData(currentPage, statusFilter, targetTypeFilter);
+    } catch {
+      // Handle error
+    } finally {
+      setIsDeleteConfirmOpen(false);
+      setJobToDelete(null);
+    }
+  };
+
+  const handleEditSub = (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setEditingJobId(id);
+    setIsCreateModalOpen(true);
+    setActiveActionRowId(null);
+  };
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -150,216 +127,190 @@ export default function FuzzingJobsPage() {
     fetchData(currentPage, statusFilter, targetTypeFilter);
   }, [currentPage, statusFilter, targetTypeFilter, fetchData]);
 
-  return (
-    <div className="w-full min-h-screen bg-slate-950 text-slate-200 font-sans px-6 py-8 md:px-12 md:py-12">
-      <div className="w-full space-y-8">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">
-              {t("fuzzing.jobs.title")}
-            </h1>
-            <p className="text-slate-400 mt-1">
-              {t("fuzzing.jobs.subtitle")}
-            </p>
+  const columns: DataTableColumn<FuzzingJobsList["jobs"][0]>[] = [
+    {
+      label: t("fuzzing.jobs.table.jobName"),
+      render: (job) => (
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded bg-slate-800 text-blue-400">
+            <FileText size={16} />
           </div>
-          <button
-            onClick={() => {
+          <div>
+            <div className="font-semibold text-white group-hover:text-blue-400 transition-colors">{job.name}</div>
+            <div className="text-xs text-slate-500 font-mono italic">{job.id.slice(0, 8)}...</div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      label: t("fuzzing.jobs.table.target"),
+      render: (job) => (
+        <div className="flex items-center gap-2 text-slate-300 font-medium">
+          {job.targetType === 'ISO15118' ? <Zap size={14} className="text-yellow-500" /> : <Server size={14} className="text-cyan-500" />}
+          {getTargetTypeLabel(job.targetType)}
+        </div>
+      )
+    },
+    {
+      label: t("fuzzing.jobs.table.status"),
+      render: (job) => <StatusBadge status={job.status} />,
+    },
+    {
+      label: t("fuzzing.jobs.table.environment"),
+      render: (job) => (
+        <span className="text-slate-400 font-medium">
+          {job.environment || t("fuzzing.jobs.environment.production")}
+        </span>
+      ),
+    },
+    {
+      label: t("fuzzing.jobs.table.created"),
+      render: (job) => (
+        <div className="text-slate-400 tabular-nums text-sm">
+          {new Date(job.createdAt).toLocaleDateString(locale === "ko" ? "ko-KR" : "en-US")} 
+          <span className="text-slate-600 text-xs ml-2 italic">{new Date(job.createdAt).toLocaleTimeString(locale === "ko" ? "ko-KR" : "en-US")}</span>
+        </div>
+      ),
+    },
+    {
+      label: t("fuzzing.jobs.table.actions"),
+      className: "text-right",
+      headerClassName: "text-right",
+      render: (job) => (
+        <div className="relative actions-menu flex justify-end">
+          <button 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setActiveActionRowId(activeActionRowId === job.id ? null : job.id);
+            }}
+            className="p-2 hover:bg-slate-700/50 rounded-lg text-slate-400 hover:text-white transition-all transform active:scale-95"
+          >
+            <MoreHorizontal size={18} />
+          </button>
+          
+          {activeActionRowId === job.id && (
+            <div className="absolute right-0 mt-8 w-48 bg-slate-900 border border-slate-700 rounded-lg shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+              <div className="py-1 text-left">
+                <button
+                  onClick={(e) => handleEditSub(job.id, e)}
+                  className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-slate-800 hover:text-white flex items-center gap-2 transition-colors"
+                >
+                  <Edit size={14} />
+                  {t("fuzzing.jobs.action.editConfiguration")}
+                </button>
+                <button
+                  onClick={(e) => handleDeleteClick(job.id, e)}
+                  className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 flex items-center gap-2 transition-colors"
+                >
+                  <Trash2 size={14} />
+                  {t("fuzzing.jobs.action.deleteJob")}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div className="w-full min-h-screen bg-slate-950 text-slate-200 font-sans px-6 py-8 md:px-12 md:py-12 selection:bg-blue-500/30">
+      <div className="w-full space-y-8 max-w-7xl mx-auto">
+        
+        <PageHeader 
+          title={t("fuzzing.jobs.title")}
+          subtitle={t("fuzzing.jobs.subtitle")}
+          actions={
+            <button
+              onClick={() => {
                 setEditingJobId(null);
                 setIsCreateModalOpen(true);
+              }}
+              className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:shadow-[0_0_25px_rgba(59,130,246,0.5)] transition-all duration-300 font-bold uppercase text-[11px] tracking-widest"
+            >
+              <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
+              {t("fuzzing.jobs.newJob")}
+            </button>
+          }
+        />
+
+        <FilterBar 
+          handleSearch={() => fetchData(1, statusFilter, targetTypeFilter)} 
+          searchPlaceholder={t("fuzzing.jobs.searchPlaceholder")}
+        >
+          <FilterSelect 
+            label="Status"
+            value={statusFilter}
+            onValueChange={(val) => {
+              setStatusFilter(val);
+              handleFilterChange();
             }}
-            className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:shadow-[0_0_25px_rgba(59,130,246,0.5)] transition-all duration-300 font-medium"
-          >
-            <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
-            {t("fuzzing.jobs.newJob")}
-          </button>
-        </div>
+            options={[
+              { label: t("status.draft"), value: "DRAFT" },
+              { label: t("status.pending"), value: "PENDING" },
+              { label: t("status.running"), value: "RUNNING" },
+              { label: t("status.completed"), value: "COMPLETED" },
+              { label: t("status.failed"), value: "FAILED" }
+            ]}
+            icon={Filter}
+          />
+          <FilterSelect 
+            label="Target"
+            value={targetTypeFilter}
+            onValueChange={(val) => {
+              setTargetTypeFilter(val);
+              handleFilterChange();
+            }}
+            options={[
+              { label: t("fuzzing.target.iso15118Charger"), value: "ISO15118" },
+              { label: t("fuzzing.target.ocppCharger"), value: "OCPP_CHARGER" },
+              { label: t("fuzzing.target.ocppServer"), value: "OCPP_SERVER" }
+            ]}
+            icon={Server}
+          />
+        </FilterBar>
 
-        {/* Filters & Controls */}
-        <div className="flex flex-col md:flex-row gap-4 bg-slate-900 p-4 rounded-xl border border-slate-700 backdrop-blur-sm">
-            <div className="flex-1 flex gap-4 min-w-[200px]">
-                 <div className="relative flex-1 max-w-xs">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                    <input 
-                        type="text" 
-                        placeholder={t("fuzzing.jobs.searchPlaceholder")} 
-                        className="w-full bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-lg pl-10 pr-4 py-2 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none placeholder:text-slate-600"
-                    />
-                 </div>
-            </div>
-            
-            <div className="flex gap-4">
-                 <div className="relative">
-                    <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => {
-                        setStatusFilter(e.target.value);
-                        handleFilterChange();
-                        }}
-                        className="appearance-none bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-lg pl-10 pr-8 py-2 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none cursor-pointer"
-                    >
-                        <option value="all">{t("fuzzing.jobs.filter.allStatuses")}</option>
-                        <option value="DRAFT">{t("status.draft")}</option>
-                        <option value="PENDING">{t("status.pending")}</option>
-                        <option value="RUNNING">{t("status.running")}</option>
-                        <option value="COMPLETED">{t("status.completed")}</option>
-                        <option value="FAILED">{t("status.failed")}</option>
-                    </select>
-                </div>
+        <DataTable 
+          columns={columns}
+          data={data}
+          isLoading={isLoading}
+          emptyState={{
+            title: t("fuzzing.jobs.empty"),
+            icon: FileText
+          }}
+          pagination={{
+            currentPage: currentPage,
+            totalPages: totalPages,
+            onPageChange: handlePageChange,
+            totalCount: totalCount,
+            localeLabel: t("fuzzing.jobs.table.items") || "jobs"
+          }}
+          onRowClick={(job) => router.push(`/fuzzing/jobs/${job.id}`)}
+        />
 
-                <div className="relative">
-                    <Server className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                    <select
-                        value={targetTypeFilter}
-                        onChange={(e) => {
-                        setTargetTypeFilter(e.target.value);
-                        handleFilterChange();
-                        }}
-                         className="appearance-none bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-lg pl-10 pr-8 py-2 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none cursor-pointer"
-                    >
-                        <option value="all">{t("fuzzing.jobs.filter.allTargets")}</option>
-                        <option value="ISO15118">{t("fuzzing.target.iso15118Charger")}</option>
-                        <option value="OCPP_CHARGER">{t("fuzzing.target.ocppCharger")}</option>
-                        <option value="OCPP_SERVER">{t("fuzzing.target.ocppServer")}</option>
-                    </select>
-                </div>
-            </div>
-        </div>
+        <CreateJobModal
+          open={isCreateModalOpen}
+          jobId={editingJobId || undefined}
+          onClose={() => {
+              setIsCreateModalOpen(false);
+              setEditingJobId(null);
+          }}
+          onSuccess={(jobId) => {
+            fetchData(currentPage, statusFilter, targetTypeFilter);
+            router.push(`/fuzzing/jobs/${jobId}`);
+          }}
+        />
 
-        {/* Data Grid / Table */}
-        <GlassCard className="overflow-visible shadow-2xl p-0 border-slate-700">
-           <div className="overflow-visible">
-             <table className="w-full text-left">
-                <thead>
-                    <tr className="bg-slate-800 border-b border-slate-700">
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider rounded-tl-3xl">{t("fuzzing.jobs.table.jobName")}</th>
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">{t("fuzzing.jobs.table.target")}</th>
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">{t("fuzzing.jobs.table.status")}</th>
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">{t("fuzzing.jobs.table.environment")}</th>
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">{t("fuzzing.jobs.table.created")}</th>
-                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right rounded-tr-3xl">{t("fuzzing.jobs.table.actions")}</th>
-                    </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800/50">
-                    {isLoading ? (
-                        <FuzzingJobsTableSkeleton />
-                    ) : !data || data.length === 0 ? (
-                        <tr>
-                            <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
-                                {t("fuzzing.jobs.empty")}
-                            </td>
-                        </tr>
-                    ) : (
-                        data.map((job) => (
-                            <tr key={job.id} className="group hover:bg-slate-800/40 transition-colors duration-200">
-                                <td className="px-6 py-4">
-                                    <Link href={`/fuzzing/jobs/${job.id}`} className="flex items-center gap-3">
-                                        <div className="p-2 rounded bg-slate-800 text-blue-400">
-                                            <FileText size={16} />
-                                        </div>
-                                        <div>
-                                            <div className="font-semibold text-white group-hover:text-blue-400 transition-colors">{job.name}</div>
-                                            <div className="text-xs text-slate-500 font-mono">{job.id.slice(0, 8)}...</div>
-                                        </div>
-                                    </Link>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-2 text-slate-300">
-                                        {job.targetType === 'ISO15118' ? <Zap size={14} className="text-yellow-500" /> : <Server size={14} className="text-cyan-500" />}
-                                        {getTargetTypeLabel(job.targetType)}
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                  <Badge variant={getStatusVariant(job.status) as any}>
-                                        <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${job.status === 'RUNNING' ? 'bg-current animate-pulse' : 'bg-current'}`}></span>
-                                        {getStatusLabel(job.status)}
-                                  </Badge>
-                                </td>
-                                <td className="px-6 py-4 text-slate-400">
-                                    {job.environment || t("fuzzing.jobs.environment.production")}
-                                </td>
-                                <td className="px-6 py-4 text-slate-400 tabular-nums text-sm">
-                                    {new Date(job.createdAt).toLocaleDateString(locale === "ko" ? "ko-KR" : "en-US")} <span className="text-slate-600 text-xs">{new Date(job.createdAt).toLocaleTimeString(locale === "ko" ? "ko-KR" : "en-US")}</span>
-                                </td>
-                                <td className="px-6 py-4 text-right relative">
-                                     <div className="relative actions-menu">
-                                        <button 
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                setActiveActionRowId(activeActionRowId === job.id ? null : job.id);
-                                            }}
-                                            className="p-2 hover:bg-slate-700/50 rounded-lg text-slate-400 hover:text-white transition-colors"
-                                        >
-                                            <MoreHorizontal size={18} />
-                                        </button>
-                                        
-                                        {activeActionRowId === job.id && (
-                                            <div className="absolute right-0 mt-2 w-48 bg-slate-900 border border-slate-700 rounded-lg shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                                                <div className="py-1">
-                                                    <button
-                                                        onClick={(e) => handleEditSub(job.id, e)}
-                                                        className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-slate-800 hover:text-white flex items-center gap-2"
-                                                    >
-                                                        <Edit size={14} />
-                                                        {t("fuzzing.jobs.action.editConfiguration")}
-                                                    </button>
-                                                    <button
-                                                        onClick={(e) => handleDeleteSub(job.id, e)}
-                                                        className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 flex items-center gap-2"
-                                                    >
-                                                        <Trash2 size={14} />
-                                                        {t("fuzzing.jobs.action.deleteJob")}
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        )}
-                                     </div>
-                                </td>
-                            </tr>
-                        ))
-                    )}
-                </tbody>
-             </table>
-           </div>
-
-           {/* Footer / Pagination */}
-           <div className="px-6 py-4 border-t border-slate-800/50 bg-slate-900/30 rounded-b-3xl">
-             <div className="flex items-center justify-between">
-                <div className="text-sm text-slate-500">
-                    {t("fuzzing.jobs.footer.showing", {
-                      shown: data?.length || 0,
-                      total: totalCount,
-                    })}
-                </div>
-                {totalPages > 1 && (
-                    <Pagination 
-                        currentPage={currentPage} 
-                        totalPages={totalPages} 
-                        onPageChange={handlePageChange} 
-                    />
-                )}
-             </div>
-           </div>
-        </GlassCard>
-
+        <ConfirmationDialog 
+          open={isDeleteConfirmOpen}
+          onOpenChange={setIsDeleteConfirmOpen}
+          onConfirm={handleConfirmDelete}
+          title={t("fuzzing.jobs.deleteTitle") || "Confirm Deletion"}
+          description={t("fuzzing.jobs.deleteConfirm") || "Are you sure you want to delete this job? This action cannot be undone."}
+          confirmText={t("fuzzing.jobs.action.deleteJob")}
+        />
       </div>
-
-      {/* Create Job Modal */}
-      <CreateJobModal
-        open={isCreateModalOpen}
-        jobId={editingJobId || undefined}
-        onClose={() => {
-            setIsCreateModalOpen(false);
-            setEditingJobId(null);
-        }}
-        onSuccess={(jobId) => {
-          fetchData(currentPage, statusFilter, targetTypeFilter);
-          router.push(`/fuzzing/jobs/${jobId}`);
-        }}
-      />
     </div>
   );
 }

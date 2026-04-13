@@ -18,6 +18,11 @@ export const enCommonMessages = {
   "status.running": "Running",
   "status.completed": "Completed",
   "status.failed": "Failed",
+  "common.cancel": "Cancel",
+  "common.confirm": "Confirm",
+  "common.showingCount": "Showing {count}",
+  "common.of": "of",
+  "common.items": "items",
 } as const;
 
 type CommonMessageKey = keyof typeof enCommonMessages;
@@ -42,4 +47,9 @@ export const koCommonMessages: Record<CommonMessageKey, string> = {
   "status.running": "실행 중",
   "status.completed": "완료",
   "status.failed": "실패",
+  "common.cancel": "취소",
+  "common.confirm": "확인",
+  "common.showingCount": "{count}개 항목 표시 중",
+  "common.of": "/",
+  "common.items": "항목",
 };

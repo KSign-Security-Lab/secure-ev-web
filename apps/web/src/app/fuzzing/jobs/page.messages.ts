@@ -17,6 +17,8 @@ export const enFuzzingJobsPageMessages = {
   "fuzzing.jobs.deleteConfirm": "Are you sure you want to delete this job?",
   "fuzzing.jobs.environment.production": "Production",
   "fuzzing.jobs.footer.showing": "Showing {shown} of {total} jobs",
+  "fuzzing.jobs.table.items": "jobs",
+  "fuzzing.jobs.deleteTitle": "Confirm Deletion",
 } as const;
 
 type FuzzingJobsPageMessageKey = keyof typeof enFuzzingJobsPageMessages;
@@ -40,4 +42,6 @@ export const koFuzzingJobsPageMessages: Record<FuzzingJobsPageMessageKey, string
   "fuzzing.jobs.deleteConfirm": "이 작업을 삭제하시겠습니까?",
   "fuzzing.jobs.environment.production": "운영",
   "fuzzing.jobs.footer.showing": "{total}개 중 {shown}개 표시",
+  "fuzzing.jobs.table.items": "작업",
+  "fuzzing.jobs.deleteTitle": "삭제 확인",
 };

@@ -2,11 +2,10 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { SaveIcon, Trash2 } from "lucide-react";
-import SearchInput from "~/components/common/SearchInput/SearchInput";
-import Loading from "~/components/common/Loading/Loading";
-import { Pagination } from "~/components/common/Pagination/Pagination";
 import trpc, { type RouterOutputs } from "~/lib/trpc";
 import { AbilitiesTable } from "~/components/page/abilities/AbilitiesTable";
+import { PageHeader } from "~/components/common/PageHeader/PageHeader";
+import { FilterBar } from "~/components/common/FilterBar/FilterBar";
 import { useI18n } from "~/i18n/I18nProvider";
 
 const PAGE_SIZE = 10;
@@ -22,6 +21,7 @@ export default function Abilities() {
   const [query, setQuery] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [totalPages, setTotalPages] = useState<number>(0);
+  const [totalCount, setTotalCount] = useState<number>(0);
 
   const fetchData = useCallback(async (page = 1, search = "") => {
     setIsLoading(true);
@@ -41,6 +41,7 @@ export default function Abilities() {
       }
       if (response) {
         setData(response.abilities);
+        setTotalCount(Number(response.count));
         setTotalPages(Math.ceil(Number(response.count) / PAGE_SIZE));
       }
     } catch {
@@ -48,14 +49,13 @@ export default function Abilities() {
     } finally {
       setTimeout(() => {
         setIsLoading(false);
-      }, 300); // Slight delay for better UX
+      }, 300);
     }
   }, []);
 
-  const handleSearch = async (searchQuery: string) => {
+  const handleSearch = (searchQuery: string) => {
     setQuery(searchQuery);
-    setCurrentPage(1); // Reset to page 1 when searching
-    await fetchData(1, searchQuery);
+    setCurrentPage(1);
   };
 
   const handlePageChange = (page: number) => {
@@ -67,48 +67,41 @@ export default function Abilities() {
   }, [currentPage, query, fetchData]);
 
   return (
-    <div className="flex flex-col w-full bg-base-900 p-8 rounded-xl">
-      {/* Top Controls */}
-      <div className="flex justify-between w-full items-center">
-        <div className="w-120">
-          <SearchInput onSearch={handleSearch} />
-        </div>
-
-        <div className="flex space-x-2">
-          <button className="p-2 bg-primary-300 flex items-center rounded-sm hover:bg-primary-400 transition">
-            <SaveIcon color="white" className="w-4 h-4" />
-            <span className="ml-1 text-sm text-white">
+    <div className="w-full space-y-8 animate-in fade-in duration-700">
+      <PageHeader 
+        title={t("abilities.page.title") || "Abilities Library"}
+        subtitle={t("abilities.page.subtitle") || "Manage and deploy security testing capabilities."}
+        badge="Playground"
+        actions={
+          <div className="flex gap-3">
+            <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition-all font-bold uppercase text-[11px] tracking-widest shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+              <SaveIcon className="w-4 h-4" />
               {t("abilities.page.register")}
-            </span>
-          </button>
-          <button className="p-2 bg-danger-500 flex items-center rounded-sm hover:bg-danger-600 transition">
-            <Trash2 color="white" className="w-4 h-4" />
-            <span className="ml-1 text-sm text-white">
+            </button>
+            <button className="flex items-center gap-2 bg-red-600/20 hover:bg-red-600/30 text-red-500 px-4 py-2 rounded-lg transition-all font-bold uppercase text-[11px] tracking-widest border border-red-500/20">
+              <Trash2 className="w-4 h-4" />
               {t("abilities.page.delete")}
-            </span>
-          </button>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="mt-4 flex flex-col flex-1 space-y-6 min-h-0">
-        {isLoading ? (
-          <Loading />
-        ) : data ? (
-          <AbilitiesTable data={data} />
-        ) : (
-          <div className="text-center text-gray-400 py-8">
-            {t("abilities.page.empty")}
+            </button>
           </div>
-        )}
-      </div>
-      {totalPages > 1 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
-      )}
+        }
+      />
+
+      <FilterBar 
+        handleSearch={handleSearch} 
+        searchPlaceholder={t("abilities.page.searchPlaceholder") || "Search abilities..."}
+      />
+
+      <AbilitiesTable 
+        data={data || []} 
+        isLoading={isLoading}
+        pagination={{
+          currentPage,
+          totalPages,
+          onPageChange: handlePageChange,
+          totalCount,
+          localeLabel: "abilities"
+        }}
+      />
     </div>
   );
 }
