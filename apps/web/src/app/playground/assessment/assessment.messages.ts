@@ -1,5 +1,5 @@
 export const enAssessmentPageMessages = {
-  "assessment.page.title": "Attack Assessment",
+  "assessment.page.title": "Assessment",
   "assessment.page.subtitle": "Evaluate defense performance and security of charging infrastructure",
   "assessment.page.register": "Register",
   "assessment.page.delete": "Delete",
@@ -11,7 +11,7 @@ export const koAssessmentPageMessages: Record<
   keyof typeof enAssessmentPageMessages,
   string
 > = {
-  "assessment.page.title": "공격 평가",
+  "assessment.page.title": "평가",
   "assessment.page.subtitle": "충전 인프라의 방어 성능 및 보안성 평가 관리",
   "assessment.page.register": "등록",
   "assessment.page.delete": "삭제",

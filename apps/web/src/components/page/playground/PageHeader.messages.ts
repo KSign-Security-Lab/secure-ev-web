@@ -1,5 +1,5 @@
 export const enPlaygroundPageHeaderMessages = {
-  "playground.header.title": "Playground",
+  "playground.header.title": "Connect Agent",
   "playground.header.subtitle": "Browse active sessions and interact with a live terminal.",
   "playground.header.sessionSelected": "Session #{id}",
   "playground.header.noSessionSelected": "No session selected",
@@ -9,7 +9,7 @@ export const enPlaygroundPageHeaderMessages = {
 type PlaygroundPageHeaderMessageKey = keyof typeof enPlaygroundPageHeaderMessages;
 
 export const koPlaygroundPageHeaderMessages: Record<PlaygroundPageHeaderMessageKey, string> = {
-  "playground.header.title": "플레이그라운드",
+  "playground.header.title": "에이전트 연결",
   "playground.header.subtitle": "활성 세션을 탐색하고 라이브 터미널과 상호작용하세요.",
   "playground.header.sessionSelected": "세션 #{id}",
   "playground.header.noSessionSelected": "선택된 세션 없음",

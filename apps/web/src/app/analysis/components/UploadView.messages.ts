@@ -1,5 +1,5 @@
 export const enAnalysisUploadViewMessages = {
-  "analysis.upload.title": "Analysis Workspace",
+  "analysis.upload.title": "Inspect Code",
   "analysis.upload.subtitle": "Upload source code files to begin",
   "analysis.upload.dropzoneInstruction": "Click to browse or drag and drop files here",
   "analysis.upload.dropzoneFormats": ".c, .cpp, .java or .zip archives",

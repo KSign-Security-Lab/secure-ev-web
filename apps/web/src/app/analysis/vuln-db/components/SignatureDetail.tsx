@@ -40,12 +40,12 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
         <header className="px-6 py-4 border-b border-slate-800/50 bg-slate-950/50 backdrop-blur-xl flex justify-between items-center">
         <div className="flex flex-col gap-1">
             <div className="flex items-center gap-4">
-                <h1 className="text-2xl font-bold text-white tracking-tight uppercase leading-none">{data.patternId}</h1>
+                <h1 className="text-xl font-bold text-white tracking-tight uppercase leading-none">{data.patternId}</h1>
                 <Badge variant="blue" className="bg-blue-500/10 border-blue-500/30 text-[9px] font-bold uppercase tracking-widest px-2 py-0.5">
                     {t("vulndb.detail.criticalAnalysis")}
                 </Badge>
             </div>
-            <div className="flex items-center gap-3 text-xs font-mono text-slate-500 uppercase tracking-wider font-medium">
+            <div className="flex items-center gap-3 text-[11px] font-mono text-slate-500 uppercase tracking-wider font-medium">
                 <span className="flex items-center gap-1.5"><Lock size={12} className="opacity-50 text-blue-400" /> SID: <span className="text-slate-400">{data.sid}</span></span>
                 <span className="w-1 h-1 rounded-full bg-slate-800" />
                 <span className="flex items-center gap-1.5"><ShieldAlert size={12} className="opacity-50 text-red-400" /> CWE: <span className="text-slate-400">{data.cwe}</span></span>
@@ -141,7 +141,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                                 <AlertTriangle size={16} className="text-amber-500/80" />
                                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{t("vulndb.detail.triage.plan")}</span>
                             </div>
-                            <p className="text-sm font-medium text-slate-400 leading-relaxed max-w-lg italic">
+                            <p className="text-sm font-medium text-slate-400 leading-relaxed max-w-lg">
                                 Apply strict size validation using <code className="text-blue-400/80 font-mono px-1.5 py-0.5 bg-blue-500/10 rounded border border-blue-500/20">strnlen()</code> to the source buffer before copying memory to mitigate the risk of buffer overruns.
                             </p>
                         </div>

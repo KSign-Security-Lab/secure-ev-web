@@ -1,5 +1,5 @@
 export const enVulnDBMessages = {
-  "vulndb.title": "VulnDB",
+  "vulndb.title": "Vuln DB",
   "vulndb.signatures": "Signatures",
   "vulndb.list.count": "signatures",
   "vulndb.list.searchPlaceholder": "Search pattern, API, variant ID...",

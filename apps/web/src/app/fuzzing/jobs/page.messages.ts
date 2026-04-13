@@ -1,5 +1,5 @@
 export const enFuzzingJobsPageMessages = {
-  "fuzzing.jobs.title": "Active Fuzzing Jobs",
+  "fuzzing.jobs.title": "Fuzzing Jobs",
   "fuzzing.jobs.subtitle": "Manage and monitor your security testing sessions.",
   "fuzzing.jobs.newJob": "New Job",
   "fuzzing.jobs.searchPlaceholder": "Search jobs...",
@@ -24,7 +24,7 @@ export const enFuzzingJobsPageMessages = {
 type FuzzingJobsPageMessageKey = keyof typeof enFuzzingJobsPageMessages;
 
 export const koFuzzingJobsPageMessages: Record<FuzzingJobsPageMessageKey, string> = {
-  "fuzzing.jobs.title": "활성 퍼징 작업",
+  "fuzzing.jobs.title": "퍼징 작업",
   "fuzzing.jobs.subtitle": "보안 테스트 세션을 관리하고 모니터링하세요.",
   "fuzzing.jobs.newJob": "새 작업",
   "fuzzing.jobs.searchPlaceholder": "작업 검색...",

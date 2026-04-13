@@ -6,7 +6,6 @@ import { useI18n } from "~/i18n/I18nProvider";
 import { AssessmentTable, type AssessmentItem } from "~/components/page/playground/Assessment/AssessmentTable";
 import { PageHeader } from "~/components/common/PageHeader/PageHeader";
 import { FilterBar } from "~/components/common/FilterBar/FilterBar";
-import { Button } from "~/components/ui/button";
 
 const MOCK_DATA: AssessmentItem[] = [
   {
@@ -55,14 +54,14 @@ export default function AssessmentPage() {
         badge="Playground"
         actions={
           <div className="flex items-center gap-3">
-            <Button variant="outline" className="gap-2 border-slate-700/50 hover:bg-slate-800">
-              <Trash2 className="w-4 h-4 text-red-500" />
-              <span className="uppercase text-[10px] font-bold tracking-widest">{t("assessment.page.delete")}</span>
-            </Button>
-            <Button variant="tinted" className="gap-2 bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20">
+            <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition-all font-bold uppercase text-[11px] tracking-widest shadow-[0_0_15px_rgba(59,130,246,0.2)]">
               <SaveIcon className="w-4 h-4" />
-              <span className="uppercase text-[10px] font-bold tracking-widest">{t("assessment.page.register")}</span>
-            </Button>
+              {t("assessment.page.register")}
+            </button>
+            <button className="flex items-center gap-2 bg-red-600/20 hover:bg-red-600/30 text-red-500 px-4 py-2 rounded-lg transition-all font-bold uppercase text-[11px] tracking-widest border border-red-500/20">
+              <Trash2 className="w-4 h-4" />
+              {t("assessment.page.delete")}
+            </button>
           </div>
         }
       />

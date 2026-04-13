@@ -1,5 +1,5 @@
 export const enAbilitiesPageMessages = {
-  "abilities.page.title": "Abilities Library",
+  "abilities.page.title": "Abilities",
   "abilities.page.subtitle": "Manage and deploy security testing capabilities.",
   "abilities.page.register": "Register",
   "abilities.page.delete": "Delete",
@@ -10,7 +10,7 @@ export const enAbilitiesPageMessages = {
 type AbilitiesPageMessageKey = keyof typeof enAbilitiesPageMessages;
 
 export const koAbilitiesPageMessages: Record<AbilitiesPageMessageKey, string> = {
-  "abilities.page.title": "능력 라이브러리",
+  "abilities.page.title": "능력",
   "abilities.page.subtitle": "보안 테스트 기능을 관리하고 배포하세요.",
   "abilities.page.register": "등록",
   "abilities.page.delete": "삭제",

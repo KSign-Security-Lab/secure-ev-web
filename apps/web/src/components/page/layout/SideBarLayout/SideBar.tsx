@@ -1,7 +1,7 @@
 "use client";
 
 import React, { forwardRef, useImperativeHandle, useState, useEffect, useCallback } from "react";
-import { ChevronDown, ChevronRight, Globe } from "lucide-react";
+import { ChevronDown, ChevronRight, Globe, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -81,18 +81,27 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
           expanded ? "w-56" : "w-16"
         )}
       >
-        <Link href={"/"}>
-          <div className="flex items-center justify-between p-4 ml-1">
-            <div className={clsx("relative h-10", expanded ? "w-full" : "w-16")}>
+        <div className="flex items-center justify-between p-4 px-5">
+          {expanded && (
+            <Link href={"/"} className="relative h-8 w-32 shrink-0 transition-all">
               <Image
-                src={expanded ? "/assets/logo-dark.png" : "/assets/logo-sm.png"}
+                src="/assets/logo-dark.png"
                 alt="Logo"
                 fill
-                className="object-contain"
+                className="object-contain object-left"
               />
-            </div>
-          </div>
-        </Link>
+            </Link>
+          )}
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className={clsx(
+              "p-1.5 rounded-lg hover:bg-gray-100 transition-colors text-gray-500 hover:text-blue-600",
+              !expanded && "mx-auto"
+            )}
+          >
+            <Menu size={20} />
+          </button>
+        </div>
 
         <nav className="mt-5 space-y-2 flex-1 overflow-y-auto">
           {menus.map((item) => (
