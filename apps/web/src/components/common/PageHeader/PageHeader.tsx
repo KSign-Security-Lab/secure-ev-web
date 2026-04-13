@@ -25,7 +25,7 @@ export function PageHeader({
   withReveal = true,
 }: PageHeaderProps) {
   const content = (
-    <div className={cn("flex flex-col md:flex-row justify-between items-start md:items-center gap-4 w-full mb-8", className)}>
+    <div className={cn("flex flex-col md:flex-row justify-between items-start md:items-center gap-4 w-full mb-4", className)}>
       <div className="space-y-1">
         {badge && (
           <Badge variant={badgeVariant} className="mb-2">

@@ -67,7 +67,7 @@ export default function Abilities() {
   }, [currentPage, query, fetchData]);
 
   return (
-    <div className="w-full space-y-8 animate-in fade-in duration-700">
+    <div className="w-full space-y-4 animate-in fade-in duration-700">
       <PageHeader 
         title={t("abilities.page.title") || "Abilities Library"}
         subtitle={t("abilities.page.subtitle") || "Manage and deploy security testing capabilities."}

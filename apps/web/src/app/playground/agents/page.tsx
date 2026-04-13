@@ -45,7 +45,7 @@ export default function Agents() {
   }, []);
 
   return (
-    <div className="flex flex-col w-full gap-8">
+    <div className="flex flex-col w-full gap-4">
       <PageHeader 
         title={t("agents.page.title")}
         subtitle={t("agents.page.subtitle")}

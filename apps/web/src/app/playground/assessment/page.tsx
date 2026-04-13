@@ -48,7 +48,7 @@ export default function AssessmentPage() {
   );
 
   return (
-    <div className="flex flex-col w-full gap-8">
+    <div className="flex flex-col w-full gap-4">
       <PageHeader
         title={t("assessment.page.title")}
         subtitle={t("assessment.page.subtitle")}

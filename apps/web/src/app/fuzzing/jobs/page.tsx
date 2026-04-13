@@ -215,8 +215,8 @@ export default function FuzzingJobsPage() {
   ];
 
   return (
-    <div className="w-full min-h-screen bg-slate-950 text-slate-200 font-sans px-6 py-8 md:px-12 md:py-12 selection:bg-blue-500/30">
-      <div className="w-full space-y-8 max-w-7xl mx-auto">
+    <div className="w-full min-h-screen bg-slate-950 text-slate-200 font-sans px-6 py-4 md:px-12 md:py-6 selection:bg-blue-500/30">
+      <div className="w-full space-y-4 max-w-7xl mx-auto">
         
         <PageHeader 
           title={t("fuzzing.jobs.title")}

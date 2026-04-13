@@ -130,7 +130,7 @@ export function SignatureList({ onSelect }: SignatureListProps) {
   ];
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-4">
       <PageHeader 
         title={t("vulndb.title")}
         subtitle={t("vulndb.signatures")}

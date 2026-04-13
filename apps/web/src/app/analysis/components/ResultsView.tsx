@@ -203,7 +203,7 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
   };
 
   return (
-    <div className="flex flex-col flex-1 w-full min-h-0 gap-8">
+    <div className="flex flex-col flex-1 w-full min-h-0 gap-4">
       <PageHeader 
         title={t("analysis.results.title")}
         subtitle={t("analysis.results.subtitle")}

@@ -37,7 +37,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
         <div className="relative w-full h-1 bg-linear-to-r from-blue-500 via-cyan-500 to-blue-600" />
         
         {/* Integrated Header */}
-        <header className="px-8 py-6 border-b border-slate-800/50 bg-slate-950/50 backdrop-blur-xl flex justify-between items-center">
+        <header className="px-6 py-4 border-b border-slate-800/50 bg-slate-950/50 backdrop-blur-xl flex justify-between items-center">
         <div className="flex flex-col gap-1">
             <div className="flex items-center gap-4">
                 <h1 className="text-2xl font-bold text-white tracking-tight uppercase leading-none">{data.patternId}</h1>
@@ -64,7 +64,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
         </header>
 
         {/* Sticky Tab Navigation */}
-        <div className="px-8 pb-px border-b border-slate-800/50 bg-slate-950">
+        <div className="px-6 pb-px border-b border-slate-800/50 bg-slate-950">
             <TabsList className="bg-slate-900/50 border border-slate-800/50 p-1 h-11 translate-y-px rounded-t-lg rounded-b-none border-b-0">
                 <TabsTrigger 
                     type="button"
@@ -92,8 +92,8 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="w-full px-8 py-8">
-            <TabsContent value="overview" className="space-y-8 mt-0 animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <div className="w-full px-6 py-6">
+            <TabsContent value="overview" className="space-y-4 mt-0 animate-in fade-in slide-in-from-bottom-2 duration-300">
                 {/* 2. Top-Level Metrics Row */}
                 <div className="grid grid-cols-4 gap-4">
                     <DashMetric label={t("vulndb.detail.metrics.cweClass")} value={data.cwe} icon={ShieldCheck} color="blue" />
@@ -111,7 +111,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                 {/* 3. Primary Analysis Dashboard Summary */}
                 <div className="bg-slate-900/40 border border-slate-800/60 rounded-xl overflow-hidden shadow-2xl backdrop-blur-sm">
                     {/* Technical Verdict Banner */}
-                    <div className="p-8 bg-red-500/5 border-b border-slate-800">
+                    <div className="p-6 bg-red-500/5 border-b border-slate-800">
                         <div className="flex items-start gap-8">
                             <div className="w-14 h-14 rounded-2xl bg-red-600/20 border border-red-500/30 flex items-center justify-center shrink-0 shadow-[0_0_30px_rgba(239,68,68,0.15)]">
                                 <ShieldX size={32} className="text-red-500" />
@@ -129,14 +129,14 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                     </div>
 
                     <div className="grid grid-cols-2 divide-x divide-slate-800">
-                            <div className="p-8 space-y-4">
+                            <div className="p-6 space-y-4">
                                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block">{t("vulndb.detail.outcome.label")}</span>
                                 <div className="inline-flex items-center gap-4 px-5 py-3 border border-red-500/20 bg-red-500/5 text-red-500 font-bold text-xs uppercase tracking-widest rounded-xl shadow-lg">
                                     <ShieldX size={18} className="opacity-70 text-red-400" />
                                     <span>{t("vulndb.detail.outcome.failed")}</span>
                                 </div>
                             </div>
-                        <div className="p-8 space-y-4 bg-slate-800/5">
+                        <div className="p-6 space-y-4 bg-slate-800/5">
                             <div className="flex items-center gap-3">
                                 <AlertTriangle size={16} className="text-amber-500/80" />
                                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{t("vulndb.detail.triage.plan")}</span>
@@ -153,7 +153,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                 <div className="bg-slate-900/40 border border-slate-800/60 rounded-xl overflow-hidden shadow-2xl backdrop-blur-sm">
                     <div className="grid grid-cols-[1fr_450px] divide-x divide-slate-800/50">
                         <div className="divide-y divide-slate-800/50">
-                            <div className="p-8 space-y-6">
+                            <div className="p-6 space-y-6">
                                 <header className="flex items-center gap-3">
                                     <div className="w-1.5 h-6 bg-blue-500 rounded-full" />
                                     <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">{t("vulndb.detail.execution.sink")}</span>
@@ -165,7 +165,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                                 </div>
                             </div>
 
-                            <div className="p-8">
+                            <div className="p-6">
                                 <header className="flex items-center gap-3 mb-8">
                                     <div className="w-1.5 h-6 bg-slate-700 rounded-full" />
                                     <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] leading-none">{t("vulndb.detail.analysis.integrity")}</span>
@@ -197,7 +197,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                             </div>
                         </div>
 
-                        <div className="p-8 flex flex-col space-y-6 bg-slate-950/30 backdrop-blur-sm">
+                        <div className="p-6 flex flex-col space-y-6 bg-slate-950/30 backdrop-blur-sm">
                             <header className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
                                     <FileCode size={18} className="text-blue-400/60" />
