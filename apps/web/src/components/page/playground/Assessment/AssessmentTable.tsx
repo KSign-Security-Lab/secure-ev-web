@@ -1,5 +1,7 @@
+"use client";
+
 import React from "react";
-import { Table, TableColumn } from "~/components/common/Table/Table";
+import { DataTable, type DataTableColumn } from "~/components/common/DataTable/DataTable";
 import { useI18n } from "~/i18n/I18nProvider";
 
 export interface AssessmentItem {
@@ -11,51 +13,60 @@ export interface AssessmentItem {
   lastExecutionDate: string | null;
 }
 
-export const AssessmentTable: React.FC<{
+interface AssessmentTableProps {
   data: AssessmentItem[];
-}> = ({ data }) => {
+  isLoading?: boolean;
+  pagination?: {
+    currentPage: number;
+    totalPages: number;
+    onPageChange: (page: number) => void;
+    totalCount?: number;
+  };
+}
+
+export const AssessmentTable: React.FC<AssessmentTableProps> = ({ data, isLoading, pagination }) => {
   const { t } = useI18n();
 
-  const columns: TableColumn<AssessmentItem>[] = [
+  const columns: DataTableColumn<AssessmentItem>[] = [
     {
       label: t("assessment.table.name"),
       render: (item) => (
-        <button className="text-left text-primary-400 hover:text-primary-300 font-medium transition-colors">
+        <button className="text-left text-blue-400 hover:text-blue-300 font-bold transition-colors">
           {item.name}
         </button>
       ),
     },
     {
       label: t("assessment.table.target"),
-      render: (item) => (
-        <span className="text-neutral-300 font-mono text-sm">{item.target}</span>
-      ),
+      className: "font-mono text-xs text-slate-400 font-bold",
+      render: (item) => item.target,
     },
     {
       label: t("assessment.table.attackCount"),
-      render: (item) => (
-        <span className="text-neutral-300">{item.attackCount}</span>
-      ),
+      className: "text-slate-200 font-bold tabular-nums",
+      render: (item) => item.attackCount,
     },
     {
       label: t("assessment.table.repeatCount"),
-      render: (item) => (
-        <span className="text-neutral-300">{item.repeatCount}</span>
-      ),
+      className: "text-slate-400 font-medium tabular-nums",
+      render: (item) => item.repeatCount,
     },
     {
       label: t("assessment.table.lastDate"),
-      render: (item) => (
-        <span className="text-neutral-400 text-sm">
-          {item.lastExecutionDate || t("assessment.table.notYet")}
-        </span>
-      ),
+      className: "text-slate-500 text-xs italic",
+      render: (item) => item.lastExecutionDate || t("assessment.table.notYet"),
     },
   ];
 
   return (
-    <div className="w-full">
-      <Table data={data} columns={columns} />
-    </div>
+    <DataTable 
+      data={data} 
+      columns={columns} 
+      isLoading={isLoading}
+      pagination={pagination}
+      emptyState={{
+        title: t("assessment.page.empty"),
+      }}
+    />
   );
 };

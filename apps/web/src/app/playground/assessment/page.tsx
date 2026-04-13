@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { SaveIcon, Trash2 } from "lucide-react";
-import SearchInput from "~/components/common/SearchInput/SearchInput";
-import { Pagination } from "~/components/common/Pagination/Pagination";
 import { useI18n } from "~/i18n/I18nProvider";
 import { AssessmentTable, type AssessmentItem } from "~/components/page/playground/Assessment/AssessmentTable";
+import { PageHeader } from "~/components/common/PageHeader/PageHeader";
+import { FilterBar } from "~/components/common/FilterBar/FilterBar";
+import { Button } from "~/components/ui/button";
 
 const MOCK_DATA: AssessmentItem[] = [
   {
@@ -47,53 +48,44 @@ export default function AssessmentPage() {
   );
 
   return (
-    <div className="flex flex-col w-full bg-base-900 p-8 rounded-xl shadow-2xl border border-white/5">
-      {/* Top Controls */}
-      <div className="flex justify-between w-full items-center mb-6">
-        <div className="w-120">
-          <SearchInput onSearch={handleSearch} />
-        </div>
-
-        <div className="flex space-x-3">
-          <button className="px-4 py-2 bg-primary-500/10 text-primary-400 border border-primary-500/30 flex items-center rounded-lg hover:bg-primary-500/20 hover:border-primary-500/50 transition-all active:scale-95 shadow-lg shadow-primary-500/10">
-            <SaveIcon className="w-4 h-4 mr-2" />
-            <span className="text-sm font-semibold tracking-wide uppercase">
-              {t("assessment.page.register")}
-            </span>
-          </button>
-          <button className="px-4 py-2 bg-danger-500/10 text-danger-500 border border-danger-500/30 flex items-center rounded-lg hover:bg-danger-500/20 hover:border-danger-500/50 transition-all active:scale-95 shadow-lg shadow-danger-500/10">
-            <Trash2 className="w-4 h-4 mr-2" />
-            <span className="text-sm font-semibold tracking-wide uppercase">
-              {t("assessment.page.delete")}
-            </span>
-          </button>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex flex-col flex-1 min-h-0 bg-base-950/30 rounded-lg overflow-hidden border border-white/5">
-        {filteredData.length > 0 ? (
-          <AssessmentTable data={filteredData} />
-        ) : (
-          <div className="flex flex-col items-center justify-center py-20 text-neutral-500 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="w-16 h-16 mb-4 rounded-full bg-base-800 flex items-center justify-center border border-white/5">
-              <Trash2 className="w-8 h-8 opacity-20" />
-            </div>
-            <p className="text-lg font-medium">{t("assessment.page.empty")}</p>
+    <div className="flex flex-col w-full gap-8">
+      <PageHeader
+        title={t("assessment.page.title")}
+        subtitle={t("assessment.page.subtitle")}
+        badge="Playground"
+        actions={
+          <div className="flex items-center gap-3">
+            <Button variant="outline" className="gap-2 border-slate-700/50 hover:bg-slate-800">
+              <Trash2 className="w-4 h-4 text-red-500" />
+              <span className="uppercase text-[10px] font-bold tracking-widest">{t("assessment.page.delete")}</span>
+            </Button>
+            <Button variant="tinted" className="gap-2 bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20">
+              <SaveIcon className="w-4 h-4" />
+              <span className="uppercase text-[10px] font-bold tracking-widest">{t("assessment.page.register")}</span>
+            </Button>
           </div>
-        )}
-      </div>
+        }
+      />
 
-      {/* Pagination Container */}
-      {totalPages > 1 && (
-        <div className="mt-8 pt-6 border-t border-white/5">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
+      <div className="flex flex-col gap-6 min-h-0 min-w-0">
+        <FilterBar 
+          handleSearch={handleSearch} 
+          searchPlaceholder={t("assessment.page.searchPlaceholder")}
+          className="bg-slate-900/50"
+        />
+
+        <div className="flex-1">
+          <AssessmentTable 
+            data={filteredData} 
+            pagination={{
+              currentPage,
+              totalPages,
+              onPageChange: handlePageChange,
+              totalCount: filteredData.length
+            }}
           />
         </div>
-      )}
+      </div>
     </div>
   );
 }

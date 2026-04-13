@@ -7,14 +7,15 @@ import { File as FileIcon, ChevronDown, ChevronRight, Folder } from "lucide-reac
 import ResultDetail from "./ResultDetail";
 import CodeViewer from "./CodeViewer";
 
-import { AnalysisResult, MockFile } from "./mockData";
+import { MockFile } from "./mockData";
 import { useI18n } from "~/i18n/I18nProvider";
+import { PageHeader } from "~/components/common/PageHeader/PageHeader";
+import { StatusBadge } from "~/components/common/StatusBadge/StatusBadge";
 
 interface ResultsViewProps { uploadedFiles: MockFile[] }
 
 export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
   const { t } = useI18n();
-
 
   // Generate random mock results for the uploaded files
   const [dynamicResults] = useState(() => {
@@ -82,28 +83,6 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
       }
       return newSet;
     });
-  };
-
-  const getRiskBadgeColor = (risk: AnalysisResult["risk"]) => {
-    switch (risk) {
-      case "High": return "red";
-      case "Medium": return "yellow";
-      case "Low": return "green";
-      default: return "default";
-    }
-  };
-
-  const getRiskLabel = (risk: AnalysisResult["risk"]) => {
-    switch (risk) {
-      case "High":
-        return t("risk.high");
-      case "Medium":
-        return t("risk.medium");
-      case "Low":
-        return t("risk.low");
-      default:
-        return risk;
-    }
   };
 
   // Build a simple tree for the mock files
@@ -204,9 +183,10 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
                     }`}
                   >
                     <div className="flex justify-between items-center w-full">
-                      <Badge variant={getRiskBadgeColor(res.risk) as any} className="text-[10px] px-1.5 py-0 leading-tight">
-                        {getRiskLabel(res.risk)}
-                      </Badge>
+                      <StatusBadge 
+                        status={res.risk} 
+                        className="text-[10px] px-1.5 py-0 leading-tight h-4"
+                      />
                       <span className="text-xs text-[#8b949e] font-mono">L{res.lineInfo.split('-')[0]}</span>
                     </div>
                     <span className={`truncate font-mono ${isSelected ? 'text-blue-200' : 'text-[#8b949e]'}`}>
@@ -223,28 +203,19 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
   };
 
   return (
-    <div className="flex flex-col flex-1 w-full min-h-0 gap-4">
-      {/* Header Area */}
-      <div className="flex justify-between items-center px-2">
-        <div>
-          <h2 className="text-xl font-bold text-[#c9d1d9] flex items-center gap-2">
-            {t("analysis.results.title")}
-            <Badge variant="outline" className="border-[#30363d] text-[#8b949e] font-mono">
-              {t("analysis.results.issuesFound", { count: activeResults.length })}
-            </Badge>
-          </h2>
-          <p className="text-sm text-[#8b949e] mt-1">
-            {t("analysis.results.subtitle")}
-          </p>
-        </div>
-      </div>
+    <div className="flex flex-col flex-1 w-full min-h-0 gap-8">
+      <PageHeader 
+        title={t("analysis.results.title")}
+        subtitle={t("analysis.results.subtitle")}
+        badge={t("analysis.results.issuesFound", { count: activeResults.length })}
+      />
 
       {/* Main Split View: Left sidebar for Files/Issues, Center/Right for Code/Explanation */}
-      <div className="flex flex-1 overflow-hidden border border-[#30363d] rounded-lg">
+      <div className="flex flex-1 overflow-hidden border border-slate-800/80 rounded-2xl bg-slate-950/20 backdrop-blur-sm">
 
         {/* Left: Files & Issues Explorer */}
-        <div className="w-80 shrink-0 bg-[#0d1117] border-r border-[#30363d] flex flex-col">
-          <div className="p-3 text-xs font-semibold text-[#8b949e] uppercase tracking-wider border-b border-[#30363d] bg-[#161b22]">
+        <div className="w-80 shrink-0 bg-slate-950/40 border-r border-slate-800/80 flex flex-col">
+          <div className="p-4 text-[10px] font-black uppercase tracking-[0.2em] leading-none text-slate-500 border-b border-slate-800/50 bg-slate-900/50">
             {t("analysis.results.filesAndIssues")}
           </div>
           <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
@@ -253,7 +224,7 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
         </div>
 
         {/* Center: Code Viewer */}
-        <div className="flex-1 overflow-hidden bg-[#0d1117] relative">
+        <div className="flex-1 overflow-hidden bg-slate-950/30 relative">
            <CodeViewer
              file={selectedFile}
              vulnerabilities={activeResults.filter(r => r.filePath === selectedFilePath)}

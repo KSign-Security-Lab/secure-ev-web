@@ -9,7 +9,10 @@ import type {
   ConnectionState,
 } from "~/components/page/playground/Terminal";
 import { normalizeMessage } from "~/components/page/playground/Terminal/utils";
-import PageHeader from "~/components/page/playground/PageHeader";
+import { PageHeader as CommonPageHeader } from "~/components/common/PageHeader/PageHeader";
+import ConnectionPill from "~/components/page/playground/ConnectionPill";
+import { RefreshCw } from "lucide-react";
+import { Button } from "~/components/ui/button";
 import SessionsList from "~/components/page/playground/SessionsList";
 import SystemLogPanel from "~/components/page/playground/SystemLogPanel";
 import { CommandFilterDropdown } from "~/components/page/playground/CommandFilterDropdown";
@@ -306,13 +309,42 @@ export default function ConnectAgent() {
 
   return (
     <div className="flex flex-1 min-h-0 w-full flex-col overflow-hidden">
-      <div className="flex flex-1 min-h-0 w-full flex-col gap-4 p-4 overflow-hidden">
+      <div className="flex flex-1 min-h-0 w-full flex-col gap-6 p-6 overflow-hidden">
         <div className="shrink-0">
-          <PageHeader
-            connectionState={connectionState}
-            selectedSessionId={selectedSessionId}
-            onRefreshSessions={handleRefreshSessions}
-            sessionsLoading={isLoadingSessions}
+          <CommonPageHeader
+            title={t("playground.header.title")}
+            subtitle={t("playground.header.subtitle")}
+            badge="Connect Agent"
+            actions={
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 mr-2">
+                  <ConnectionPill state={connectionState} />
+                  {selectedSessionId ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/20 px-2.5 py-1 text-[10px] font-bold text-blue-300 ring-1 ring-inset ring-blue-500/30">
+                      <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
+                      {t("playground.header.sessionSelected", {
+                        id: selectedSessionId,
+                      })}
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-500/20 px-2.5 py-1 text-[10px] font-bold text-slate-400 ring-1 ring-inset ring-slate-700/50">
+                      <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
+                      {t("playground.header.noSessionSelected")}
+                    </span>
+                  )}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleRefreshSessions}
+                  disabled={isLoadingSessions}
+                  className="gap-2 border-slate-700/50 hover:bg-slate-800 text-[10px] font-bold uppercase tracking-widest"
+                >
+                  <RefreshCw className={`h-3.5 w-3.5 ${isLoadingSessions ? "animate-spin" : ""}`} />
+                  {t("common.refresh")}
+                </Button>
+              </div>
+            }
           />
         </div>
 

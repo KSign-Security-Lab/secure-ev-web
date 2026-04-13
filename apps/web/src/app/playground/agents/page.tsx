@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Loading from "~/components/common/Loading/Loading";
 import { AgentsTable } from "~/components/page/agents/AgentsTable";
 import trpc, { type RouterOutputs } from "~/lib/trpc";
 import { useI18n } from "~/i18n/I18nProvider";
+import { PageHeader } from "~/components/common/PageHeader/PageHeader";
 
 export type AgentsListResponse = RouterOutputs["agents"]["list"];
 
@@ -45,18 +45,15 @@ export default function Agents() {
   }, []);
 
   return (
-    <div className="flex flex-col w-full bg-base-900 p-8 rounded-xl">
-      {/* Main Content */}
-      <div className="mt-4 flex flex-col flex-1 space-y-6 min-h-0">
-        {isLoading ? (
-          <Loading />
-        ) : data ? (
-          <AgentsTable data={data} />
-        ) : (
-          <div className="text-center text-gray-400 py-8">
-            {t("agents.page.empty")}
-          </div>
-        )}
+    <div className="flex flex-col w-full gap-8">
+      <PageHeader 
+        title={t("agents.page.title")}
+        subtitle={t("agents.page.subtitle")}
+        badge="Connect Agent"
+      />
+
+      <div className="flex flex-col flex-1 space-y-6 min-h-0 min-w-0">
+        <AgentsTable data={data || []} isLoading={isLoading} />
       </div>
     </div>
   );
