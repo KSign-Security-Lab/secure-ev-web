@@ -16,6 +16,8 @@ import { enFuzzingLandingPageMessages, koFuzzingLandingPageMessages } from "~/ap
 import { enDashboardPageMessages, koDashboardPageMessages } from "~/app/page.messages";
 import { enAgentsPageMessages, koAgentsPageMessages } from "~/app/playground/agents/page.messages";
 import { enPlaygroundPageMessages, koPlaygroundPageMessages } from "~/app/playground/connect-agent/page.messages";
+import { enAssessmentPageMessages, koAssessmentPageMessages } from "~/app/playground/assessment/assessment.messages";
+import { enAssessmentTableMessages, koAssessmentTableMessages } from "~/components/page/playground/Assessment/AssessmentTable.messages";
 import { enDashboardChartMessages, koDashboardChartMessages } from "~/components/dashboard/chart.messages";
 import { enAbilitiesTableMessages, koAbilitiesTableMessages } from "~/components/page/abilities/AbilitiesTable.messages";
 import { enAbilityModalMessages, koAbilityModalMessages } from "~/components/page/abilities/AbilityModal/AbilityModal.messages";
@@ -70,6 +72,8 @@ const enMessages = {
   ...enDashboardPageMessages,
   ...enAgentsPageMessages,
   ...enPlaygroundPageMessages,
+  ...enAssessmentPageMessages,
+  ...enAssessmentTableMessages,
   ...enDashboardChartMessages,
   ...enAbilitiesTableMessages,
   ...enAbilityModalMessages,
@@ -121,6 +125,8 @@ const koMessages: Record<TranslationKey, string> = {
   ...koDashboardPageMessages,
   ...koAgentsPageMessages,
   ...koPlaygroundPageMessages,
+  ...koAssessmentPageMessages,
+  ...koAssessmentTableMessages,
   ...koDashboardChartMessages,
   ...koAbilitiesTableMessages,
   ...koAbilityModalMessages,

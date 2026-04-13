@@ -10,6 +10,7 @@ import {
   Terminal,
   Users,
   Database,
+  ClipboardCheck,
 } from "lucide-react";
 import { MenuItemType, Sidebar, SidebarRef } from "./SideBar";
 import Topbar from "./TopBar";
@@ -47,6 +48,11 @@ export default function SideBarLayout({
           name: t("menu.abilities"),
           icon: <Zap />,
           url: "/playground/abilities",
+        },
+        {
+          name: t("menu.assessment"),
+          icon: <ClipboardCheck />,
+          url: "/playground/assessment",
         },
       ],
     },
