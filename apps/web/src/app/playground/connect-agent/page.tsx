@@ -309,7 +309,7 @@ export default function ConnectAgent() {
 
   return (
     <div className="flex flex-1 min-h-0 w-full flex-col overflow-hidden">
-      <div className="flex flex-1 min-h-0 w-full flex-col gap-4 p-4 overflow-hidden">
+      <div className="flex flex-1 min-h-0 w-full flex-col gap-6 overflow-hidden">
         <div className="shrink-0">
           <CommonPageHeader
             title={t("playground.header.title")}

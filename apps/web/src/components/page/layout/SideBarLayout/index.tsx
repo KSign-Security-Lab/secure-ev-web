@@ -95,7 +95,7 @@ export default function SideBarLayout({
       
       <div
         className={`flex w-full flex-1 flex-col bg-base-950 min-w-0 min-h-0 overflow-hidden ${
-          isFuzzingSection ? "p-0" : "p-6"
+          isFuzzingSection ? "p-0" : "p-8"
         }`}
       >
         {!isFuzzingSection && (
