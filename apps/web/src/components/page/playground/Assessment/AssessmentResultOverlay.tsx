@@ -16,7 +16,6 @@ import {
 interface AbilityResult {
   id: string;
   name: string;
-  source: string;
   status: "Success" | "Failed" | "Processing";
 }
 
@@ -28,7 +27,6 @@ interface ProcessStep {
 
 interface SimulationRun {
   id: string;
-  source: string;
   attack: string;
   status: "Success" | "Failed" | "Processing";
   time: string;
@@ -59,7 +57,7 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
       setTimeout(() => {
         const initialRuns: SimulationRun[] = [
           { 
-            id: "1", source: "External", attack: "CSMS Brute Force", status: "Success", time: "14:20:11",
+            id: "1", attack: "CSMS Brute Force", status: "Success", time: "14:20:11",
             processSteps: [
               { title: "Initialization", description: "Securing connection to target sensors...", status: "Completed" },
               { title: "Target Recognition", description: "Identifying CP and SCMS assets in network segment...", status: "Completed" },
@@ -67,12 +65,12 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
               { title: "Payload Delivery", description: "Exploit execution successful.", status: "Completed" },
             ],
             results: [
-              { id: "01", name: "Scan Host", source: "User PC", status: "Success" },
-              { id: "02", name: "Auth Bypass", source: "CSMS", status: "Success" },
+              { id: "01", name: "Scan Host", status: "Success" },
+              { id: "02", name: "Auth Bypass", status: "Success" },
             ]
           },
           { 
-            id: "2", source: "Internal", attack: "CP Command Injection", status: "Processing", time: "14:22:05",
+            id: "2", attack: "CP Command Injection", status: "Processing", time: "14:22:05",
             processSteps: [
               { title: "Initialization", description: "Establishing local agent tunnel...", status: "Completed" },
               { title: "Target Recognition", description: "Probing OCPP port 8080...", status: "Completed" },
@@ -80,12 +78,12 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
               { title: "Payload Delivery", description: "Awaiting shell callback...", status: "Pending" },
             ],
             results: [
-              { id: "01", name: "OCPP Probe", source: "Charger", status: "Success" },
-              { id: "02", name: "Command Inj", source: "Charger", status: "Processing" },
+              { id: "01", name: "OCPP Probe", status: "Success" },
+              { id: "02", name: "Command Inj", status: "Processing" },
             ]
           },
           { 
-            id: "3", source: "Internal", attack: "Lateral Movement Alpha", status: "Failed", time: "14:25:00",
+            id: "3", attack: "Lateral Movement Alpha", status: "Failed", time: "14:25:00",
             processSteps: [
               { title: "Initialization", description: "Securing connection to target sensors...", status: "Completed" },
               { title: "Target Recognition", description: "Identifying CP and SCMS assets in network segment...", status: "Completed" },
@@ -93,7 +91,7 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
               { title: "Payload Delivery", description: "Process aborted.", status: "Pending" },
             ],
             results: [
-              { id: "01", name: "Pivot Scan", source: "User PC", status: "Failed" },
+              { id: "01", name: "Pivot Scan", status: "Failed" },
             ]
           },
         ];
@@ -112,6 +110,44 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
       }
       return next;
     });
+  };
+
+  const handleRunSimulation = () => {
+    const maxId = runs.length > 0 ? Math.max(...runs.map(r => parseInt(r.id))) : 0;
+    const newId = (maxId + 1).toString();
+    const now = new Date();
+    const timeStr = now.getHours().toString().padStart(2, '0') + ":" + 
+                    now.getMinutes().toString().padStart(2, '0') + ":" + 
+                    now.getSeconds().toString().padStart(2, '0');
+
+    const newRun: SimulationRun = {
+      id: newId,
+      attack: "Dynamic Assessment Task",
+      status: "Processing",
+      time: timeStr,
+      processSteps: [
+        { title: "Initialization", description: "Spinning up dynamic assessment container...", status: "Processing" },
+        { title: "Target Recognition", description: "Pending network discovery...", status: "Pending" },
+        { title: "Vector Selection", description: "Awaiting recognition results...", status: "Pending" },
+        { title: "Payload Delivery", description: "Queueing execution unit...", status: "Pending" },
+      ],
+      results: []
+    };
+
+    setRuns(prev => [...prev, newRun]);
+    setSelectedRunId(newId);
+
+    // Mock completion after 3 seconds
+    setTimeout(() => {
+      setRuns(prev => prev.map(r => r.id === newId ? {
+        ...r,
+        status: "Success",
+        processSteps: r.processSteps.map(s => ({ ...s, status: "Completed" })),
+        results: [
+          { id: "R1", name: "Dynamic Probe", status: "Success" }
+        ]
+      } : r));
+    }, 3000);
   };
 
   return (
@@ -155,7 +191,10 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                     <div className="w-1.5 h-6 bg-red-500/80 rounded-full" />
                     <span className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">{t("assessment.result.simulationHistory")}</span>
                   </div>
-                  <button className="flex items-center gap-2 px-6 py-2 rounded-lg bg-slate-800 border border-slate-700 text-[10px] font-black text-slate-400 hover:text-white hover:bg-slate-700 transition-all uppercase tracking-widest shadow-lg active:scale-95">
+                  <button 
+                    onClick={handleRunSimulation}
+                    className="flex items-center gap-2 px-6 py-2 rounded-lg bg-slate-800 border border-slate-700 text-[10px] font-black text-slate-400 hover:text-white hover:bg-slate-700 transition-all uppercase tracking-widest shadow-lg active:scale-95"
+                  >
                     <Play size={12} className="text-emerald-500" />
                     {t("assessment.detail.runSimulation")}
                   </button>
@@ -165,7 +204,6 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                   <thead className="bg-slate-900/80 border-b border-slate-800/50 text-slate-500 uppercase tracking-widest font-black text-[10px]">
                     <tr>
                       <th className="p-5 w-12 text-center opacity-40 italic">#</th>
-                      <th className="p-5">{t("assessment.result.source")}</th>
                       <th className="p-5">{t("assessment.result.attack")}</th>
                       <th className="p-5 text-center">{t("assessment.result.status")}</th>
                       <th className="p-5 text-center font-sans">E_TIMESTAMP</th>
@@ -179,18 +217,11 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                         onClick={() => setSelectedRunId(sim.id)}
                         className={cn(
                           "transition-all group cursor-pointer border-l-2",
-                          selectedRunId === sim.id ? "bg-red-500/5 border-red-500" : "border-transparent hover:bg-slate-800/20"
+                          selectedRunId === sim.id ? "bg-blue-500/5" : "border-l-transparent hover:bg-slate-800/20"
                         )}
+                        style={selectedRunId === sim.id ? { borderLeftColor: '#3b82f6' } : {}}
                       >
                         <td className="p-5 text-center font-bold text-slate-600 italic">#{sim.id.padStart(2, '0')}</td>
-                        <td className="p-5">
-                          <span className={cn(
-                            "px-2 py-0.5 rounded text-[10px] font-bold border",
-                            sim.source === "External" ? "border-red-500/20 text-red-500/70 bg-red-500/5" : "border-slate-800 text-slate-500 font-mono"
-                          )}>
-                            {sim.source}
-                          </span>
-                        </td>
                         <td className="p-5">
                           <div className="flex flex-col">
                             <span className={cn(
@@ -246,7 +277,7 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                       <div className="w-1.5 h-6 bg-slate-700 rounded-full" />
                       <span className="text-xs font-black text-slate-500 uppercase tracking-[0.2em]">{t("assessment.result.processView")}</span>
                   </header>
-                  <div className="p-8 border border-slate-800/60 rounded-2xl bg-slate-950/40 shadow-2xl relative min-h-[300px]">
+                  <div className="p-8 border border-slate-800/60 rounded-2xl bg-slate-900/40 shadow-2xl relative min-h-[300px]">
                     <div className="absolute left-[41px] top-12 bottom-12 w-[2px] bg-linear-to-b from-red-500/30 via-slate-800 to-slate-800" />
                     
                     <div className="space-y-10 relative z-10">
@@ -299,7 +330,6 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                           <tr>
                             <th className="p-5">ID</th>
                             <th className="p-5">{t("assessment.result.capabilityName")}</th>
-                            <th className="p-5 text-center">{t("assessment.result.source")}</th>
                             <th className="p-5 text-right">{t("assessment.result.status")}</th>
                           </tr>
                         </thead>
@@ -312,11 +342,6 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                                     <span className="text-slate-200 font-bold group-hover:text-white transition-all uppercase tracking-tight">{res.name}</span>
                                     <span className="text-[9px] text-slate-700 uppercase tracking-[0.3em] font-black mt-1">SIG_MATCH: 0x82{res.id}</span>
                                 </div>
-                              </td>
-                              <td className="p-5 text-center">
-                                <span className="px-2 py-0.5 rounded border border-slate-800 text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-slate-900/50">
-                                  {res.source}
-                                </span>
                               </td>
                               <td className="p-5 text-right">
                                 <span className={cn(

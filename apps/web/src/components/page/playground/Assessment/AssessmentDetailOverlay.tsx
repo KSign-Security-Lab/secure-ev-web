@@ -222,7 +222,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
           <div className="p-6 space-y-8">
 
           {/* Scenario Diagram (Blueprint Style) */}
-          <div className="relative aspect-4/1 w-full bg-slate-950 border border-slate-800/60 rounded-xl flex items-center justify-center overflow-hidden group shadow-2xl backdrop-blur-sm shrink-0">
+          <div className="relative aspect-4/1 w-full bg-slate-900 border border-slate-800/60 rounded-xl flex items-center justify-center overflow-hidden group shadow-2xl backdrop-blur-sm shrink-0">
             {/* Blueprint Grid SVG Pattern */}
             <div className="absolute inset-0 opacity-20" 
               style={{ 
