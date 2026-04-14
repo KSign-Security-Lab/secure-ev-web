@@ -165,14 +165,14 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
 
         {/* Header */}
         <header className="px-6 py-4 border-b border-slate-800/50 bg-slate-900/40 backdrop-blur-xl flex justify-between items-center shrink-0">
-          <div className="flex flex-col gap-1">
-            <h1 className="text-xl font-bold text-white tracking-tight uppercase leading-none">
+          <div className="flex flex-col gap-5">
+            <h1 className="text-2xl font-bold text-white tracking-tight uppercase leading-none">
               {item ? item.name : t("assessment.detail.newAssessment")}
             </h1>
-            <div className="flex items-center gap-3 text-xs font-bold text-slate-500 uppercase tracking-widest leading-none">
-              <span className="flex items-center gap-1.5 opacity-60"><ShieldAlert size={12} className="text-orange-500" /> ID: {item?.id}</span>
-              <span className="w-1 h-1 rounded-full bg-slate-900" />
-              <span className="text-[10px] opacity-40 italic lowercase">v1.2.4-stable</span>
+            <div className="flex items-center gap-4 text-sm font-bold text-slate-500 uppercase tracking-widest leading-none">
+              <span className="flex items-center gap-2 opacity-70"><ShieldAlert size={16} className="text-orange-500" /> ID: {item?.id}</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-800" />
+              <span className="text-xs opacity-50 italic lowercase">v1.2.4-stable</span>
             </div>
           </div>
           <button
@@ -205,11 +205,11 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                 <table className="w-full text-left text-xs font-mono border-collapse">
                   <thead className="bg-slate-900/80 border-b border-slate-800/50 text-slate-500 uppercase tracking-widest font-black text-[10px]">
                     <tr>
-                      <th className="p-5 w-12 text-center opacity-40 italic">#</th>
-                      <th className="p-5">{t("assessment.result.attack")}</th>
-                      <th className="p-5 text-center">{t("assessment.result.status")}</th>
-                      <th className="p-5 text-center font-sans">E_TIMESTAMP</th>
-                      <th className="p-5 w-16 text-center">OP</th>
+                      <th className="px-4 py-2 w-12 text-center opacity-40 italic">#</th>
+                      <th className="px-4 py-2">{t("assessment.result.attack")}</th>
+                      <th className="px-4 py-2 text-center">{t("assessment.result.status")}</th>
+                      <th className="px-4 py-2 text-center font-sans">E_TIMESTAMP</th>
+                      <th className="px-4 py-2 w-16 text-center">OP</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800/40 text-slate-400">
@@ -223,8 +223,8 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                         )}
                         style={selectedRunId === sim.id ? { borderLeftColor: '#3b82f6' } : {}}
                       >
-                        <td className="p-5 text-center font-bold text-slate-600 italic">#{sim.id.padStart(2, '0')}</td>
-                        <td className="p-5">
+                        <td className="px-4 py-2 text-center font-bold text-slate-600 italic">#{sim.id.padStart(2, '0')}</td>
+                        <td className="px-4 py-2">
                           <div className="flex flex-col">
                             <span className={cn(
                               "font-bold transition-colors uppercase tracking-tight",
@@ -233,7 +233,7 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                             <span className="text-[10px] text-slate-600 uppercase tracking-widest leading-none mt-1">VECTOR_ID: {sim.id}</span>
                           </div>
                         </td>
-                        <td className="p-5 text-center">
+                        <td className="px-4 py-2 text-center">
                           <span className={cn(
                             "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all",
                             sim.status === "Success" 
@@ -246,10 +246,10 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                             {sim.status}
                           </span>
                         </td>
-                        <td className="p-5 text-center font-mono text-slate-600 group-hover:text-slate-400 transition-colors uppercase tracking-widest">
+                        <td className="px-4 py-2 text-center font-mono text-slate-600 group-hover:text-slate-400 transition-colors uppercase tracking-widest">
                           {sim.time}
                         </td>
-                        <td className="p-5 text-center">
+                        <td className="px-4 py-2 text-center">
                           <button 
                             onClick={(e) => handleDeleteRun(e, sim.id)}
                             className="p-2 text-slate-700 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
@@ -330,22 +330,22 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                       <table className="w-full text-left text-xs font-mono border-collapse">
                         <thead className="bg-slate-900/80 border-b border-slate-800/50 text-slate-500 uppercase tracking-widest font-black text-[10px]">
                           <tr>
-                            <th className="p-5">ID</th>
-                            <th className="p-5">{t("assessment.result.capabilityName")}</th>
-                            <th className="p-5 text-right">{t("assessment.result.status")}</th>
+                            <th className="px-4 py-2">ID</th>
+                            <th className="px-4 py-2">{t("assessment.result.capabilityName")}</th>
+                            <th className="px-4 py-2 text-right">{t("assessment.result.status")}</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-800/40 text-slate-400">
                           {selectedRun.results.map((res) => (
                             <tr key={res.id} className="transition-colors group hover:bg-white/5">
-                              <td className="p-5 text-slate-600 italic">#{res.id.padStart(3, '0')}</td>
-                              <td className="p-5">
+                              <td className="px-4 py-2 text-slate-600 italic">#{res.id.padStart(3, '0')}</td>
+                              <td className="px-4 py-2">
                                 <div className="flex flex-col">
                                     <span className="text-slate-200 font-bold group-hover:text-white transition-all uppercase tracking-tight">{res.name}</span>
                                     <span className="text-[9px] text-slate-700 uppercase tracking-[0.3em] font-black mt-1">SIG_MATCH: 0x82{res.id}</span>
                                 </div>
                               </td>
-                              <td className="p-5 text-right">
+                              <td className="px-4 py-2 text-right">
                                 <span className={cn(
                                   "inline-flex items-center gap-1.5 px-3 py-1 rounded border text-[10px] font-black uppercase tracking-widest transition-all",
                                   res.status === "Success" 

@@ -17,6 +17,7 @@ import {
   Crosshair
 } from "lucide-react";
 import { useToast } from "~/components/ToastProvider/ToastProvider";
+import { AssessmentTopology } from "./AssessmentTopology";
 
 interface AbilityConfig {
   id: string;
@@ -54,6 +55,11 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
   const showToast = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const scrollRef = React.useRef<HTMLDivElement>(null);
+  const [assessmentName, setAssessmentName] = useState(item?.name || "");
+
+  useEffect(() => {
+    setAssessmentName(item?.name || "");
+  }, [item]);
 
   // Local State for Configurations
   const [abilities, setAbilities] = useState<AbilityConfig[]>([
@@ -172,14 +178,18 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
 
         {/* Header */}
         <header className="px-6 py-4 border-b border-slate-800/50 bg-slate-900/50 backdrop-blur-xl flex justify-between items-center shrink-0">
-          <div className="flex flex-col gap-1">
-            <h1 className="text-xl font-bold text-white tracking-tight uppercase leading-none">
-              {item ? item.name : t("assessment.detail.newAssessment")}
-            </h1>
-            <div className="flex items-center gap-3 text-xs font-bold text-slate-500 uppercase tracking-widest leading-none">
-              <span className="flex items-center gap-1.5 opacity-60"><ShieldAlert size={12} className="text-orange-500" /> ID: {item?.id}</span>
-              <span className="w-1 h-1 rounded-full bg-slate-900" />
-              <span className="text-[10px] opacity-40 italic lowercase">{item ? t("assessment.detail.inspectionMode") : t("assessment.detail.creationMode")}</span>
+          <div className="flex flex-col gap-5 flex-1 mr-8">
+            <input
+              type="text"
+              value={assessmentName}
+              onChange={(e) => setAssessmentName(e.target.value)}
+              placeholder={t("assessment.detail.newAssessment")}
+              className="bg-transparent text-2xl font-bold text-white tracking-tight uppercase leading-none border-none outline-hidden focus:ring-0 w-full hover:bg-white/5 rounded px-2 -ml-2 transition-colors cursor-text"
+            />
+            <div className="flex items-center gap-4 text-sm font-bold text-slate-500 uppercase tracking-widest leading-none">
+              <span className="flex items-center gap-2 opacity-70"><ShieldAlert size={16} className="text-orange-500" /> ID: {item?.id}</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-800" />
+              <span className="text-xs opacity-50 italic lowercase">{item ? t("assessment.detail.inspectionMode") : t("assessment.detail.creationMode")}</span>
             </div>
           </div>
           <button
@@ -223,41 +233,8 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
           
           <div className="p-6 space-y-8">
 
-          {/* Scenario Diagram (Blueprint Style) */}
-          <div className="relative aspect-4/1 w-full bg-slate-900 border border-slate-800/60 rounded-xl flex items-center justify-center overflow-hidden group shadow-2xl backdrop-blur-sm shrink-0">
-            {/* Blueprint Grid SVG Pattern */}
-            <div className="absolute inset-0 opacity-20" 
-              style={{ 
-                backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke='%233b82f6' stroke-width='0.5'%3E%3Cpath d='M0 40L40 0M0 0l40 40'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                backgroundSize: '40px 40px'
-              }} 
-            />
-            <div className="absolute inset-0 opacity-[0.05]" 
-              style={{ 
-                backgroundImage: `radial-gradient(#3b82f6 1px, transparent 1px)`,
-                backgroundSize: '20px 20px'
-              }} 
-            />
-            
-            <div className="z-10 flex flex-col items-center gap-2">
-                <div className="text-[10px] font-black text-blue-500 uppercase tracking-[0.5em] opacity-50 bg-blue-500/5 px-4 py-1 rounded border border-blue-500/10 mb-2">
-                    {t("assessment.detail.systemArchitecture")}
-                </div>
-                <div className="text-sm font-bold text-slate-400 uppercase tracking-[0.3em] border border-slate-800/80 px-8 py-3 bg-slate-900/90 rounded-lg backdrop-blur-md shadow-2xl group-hover:border-blue-500/30 transition-all">
-                    {t("assessment.detail.scenarioDiagram")}
-                </div>
-            </div>
-
-            {/* Corner markings */}
-            <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-blue-500/30" />
-            <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-blue-500/30" />
-            <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-blue-500/30" />
-            <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-blue-500/30" />
-            
-            {/* Decorative technical labels */}
-            <div className="absolute bottom-4 left-12 text-[8px] font-mono text-slate-600 uppercase tracking-widest">Scale: 1:1.000_VULN</div>
-            <div className="absolute top-4 right-12 text-[8px] font-mono text-slate-600 uppercase tracking-widest">Layer_01: Network_Topology</div>
-          </div>
+          {/* Scenario Diagram (Topology) */}
+          <AssessmentTopology />
 
           {/* Detailed Config sections */}
           <div className="grid grid-cols-1 gap-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -281,21 +258,21 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                     <table className="w-full text-left text-xs font-mono border-collapse">
                       <thead className="bg-slate-900/80 border-b border-slate-800/50 text-slate-500 uppercase tracking-widest font-black text-[10px]">
                         <tr>
-                          <th className="p-5 w-16 text-center opacity-40 italic">#</th>
-                          <th className="p-5">{t("assessment.detail.capabilityName")}</th>
-                          <th className="p-5">{t("assessment.detail.namespace")}</th>
-                          <th className="p-5">{t("assessment.detail.vectorAlpha")}</th>
-                          <th className="p-5">{t("assessment.detail.vectorBeta")}</th>
-                          <th className="p-5 w-16 text-center">{t("assessment.detail.op")}</th>
+                          <th className="px-4 py-3 w-16 text-center opacity-40 italic">#</th>
+                          <th className="px-4 py-3">{t("assessment.detail.capabilityName")}</th>
+                          <th className="px-4 py-3">{t("assessment.detail.namespace")}</th>
+                          <th className="px-4 py-3">{t("assessment.detail.vectorAlpha")}</th>
+                          <th className="px-4 py-3">{t("assessment.detail.vectorBeta")}</th>
+                          <th className="px-4 py-3 w-16 text-center">{t("assessment.detail.op")}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-800/40 text-slate-400 text-sm">
                         {abilities.map((ability, index) => (
                           <tr key={ability.id} className="transition-colors group">
-                            <td className="p-5 text-center font-bold text-slate-600 italic">
+                            <td className="px-4 py-2 text-center font-bold text-slate-600 italic">
                                 {String(index + 1).padStart(2, '0')}
                             </td>
-                            <td className="p-5">
+                            <td className="px-4 py-2">
                               <input 
                                 type="text"
                                 value={ability.name}
@@ -327,7 +304,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                                 className="w-full bg-transparent border-b border-slate-800 text-blue-500/70 font-bold focus:text-blue-400 focus:border-blue-500/50 px-2 py-1 transition-all outline-hidden"
                               />
                             </td>
-                            <td className="p-5 text-center">
+                            <td className="px-4 py-2 text-center">
                               <button 
                                 onClick={(e) => handleRemoveAbility(e, ability.id)}
                                 className="p-2 text-slate-700 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
@@ -404,18 +381,18 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                     <table className="w-full text-left text-xs font-mono border-collapse">
                       <thead className="bg-slate-900/80 border-b border-slate-800/50 text-slate-500 uppercase tracking-widest font-black text-[10px]">
                         <tr>
-                          <th className="p-5 w-16 text-center opacity-40 italic">#</th>
-                          <th className="p-5">Asset Descriptor</th>
-                          <th className="p-5">Network address</th>
-                          <th className="p-5 text-center">Runtime OS</th>
-                          <th className="p-5 text-center">Sensor Status</th>
-                          <th className="p-5 w-16 text-center">Op</th>
+                          <th className="px-4 py-3 w-16 text-center opacity-40 italic">#</th>
+                          <th className="px-4 py-3">Asset Descriptor</th>
+                          <th className="px-4 py-3">Network address</th>
+                          <th className="px-4 py-3 text-center">Runtime OS</th>
+                          <th className="px-4 py-3 text-center">Sensor Status</th>
+                          <th className="px-4 py-3 w-16 text-center">Op</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-800/40 text-slate-400 text-sm">
                         {targets.map((target, index) => (
                           <tr key={target.id} className="transition-colors group">
-                            <td className="p-5 text-center font-bold text-slate-600 italic">
+                            <td className="px-4 py-2 text-center font-bold text-slate-600 italic">
                                 {String(index + 1).padStart(2, '0')}
                             </td>
                             <td className="p-5">
@@ -434,12 +411,12 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                                 className="w-full bg-transparent border-b border-slate-800 text-slate-400 focus:text-slate-200 focus:border-slate-600 px-2 py-1 transition-all outline-hidden font-bold"
                               />
                             </td>
-                            <td className="p-5 text-center">
+                            <td className="px-4 py-2 text-center">
                               <span className="px-2 py-0.5 rounded border border-slate-800 text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-slate-900/50">
                                 {target.os}
                               </span>
                             </td>
-                            <td className="p-5 text-center">
+                            <td className="px-4 py-2 text-center">
                                 <div className={cn(
                                   "inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all",
                                   target.status.includes("Connected") 
@@ -450,7 +427,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                                   {target.status}
                                 </div>
                             </td>
-                            <td className="p-5 text-center">
+                            <td className="px-4 py-2 text-center">
                               <button 
                                 onClick={(e) => handleRemoveTarget(e, target.id)}
                                 className="p-2 text-slate-700 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
