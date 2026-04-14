@@ -211,10 +211,10 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
       />
 
       {/* Main Split View: Left sidebar for Files/Issues, Center/Right for Code/Explanation */}
-      <div className="flex flex-1 overflow-hidden border border-slate-800/80 rounded-2xl bg-slate-950/20 backdrop-blur-sm">
+      <div className="flex flex-1 overflow-hidden border border-slate-800/80 rounded-2xl bg-slate-900/20 backdrop-blur-sm">
 
         {/* Left: Files & Issues Explorer */}
-        <div className="w-80 shrink-0 bg-slate-950/40 border-r border-slate-800/80 flex flex-col">
+        <div className="w-80 shrink-0 bg-slate-900/40 border-r border-slate-800/80 flex flex-col">
           <div className="p-4 text-[10px] font-black uppercase tracking-[0.2em] leading-none text-slate-500 border-b border-slate-800/50 bg-slate-900/50">
             {t("analysis.results.filesAndIssues")}
           </div>

@@ -96,7 +96,7 @@ export function ReportUpload({ jobId, onUploadSuccess }: ReportUploadProps) {
             type="file"
             accept=".json,application/json"
             onChange={handleFileChange}
-            className="w-full bg-slate-950 p-2 rounded-lg border border-slate-700 text-white file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-600 file:text-white file:hover:bg-blue-700 file:cursor-pointer hover:border-slate-600 transition-colors"
+            className="w-full bg-slate-900 p-2 rounded-lg border border-slate-700 text-white file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-600 file:text-white file:hover:bg-blue-700 file:cursor-pointer hover:border-slate-600 transition-colors"
           />
           <p className="text-xs text-neutral-400 mt-1">
             {t("maxSize")}

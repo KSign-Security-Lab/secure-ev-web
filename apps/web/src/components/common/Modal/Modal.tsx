@@ -69,7 +69,7 @@ export const Modal: React.FC<ModalProps> = ({
   const modalContent = (
     <div
       className={clsx(
-        "fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 ease-out",
+        "fixed inset-0 z-100 flex items-center justify-center bg-black/30 backdrop-blur-sm transition-opacity duration-300 ease-out",
         visible ? "opacity-100" : "opacity-0"
       )}
       onMouseDown={(e) => {

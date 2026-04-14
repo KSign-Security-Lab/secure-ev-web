@@ -11,7 +11,7 @@ export const Skeleton = ({
 }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div
-      className={cn("animate-pulse rounded-md bg-slate-800/50", className)}
+      className={cn("animate-pulse rounded-md bg-slate-900/50", className)}
       {...props}
     />
   );
@@ -68,7 +68,7 @@ export const FuzzingJobsTableSkeleton = () => {
  */
 export const JobDetailsSkeleton = () => {
   return (
-    <div className="h-screen bg-slate-950 text-slate-200 font-sans flex flex-col overflow-hidden">
+    <div className="h-screen bg-slate-900 text-slate-200 font-sans flex flex-col overflow-hidden">
       <div className="w-full max-w-[1600px] mx-auto flex flex-col h-full">
         {/* Header Skeleton */}
         <div className="flex-none px-6 pt-6 pb-6 md:px-12 md:pt-8 md:pb-6 border-b border-slate-800/50">

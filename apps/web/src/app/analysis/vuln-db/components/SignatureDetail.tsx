@@ -30,14 +30,14 @@ interface SignatureDetailProps {
 export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
   const { t } = useI18n();
   return (
-    <Tabs defaultValue="overview" className="flex flex-col bg-slate-950 text-slate-300 w-full h-full overflow-hidden animate-in fade-in duration-500">
+    <Tabs defaultValue="overview" className="flex flex-col bg-slate-900 text-slate-300 w-full h-full overflow-hidden animate-in fade-in duration-500">
       {/* 0. Sticky Header Section */}
-      <div className="shrink-0 z-20 shadow-2xl bg-slate-950">
+      <div className="shrink-0 z-20 shadow-2xl bg-slate-900">
         {/* Top Gradient Accent */}
         <div className="relative w-full h-1 bg-linear-to-r from-blue-500 via-cyan-500 to-blue-600" />
         
         {/* Integrated Header */}
-        <header className="px-6 py-4 border-b border-slate-800/50 bg-slate-950/50 backdrop-blur-xl flex justify-between items-center">
+        <header className="px-6 py-4 border-b border-slate-800/50 bg-slate-900/50 backdrop-blur-xl flex justify-between items-center">
         <div className="flex flex-col gap-1">
             <div className="flex items-center gap-4">
                 <h1 className="text-xl font-bold text-white tracking-tight uppercase leading-none">{data.patternId}</h1>
@@ -64,7 +64,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
         </header>
 
         {/* Sticky Tab Navigation */}
-        <div className="px-6 pb-px border-b border-slate-800/50 bg-slate-950">
+        <div className="px-6 pb-px border-b border-slate-800/50 bg-slate-900">
             <TabsList className="bg-slate-900/50 border border-slate-800/50 p-1 h-11 translate-y-px rounded-t-lg rounded-b-none border-b-0">
                 <TabsTrigger 
                     type="button"
@@ -158,7 +158,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                                     <div className="w-1.5 h-6 bg-blue-500 rounded-full" />
                                     <span className="text-xs font-bold text-slate-500 uppercase tracking-[0.2em]">{t("vulndb.detail.execution.sink")}</span>
                                 </header>
-                                <div className="bg-slate-950/50 p-6 rounded-2xl border border-slate-800/80 shadow-inner group transition-all hover:border-slate-700">
+                                <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800/80 shadow-inner group transition-all hover:border-slate-700">
                                     <code className="text-xl font-mono font-bold text-blue-400 block tracking-tight group-hover:text-blue-300 transition-colors text-center py-4">
                                         {data.sinkStatement}
                                     </code>
@@ -183,28 +183,28 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                                                 <div className="w-1.5 h-4 bg-blue-500/50 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.3)]" />
                                                 <span className="text-blue-400/80 font-bold uppercase text-xs tracking-widest">{t("vulndb.detail.objects.dstPtr")}</span>
                                             </div>
-                                            <p className="text-sm text-slate-400 leading-relaxed font-mono italic truncate block bg-slate-950/30 p-3 rounded-lg border border-slate-800/50">{data.bufferVsRequest.destSnippet}</p>
+                                            <p className="text-sm text-slate-400 leading-relaxed font-mono italic truncate block bg-slate-900/30 p-3 rounded-lg border border-slate-800/50">{data.bufferVsRequest.destSnippet}</p>
                                         </div>
                                         <div className="p-5 rounded-2xl bg-slate-800/10 border border-slate-800/60 space-y-3 group transition-all hover:bg-slate-900/40">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-1.5 h-4 bg-red-500/50 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.3)]" />
                                                 <span className="text-red-400/80 font-bold uppercase text-xs tracking-widest">{t("vulndb.detail.objects.srcBuf")}</span>
                                             </div>
-                                            <p className="text-sm text-slate-300 leading-relaxed font-mono italic truncate block bg-slate-950/30 p-3 rounded-lg border border-slate-800/50">{data.bufferVsRequest.srcSnippet}</p>
+                                            <p className="text-sm text-slate-300 leading-relaxed font-mono italic truncate block bg-slate-900/30 p-3 rounded-lg border border-slate-800/50">{data.bufferVsRequest.srcSnippet}</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="p-6 flex flex-col space-y-6 bg-slate-950/30 backdrop-blur-sm">
+                        <div className="p-6 flex flex-col space-y-6 bg-slate-900/30 backdrop-blur-sm">
                             <header className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
                                     <FileCode size={18} className="text-blue-400/60" />
                                     <span className="text-xs font-bold text-slate-500 uppercase tracking-[0.2em]">{t("vulndb.detail.evidence.title")}</span>
                                 </div>
                             </header>
-                            <div className="border border-slate-800/80 rounded-2xl overflow-hidden bg-slate-950 shadow-2xl flex-1 max-h-[520px]">
+                            <div className="border border-slate-800/80 rounded-2xl overflow-hidden bg-slate-900 shadow-2xl flex-1 max-h-[520px]">
                                 <SyntaxHighlighter 
                                     language="cpp" 
                                     style={vscDarkPlus}
@@ -225,7 +225,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                 <EvidenceCard label={t("vulndb.detail.trace.title")} icon={ListTree}>
                     <div className="border border-slate-800/60 rounded-xl overflow-hidden bg-slate-900/20 shadow-2xl backdrop-blur-sm">
                         <table className="w-full text-left text-sm font-mono border-collapse">
-                            <thead className="bg-slate-950/80 border-b border-slate-800/50 text-slate-500 uppercase tracking-widest font-black text-[11px]">
+                            <thead className="bg-slate-900/80 border-b border-slate-800/50 text-slate-500 uppercase tracking-widest font-black text-[11px]">
                                 <tr>
                                     <th className="p-6 w-16 text-center opacity-40">#</th>
                                     <th className="p-6 text-center">{t("vulndb.detail.trace.executionPath")}</th>
@@ -248,7 +248,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                                                 </span>
                                                 <div className="flex flex-wrap justify-center gap-2.5">
                                                     {step.tags.map(t => (
-                                                        <span key={t} className="px-2 py-0.5 rounded-lg bg-slate-950/80 border border-slate-800/60 text-[11px] text-blue-400 font-bold uppercase tracking-widest font-sans">
+                                                        <span key={t} className="px-2 py-0.5 rounded-lg bg-slate-900/80 border border-slate-800/60 text-[11px] text-blue-400 font-bold uppercase tracking-widest font-sans">
                                                             {t}
                                                         </span>
                                                     ))}

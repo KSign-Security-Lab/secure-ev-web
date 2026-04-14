@@ -29,7 +29,7 @@ export function CodeViewer({
   };
 
   return (
-    <div className={cn("border border-slate-800 rounded-2xl overflow-hidden bg-slate-950 shadow-2xl flex flex-col h-full", className)}>
+    <div className={cn("border border-slate-800 rounded-2xl overflow-hidden bg-slate-900 shadow-2xl flex flex-col h-full", className)}>
       <div className="flex items-center justify-between px-6 py-3 border-b border-slate-800 bg-slate-900/40">
         <div className="flex items-center gap-3">
           <FileCode size={16} className="text-blue-500" />
@@ -49,7 +49,7 @@ export function CodeViewer({
           </span>
         </Button>
       </div>
-      <div className="flex-1 overflow-auto bg-slate-950/50">
+      <div className="flex-1 overflow-auto bg-slate-900/50">
         <SyntaxHighlighter
           language={language}
           style={vscDarkPlus}

@@ -153,7 +153,7 @@ export function TargetConfigForm({
               "w-5 h-5 rounded-md border-2 flex items-center justify-center mr-3 transition-all",
               (localConfig as ISO15118ConnectionConfig).tlsEnabled 
                 ? "bg-blue-600 border-blue-500 shadow-[0_0_10px_rgba(37,99,235,0.4)]" 
-                : "border-slate-700 bg-slate-950"
+                : "border-slate-700 bg-slate-900"
             )}>
               {(localConfig as ISO15118ConnectionConfig).tlsEnabled && <div className="w-2 h-2 bg-white rounded-full" />}
             </div>
@@ -283,7 +283,7 @@ export function TargetConfigForm({
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
                <div className="relative group">
                    <div className="absolute -inset-0.5 bg-linear-to-r from-blue-500/10 to-cyan-500/10 rounded-3xl blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                   <div className="relative p-5 bg-slate-950/50 rounded-2xl border border-slate-800/80 shadow-xl backdrop-blur-md transition-all">
+                   <div className="relative p-5 bg-slate-900 rounded-2xl border border-slate-800/80 shadow-xl backdrop-blur-md transition-all">
                         <div className="flex items-center justify-between mb-3 px-1">
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
                                 {t("webSocketUrl")}

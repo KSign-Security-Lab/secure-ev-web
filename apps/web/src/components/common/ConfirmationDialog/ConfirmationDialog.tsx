@@ -43,7 +43,7 @@ export function ConfirmationDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-slate-950 border-slate-800 text-slate-100 shadow-2xl">
+      <DialogContent className="sm:max-w-md bg-slate-900 border-slate-800 text-slate-100 shadow-2xl">
         <DialogHeader className="gap-2">
           <div className={cn(
             "w-12 h-12 rounded-full flex items-center justify-center mb-2",

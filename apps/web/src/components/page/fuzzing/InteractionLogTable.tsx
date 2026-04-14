@@ -178,7 +178,7 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
                    placeholder={t("fuzzing.logs.searchPlaceholder")}
                    value={searchQuery}
                    onChange={(e) => setSearchQuery(e.target.value)}
-                   className="w-full bg-slate-950 border border-slate-700 rounded-lg py-2 pl-10 pr-4 text-sm text-white focus:ring-1 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+                   className="w-full bg-slate-900 border border-slate-700 rounded-lg py-2 pl-10 pr-4 text-sm text-white focus:ring-1 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
                 />
              </div>
              
@@ -187,7 +187,7 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
                  <select
                     value={resultFilter}
                     onChange={(e) => setResultFilter(e.target.value)}
-                    className="bg-slate-950 border border-slate-700 rounded-lg py-2 px-3 text-sm text-slate-300 outline-none focus:border-primary-500"
+                    className="bg-slate-900 border border-slate-700 rounded-lg py-2 px-3 text-sm text-slate-300 outline-none focus:border-primary-500"
                  >
                     <option value="all">{t("fuzzing.logs.allResults")}</option>
                     {resultsPoints.map(r => <option key={r} value={r}>{getLocalizedResultLabel(r)}</option>)}
@@ -196,7 +196,7 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
                  <select
                     value={typeFilter}
                     onChange={(e) => setTypeFilter(e.target.value)}
-                    className="bg-slate-950 border border-slate-700 rounded-lg py-2 px-3 text-sm text-slate-300 outline-none focus:border-primary-500"
+                    className="bg-slate-900 border border-slate-700 rounded-lg py-2 px-3 text-sm text-slate-300 outline-none focus:border-primary-500"
                  >
                     <option value="all">{t("fuzzing.logs.allTypes")}</option>
                     {typesPoints.map((typeName) => (
@@ -207,7 +207,7 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
                  </select>
                  
                  {/* Explicit Sort Control since Table headers might not be clickable */}
-                 <div className="flex items-center gap-2 bg-slate-950 border border-slate-700 rounded-lg px-2">
+                 <div className="flex items-center gap-2 bg-slate-900 border border-slate-700 rounded-lg px-2">
                     <span className="text-xs text-slate-500 px-1">
                       {t("fuzzing.logs.sortBy")}
                     </span>

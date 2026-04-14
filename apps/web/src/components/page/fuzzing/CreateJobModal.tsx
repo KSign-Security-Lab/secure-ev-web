@@ -461,7 +461,7 @@ export function CreateJobModal({
 
             <div className="space-y-4">
               <Label className="text-slate-300">{t("fuzzing.create.form.connectionDetails")} <span className="text-blue-500">*</span></Label>
-              <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-6">
+              <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
                 <TargetConfigForm
                   key={targetType}
                   targetType={targetType}
@@ -515,7 +515,7 @@ export function CreateJobModal({
                {t("fuzzing.create.params.note")}
             </div>
 
-            <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-6">
+            <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
                 <FuzzingParamsForm
                 parameters={fuzzingParameters}
                 onChange={setFuzzingParameters}
@@ -534,7 +534,7 @@ export function CreateJobModal({
       open={open}
       onClose={handleClose}
       title=""
-      className="max-w-4xl bg-slate-950 border border-slate-800 shadow-2xl p-0! overflow-hidden [&>div:first-child]:hidden space-y-0!"
+      className="max-w-4xl bg-slate-900 border border-slate-800 shadow-2xl p-0! overflow-hidden [&>div:first-child]:hidden space-y-0!"
     >   
       {/* Custom Header with Gradient */}
       <div className="relative w-full h-1 bg-linear-to-r from-blue-500 via-cyan-500 to-blue-600" />

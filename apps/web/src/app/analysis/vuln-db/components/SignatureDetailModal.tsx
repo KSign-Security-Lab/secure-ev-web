@@ -20,7 +20,7 @@ export function SignatureDetailModal({ open, onClose, data }: SignatureDetailMod
       onClose={onClose}
       hideHeader={true}
       disableDefaultStyles={true}
-      className="max-w-7xl bg-slate-950 border border-slate-800 shadow-2xl p-0! overflow-hidden! m-0!"
+      className="max-w-7xl bg-slate-900 border border-slate-800 shadow-2xl p-0! overflow-hidden! m-0!"
     >
       <div 
         className="h-full overflow-hidden flex flex-col"
