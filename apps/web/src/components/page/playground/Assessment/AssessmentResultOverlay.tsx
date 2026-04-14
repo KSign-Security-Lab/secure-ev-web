@@ -260,7 +260,7 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                     {runs.length === 0 && (
                       <tr>
                         <td colSpan={6} className="p-12 text-center text-slate-600 italic uppercase tracking-[0.2em] text-[10px]">
-                          No simulation history available
+                          {t("assessment.result.noHistory")}
                         </td>
                       </tr>
                     )}
@@ -322,7 +322,7 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                 <div className="space-y-4">
                      <header className="flex items-center gap-3">
                         <div className="w-1.5 h-6 bg-red-600/80 rounded-full" />
-                        <span className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">CAPABILITY_RESULT_ANALYSIS</span>
+                        <span className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">{t("assessment.result.capabilityAnalysis")}</span>
                     </header>
                     <div className="border border-slate-800/60 rounded-2xl overflow-hidden bg-slate-900/30 shadow-2xl backdrop-blur-sm">
                       <table className="w-full text-left text-xs font-mono border-collapse">
@@ -366,7 +366,7 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
               <div className="h-64 flex items-center justify-center rounded-2xl border border-dashed border-slate-800 bg-slate-900/20">
                 <div className="text-center space-y-2">
                   <Activity className="w-8 h-8 text-slate-700 mx-auto opacity-20" />
-                  <p className="text-xs font-black text-slate-700 uppercase tracking-[0.3em]">Select a run to view detailed process analysis</p>
+                  <p className="text-xs font-black text-slate-700 uppercase tracking-[0.3em]">{t("assessment.result.selectRun")}</p>
                 </div>
               </div>
             )}

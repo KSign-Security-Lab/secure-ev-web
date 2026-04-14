@@ -177,7 +177,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
             <div className="flex items-center gap-3 text-xs font-bold text-slate-500 uppercase tracking-widest leading-none">
               <span className="flex items-center gap-1.5 opacity-60"><ShieldAlert size={12} className="text-orange-500" /> ID: {item?.id}</span>
               <span className="w-1 h-1 rounded-full bg-slate-900" />
-              <span className="text-[10px] opacity-40 italic lowercase">{item ? "Inspection Mode" : "Creation Mode"}</span>
+              <span className="text-[10px] opacity-40 italic lowercase">{item ? t("assessment.detail.inspectionMode") : t("assessment.detail.creationMode")}</span>
             </div>
           </div>
           <button
@@ -239,7 +239,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
             
             <div className="z-10 flex flex-col items-center gap-2">
                 <div className="text-[10px] font-black text-blue-500 uppercase tracking-[0.5em] opacity-50 bg-blue-500/5 px-4 py-1 rounded border border-blue-500/10 mb-2">
-                    System Architecture Visualization
+                    {t("assessment.detail.systemArchitecture")}
                 </div>
                 <div className="text-sm font-bold text-slate-400 uppercase tracking-[0.3em] border border-slate-800/80 px-8 py-3 bg-slate-900/90 rounded-lg backdrop-blur-md shadow-2xl group-hover:border-blue-500/30 transition-all">
                     {t("assessment.detail.scenarioDiagram")}
@@ -280,11 +280,11 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                       <thead className="bg-slate-900/80 border-b border-slate-800/50 text-slate-500 uppercase tracking-widest font-black text-[10px]">
                         <tr>
                           <th className="p-5 w-16 text-center opacity-40 italic">#</th>
-                          <th className="p-5">Capability Name</th>
-                          <th className="p-5">Namespace</th>
-                          <th className="p-5">Vector Alpha</th>
-                          <th className="p-5">Vector Beta</th>
-                          <th className="p-5 w-16 text-center">Op</th>
+                          <th className="p-5">{t("assessment.detail.capabilityName")}</th>
+                          <th className="p-5">{t("assessment.detail.namespace")}</th>
+                          <th className="p-5">{t("assessment.detail.vectorAlpha")}</th>
+                          <th className="p-5">{t("assessment.detail.vectorBeta")}</th>
+                          <th className="p-5 w-16 text-center">{t("assessment.detail.op")}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-800/40 text-slate-400 text-sm">
@@ -339,7 +339,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                     </table>
                     {abilities.length === 0 && (
                       <div className="p-12 text-center text-slate-700 italic text-[10px] uppercase tracking-[0.3em]">
-                        NO CAPABILITIES DEFINED IN ACTIVE BUFFER
+                        {t("assessment.detail.noCapabilities")}
                       </div>
                     )}
                   </div>
