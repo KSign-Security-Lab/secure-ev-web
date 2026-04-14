@@ -11,11 +11,11 @@ export const enAbilitiesPageMessages = {
 type AbilitiesPageMessageKey = keyof typeof enAbilitiesPageMessages;
 
 export const koAbilitiesPageMessages: Record<AbilitiesPageMessageKey, string> = {
-  "abilities.page.title": "능력",
-  "abilities.page.subtitle": "보안 테스트 기능을 관리하고 배포하세요.",
+  "abilities.page.title": "어빌리티",
+  "abilities.page.subtitle": "보안 테스트 어빌리티를 관리하고 배포하세요.",
   "abilities.page.register": "등록",
   "abilities.page.delete": "삭제",
   "abilities.page.empty": "데이터가 없습니다",
-  "abilities.page.searchPlaceholder": "능력 검색...",
+  "abilities.page.searchPlaceholder": "어빌리티 검색...",
   "abilities.page.save": "저장",
 };
