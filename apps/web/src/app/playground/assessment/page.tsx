@@ -5,6 +5,7 @@ import { SaveIcon, Trash2 } from "lucide-react";
 import { useI18n } from "~/i18n/I18nProvider";
 import { AssessmentTable, type AssessmentItem } from "~/components/page/playground/Assessment/AssessmentTable";
 import { AssessmentDetailOverlay } from "~/components/page/playground/Assessment/AssessmentDetailOverlay";
+import { AssessmentResultOverlay } from "~/components/page/playground/Assessment/AssessmentResultOverlay";
 import { PageHeader } from "~/components/common/PageHeader/PageHeader";
 import { FilterBar } from "~/components/common/FilterBar/FilterBar";
 
@@ -31,8 +32,9 @@ export default function AssessmentPage() {
   const { t } = useI18n();
   const [query, setQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedItem] = useState<AssessmentItem | null>(null);
+  const [selectedItem, setSelectedItem] = useState<AssessmentItem | null>(null);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+  const [isResultOpen, setIsResultOpen] = useState(false);
   const totalPages = 1;
 
 
@@ -50,6 +52,16 @@ export default function AssessmentPage() {
     item.name.toLowerCase().includes(query.toLowerCase())
   );
 
+  const handleRowClick = (item: AssessmentItem) => {
+    setSelectedItem(item);
+    setIsResultOpen(true);
+  };
+
+  const handleRegister = () => {
+    setSelectedItem(null);
+    setIsOverlayOpen(true);
+  };
+
   return (
     <div className="flex flex-col w-full gap-4">
       <PageHeader
@@ -59,7 +71,7 @@ export default function AssessmentPage() {
         actions={
           <div className="flex items-center gap-3">
             <button 
-              onClick={() => setIsOverlayOpen(true)}
+              onClick={handleRegister}
               className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition-all font-bold uppercase text-[11px] tracking-widest shadow-[0_0_15px_rgba(59,130,246,0.2)]"
             >
               <SaveIcon className="w-4 h-4" />
@@ -83,6 +95,7 @@ export default function AssessmentPage() {
         <div className="flex-1">
           <AssessmentTable 
             data={filteredData} 
+            onRowClick={handleRowClick}
             pagination={{
               currentPage,
               totalPages,
@@ -97,6 +110,12 @@ export default function AssessmentPage() {
         item={selectedItem}
         open={isOverlayOpen}
         onClose={() => setIsOverlayOpen(false)}
+      />
+
+      <AssessmentResultOverlay
+        item={selectedItem}
+        open={isResultOpen}
+        onClose={() => setIsResultOpen(false)}
       />
     </div>
   );

@@ -26,6 +26,7 @@ export const enCommonMessages = {
   "common.showingCount": "Showing {count}",
   "common.of": "of",
   "common.items": "items",
+  "common.close": "Close",
 } as const;
 
 type CommonMessageKey = keyof typeof enCommonMessages;
@@ -58,4 +59,5 @@ export const koCommonMessages: Record<CommonMessageKey, string> = {
   "common.showingCount": "{count}개 항목 표시 중",
   "common.of": "/",
   "common.items": "항목",
+  "common.close": "닫기",
 };

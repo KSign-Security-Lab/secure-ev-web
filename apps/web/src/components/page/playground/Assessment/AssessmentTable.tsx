@@ -16,6 +16,7 @@ export interface AssessmentItem {
 interface AssessmentTableProps {
   data: AssessmentItem[];
   isLoading?: boolean;
+  onRowClick?: (item: AssessmentItem) => void;
   pagination?: {
     currentPage: number;
     totalPages: number;
@@ -27,6 +28,7 @@ interface AssessmentTableProps {
 export const AssessmentTable: React.FC<AssessmentTableProps> = ({ 
   data, 
   isLoading, 
+  onRowClick,
   pagination 
 }) => {
   const { t } = useI18n();
@@ -72,6 +74,7 @@ export const AssessmentTable: React.FC<AssessmentTableProps> = ({
       data={data} 
       columns={columns} 
       isLoading={isLoading}
+      onRowClick={onRowClick}
       pagination={pagination}
       emptyState={{
         title: t("assessment.page.empty"),
