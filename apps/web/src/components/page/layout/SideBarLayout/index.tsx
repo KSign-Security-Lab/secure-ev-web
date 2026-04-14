@@ -35,7 +35,7 @@ export default function SideBarLayout({
         {
           name: t("menu.agentTerminal"),
           icon: <Terminal />,
-          url: "/playground/connect-agent",
+          url: "/playground/agent-terminal",
         },
         {
           name: t("menu.agents"),

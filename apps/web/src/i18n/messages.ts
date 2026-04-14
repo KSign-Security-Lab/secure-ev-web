@@ -15,7 +15,7 @@ import { enFuzzingJobsPageMessages, koFuzzingJobsPageMessages } from "~/app/fuzz
 import { enFuzzingLandingPageMessages, koFuzzingLandingPageMessages } from "~/app/fuzzing/page.messages";
 import { enDashboardPageMessages, koDashboardPageMessages } from "~/app/page.messages";
 import { enAgentsPageMessages, koAgentsPageMessages } from "~/app/playground/agents/page.messages";
-import { enPlaygroundPageMessages, koPlaygroundPageMessages } from "~/app/playground/connect-agent/page.messages";
+import { enPlaygroundPageMessages, koPlaygroundPageMessages } from "~/app/playground/agent-terminal/page.messages";
 import { enAssessmentPageMessages, koAssessmentPageMessages } from "~/app/playground/assessment/assessment.messages";
 import { enAssessmentTableMessages, koAssessmentTableMessages } from "~/components/page/playground/Assessment/AssessmentTable.messages";
 import { enDashboardChartMessages, koDashboardChartMessages } from "~/components/dashboard/chart.messages";

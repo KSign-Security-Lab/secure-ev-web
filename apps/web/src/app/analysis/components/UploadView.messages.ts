@@ -14,7 +14,7 @@ export const enAnalysisUploadViewMessages = {
 type AnalysisUploadViewMessageKey = keyof typeof enAnalysisUploadViewMessages;
 
 export const koAnalysisUploadViewMessages: Record<AnalysisUploadViewMessageKey, string> = {
-  "analysis.upload.title": "분석 워크스페이스",
+  "analysis.upload.title": "코드 분석",
   "analysis.upload.subtitle": "소스 코드 파일을 업로드해 분석을 시작하세요",
   "analysis.upload.dropzoneInstruction": "클릭하거나 파일을 드래그해 업로드하세요",
   "analysis.upload.dropzoneFormats": ".c, .cpp, .java 또는 .zip 아카이브",

@@ -49,7 +49,7 @@ export default function Agents() {
       <PageHeader 
         title={t("agents.page.title")}
         subtitle={t("agents.page.subtitle")}
-        badge="Connect Agent"
+        badge="Playground"
       />
 
       <div className="flex flex-col flex-1 space-y-6 min-h-0 min-w-0">

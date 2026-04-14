@@ -53,7 +53,7 @@ type SystemLogEntry = {
   timestamp: number;
 };
 
-export default function ConnectAgent() {
+export default function AgentTerminal() {
   const { t } = useI18n();
   const terminalRef = useRef<TerminalViewHandle | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
@@ -314,7 +314,7 @@ export default function ConnectAgent() {
           <CommonPageHeader
             title={t("playground.header.title")}
             subtitle={t("playground.header.subtitle")}
-            badge="Connect Agent"
+            badge="Playground"
             actions={
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2 mr-2">
