@@ -53,6 +53,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
   const { t } = useI18n();
   const showToast = useToast();
   const [currentStep, setCurrentStep] = useState(1);
+  const scrollRef = React.useRef<HTMLDivElement>(null);
 
   // Local State for Configurations
   const [abilities, setAbilities] = useState<AbilityConfig[]>([
@@ -70,6 +71,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
 
   useEffect(() => {
     if (open) {
+      if (scrollRef.current) scrollRef.current.scrollTop = 0;
       setTimeout(() => setCurrentStep(1), 0);
     }
   }, [open, item]); // Correct dependency
@@ -190,7 +192,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
 
 
           {/* Content Area - Scrollable */}
-        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
           {/* Minimalist Phase Header */}
           <div className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 px-8 h-14 flex items-center justify-between">
             <div className="flex items-center gap-4">

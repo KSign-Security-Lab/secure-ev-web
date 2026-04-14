@@ -48,12 +48,14 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
   const { t } = useI18n();
   const [runs, setRuns] = useState<SimulationRun[]>([]);
   const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
+  const scrollRef = React.useRef<HTMLDivElement>(null);
 
   const selectedRun = runs.find(r => r.id === selectedRunId);
 
   // Initialize data
   useEffect(() => {
     if (open) {
+      if (scrollRef.current) scrollRef.current.scrollTop = 0;
       setTimeout(() => {
         const initialRuns: SimulationRun[] = [
           { 
@@ -182,7 +184,7 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
         </header>
 
         {/* Content Area - Scrollable */}
-        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
           <div className="p-8 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Simulation History Section */}
             <div className="space-y-4">
