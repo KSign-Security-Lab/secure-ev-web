@@ -104,9 +104,8 @@ export function DataTable<T>({
                   key={rowIdx}
                   onClick={() => onRowClick?.(item)}
                   className={cn(
-                    "group transition-all duration-200",
+                    "group transition-all duration-200 bg-transparent",
                     onRowClick && "cursor-pointer hover:bg-blue-500/5",
-                    rowIdx % 2 === 1 ? "bg-slate-800/10" : "bg-transparent",
                     rowClassName?.(item, rowIdx)
                   )}
                 >

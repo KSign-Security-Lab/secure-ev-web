@@ -8,8 +8,8 @@ const glassCardVariants = cva(
   {
     variants: {
       variant: {
-        default: "hover:bg-slate-900/60 hover:border-blue-500/30",
-        cyan: "hover:bg-slate-900/60 hover:border-cyan-500/30",
+        default: "",
+        cyan: "",
       },
     },
     defaultVariants: {

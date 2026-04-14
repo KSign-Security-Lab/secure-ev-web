@@ -6,12 +6,12 @@ import { useI18n } from "~/i18n/I18nProvider";
 import { AssessmentItem } from "./AssessmentTable";
 import { cn } from "~/lib/utils";
 import { 
-  ChevronRight, 
-  ChevronLeft, 
-  PlayCircle,
-  FileSearch,
+  ShieldAlert, 
   X,
-  ShieldAlert
+  ChevronRight,
+  ChevronLeft,
+  Activity,
+  ShieldCheck
 } from "lucide-react";
 
 interface SimulationHistory {
@@ -49,10 +49,6 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
     }
   }, [open, item]); // Correct dependency
 
-  const steps = [
-    { id: 3, label: t("assessment.detail.step3"), icon: PlayCircle },
-    { id: 4, label: t("assessment.detail.step4"), icon: FileSearch },
-  ];
 
   const simulationHistory: SimulationHistory[] = [
     { id: "1", source: "External", attack: "CSMS Brute Force", status: "Success", time: "14:20:11" },
@@ -77,8 +73,11 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
       className="max-w-5xl bg-slate-950 border border-slate-800 shadow-2xl p-0 overflow-hidden"
     >
       <div className="flex flex-col h-[880px] max-h-[95vh]">
-        {/* Top Gradient Accent (Soften the red intensity) */}
-        <div className="relative w-full h-[2px] bg-linear-to-r from-slate-800 via-red-500/60 to-slate-800 shrink-0" />
+        {/* Top Dynamic Progress Bar */}
+        <div className="absolute top-0 left-0 bg-red-600 h-[2px] shadow-[0_0_10px_rgba(239,68,68,0.5)] transition-all duration-700 ease-out z-50 rounded-full" 
+          style={{ width: currentStep === 3 ? '50%' : '100%' }}
+        />
+        <div className="relative w-full h-[2px] bg-slate-800 shrink-0" />
 
         {/* Header */}
         <header className="px-6 py-4 border-b border-slate-800/50 bg-slate-950/50 backdrop-blur-xl flex justify-between items-center shrink-0">
@@ -86,10 +85,10 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
             <h1 className="text-xl font-bold text-white tracking-tight uppercase leading-none">
               {item ? item.name : t("assessment.detail.newAssessment")}
             </h1>
-            <div className="flex items-center gap-3 text-xs font-bold text-slate-500 uppercase tracking-widest">
-              <span className="text-red-500/80 font-black tracking-[0.2em]">{t("assessment.detail.badge")}</span>
-              <span className="w-1 h-1 rounded-full bg-slate-800" />
-              <span className="flex items-center gap-1.5 opacity-70"><ShieldAlert size={12} className="text-orange-500" /> ID: {item?.id}</span>
+            <div className="flex items-center gap-3 text-xs font-bold text-slate-500 uppercase tracking-widest leading-none">
+              <span className="flex items-center gap-1.5 opacity-60"><ShieldAlert size={12} className="text-orange-500" /> ID: {item?.id}</span>
+              <span className="w-1 h-1 rounded-full bg-slate-900" />
+              <span className="text-[10px] opacity-40 italic lowercase">v1.2.4-stable</span>
             </div>
           </div>
           <button
@@ -99,50 +98,39 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
             <X size={20} />
           </button>
         </header>
+        
 
         {/* Content Area - Scrollable */}
-        <div className="flex-1 overflow-y-auto p-8 space-y-10 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
-          {/* Left-aligned Breadcrumb Stepper */}
-          <nav className="flex items-center gap-6 py-6 px-1 border-b border-slate-900/40 shrink-0">
-            {steps.map((step, idx) => {
-              const isActive = currentStep === step.id;
-              
-              return (
-                <React.Fragment key={step.id}>
-                  <button
-                    onClick={() => setCurrentStep(step.id)}
-                    className="flex items-center gap-4 group transition-all"
-                  >
-                    <div className="flex flex-col items-start gap-1">
-                      <div className="flex items-center gap-3">
-                        <span className={cn(
-                          "text-[9px] font-mono tracking-widest transition-all",
-                          isActive ? "text-red-500 font-bold" : "text-slate-600"
-                        )}>
-                          {step.id.toString().padStart(2, '0')}
-                        </span>
-                        <span className={cn(
-                          "text-[10px] font-black uppercase tracking-[0.2em] transition-all",
-                          isActive ? "text-slate-100" : "text-slate-500 group-hover:text-slate-400"
-                        )}>
-                          {step.label}
-                        </span>
-                      </div>
-                      <div className={cn(
-                        "h-px transition-all duration-500",
-                        isActive ? "w-full bg-red-600 shadow-[0_0_8px_rgba(239,68,68,0.4)]" : "w-0 bg-transparent"
-                      )} />
-                    </div>
-                  </button>
-                  {idx < steps.length - 1 && (
-                    <span className="text-slate-800 font-thin text-xs mx-1 opacity-40">/</span>
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </nav>
-
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
+          {/* Minimalist Phase Header */}
+          <div className="sticky top-0 z-40 bg-slate-950/95 backdrop-blur-sm border-b border-slate-800 px-8 h-14 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className={cn(
+                "w-8 h-8 rounded-lg border flex items-center justify-center",
+                currentStep === 3 ? "border-red-500/30 text-red-500 bg-red-500/5" : "border-slate-800 text-slate-400 bg-slate-900"
+              )}>
+                {currentStep === 3 ? <Activity size={18} /> : <ShieldCheck size={18} />}
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[10px] font-mono font-black text-slate-500 uppercase tracking-widest leading-none">
+                  PHASE 0{currentStep === 3 ? 1 : 2}
+                </span>
+                <span className="w-1 h-1 rounded-full bg-slate-800" />
+                <h2 className="text-sm font-bold text-slate-100 uppercase tracking-widest leading-none">
+                  {currentStep === 3 ? t("assessment.detail.step3") : t("assessment.detail.step4")}
+                </h2>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <div className="flex gap-1">
+                <div className={cn("h-1 w-6 rounded-full", currentStep >= 3 ? "bg-red-500" : "bg-slate-800")} />
+                <div className={cn("h-1 w-6 rounded-full", currentStep >= 4 ? "bg-red-500" : "bg-slate-800")} />
+              </div>
+            </div>
+          </div>
+          
+          <div className="p-8 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {currentStep === 3 ? (
               <div className="space-y-10">
                 {/* Reverting to Stacked Layout: Simulation History (Full Width) */}

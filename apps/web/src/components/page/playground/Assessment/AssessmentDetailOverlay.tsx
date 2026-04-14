@@ -6,14 +6,15 @@ import { useI18n } from "~/i18n/I18nProvider";
 import { AssessmentItem } from "./AssessmentTable";
 import { cn } from "~/lib/utils";
 import { 
-  ChevronRight, 
-  ChevronLeft, 
-  Save, 
-  Trash2, 
-  X, 
-  Activity, 
-  Target, 
-  Plus
+  ShieldAlert,
+  Trash2,
+  ChevronRight,
+  ChevronLeft,
+  Save,
+  Plus,
+  X,
+  Sliders,
+  Crosshair
 } from "lucide-react";
 import { useToast } from "~/components/ToastProvider/ToastProvider";
 
@@ -151,10 +152,6 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
     onClose();
   };
 
-  const steps = [
-    { id: 1, label: t("assessment.detail.step1"), icon: Activity },
-    { id: 2, label: t("assessment.detail.step2"), icon: Target },
-  ];
 
   return (
     <Modal
@@ -165,8 +162,11 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
       className="max-w-5xl bg-slate-950 border border-slate-800 shadow-2xl p-0 overflow-hidden"
     >
       <div className="flex flex-col h-[880px] max-h-[95vh]">
-        {/* Top Gradient Accent */}
-        <div className="relative w-full h-1 bg-linear-to-r from-blue-500 via-cyan-500 to-blue-600 shrink-0" />
+        {/* Top Dynamic Progress Bar */}
+        <div className="absolute top-0 left-0 bg-blue-600 h-[2px] shadow-[0_0_10px_rgba(37,99,235,0.5)] transition-all duration-700 ease-out z-50 rounded-full" 
+          style={{ width: currentStep === 1 ? '50%' : '100%' }}
+        />
+        <div className="relative w-full h-[2px] bg-slate-800 shrink-0" />
 
         {/* Header */}
         <header className="px-6 py-4 border-b border-slate-800/50 bg-slate-950/50 backdrop-blur-xl flex justify-between items-center shrink-0">
@@ -174,10 +174,10 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
             <h1 className="text-xl font-bold text-white tracking-tight uppercase leading-none">
               {item ? item.name : t("assessment.detail.newAssessment")}
             </h1>
-            <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-widest">
-              <span className="text-blue-400/80">{t("assessment.detail.badge")}</span>
-              <span className="w-1 h-1 rounded-full bg-slate-800" />
-              <span>{item ? `ID: ${item.id}` : "Registration Mode"}</span>
+            <div className="flex items-center gap-3 text-xs font-bold text-slate-500 uppercase tracking-widest leading-none">
+              <span className="flex items-center gap-1.5 opacity-60"><ShieldAlert size={12} className="text-orange-500" /> ID: {item?.id}</span>
+              <span className="w-1 h-1 rounded-full bg-slate-900" />
+              <span className="text-[10px] opacity-40 italic lowercase">{item ? "Inspection Mode" : "Creation Mode"}</span>
             </div>
           </div>
           <button
@@ -188,47 +188,38 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
           </button>
         </header>
 
+
           {/* Content Area - Scrollable */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
-          {/* Left-aligned Breadcrumb Stepper */}
-          <nav className="flex items-center gap-6 py-6 px-1 border-b border-slate-900/40 shrink-0">
-            {steps.map((step, idx) => {
-              const isActive = currentStep === step.id;
-              
-              return (
-                <React.Fragment key={step.id}>
-                  <button
-                    onClick={() => setCurrentStep(step.id)}
-                    className="flex items-center gap-4 group transition-all"
-                  >
-                    <div className="flex flex-col items-start gap-1">
-                      <div className="flex items-center gap-3">
-                        <span className={cn(
-                          "text-[9px] font-mono tracking-widest transition-all",
-                          isActive ? "text-blue-500 font-bold" : "text-slate-600"
-                        )}>
-                          {step.id.toString().padStart(2, '0')}
-                        </span>
-                        <span className={cn(
-                          "text-[10px] font-black uppercase tracking-[0.2em] transition-all",
-                          isActive ? "text-slate-100" : "text-slate-500 group-hover:text-slate-400"
-                        )}>
-                          {step.label}
-                        </span>
-                      </div>
-                      <div className={cn(
-                        "h-px transition-all duration-500",
-                        isActive ? "w-full bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.4)]" : "w-0 bg-transparent"
-                      )} />
-                    </div>
-                  </button>
-                  {idx < steps.length - 1 && (
-                    <span className="text-slate-800 font-thin text-xs mx-1 opacity-40">/</span>
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </nav>
+        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
+          {/* Minimalist Phase Header */}
+          <div className="sticky top-0 z-40 bg-slate-950/95 backdrop-blur-sm border-b border-slate-800 px-8 h-14 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className={cn(
+                "w-8 h-8 rounded-lg border flex items-center justify-center",
+                currentStep === 1 ? "border-blue-500/30 text-blue-500 bg-blue-500/5" : "border-slate-800 text-slate-400 bg-slate-900"
+              )}>
+                {currentStep === 1 ? <Sliders size={18} /> : <Crosshair size={18} />}
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[10px] font-mono font-black text-slate-500 uppercase tracking-widest leading-none">
+                  PHASE 0{currentStep}
+                </span>
+                <span className="w-1 h-1 rounded-full bg-slate-800" />
+                <h2 className="text-sm font-bold text-slate-100 uppercase tracking-widest leading-none">
+                  {currentStep === 1 ? t("assessment.detail.step1") : t("assessment.detail.step2")}
+                </h2>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <div className="flex gap-1">
+                <div className={cn("h-1 w-6 rounded-full", currentStep >= 1 ? "bg-blue-500" : "bg-slate-800")} />
+                <div className={cn("h-1 w-6 rounded-full", currentStep >= 2 ? "bg-blue-500" : "bg-slate-800")} />
+              </div>
+            </div>
+          </div>
+          
+          <div className="p-6 space-y-8">
 
           {/* Scenario Diagram (Blueprint Style) */}
           <div className="relative aspect-4/1 w-full bg-slate-950 border border-slate-800/60 rounded-xl flex items-center justify-center overflow-hidden group shadow-2xl backdrop-blur-sm shrink-0">
@@ -515,8 +506,9 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                 </div>
               </>
             )}
-          </div>
-        </div>
+          </div> {/* Close grid grid-cols-1 ... */}
+        </div> {/* Close p-6 space-y-8 */}
+      </div> {/* Close overflow-y-auto scrollable area */}
 
         {/* Footer Navigation */}
         <footer className="px-6 py-4 bg-slate-900/30 border-t border-slate-800/50 flex justify-between items-center shrink-0">
