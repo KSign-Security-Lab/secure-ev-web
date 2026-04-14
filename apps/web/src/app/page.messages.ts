@@ -22,7 +22,7 @@ export const enDashboardPageMessages = {
 type DashboardPageMessageKey = keyof typeof enDashboardPageMessages;
 
 export const koDashboardPageMessages: Record<DashboardPageMessageKey, string> = {
-  "dashboard.stats.totalAbilities": "전체 어빌리티",
+  "dashboard.stats.totalAbilities": "전체 공격 기법",
   "dashboard.stats.totalAbilitiesDesc": "사용 가능한 공격 기법",
   "dashboard.stats.totalAgents": "전체 에이전트",
   "dashboard.stats.totalAgentsDesc": "시스템 내 활성 에이전트",
@@ -33,9 +33,9 @@ export const koDashboardPageMessages: Record<DashboardPageMessageKey, string> = 
   "dashboard.mitre.title": "MITRE ATT&CK 커버리지",
   "dashboard.mitre.desc": "MITRE ATT&CK 매트릭스 대비 전체 기법 커버리지",
   "dashboard.mitre.empty": "커버리지 데이터가 없습니다",
-  "dashboard.abilities.title": "어빌리티 분포",
-  "dashboard.abilities.desc": "공격 기법 및 케이퍼빌리티의 시각적 분포",
-  "dashboard.abilities.empty": "어빌리티 데이터가 없습니다",
+  "dashboard.abilities.title": "공격 기법 분포",
+  "dashboard.abilities.desc": "공격 기법 및 분석 결과의 시각적 분포",
+  "dashboard.abilities.empty": "공격 기법 데이터가 없습니다",
   "dashboard.agents.title": "에이전트 분포",
   "dashboard.agents.desc": "시스템 내 활성 에이전트의 시각적 분포",
   "dashboard.agents.empty": "에이전트 데이터가 없습니다",
