@@ -5,6 +5,12 @@ export const enAssessmentPageMessages = {
   "assessment.page.delete": "Delete",
   "assessment.page.searchPlaceholder": "Search assessment items...",
   "assessment.page.empty": "No assessment data found.",
+  "assessment.detail.step1": "Attack Config",
+  "assessment.detail.step2": "Env Config",
+  "assessment.detail.abilitiesConfig": "Abilities config",
+  "assessment.detail.targetConfig": "Target config",
+  "assessment.detail.sourceConfig": "Source config",
+  "assessment.detail.scenarioDiagram": "Scenario Diagram",
 } as const;
 
 export const koAssessmentPageMessages: Record<
@@ -17,4 +23,10 @@ export const koAssessmentPageMessages: Record<
   "assessment.page.delete": "삭제",
   "assessment.page.searchPlaceholder": "평가 항목 검색...",
   "assessment.page.empty": "평가 데이터가 없습니다.",
+  "assessment.detail.step1": "공격 구성",
+  "assessment.detail.step2": "환경 구성",
+  "assessment.detail.abilitiesConfig": "Abilities config",
+  "assessment.detail.targetConfig": "Target config",
+  "assessment.detail.sourceConfig": "Source config",
+  "assessment.detail.scenarioDiagram": "공격 시나리오 그림",
 };

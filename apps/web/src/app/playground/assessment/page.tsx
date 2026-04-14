@@ -4,6 +4,7 @@ import { useState } from "react";
 import { SaveIcon, Trash2 } from "lucide-react";
 import { useI18n } from "~/i18n/I18nProvider";
 import { AssessmentTable, type AssessmentItem } from "~/components/page/playground/Assessment/AssessmentTable";
+import { AssessmentDetailOverlay } from "~/components/page/playground/Assessment/AssessmentDetailOverlay";
 import { PageHeader } from "~/components/common/PageHeader/PageHeader";
 import { FilterBar } from "~/components/common/FilterBar/FilterBar";
 
@@ -30,7 +31,14 @@ export default function AssessmentPage() {
   const { t } = useI18n();
   const [query, setQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedItem, setSelectedItem] = useState<AssessmentItem | null>(null);
+  const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   const totalPages = 1;
+
+  const handleItemClick = (item: AssessmentItem) => {
+    setSelectedItem(item);
+    setIsOverlayOpen(true);
+  };
 
   const handleSearch = (searchQuery: string) => {
     setQuery(searchQuery);
@@ -76,6 +84,7 @@ export default function AssessmentPage() {
         <div className="flex-1">
           <AssessmentTable 
             data={filteredData} 
+            onItemClick={handleItemClick}
             pagination={{
               currentPage,
               totalPages,
@@ -85,6 +94,12 @@ export default function AssessmentPage() {
           />
         </div>
       </div>
+
+      <AssessmentDetailOverlay 
+        item={selectedItem}
+        open={isOverlayOpen}
+        onClose={() => setIsOverlayOpen(false)}
+      />
     </div>
   );
 }
