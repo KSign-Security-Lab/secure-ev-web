@@ -5,6 +5,7 @@ export const enAbilitiesPageMessages = {
   "abilities.page.delete": "Delete",
   "abilities.page.empty": "No Data Available",
   "abilities.page.searchPlaceholder": "Search abilities...",
+  "abilities.page.save": "Save",
 } as const;
 
 type AbilitiesPageMessageKey = keyof typeof enAbilitiesPageMessages;
@@ -16,4 +17,5 @@ export const koAbilitiesPageMessages: Record<AbilitiesPageMessageKey, string> = 
   "abilities.page.delete": "삭제",
   "abilities.page.empty": "데이터가 없습니다",
   "abilities.page.searchPlaceholder": "능력 검색...",
+  "abilities.page.save": "저장",
 };

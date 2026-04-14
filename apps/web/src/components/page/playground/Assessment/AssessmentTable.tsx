@@ -16,7 +16,6 @@ export interface AssessmentItem {
 interface AssessmentTableProps {
   data: AssessmentItem[];
   isLoading?: boolean;
-  onItemClick?: (item: AssessmentItem) => void;
   pagination?: {
     currentPage: number;
     totalPages: number;
@@ -28,7 +27,6 @@ interface AssessmentTableProps {
 export const AssessmentTable: React.FC<AssessmentTableProps> = ({ 
   data, 
   isLoading, 
-  onItemClick,
   pagination 
 }) => {
   const { t } = useI18n();
@@ -37,12 +35,14 @@ export const AssessmentTable: React.FC<AssessmentTableProps> = ({
     {
       label: t("assessment.table.name"),
       render: (item) => (
-        <button 
-          onClick={() => onItemClick?.(item)}
-          className="text-blue-400 hover:text-blue-300 font-bold transition-colors text-left"
-        >
-          {item.name}
-        </button>
+        <div className="flex flex-col gap-0.5 min-w-0">
+          <span className="text-sm font-bold text-slate-100 truncate">
+            {item.name}
+          </span>
+          <span className="text-[10px] text-slate-500 uppercase tracking-widest font-mono">
+            ID: {item.id}
+          </span>
+        </div>
       ),
     },
     {

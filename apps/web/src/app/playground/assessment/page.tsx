@@ -31,14 +31,10 @@ export default function AssessmentPage() {
   const { t } = useI18n();
   const [query, setQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedItem, setSelectedItem] = useState<AssessmentItem | null>(null);
+  const [selectedItem] = useState<AssessmentItem | null>(null);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   const totalPages = 1;
 
-  const handleItemClick = (item: AssessmentItem) => {
-    setSelectedItem(item);
-    setIsOverlayOpen(true);
-  };
 
   const handleSearch = (searchQuery: string) => {
     setQuery(searchQuery);
@@ -62,7 +58,10 @@ export default function AssessmentPage() {
         badge="Playground"
         actions={
           <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition-all font-bold uppercase text-[11px] tracking-widest shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+            <button 
+              onClick={() => setIsOverlayOpen(true)}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition-all font-bold uppercase text-[11px] tracking-widest shadow-[0_0_15px_rgba(59,130,246,0.2)]"
+            >
               <SaveIcon className="w-4 h-4" />
               {t("assessment.page.register")}
             </button>
@@ -84,7 +83,6 @@ export default function AssessmentPage() {
         <div className="flex-1">
           <AssessmentTable 
             data={filteredData} 
-            onItemClick={handleItemClick}
             pagination={{
               currentPage,
               totalPages,
