@@ -9,7 +9,7 @@
     "prisma:push": "prisma db push",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio",
+    "prisma:studio": "prisma studio --port 5003",
     "prisma:seed": "prisma db seed"
   },
   "dependencies": {
