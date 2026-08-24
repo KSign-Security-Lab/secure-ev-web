@@ -81,7 +81,7 @@ export default function FuzzingJobDetailPage() {
   return (
     <div className="flex flex-col h-full bg-slate-950">
       {/* Header */}
-      <div className="flex-none p-6 border-b border-white/5 flex items-center justify-between bg-slate-900/30 backdrop-blur-md sticky top-0 z-20">
+      <div className="flex-none p-4 border-b border-white/5 flex items-center justify-between bg-slate-900/30 backdrop-blur-md sticky top-0 z-20">
         <div className="flex items-center gap-4">
           <Link
             href="/fuzzing/jobs"
@@ -109,7 +109,7 @@ export default function FuzzingJobDetailPage() {
       </div>
 
       <div className="flex-1 overflow-hidden flex flex-col md:flex-row">
-        <div className="md:w-[440px] w-full flex-none p-6 border-r border-white/5 bg-slate-900/20 overflow-y-auto">
+        <div className="md:w-[440px] w-full flex-none p-4 border-r border-white/5 bg-slate-900/20 overflow-y-auto">
           <JobSummary job={job as FuzzingJobWithReport} />
           
           {!hasReport && (
@@ -148,12 +148,12 @@ export default function FuzzingJobDetailPage() {
             ) : (
              <>
                {/* Tabs Header */}
-               <div className="flex-none px-6 pt-6 pb-2 border-b border-slate-800 bg-slate-950/50 backdrop-blur sticky top-0 z-10">
+               <div className="flex-none px-6 pt-4 pb-2 border-b border-slate-800 bg-slate-950/50 backdrop-blur sticky top-0 z-10">
                    <div className="flex gap-6">
                        <button
                           onClick={() => setActiveTab("overview")}
                           className={clsx(
-                              "pb-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors",
+                              "pb-2 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors",
                               activeTab === "overview" 
                                 ? "text-primary-400 border-primary-500" 
                                 : "text-slate-400 border-transparent hover:text-slate-200 hover:border-slate-700"
@@ -165,7 +165,7 @@ export default function FuzzingJobDetailPage() {
                        <button
                           onClick={() => setActiveTab("logs")}
                           className={clsx(
-                              "pb-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors",
+                              "pb-2 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors",
                               activeTab === "logs" 
                                 ? "text-primary-400 border-primary-500" 
                                 : "text-slate-400 border-transparent hover:text-slate-200 hover:border-slate-700"
@@ -180,8 +180,8 @@ export default function FuzzingJobDetailPage() {
                {/* Tab Content */}
                <div className="flex-1 overflow-hidden relative bg-slate-950">
                   {activeTab === "overview" && job.report && (
-                      <div className="h-full overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
-                          <div className="max-w-6xl mx-auto space-y-6 animate-in fade-in duration-300">
+                      <div className="h-full overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+                          <div className="max-w-6xl mx-auto space-y-4 animate-in fade-in duration-300">
                              <FuzzingInterpretation report={job.report} />
                              <VulnerabilityCharts report={job.report} />
                           </div>
@@ -189,7 +189,7 @@ export default function FuzzingJobDetailPage() {
                   )}
                   
                   {activeTab === "logs" && job.report && (
-                      <div className="h-full w-full p-6 flex flex-col min-h-0">
+                      <div className="h-full w-full p-4 flex flex-col min-h-0">
                           <div className="max-w-6xl mx-auto w-full h-full animate-in slide-in-from-bottom-2 duration-300">
                               <InteractionLogTable runs={job.report.runs} />
                           </div>

@@ -29,6 +29,7 @@ export interface OCPPChargerConnectionConfig {
   port: number;
   ocppVersion: "1.6J" | "2.0.1";
   websocketPath: string;
+  chargePointIdentity: string;
 }
 
 export interface OCPPServerConnectionConfig {

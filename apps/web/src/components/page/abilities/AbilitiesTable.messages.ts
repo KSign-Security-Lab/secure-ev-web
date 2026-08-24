@@ -9,7 +9,7 @@ export const enAbilitiesTableMessages = {
 type AbilitiesTableMessageKey = keyof typeof enAbilitiesTableMessages;
 
 export const koAbilitiesTableMessages: Record<AbilitiesTableMessageKey, string> = {
-  "abilities.table.abilityName": "능력 이름",
+  "abilities.table.abilityName": "어빌리티 이름",
   "abilities.table.tactics": "전술",
   "abilities.table.techniqueId": "기법 ID",
   "abilities.table.techniqueName": "기법 이름",

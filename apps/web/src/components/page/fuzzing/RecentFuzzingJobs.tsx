@@ -134,7 +134,7 @@ export function RecentFuzzingJobs() {
 
                 <div className="pl-3">
                   <div className="flex justify-between items-start mb-4">
-                    <Badge variant="outline" className="bg-slate-950/50 border-slate-700 text-slate-400 text-xs">
+                    <Badge variant="outline" className="bg-slate-900/50 border-slate-700 text-slate-400 text-xs">
                       {getTargetTypeLabel(job.targetType)}
                     </Badge>
                     <span className={`text-xs font-mono px-2 py-0.5 rounded ${

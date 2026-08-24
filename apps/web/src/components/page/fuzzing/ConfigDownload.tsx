@@ -44,7 +44,7 @@ export function ConfigDownload() {
                    <span className="font-bold text-white mr-2">2.</span> 
                    {t("fuzzing.configDownload.step2")}
                 </p>
-                <div className="bg-slate-950 p-3 rounded font-mono text-sm text-white flex items-center justify-between border border-slate-800 ml-5">
+                <div className="bg-slate-900 p-3 rounded font-mono text-sm text-white flex items-center justify-between border border-slate-800 ml-5">
                     <code className="flex-1 overflow-x-auto">chmod +x fuzzer && {command}</code>
                     <button
                       onClick={() => {

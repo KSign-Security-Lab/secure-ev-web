@@ -87,7 +87,7 @@ export function MessageSelector({
         </button>
       </div>
 
-      <div className="rounded-lg border border-slate-800 bg-slate-950/30 flex flex-col h-[450px]">
+      <div className="rounded-lg border border-slate-800 bg-slate-900/30 flex flex-col h-[450px]">
         <ScrollArea className="flex-1 p-2">
           <div className="space-y-1">
             {Object.entries(messages).map(([groupName, groupMessages]) => {
@@ -123,14 +123,14 @@ export function MessageSelector({
                             </Label>
                           </div>
                       </div>
-                      <span className="text-[10px] text-slate-500 font-mono bg-slate-950/50 px-1.5 py-0.5 rounded">
+                      <span className="text-[10px] text-slate-500 font-mono bg-slate-900/50 px-1.5 py-0.5 rounded">
                           {groupMessages.filter(m => selectedMessages.includes(m)).length}/{groupMessages.length}
                       </span>
                    </div>
 
                    {/* Grid layout for items */}
                    {!isCollapsed && (
-                       <div className="grid grid-cols-1 md:grid-cols-2 gap-1 p-2 bg-slate-950/20">
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-1 p-2 bg-slate-900/20">
                           {groupMessages.map((message) => (
                             <div
                               key={message}

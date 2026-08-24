@@ -1,5 +1,5 @@
 export const enFuzzingJobsPageMessages = {
-  "fuzzing.jobs.title": "Active Fuzzing Jobs",
+  "fuzzing.jobs.title": "Fuzzing Jobs",
   "fuzzing.jobs.subtitle": "Manage and monitor your security testing sessions.",
   "fuzzing.jobs.newJob": "New Job",
   "fuzzing.jobs.searchPlaceholder": "Search jobs...",
@@ -17,12 +17,14 @@ export const enFuzzingJobsPageMessages = {
   "fuzzing.jobs.deleteConfirm": "Are you sure you want to delete this job?",
   "fuzzing.jobs.environment.production": "Production",
   "fuzzing.jobs.footer.showing": "Showing {shown} of {total} jobs",
+  "fuzzing.jobs.table.items": "jobs",
+  "fuzzing.jobs.deleteTitle": "Confirm Deletion",
 } as const;
 
 type FuzzingJobsPageMessageKey = keyof typeof enFuzzingJobsPageMessages;
 
 export const koFuzzingJobsPageMessages: Record<FuzzingJobsPageMessageKey, string> = {
-  "fuzzing.jobs.title": "활성 퍼징 작업",
+  "fuzzing.jobs.title": "퍼징 작업",
   "fuzzing.jobs.subtitle": "보안 테스트 세션을 관리하고 모니터링하세요.",
   "fuzzing.jobs.newJob": "새 작업",
   "fuzzing.jobs.searchPlaceholder": "작업 검색...",
@@ -40,4 +42,6 @@ export const koFuzzingJobsPageMessages: Record<FuzzingJobsPageMessageKey, string
   "fuzzing.jobs.deleteConfirm": "이 작업을 삭제하시겠습니까?",
   "fuzzing.jobs.environment.production": "운영",
   "fuzzing.jobs.footer.showing": "{total}개 중 {shown}개 표시",
+  "fuzzing.jobs.table.items": "작업",
+  "fuzzing.jobs.deleteTitle": "삭제 확인",
 };

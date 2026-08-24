@@ -1,7 +1,7 @@
 // components/Common/Modal.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import clsx from "clsx";
 import { XIcon } from "lucide-react";
@@ -13,6 +13,8 @@ interface ModalProps {
   children: React.ReactNode;
   footer?: React.ReactNode;
   className?: string;
+  hideHeader?: boolean;
+  disableDefaultStyles?: boolean;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -22,9 +24,12 @@ export const Modal: React.FC<ModalProps> = ({
   children,
   footer,
   className,
+  hideHeader = false,
+  disableDefaultStyles = false,
 }) => {
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(open);
+  const mouseDownTarget = useRef<EventTarget | null>(null);
 
   useEffect(() => {
     // Making this asynchronous to avoid "setState in effect" warnings and cascading renders
@@ -64,29 +69,41 @@ export const Modal: React.FC<ModalProps> = ({
   const modalContent = (
     <div
       className={clsx(
-        "fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 ease-out",
+        "fixed inset-0 z-100 flex items-center justify-center bg-black/30 backdrop-blur-sm transition-opacity duration-300 ease-out",
         visible ? "opacity-100" : "opacity-0"
       )}
-      onClick={onClose}
+      onMouseDown={(e) => {
+        mouseDownTarget.current = e.target;
+      }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget && mouseDownTarget.current === e.currentTarget) {
+          onClose();
+        }
+      }}
     >
       <div
+        onMouseDown={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
         className={clsx(
-          "relative w-full sm:w-[95%] md:w-[90%] lg:max-w-[1200px] bg-base-900 text-white rounded-md shadow-lg p-6 space-y-6 transition-all duration-300 ease-out transform-gpu max-h-[90vh] overflow-y-auto m-6",
+          "relative w-full sm:w-[95%] md:w-[90%] lg:max-w-[1200px] bg-base-900 text-white rounded-md shadow-lg transition-all duration-300 ease-out transform-gpu",
+          !disableDefaultStyles && "p-6 space-y-6 max-h-[90vh] overflow-y-auto m-6",
           visible
             ? "opacity-100 translate-y-0 scale-100"
             : "opacity-0 translate-y-12 scale-95",
           className
         )}
       >
-        <div className="flex justify-between items-center border-b border-neutral-500 pb-6">
-          <div className="text-lg font-semibold">{title}</div>
-          <button onClick={onClose} className="text-xl">
-            <XIcon className="w-5 h-5" />
-          </button>
-        </div>
+        {!hideHeader && (
+          <div className={clsx("flex justify-between items-center border-b border-neutral-500", !disableDefaultStyles && "pb-6")}>
+            <div className="text-lg font-semibold">{title}</div>
+            <button onClick={onClose} className="text-xl">
+              <XIcon className="w-5 h-5" />
+            </button>
+          </div>
+        )}
 
-        <div className="gap-4 flex flex-col">{children}</div>
+        <div className={clsx("flex flex-col", !disableDefaultStyles && "gap-4")}>{children}</div>
 
         {footer && <div className="flex justify-end space-x-2">{footer}</div>}
       </div>

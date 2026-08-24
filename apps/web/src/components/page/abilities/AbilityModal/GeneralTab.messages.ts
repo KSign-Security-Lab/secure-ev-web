@@ -16,8 +16,8 @@ export const enAbilityModalGeneralTabMessages = {
 type AbilityModalGeneralTabMessageKey = keyof typeof enAbilityModalGeneralTabMessages;
 
 export const koAbilityModalGeneralTabMessages: Record<AbilityModalGeneralTabMessageKey, string> = {
-  "abilities.general.abilityId": "능력 ID",
-  "abilities.general.abilityUid": "능력 UID",
+  "abilities.general.abilityId": "어빌리티 ID",
+  "abilities.general.abilityUid": "어빌리티 UID",
   "abilities.general.name": "이름",
   "abilities.general.description": "설명",
   "abilities.general.state": "상태",

@@ -51,6 +51,7 @@ export const ocppChargerConnectionConfigSchema = z.object({
   port: z.number().int().positive().max(65535),
   ocppVersion: z.enum(["1.6J", "2.0.1"]),
   websocketPath: z.string().min(1, "WebSocket path is required"),
+  chargePointIdentity: z.string().min(1, "Charge point identity is required"),
 });
 
 export const ocppServerConnectionConfigSchema = z.object({

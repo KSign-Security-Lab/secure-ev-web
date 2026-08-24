@@ -10,7 +10,12 @@ export type TargetConfigMessageKey =
   | "ocppVersion"
   | "websocketPath"
   | "serverUrl"
-  | "chargePointIdentity";
+  | "chargePointIdentity"
+  | "generatingWebSocket"
+  | "waitingForCharger"
+  | "webSocketUrl"
+  | "createUrl"
+  | "cpidRequired";
 
 export const targetConfigMessages: LocalizedMessages<TargetConfigMessageKey> = {
   en: {
@@ -24,6 +29,11 @@ export const targetConfigMessages: LocalizedMessages<TargetConfigMessageKey> = {
     websocketPath: "WebSocket Path *",
     serverUrl: "Server URL (ws/wss) *",
     chargePointIdentity: "Charge Point Identity *",
+    generatingWebSocket: "Generating WebSocket URL...",
+    waitingForCharger: "Waiting for charger to connect...",
+    webSocketUrl: "WebSocket URL",
+    createUrl: "Create Connection URL",
+    cpidRequired: "Please enter Charge Point Identity first",
   },
   ko: {
     chargerIp: "충전기 IP / 호스트명 *",
@@ -36,5 +46,10 @@ export const targetConfigMessages: LocalizedMessages<TargetConfigMessageKey> = {
     websocketPath: "WebSocket 경로 *",
     serverUrl: "서버 URL (ws/wss) *",
     chargePointIdentity: "충전기 ID *",
+    generatingWebSocket: "WebSocket URL 생성 중...",
+    waitingForCharger: "충전기 연결 대기 중...",
+    webSocketUrl: "WebSocket URL",
+    createUrl: "접속 URL 생성",
+    cpidRequired: "먼저 충전기 ID를 입력해 주세요",
   },
 };

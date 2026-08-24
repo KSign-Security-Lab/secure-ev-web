@@ -1,7 +1,7 @@
 "use client";
 
-import React, { forwardRef, useImperativeHandle, useState } from "react";
-import { ChevronDown, ChevronRight, Globe } from "lucide-react";
+import React, { forwardRef, useImperativeHandle, useState, useEffect, useCallback } from "react";
+import { ChevronDown, ChevronRight, Globe, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,27 +28,38 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
   ({ menus }, ref) => {
     const { locale, setLocale, t } = useI18n();
     const pathname = usePathname();
-    const isActive = (url: string) => {
+    const isActive = useCallback((url: string) => {
       if (url === "/" || url === "") return pathname === url;
       return pathname === url || pathname.startsWith(url + "/");
-    };
+    }, [pathname]);
     const [expanded, setExpanded] = useState(true);
-    const [assetOpen, setAssetOpen] = useState(false);
+    const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+
+    // Auto-expand if a child is active (only on navigation)
+    useEffect(() => {
+      const activeParent = menus.find((item) =>
+        item.children?.some((child) => isActive(child.url))
+      );
+      if (activeParent) {
+        setOpenMenus((prev) => ({ ...prev, [activeParent.url]: true }));
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pathname]); // Only trigger when pathname changes
 
     useImperativeHandle(ref, () => ({
       toggle: () => setExpanded((prev) => !prev),
     }));
 
-    const handleAssetClick = () => {
+    const handleAssetClick = (menuUrl: string) => {
       if (!expanded) {
         setExpanded(true);
-        if (!assetOpen) {
+        if (!openMenus[menuUrl]) {
           setTimeout(() => {
-            setAssetOpen(true);
+            setOpenMenus((prev) => ({ ...prev, [menuUrl]: true }));
           }, 300);
         }
       } else {
-        setAssetOpen((prev) => !prev);
+        setOpenMenus((prev) => ({ ...prev, [menuUrl]: !prev[menuUrl] }));
       }
     };
 
@@ -56,7 +67,6 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
       if (!isLocale(value)) {
         return;
       }
-
       setLocale(value);
     };
 
@@ -71,57 +81,92 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
           expanded ? "w-56" : "w-16"
         )}
       >
-        <Link href={"/"}>
-          <div className="flex items-center justify-between p-4 ml-1">
-            <div className={clsx("relative h-10", expanded ? "w-56" : "w-16")}>
+        <div className="flex items-center justify-between p-4 px-5">
+          {expanded && (
+            <Link href={"/"} className="relative h-8 w-32 shrink-0 transition-all">
               <Image
-                src={expanded ? "/assets/logo-dark.png" : "/assets/logo-sm.png"}
+                src="/assets/logo-dark.png"
                 alt="Logo"
                 fill
-                className="object-contain"
+                className="object-contain object-left"
               />
-            </div>
-          </div>
-        </Link>
+            </Link>
+          )}
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className={clsx(
+              "p-1.5 rounded-lg hover:bg-gray-100 transition-colors text-gray-500 hover:text-blue-600",
+              !expanded && "mx-auto"
+            )}
+          >
+            <Menu size={20} />
+          </button>
+        </div>
 
         <nav className="mt-5 space-y-2 flex-1 overflow-y-auto">
           {menus.map((item) => (
             <div key={item.url} className="relative group">
               {item.children ? (
-                <div
-                  onClick={handleAssetClick}
-                  className={clsx(
-                    "flex items-center py-2 px-6 cursor-pointer text-sm font-medium rounded-md transition-colors duration-200 group/item relative",
-                    isActive(item.url)
-                      ? "text-blue-500"
-                      : "text-gray-700 hover:bg-gray-100",
-                    !expanded ? "justify-center" : ""
-                  )}
-                >
-                  <div className="w-6 h-6">{item.icon}</div>
-                  {expanded && (
-                    <div className="flex flex-row items-center justify-between w-full">
-                      <div>
-                        <span className="ml-3 whitespace-nowrap">
-                          {item.name}
-                        </span>
+                <div className="flex flex-col">
+                  <div
+                    onClick={() => handleAssetClick(item.url)}
+                    className={clsx(
+                      "flex items-center py-2 px-6 cursor-pointer text-sm font-medium rounded-md transition-colors duration-200 group/item relative",
+                      isActive(item.url)
+                        ? "text-blue-500"
+                        : "text-gray-700 hover:bg-gray-100",
+                      !expanded ? "justify-center" : ""
+                    )}
+                  >
+                    <div className="w-6 h-6">{item.icon}</div>
+                    {expanded && (
+                      <div className="flex flex-row items-center justify-between w-full">
+                        <div>
+                          <span className="ml-3 whitespace-nowrap">
+                            {item.name}
+                          </span>
+                        </div>
+                        <div>
+                          {openMenus[item.url] ? (
+                            <ChevronDown size={16} />
+                          ) : (
+                            <ChevronRight size={16} />
+                          )}
+                        </div>
                       </div>
-                      <div>
-                        {assetOpen ? (
-                          <ChevronDown size={16} />
-                        ) : (
-                          <ChevronRight size={16} />
-                        )}
-                      </div>
-                    </div>
-                  )}
+                    )}
 
-                  {!expanded && (
-                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-xs font-semibold text-gray-900 shadow-xl whitespace-nowrap opacity-0 group-hover/item:opacity-100 group-hover/item:translate-x-1 transition-all pointer-events-none z-50">
-                      {item.name}
-                      {/* Tooltip Arrow */}
-                      <div className="absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 border-y-[6px] border-y-transparent border-r-[6px] border-r-gray-200" />
-                      <div className="absolute left-px top-1/2 -translate-x-full -translate-y-1/2 border-y-[5px] border-y-transparent border-r-[5px] border-r-white" />
+                    {!expanded && (
+                      <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-xs font-semibold text-gray-900 shadow-xl whitespace-nowrap opacity-0 group-hover/item:opacity-100 group-hover/item:translate-x-1 transition-all pointer-events-none z-50">
+                        {item.name}
+                        <div className="absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 border-y-[6px] border-y-transparent border-r-[6px] border-r-gray-200" />
+                        <div className="absolute left-px top-1/2 -translate-x-full -translate-y-1/2 border-y-[5px] border-y-transparent border-r-[5px] border-r-white" />
+                      </div>
+                    )}
+                  </div>
+
+                  {item.children && expanded && openMenus[item.url] && (
+                    <div className="flex flex-col space-y-0.5 mt-0.5">
+                      {item.children.map((child) => (
+                        <Link
+                          key={child.url}
+                          href={child.url}
+                          className={clsx(
+                            "flex items-center py-2 pr-6 gap-3 rounded-md transition-colors duration-200 text-sm group",
+                            isActive(child.url)
+                              ? "text-blue-500 font-semibold bg-gray-50"
+                              : "text-gray-700 hover:bg-gray-100"
+                          )}
+                          style={{ paddingLeft: "2.5rem" }}
+                        >
+                          <div className="w-5 h-5 shrink-0 flex items-center justify-center">
+                            {child.icon}
+                          </div>
+                          <span className="whitespace-nowrap truncate">
+                            {child.name}
+                          </span>
+                        </Link>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -146,33 +191,12 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
                     {!expanded && (
                       <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 rounded-md bg-white border border-gray-200 text-xs font-semibold text-gray-900 shadow-xl whitespace-nowrap opacity-0 group-hover/item:opacity-100 group-hover/item:translate-x-1 transition-all pointer-events-none z-50">
                         {item.name}
-                        {/* Tooltip Arrow */}
                         <div className="absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 border-y-[6px] border-y-transparent border-r-[6px] border-r-gray-200" />
                         <div className="absolute left-px top-1/2 -translate-x-full -translate-y-1/2 border-y-[5px] border-y-transparent border-r-[5px] border-r-white" />
                       </div>
                     )}
                   </div>
                 </Link>
-              )}
-
-              {item.children && expanded && assetOpen && (
-                <div className="flex flex-col space-y-1 mt-1">
-                  {item.children.map((child) => (
-                    <Link
-                      key={child.url}
-                      href={child.url}
-                      className={clsx(
-                        "flex items-center py-1 px-6 gap-2 rounded-md transition-colors duration-200 text-sm",
-                        isActive(child.url)
-                          ? "text-blue-500 font-semibold"
-                          : "text-gray-700 hover:bg-gray-100"
-                      )}
-                    >
-                      <div className="w-4 h-4">{child.icon}</div>
-                      <span className="whitespace-nowrap">{child.name}</span>
-                    </Link>
-                  ))}
-                </div>
               )}
             </div>
           ))}
@@ -223,3 +247,5 @@ export const Sidebar = forwardRef<SidebarRef, SidebarProps>(
     );
   }
 );
+
+Sidebar.displayName = "Sidebar";
