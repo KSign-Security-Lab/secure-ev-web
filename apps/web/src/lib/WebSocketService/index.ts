@@ -69,7 +69,7 @@ class WebSocketService {
     }
 
     const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-    const fallbackPort = protocol === "ws" ? "5001" : "";
+    const fallbackPort = protocol === "ws" ? "4201" : "";
     const port = window.location.port || fallbackPort;
     const portSegment = port ? `:${port}` : "";
 

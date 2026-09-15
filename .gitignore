@@ -9,13 +9,7 @@ prisma/data.csv
 
 # dependencies
 /node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+.pnpm-store/
 
 # testing
 /coverage
@@ -33,8 +27,6 @@ prisma/data.csv
 
 # debug
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)

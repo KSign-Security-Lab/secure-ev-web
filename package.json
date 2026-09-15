@@ -2,18 +2,14 @@
   "name": "secure-ev-web",
   "version": "0.1.0",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
-    "dev": "yarn workspace @secure-ev-web/web dev",
-    "lint": "yarn workspaces foreach run lint",
+    "dev": "pnpm --filter @secure-ev-web/web run dev",
+    "lint": "pnpm -r run lint",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
-    "prisma:generate": "yarn workspace @secure-ev-web/prisma prisma:generate",
-    "prisma:seed": "yarn workspace @secure-ev-web/prisma prisma:seed",
-    "prisma:studio": "yarn workspace @secure-ev-web/prisma prisma:studio"
+    "prisma:generate": "pnpm --filter @secure-ev-web/prisma run prisma:generate",
+    "prisma:seed": "pnpm --filter @secure-ev-web/prisma run prisma:seed",
+    "prisma:studio": "pnpm --filter @secure-ev-web/prisma run prisma:studio"
   },
-  "packageManager": "yarn@4.12.0"
+  "packageManager": "pnpm@10.33.2"
 }

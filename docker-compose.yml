@@ -4,7 +4,7 @@ services:
     container_name: attack-db
     restart: always
     ports:
-      - "5002:3306"
+      - "4202:3306"
     volumes:
       - ./db/mysql/data:/var/lib/mysql
     environment:

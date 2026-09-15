@@ -27,12 +27,15 @@ It combines operational visibility, ATT&CK-aligned attack content, fuzzing job o
 
 ## Local Ports
 
+This project's band is 4200-4299. See `~/PORTS.md` for the allocation across the
+five projects sharing this machine.
+
 | Port | Service |
 | ---- | ------- |
-| 5000 | Next.js web app (`yarn dev`) |
-| 5001 | WebSocket notification channel (client fallback when `NEXT_PUBLIC_WS_URL` is unset) |
-| 5002 | MySQL (host mapping for the `mysql` container, which still listens on 3306 internally) |
-| 5003 | Prisma Studio (`yarn prisma:studio`) |
+| 4200 | Next.js web app (`pnpm dev`) |
+| 4201 | WebSocket notification channel (client fallback when `NEXT_PUBLIC_WS_URL` is unset) |
+| 4202 | MySQL (host mapping for the `mysql` container, which still listens on 3306 internally) |
+| 4203 | Prisma Studio (`pnpm prisma:studio`) |
 
 Ports belonging to external systems (defend API, terminal WebSocket, fuzzing targets) are configured through `.env` and are not part of this range.
 
