@@ -9,13 +9,14 @@
     "prisma:push": "prisma db push",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio --port 5003",
+    "prisma:studio": "prisma studio --port 4203",
     "prisma:seed": "prisma db seed"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0"
   },
   "devDependencies": {
+    "dotenv": "^16.6.1",
     "prisma": "^6.19.0"
   }
 }

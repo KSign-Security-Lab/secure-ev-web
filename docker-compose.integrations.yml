@@ -1,0 +1,85 @@
+# Products the Integrations page connects to.
+#
+# Deliberately separate from docker-compose.yml so bringing these up or down
+# never touches the application database:
+#
+#   docker compose -f docker-compose.integrations.yml up -d
+#   docker compose -f docker-compose.integrations.yml down
+#
+# Ports use the 4211-4219 slice of this project's 4200-4299 band.
+
+name: bas-integrations
+
+services:
+  # EDR — reachable over API (JWT) or by agent tailing /var/ossec/logs.
+  wazuh:
+    image: wazuh/wazuh-manager:4.9.2
+    container_name: bas-wazuh
+    restart: unless-stopped
+    ports:
+      - "4211:55000" # REST API
+      - "4212:1514" # agent enrollment
+    environment:
+      INDEXER_URL: ""
+      API_USERNAME: wazuh-wui
+      API_PASSWORD: SecretPassword1!
+    volumes:
+      - wazuh_etc:/var/ossec/etc
+      - wazuh_logs:/var/ossec/logs
+    ulimits:
+      memlock: { soft: -1, hard: -1 }
+      nofile: { soft: 655360, hard: 655360 }
+
+  # SOAR — REST API with a bearer key issued from its own UI.
+  shuffle-backend:
+    image: ghcr.io/shuffle/shuffle-backend:1.4.0
+    container_name: bas-shuffle
+    restart: unless-stopped
+    ports:
+      - "4213:5001"
+    environment:
+      DATASTORE_EMULATOR_HOST: shuffle-database:8000
+      SHUFFLE_APP_HOTLOAD_FOLDER: /shuffle-apps
+      ORG_ID: shuffle
+      IS_KUBERNETES: "false"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - shuffle_apps:/shuffle-apps
+    depends_on:
+      - shuffle-database
+
+  shuffle-database:
+    image: ghcr.io/shuffle/shuffle-opensearch:2.14.0
+    container_name: bas-shuffle-db
+    restart: unless-stopped
+    environment:
+      bootstrap.memory_lock: "true"
+      OPENSEARCH_JAVA_OPTS: -Xms512m -Xmx512m
+      discovery.type: single-node
+      DISABLE_SECURITY_PLUGIN: "true"
+    ulimits:
+      memlock: { soft: -1, hard: -1 }
+      nofile: { soft: 65536, hard: 65536 }
+    volumes:
+      - shuffle_db:/usr/share/opensearch/data
+
+  # NDR — no API at all; Fluent Bit tails the logs this writes.
+  zeek:
+    image: zeek/zeek:7.0
+    container_name: bas-zeek
+    restart: unless-stopped
+    network_mode: host
+    command: >
+      zeek -i eth0 LogAscii::use_json=T Log::default_logdir=/opt/zeek/logs/current
+    volumes:
+      - zeek_logs:/opt/zeek/logs
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+
+volumes:
+  wazuh_etc:
+  wazuh_logs:
+  shuffle_apps:
+  shuffle_db:
+  zeek_logs:

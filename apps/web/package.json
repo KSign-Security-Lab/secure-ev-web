@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "next dev --turbo -p 5000",
+    "dev": "next dev --turbo -p 4200",
     "build": "next build",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
@@ -38,6 +38,7 @@
     "react-syntax-highlighter": "^16.1.1",
     "tailwind-merge": "^3.4.0",
     "ws": "^8.18.2",
+    "zod": "^4.6.1",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
@@ -50,8 +51,10 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "@types/ws": "^8.18.1",
     "baseline-browser-mapping": "^2.10.8",
+    "dotenv": "^16.6.1",
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
+    "eslint-plugin-react-hooks": "7.0.1",
     "globals": "^16.5.0",
     "prisma": "^6.19.0",
     "tailwindcss": "^4",
