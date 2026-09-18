@@ -25,6 +25,10 @@ model Ability {
   type            String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  @@index([platform])
+  @@index([tactic])
+  @@index([technique_id])
 }
 
 enum FuzzingJobStatus {
@@ -91,4 +95,102 @@ enum MitrePlatform {
   subtechnique_id String? @unique
   subtechnique_name String? @unique @db.VarChar(191)
   platform MitrePlatform
+}
+// ---------------------------------------------------------------------------
+// C2 — agent registry and tasking
+//
+// Populated by the beacon endpoint (`apps/web/src/app/beacon/route.ts`), which
+// speaks the sandcat HTTP contact protocol. MySQL has no scalar list support, so
+// the agent profile's array fields are stored as Json.
+// ---------------------------------------------------------------------------
+
+model Agent {
+  paw               String    @id @db.VarChar(191)
+  group             String    @default("red")
+  architecture      String    @default("")
+  platform          String    @default("")
+  server            String    @default("") @db.Text
+  upstreamDest      String    @default("") @db.Text
+  username          String    @default("")
+  location          String    @default("") @db.Text
+  pid               Int?
+  ppid              Int?
+  executors         Json
+  privilege         String    @default("")
+  exeName           String    @default("")
+  host              String    @default("")
+  contact           String    @default("HTTP")
+  proxyReceivers    Json
+  proxyChain        Json
+  originLinkId      String    @default("") @db.Text
+  deadmanEnabled    Boolean   @default(false)
+  availableContacts Json
+  hostIpAddrs       Json
+  pendingContact    String?
+
+  // Server-controlled beacon behaviour
+  sleepMin          Int       @default(30)
+  sleepMax          Int       @default(60)
+  watchdog          Int       @default(0)
+  /// While in the future the beacon returns sleep=1, making the terminal interactive.
+  interactiveUntil  DateTime?
+
+  firstSeen         DateTime  @default(now())
+  lastSeen          DateTime  @default(now())
+
+  instructions      AgentInstruction[]
+
+  @@index([lastSeen])
+}
+
+enum InstructionStatus {
+  QUEUED
+  SENT
+  COMPLETE
+  TIMEOUT
+}
+
+model AgentInstruction {
+  id          String            @id @default(uuid())
+  paw         String            @db.VarChar(191)
+  agent       Agent             @relation(fields: [paw], references: [paw], onDelete: Cascade)
+  /// base64, as the agent expects it on the wire
+  command     String            @db.MediumText
+  executor    String
+  timeout     Int               @default(60)
+  status      InstructionStatus @default(QUEUED)
+  queuedAt    DateTime          @default(now())
+  sentAt      DateTime?
+  completedAt DateTime?
+  result      AgentResult?
+
+  @@index([paw, status])
+  @@index([queuedAt])
+}
+
+model AgentResult {
+  id                String           @id @default(uuid())
+  instructionId     String           @unique
+  instruction       AgentInstruction @relation(fields: [instructionId], references: [id], onDelete: Cascade)
+  /// Decoded on arrival — the agent sends these base64-encoded.
+  output            String           @db.LongText
+  stderr            String           @db.LongText
+  exitCode          String           @default("")
+  status            String           @default("")
+  pid               String           @default("")
+  agentReportedTime String           @default("")
+  createdAt         DateTime         @default(now())
+}
+
+/// Singleton (id is always 1) — the defaults applied to every agent.
+model AgentConfig {
+  id             Int      @id @default(1)
+  implantName    String   @default("splunkd")
+  sleepMin       Int      @default(30)
+  sleepMax       Int      @default(60)
+  watchdog       Int      @default(0)
+  untrustedTimer Int      @default(90)
+  /// Callback address baked into the generated deploy commands.
+  c2Url          String   @default("http://0.0.0.0:8888") @db.Text
+  updatedAt      DateTime @updatedAt
 }
