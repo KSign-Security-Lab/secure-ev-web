@@ -109,10 +109,10 @@ model Agent {
   group             String    @default("red")
   architecture      String    @default("")
   platform          String    @default("")
-  server            String    @default("") @db.Text
-  upstreamDest      String    @default("") @db.Text
+  server            String    @default("") @db.VarChar(512)
+  upstreamDest      String    @default("") @db.VarChar(512)
   username          String    @default("")
-  location          String    @default("") @db.Text
+  location          String    @default("") @db.VarChar(512)
   pid               Int?
   ppid              Int?
   executors         Json
@@ -122,7 +122,7 @@ model Agent {
   contact           String    @default("HTTP")
   proxyReceivers    Json
   proxyChain        Json
-  originLinkId      String    @default("") @db.Text
+  originLinkId      String    @default("") @db.VarChar(191)
   deadmanEnabled    Boolean   @default(false)
   availableContacts Json
   hostIpAddrs       Json
@@ -191,7 +191,7 @@ model AgentConfig {
   watchdog       Int      @default(0)
   untrustedTimer Int      @default(90)
   /// Callback address baked into the generated deploy commands.
-  c2Url          String   @default("http://0.0.0.0:8888") @db.Text
+  c2Url          String   @default("http://0.0.0.0:8888") @db.VarChar(512)
   updatedAt      DateTime @updatedAt
 }
 
