@@ -10,6 +10,7 @@ import {
   Users,
   Database,
   ClipboardCheck,
+  Plug,
 } from "lucide-react";
 import { MenuItemType, Sidebar, SidebarRef } from "./SideBar";
 import { usePathname } from "next/navigation";
@@ -51,6 +52,11 @@ export default function SideBarLayout({
           name: t("menu.assessment"),
           icon: <ClipboardCheck />,
           url: "/playground/assessment",
+        },
+        {
+          name: t("menu.integrations"),
+          icon: <Plug />,
+          url: "/playground/integrations",
         },
       ],
     },

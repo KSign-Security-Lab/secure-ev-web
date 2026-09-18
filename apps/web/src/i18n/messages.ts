@@ -15,6 +15,7 @@ import { enFuzzingJobsPageMessages, koFuzzingJobsPageMessages } from "~/app/fuzz
 import { enFuzzingLandingPageMessages, koFuzzingLandingPageMessages } from "~/app/fuzzing/page.messages";
 import { enDashboardPageMessages, koDashboardPageMessages } from "~/app/page.messages";
 import { enAgentsPageMessages, koAgentsPageMessages } from "~/app/playground/agents/page.messages";
+import { enIntegrationsPageMessages, koIntegrationsPageMessages } from "~/app/playground/integrations/page.messages";
 import { enPlaygroundPageMessages, koPlaygroundPageMessages } from "~/app/playground/agent-terminal/page.messages";
 import { enAssessmentPageMessages, koAssessmentPageMessages } from "~/app/playground/assessment/assessment.messages";
 import { enAssessmentTableMessages, koAssessmentTableMessages } from "~/components/page/playground/Assessment/AssessmentTable.messages";
@@ -27,6 +28,7 @@ import { enAbilityModalGeneralTabMessages, koAbilityModalGeneralTabMessages } fr
 import { enAbilityModalRequirementTabMessages, koAbilityModalRequirementTabMessages } from "~/components/page/abilities/AbilityModal/RequirementTab.messages";
 import { enAgentsTableMessages, koAgentsTableMessages } from "~/components/page/agents/AgentsTable.messages";
 import { enDeployAgentModalMessages, koDeployAgentModalMessages } from "~/components/page/agents/DeployAgentModal/DeployAgentModal.messages";
+import { enIntegrationsTableMessages, koIntegrationsTableMessages } from "~/components/page/integrations/IntegrationsTable.messages";
 import { enFuzzingConfigDownloadMessages, koFuzzingConfigDownloadMessages } from "~/components/page/fuzzing/ConfigDownload.messages";
 import { enFuzzingCreateJobModalMessages, koFuzzingCreateJobModalMessages } from "~/components/page/fuzzing/CreateJobModal.messages";
 import { enFuzzingFindingDetailMessages, koFuzzingFindingDetailMessages } from "~/components/page/fuzzing/FindingDetail.messages";
@@ -72,6 +74,7 @@ const enMessages = {
   ...enFuzzingLandingPageMessages,
   ...enDashboardPageMessages,
   ...enAgentsPageMessages,
+  ...enIntegrationsPageMessages,
   ...enPlaygroundPageMessages,
   ...enAssessmentPageMessages,
   ...enAssessmentTableMessages,
@@ -84,6 +87,7 @@ const enMessages = {
   ...enAbilityModalRequirementTabMessages,
   ...enAgentsTableMessages,
   ...enDeployAgentModalMessages,
+  ...enIntegrationsTableMessages,
   ...enFuzzingConfigDownloadMessages,
   ...enFuzzingCreateJobModalMessages,
   ...enFuzzingFindingDetailMessages,
@@ -126,6 +130,7 @@ const koMessages: Record<TranslationKey, string> = {
   ...koFuzzingLandingPageMessages,
   ...koDashboardPageMessages,
   ...koAgentsPageMessages,
+  ...koIntegrationsPageMessages,
   ...koPlaygroundPageMessages,
   ...koAssessmentPageMessages,
   ...koAssessmentTableMessages,
@@ -138,6 +143,7 @@ const koMessages: Record<TranslationKey, string> = {
   ...koAbilityModalRequirementTabMessages,
   ...koAgentsTableMessages,
   ...koDeployAgentModalMessages,
+  ...koIntegrationsTableMessages,
   ...koFuzzingConfigDownloadMessages,
   ...koFuzzingCreateJobModalMessages,
   ...koFuzzingFindingDetailMessages,

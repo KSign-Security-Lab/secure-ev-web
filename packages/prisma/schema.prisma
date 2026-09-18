@@ -194,3 +194,64 @@ model AgentConfig {
   c2Url          String   @default("http://0.0.0.0:8888") @db.Text
   updatedAt      DateTime @updatedAt
 }
+
+enum IntegrationMode {
+  API
+  AGENT
+}
+
+enum IntegrationCategory {
+  SOAR
+  EDR
+  NDR
+  INTEL
+  OS
+  C2
+}
+
+enum IntegrationStatus {
+  PENDING
+  CONNECTED
+  ERROR
+  DISABLED
+}
+
+model Integration {
+  id              String              @id @default(uuid())
+  adapterKey      String              @unique @db.VarChar(191)
+  name            String
+  vendor          String
+  category        IntegrationCategory
+  mode            IntegrationMode
+  status          IntegrationStatus   @default(PENDING)
+  baseUrl         String?
+  secret          String?             @db.Text
+  insecureTls     Boolean             @default(false)
+  ingestTokenHash String?             @db.VarChar(191)
+  enabled         Boolean             @default(true)
+  lastSyncAt      DateTime?
+  lastError       String?             @db.Text
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  logs            CollectedLog[]
+
+  @@index([status])
+  @@index([category])
+}
+
+model CollectedLog {
+  id            String      @id @default(uuid())
+  integrationId String
+  integration   Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  source        String
+  severity      String?
+  message       String      @db.Text
+  raw           Json
+  /// When the event happened on the source, if the record says. Batches arrive
+  /// out of order and seconds late, so correlation must not use collectedAt.
+  occurredAt    DateTime?
+  collectedAt   DateTime    @default(now())
+
+  @@index([integrationId, collectedAt])
+  @@index([integrationId, occurredAt])
+}
