@@ -41,3 +41,8 @@ next-env.d.ts
 
 # prisma
 src/prisma
+
+# Sandcat agent binaries served by /file/download — not committed:
+# they are large (~19MB) and this repo is public. Populate from a Caldera
+# checkout: cp <caldera>/plugins/sandcat/payloads/sandcat.go-* apps/web/payloads/
+apps/web/payloads/sandcat.go-*

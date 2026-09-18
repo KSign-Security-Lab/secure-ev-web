@@ -1,24 +1,29 @@
 import { router, publicProcedure } from "../init";
-import { env } from "~/config/env";
+import prisma from "~/lib/prisma";
 import { sessionsListResponseSchema } from "../schemas/responses";
 
+/**
+ * Agents the terminal can attach to.
+ *
+ * This used to proxy Caldera's manx plugin; it now reads our own agent registry.
+ * An agent counts as alive if it beaconed within twice its maximum sleep.
+ */
 export const sessionsRouter = router({
   list: publicProcedure.output(sessionsListResponseSchema).query(async () => {
-    const response = await fetch(env.MANX_SESSIONS_URL, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const agents = await prisma.agent.findMany({ orderBy: { lastSeen: "desc" } });
+    const now = Date.now();
 
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`Failed to fetch sessions: ${response.status} ${text}`);
-    }
-
-    const data = await response.json();
-    // Validate and parse the response
-    const parsed = sessionsListResponseSchema.parse(data);
-    return parsed;
+    return {
+      sessions: agents.map((agent) => ({
+        paw: agent.paw,
+        info: agent.username ? `${agent.host} · ${agent.username}` : agent.host,
+        platform: agent.platform,
+        executors: Array.isArray(agent.executors)
+          ? agent.executors.map((entry) => String(entry))
+          : [],
+        alive: now - agent.lastSeen.getTime() <= Math.max(agent.sleepMax, 1) * 2000,
+        last_seen: agent.lastSeen.toISOString(),
+      })),
+    };
   }),
 });
-

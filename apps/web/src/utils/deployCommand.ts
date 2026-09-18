@@ -1,9 +1,10 @@
 /**
- * Helpers for the Sandcat deployment commands served by the defend (Caldera) API.
+ * Helpers for the Sandcat deployment commands (see server/c2/deployTemplates.ts).
  *
  * Commands arrive with `#{...}` placeholders (`#{app.contact.http}`,
  * `#{agents.implant_name}`, `#{agent.extensions}`). The operator edits the values
- * and every command re-renders, which mirrors Caldera's own deploy modal.
+ * and every command re-renders, which mirrors Caldera's deploy modal, whose
+ * templates and placeholder convention these were ported from.
  */
 
 const PLACEHOLDER_PATTERN = /#\{(.*?)\}/g;
@@ -29,7 +30,7 @@ export function substitute(
   );
 }
 
-/** Prism language for a Caldera executor. */
+/** Prism language for an agent executor. */
 export function highlightLanguage(executor: string): string {
   return executor === "psh" ? "powershell" : "bash";
 }

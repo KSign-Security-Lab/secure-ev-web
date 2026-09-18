@@ -56,9 +56,7 @@ type SystemLogEntry = {
 export default function AgentTerminal() {
   const { t } = useI18n();
   const terminalRef = useRef<TerminalViewHandle | null>(null);
-  const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const selectedSessionIdRef = useRef<number | null>(null);
+  const selectedSessionIdRef = useRef<string | null>(null);
   const [connectionState, setConnectionState] =
     useState<ConnectionState>("disconnected");
   const [sessionsData, setSessionsData] = useState<SessionsListResponse | null>(
@@ -66,7 +64,7 @@ export default function AgentTerminal() {
   );
   const [isLoadingSessions, setIsLoadingSessions] = useState<boolean>(true);
   const [sessionsError, setSessionsError] = useState<string | null>(null);
-  const [selectedSessionId, setSelectedSessionId] = useState<number | null>(
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
     null
   );
   const [systemLogs, setSystemLogs] = useState<SystemLogEntry[]>([]);
@@ -112,167 +110,108 @@ export default function AgentTerminal() {
     }
   }, [t]);
 
-  const clearReconnectTimer = useCallback(() => {
-    if (reconnectTimerRef.current) {
-      clearTimeout(reconnectTimerRef.current);
-      reconnectTimerRef.current = null;
+  /**
+   * Commands no longer ride a socket. They are queued for the agent and picked
+   * up on its next beacon — which is ~1s while this page holds the agent in
+   * interactive mode via /api/terminal/attach.
+   */
+  const POLL_INTERVAL_MS = 500;
+  const POLL_TIMEOUT_MS = 90_000;
+
+  const attach = useCallback(async (paw: string, attached: boolean) => {
+    try {
+      const response = await fetch("/api/terminal/attach", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paw, attached }),
+      });
+      if (!response.ok) return { alive: false, interactive: false };
+      return (await response.json()) as { alive: boolean; interactive: boolean };
+    } catch {
+      return { alive: false, interactive: false };
     }
   }, []);
 
-  const closeWebSocket = useCallback(
-    (skipTimerClear = false) => {
-      if (!skipTimerClear) {
-        clearReconnectTimer();
-      }
-      const ws = wsRef.current;
-      if (ws) {
-        ws.onopen = null;
-        ws.onmessage = null;
-        ws.onerror = null;
-        ws.onclose = null;
-        ws.close();
-        wsRef.current = null;
-      }
-    },
-    [clearReconnectTimer]
-  );
-
-  const connectWebSocketRef = useRef<((id?: number | null) => void) | undefined>(undefined);
-
-  const connectWebSocket = useCallback(
-    (sessionId?: number | null) => {
-      // Don't connect if no session is selected
-      if (!sessionId) {
-        closeWebSocket();
-        setConnectionState("disconnected");
+  const sendCommand = useCallback(
+    async (command: string) => {
+      const paw = selectedSessionIdRef.current;
+      if (!paw) {
+        terminalRef.current?.writeln(
+          `\r\n${t("playground.page.warnNoSession")}`
+        );
         return;
       }
 
-      // Clear any existing reconnect timer before connecting
-      clearReconnectTimer();
-      // Close existing connection without clearing timer (we already cleared it)
-      closeWebSocket(true);
+      appendSystemLog("info", t("playground.page.log.command", { command }));
 
-      const baseUrl = process.env.NEXT_PUBLIC_TERMINAL_WS_URL?.trim() || "";
-      const apiKey = process.env.NEXT_PUBLIC_DEFEND_API_KEY?.trim() || "";
-
-      const normalizedBase = baseUrl.replace(/\/$/, "");
-      const baseWithSession = `${normalizedBase}/${sessionId}`;
-      let url = baseWithSession;
-      if (apiKey) {
-        try {
-          const urlObj = new URL(baseWithSession);
-          urlObj.searchParams.set("key", apiKey);
-          url = urlObj.toString();
-        } catch {
-          const separator = baseWithSession.includes("?") ? "&" : "?";
-          url = `${baseWithSession}${separator}key=${encodeURIComponent(
-            apiKey
-          )}`;
-        }
-      }
-
-      appendSystemLog(
-        "info",
-        t("playground.page.log.connecting", { id: sessionId })
-      );
-      setConnectionState("connecting");
-
-      const ws = new WebSocket(url);
-      wsRef.current = ws;
-
-      ws.onopen = () => {
-        setConnectionState("connected");
-        appendSystemLog(
-          "success",
-          t("playground.page.log.connected", { id: sessionId })
-        );
-        terminalRef.current?.prompt();
-      };
-
-      ws.onmessage = (event) => {
-        const message = normalizeMessage(event.data);
-        message.lines.forEach((line) => terminalRef.current?.writeln(line));
-        if (message.meta.length > 0) {
-          appendSystemLog("info", message.meta.join(" | "));
-        }
-      };
-
-      ws.onerror = (event) => {
-        // eslint-disable-next-line no-console
-        console.error("Terminal WebSocket error", event);
-        // Don't set error state here - let onclose handle reconnection
-        // The error will cause the connection to close, and onclose will handle reconnection
-        appendSystemLog("error", t("playground.page.log.connectionError"));
-      };
-
-      ws.onclose = () => {
-        // Only process close if this is still the current WebSocket
-        if (wsRef.current !== ws) {
-          return;
-        }
-
-        // Clear the ref first to prevent other close handlers from running
-        wsRef.current = null;
-        setConnectionState("disconnected");
-
-        // Only reconnect if we still have a session selected and no timer is already set
-        const currentSessionId = selectedSessionIdRef.current;
-        if (currentSessionId && !reconnectTimerRef.current) {
-          appendSystemLog(
-            "warning",
-            t("playground.page.log.connectionClosedReconnect")
-          );
-          reconnectTimerRef.current = setTimeout(() => {
-            // Double-check we still need to reconnect
-            if (!reconnectTimerRef.current) {
-              return; // Timer was cleared
-            }
-            reconnectTimerRef.current = null;
-            // Check again if session is still selected before reconnecting
-            const sessionToReconnect = selectedSessionIdRef.current;
-            if (sessionToReconnect && wsRef.current === null) {
-              connectWebSocketRef.current?.(sessionToReconnect);
-            }
-          }, 1500);
-        } else if (!currentSessionId) {
-          appendSystemLog("warning", t("playground.page.log.connectionClosed"));
-        }
-      };
-    },
-    [appendSystemLog, closeWebSocket, clearReconnectTimer, t]
-  );
-
-  useEffect(() => {
-    connectWebSocketRef.current = connectWebSocket;
-  }, [connectWebSocket]);
-
-  const sendCommand = useCallback(
-    (command: string) => {
-      const ws = wsRef.current;
-      if (ws?.readyState === WebSocket.OPEN) {
-        ws.send(command);
-        appendSystemLog("info", t("playground.page.log.command", { command }));
-      } else {
+      let instructionId: string;
+      try {
+        const response = await fetch("/api/terminal/command", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ paw, command }),
+        });
+        if (!response.ok) throw new Error(await response.text());
+        ({ instructionId } = (await response.json()) as { instructionId: string });
+      } catch (error) {
         terminalRef.current?.writeln(
           `\r\n${t("playground.page.warnNotConnected")}`
         );
         appendSystemLog(
-          "warning",
-          t("playground.page.log.cannotSend")
+          "error",
+          error instanceof Error ? error.message : t("playground.page.log.cannotSend")
         );
+        terminalRef.current?.prompt();
+        return;
       }
+
+      const startedAt = Date.now();
+      while (Date.now() - startedAt < POLL_TIMEOUT_MS) {
+        await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
+
+        // The operator switched agents mid-flight; stop reporting on this one.
+        if (selectedSessionIdRef.current !== paw) return;
+
+        let payload: { state?: string } & Record<string, unknown>;
+        try {
+          const response = await fetch(
+            `/api/terminal/result?id=${encodeURIComponent(instructionId)}`
+          );
+          if (!response.ok) continue;
+          payload = await response.json();
+        } catch {
+          continue;
+        }
+
+        if (payload.state !== "COMPLETE") continue;
+
+        const message = normalizeMessage(JSON.stringify(payload));
+        message.lines.forEach((line) => terminalRef.current?.writeln(line));
+        if (message.meta.length > 0) {
+          appendSystemLog("info", message.meta.join(" | "));
+        }
+        terminalRef.current?.prompt();
+        return;
+      }
+
+      terminalRef.current?.writeln(`\r\n${t("playground.page.log.commandTimeout")}`);
+      appendSystemLog("warning", t("playground.page.log.commandTimeout"));
+      terminalRef.current?.prompt();
     },
     [appendSystemLog, t]
   );
 
   const handleSessionClick = useCallback(
-    (sessionId: number) => {
-      selectedSessionIdRef.current = sessionId;
-      setSelectedSessionId(sessionId);
-      connectWebSocket(sessionId);
+    (paw: string) => {
+      const previous = selectedSessionIdRef.current;
+      if (previous && previous !== paw) void attach(previous, false);
+
+      selectedSessionIdRef.current = paw;
+      setSelectedSessionId(paw);
+      setConnectionState("connecting");
+      appendSystemLog("info", t("playground.page.log.connecting", { id: paw }));
     },
-    [connectWebSocket]
+    [attach, appendSystemLog, t]
   );
 
   // Keep ref in sync with state
@@ -282,17 +221,48 @@ export default function AgentTerminal() {
 
   useEffect(() => {
     fetchSessions();
-    // Only connect if a session is selected
-    if (selectedSessionId) {
-      connectWebSocket(selectedSessionId);
-    } else {
-      closeWebSocket();
+  }, [fetchSessions]);
+
+  /**
+   * Hold the selected agent in interactive mode. The heartbeat is well inside
+   * the server's 30s window, so an abandoned tab releases the agent on its own.
+   */
+  useEffect(() => {
+    if (!selectedSessionId) {
       setConnectionState("disconnected");
+      return;
     }
-    return () => {
-      closeWebSocket();
+
+    let cancelled = false;
+    let firstBeat = true;
+
+    const beat = async () => {
+      const { alive, interactive } = await attach(selectedSessionId, true);
+      if (cancelled) return;
+
+      // "connected" means the agent has actually picked up the 1s beacon; until
+      // then it is still finishing its previous sleep, so stay on "connecting".
+      setConnectionState(alive && interactive ? "connected" : "connecting");
+
+      if (alive && firstBeat) {
+        firstBeat = false;
+        appendSystemLog(
+          "success",
+          t("playground.page.log.connected", { id: selectedSessionId })
+        );
+        terminalRef.current?.prompt();
+      }
     };
-  }, [fetchSessions, connectWebSocket, closeWebSocket, selectedSessionId]);
+
+    void beat();
+    const timer = setInterval(beat, 10_000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+      void attach(selectedSessionId, false);
+    };
+  }, [selectedSessionId, attach, appendSystemLog, t]);
 
   // Refresh handlers
   const handleRefreshSessions = useCallback(async () => {

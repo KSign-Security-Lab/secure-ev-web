@@ -11,6 +11,7 @@ export type AgentConfig = RouterOutputs["agents"]["config"];
 
 type Draft = {
   implant_name: string;
+  c2_url: string;
   sleep_min: string;
   sleep_max: string;
   watchdog: string;
@@ -19,6 +20,7 @@ type Draft = {
 
 const toDraft = (config: AgentConfig): Draft => ({
   implant_name: config.implant_name,
+  c2_url: config.c2_url,
   sleep_min: String(config.sleep_min),
   sleep_max: String(config.sleep_max),
   watchdog: String(config.watchdog),
@@ -58,6 +60,7 @@ export const AgentConfigPanel: React.FC<AgentConfigPanelProps> = ({
   // Same rules Caldera enforces in its own ConfigModal.
   const validate = (): string | null => {
     if (!draft.implant_name.trim()) return t("deploy.config.errImplant");
+    if (!draft.c2_url.trim()) return t("deploy.config.errC2Url");
 
     for (const field of NUMERIC_FIELDS) {
       const value = Number(draft[field]);
@@ -82,6 +85,7 @@ export const AgentConfigPanel: React.FC<AgentConfigPanelProps> = ({
     try {
       const saved = await trpc.agents.updateConfig.mutate({
         implant_name: draft.implant_name.trim(),
+        c2_url: draft.c2_url.trim(),
         sleep_min: Number(draft.sleep_min),
         sleep_max: Number(draft.sleep_max),
         watchdog: Number(draft.watchdog),
@@ -123,6 +127,26 @@ export const AgentConfigPanel: React.FC<AgentConfigPanelProps> = ({
           {t("deploy.config.title")}
         </h3>
         <p className="text-xs text-slate-500">{t("deploy.config.description")}</p>
+      </div>
+
+      <div className="space-y-1.5">
+        <label
+          htmlFor="agent-config-c2url"
+          className="block text-[10px] font-black uppercase tracking-[0.2em] text-slate-500"
+        >
+          {t("deploy.config.c2Url")}
+        </label>
+        <Input
+          id="agent-config-c2url"
+          value={draft.c2_url}
+          spellCheck={false}
+          placeholder="http://10.0.0.5:4200"
+          onChange={(event) => set("c2_url", event.target.value)}
+          className="font-mono text-xs"
+        />
+        <p className="text-[11px] text-slate-600">
+          {t("deploy.config.c2UrlHint")}
+        </p>
       </div>
 
       <div className="space-y-1.5">

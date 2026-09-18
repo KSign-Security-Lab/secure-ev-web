@@ -21,9 +21,6 @@ type Deployment = DeployResponse["deployments"][number];
 type Platform = Deployment["platform"];
 type Tab = "deploy" | "config";
 
-/** darwin ships separate AMD64 and ARM64 binaries. */
-const ARCHITECTURES = ["amd64", "arm64"] as const;
-
 interface DeployAgentModalProps {
   open: boolean;
   onClose: () => void;
@@ -46,8 +43,6 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
 
   const [tab, setTab] = React.useState<Tab>("deploy");
   const [platform, setPlatform] = React.useState<Platform>("linux");
-  const [architecture, setArchitecture] =
-    React.useState<(typeof ARCHITECTURES)[number]>("amd64");
   const [fieldValues, setFieldValues] = React.useState<Record<string, string>>({});
 
   const [knownPaws, setKnownPaws] = React.useState<Set<string>>(new Set());
@@ -150,13 +145,10 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
   const handleDownloadBinary = async () => {
     setIsDownloadingBinary(true);
     try {
-      const params = new URLSearchParams({ platform });
-      if (platform === "darwin") params.set("architecture", architecture);
-
-      const extensions = fieldValues["agent.extensions"]?.trim();
-      if (extensions) params.set("extensions", extensions);
-
-      const response = await fetch(`/api/agent/download?${params}`);
+      const response = await fetch("/file/download", {
+        method: "POST",
+        headers: { file: "sandcat.go", platform },
+      });
       if (!response.ok) throw new Error(await response.text());
 
       const blob = await response.blob();
@@ -346,26 +338,6 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
                       </div>
 
                       <div className="flex items-center gap-3 flex-wrap">
-                        {platform === "darwin" && (
-                          <div className="flex items-center gap-1">
-                            {ARCHITECTURES.map((arch) => (
-                              <button
-                                key={arch}
-                                type="button"
-                                onClick={() => setArchitecture(arch)}
-                                className={cn(
-                                  "px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-widest transition-colors",
-                                  architecture === arch
-                                    ? "bg-slate-800 text-white"
-                                    : "text-slate-500 hover:text-slate-300"
-                                )}
-                              >
-                                {arch}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-
                         <button
                           type="button"
                           onClick={handleDownloadBinary}

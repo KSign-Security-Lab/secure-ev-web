@@ -30,7 +30,6 @@ export const enDeployAgentModalMessages = {
   "deploy.binary.download": "Download binary",
   "deploy.binary.downloading": "Building agent binary…",
   "deploy.binary.failed": "Agent binary download failed",
-  "deploy.binary.architecture": "Architecture",
 
   "deploy.watcher.title": "Agent check-in",
   "deploy.watcher.idle":
@@ -51,6 +50,9 @@ export const enDeployAgentModalMessages = {
   "deploy.config.title": "Agent configuration",
   "deploy.config.description":
     "Defaults applied to every agent that checks in to this server.",
+  "deploy.config.c2Url": "C2 address",
+  "deploy.config.c2UrlHint":
+    "Where agents call back. Must be reachable from the target host.",
   "deploy.config.implantName": "Implant name",
   "deploy.config.sleepMin": "Beacon min (s)",
   "deploy.config.sleepMax": "Beacon max (s)",
@@ -62,6 +64,7 @@ export const enDeployAgentModalMessages = {
   "deploy.config.saveFailed": "Could not save agent configuration",
   "deploy.config.errBeacon": "Beacon min must be less than or equal to beacon max",
   "deploy.config.errImplant": "Implant name cannot be empty",
+  "deploy.config.errC2Url": "C2 address cannot be empty",
   "deploy.config.errNegative": "Value must be 0 or greater",
 } as const;
 
@@ -102,7 +105,6 @@ export const koDeployAgentModalMessages: Record<
   "deploy.binary.download": "바이너리 다운로드",
   "deploy.binary.downloading": "에이전트 바이너리 빌드 중…",
   "deploy.binary.failed": "에이전트 바이너리 다운로드에 실패했습니다",
-  "deploy.binary.architecture": "아키텍처",
 
   "deploy.watcher.title": "에이전트 접속",
   "deploy.watcher.idle":
@@ -123,6 +125,9 @@ export const koDeployAgentModalMessages: Record<
   "deploy.config.title": "에이전트 설정",
   "deploy.config.description":
     "이 서버에 접속하는 모든 에이전트에 적용되는 기본값입니다.",
+  "deploy.config.c2Url": "C2 주소",
+  "deploy.config.c2UrlHint":
+    "에이전트가 접속할 주소입니다. 대상 호스트에서 연결 가능해야 합니다.",
   "deploy.config.implantName": "임플란트 이름",
   "deploy.config.sleepMin": "비컨 최소 (초)",
   "deploy.config.sleepMax": "비컨 최대 (초)",
@@ -134,5 +139,6 @@ export const koDeployAgentModalMessages: Record<
   "deploy.config.saveFailed": "에이전트 설정을 저장하지 못했습니다",
   "deploy.config.errBeacon": "비컨 최소값은 최대값보다 작거나 같아야 합니다",
   "deploy.config.errImplant": "임플란트 이름은 비워 둘 수 없습니다",
+  "deploy.config.errC2Url": "C2 주소는 비워 둘 수 없습니다",
   "deploy.config.errNegative": "0 이상의 값이어야 합니다",
 };

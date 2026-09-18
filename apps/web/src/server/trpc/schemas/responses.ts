@@ -110,11 +110,17 @@ export const agentStatisticsSchema = z.object({
 });
 
 // Sessions schema based on actual API response structure
+/**
+ * A terminal-attachable agent. Identified by `paw` — the old numeric id came
+ * from Caldera's manx plugin and no longer exists now that we run our own C2.
+ */
 export const sessionSchema = z.object({
-  id: z.number(),
+  paw: z.string(),
   info: z.string(),
   platform: z.string(),
   executors: z.array(z.string()),
+  alive: z.boolean(),
+  last_seen: z.string(),
 });
 
 export const sessionsListResponseSchema = z.object({
@@ -133,25 +139,6 @@ export const deployPlatformSchema = z.enum(DEPLOY_PLATFORMS);
 export const deployCommandVariationSchema = z.object({
   description: z.string(),
   command: z.string(),
-});
-
-export const deployCommandAbilitySchema = z.object({
-  name: z.string(),
-  platform: z.string(),
-  executor: z.string(),
-  description: z.string(),
-  command: z.string(),
-  variations: z.array(deployCommandVariationSchema).default([]),
-});
-
-/**
- * `app_config` mixes strings, numbers and string arrays (e.g. `app.contact.ftp.port`
- * is a number, `agents.bootstrap_abilities` is an array), so it is accepted loosely
- * here and flattened to strings before it reaches the client.
- */
-export const deployCommandsResponseSchema = z.object({
-  abilities: z.array(deployCommandAbilitySchema),
-  app_config: z.record(z.string(), z.unknown()),
 });
 
 /** The Sandcat-only, client-facing shape. */
@@ -178,6 +165,8 @@ export const agentConfigSchema = z.object({
   sleep_max: z.number().int().nonnegative(),
   watchdog: z.number().int().nonnegative(),
   untrusted_timer: z.number().int().nonnegative(),
+  /** Callback address baked into the generated deploy commands. */
+  c2_url: z.string(),
   bootstrap_abilities: z.array(z.string()).default([]),
   deployments: z.array(z.string()).default([]),
 });
@@ -186,6 +175,7 @@ export const agentConfigSchema = z.object({
 export const agentConfigUpdateSchema = z
   .object({
     implant_name: z.string().min(1, "Implant name cannot be empty"),
+    c2_url: z.string().min(1, "C2 address cannot be empty"),
     sleep_min: z.number().int().nonnegative(),
     sleep_max: z.number().int().nonnegative(),
     watchdog: z.number().int().nonnegative(),

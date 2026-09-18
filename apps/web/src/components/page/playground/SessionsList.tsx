@@ -13,8 +13,8 @@ interface Props {
   data: SessionsListResponse | null;
   isLoading: boolean;
   error: string | null;
-  selectedSessionId: number | null;
-  onSelect: (id: number) => void;
+  selectedSessionId: string | null;
+  onSelect: (paw: string) => void;
 }
 
 const SESSIONS_PER_PAGE = 20;
@@ -54,7 +54,7 @@ export function SessionsList({
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (s) =>
-          s.id.toString().includes(query) ||
+          s.paw.toLowerCase().includes(query) ||
           s.info.toLowerCase().includes(query) ||
           s.platform.toLowerCase().includes(query) ||
           s.executors.some((e) => e.toLowerCase().includes(query))
@@ -144,7 +144,7 @@ export function SessionsList({
                 <div className="flex min-h-0 flex-1 flex-col">
                   <div className="flex-1 space-y-1.5 overflow-y-auto pr-1 min-h-0">
                     {paginatedSessions.map((s) => {
-                      const isSelected = selectedSessionId === s.id;
+                      const isSelected = selectedSessionId === s.paw;
                       const shownExecutors = s.executors.slice(0, 2);
                       const extra = Math.max(
                         s.executors.length - shownExecutors.length,
@@ -152,8 +152,8 @@ export function SessionsList({
                       );
                       return (
                         <button
-                          key={s.id}
-                          onClick={() => onSelect(s.id)}
+                          key={s.paw}
+                          onClick={() => onSelect(s.paw)}
                           className={`w-full rounded border px-3 py-2.5 text-left text-xs transition-colors ${
                             isSelected
                               ? "border-primary-500/50 bg-primary-500/10 shadow-inner"
@@ -170,7 +170,7 @@ export function SessionsList({
                                       : "text-white"
                                   }`}
                                 >
-                                  #{s.id}
+                                  {s.paw}
                                 </span>
                                 <PlatformBadge platform={s.platform} />
                               </div>

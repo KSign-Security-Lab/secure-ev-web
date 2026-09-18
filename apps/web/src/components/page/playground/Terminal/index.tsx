@@ -24,7 +24,7 @@ export interface TerminalViewProps {
   connectionState: ConnectionState;
   welcomeMessage?: string;
   promptLabel?: string;
-  sessionId?: number | null;
+  sessionId?: string | null;
   onCommand: (command: string) => void;
 }
 
@@ -54,7 +54,7 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
     const fitAddonRef = useRef<FitAddon | null>(null);
     const inputBufferRef = useRef<string>("");
     const connectionStateRef = useRef<ConnectionState>(connectionState);
-    const sessionIdRef = useRef<number | null | undefined>(sessionId);
+    const sessionIdRef = useRef<string | null | undefined>(sessionId);
     const [showAutocomplete, setShowAutocomplete] = useState(false);
     const [autocompleteInput, setAutocompleteInput] = useState("");
     const autocompleteTriggeredRef = useRef(false);

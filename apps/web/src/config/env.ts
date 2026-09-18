@@ -10,34 +10,29 @@ import { z } from "zod";
  * the application will fail to start with a clear error message.
  */
 const envSchema = z.object({
-  // Defend API Configuration
-  DEFEND_API_URL: z
+  /**
+   * Public address agents call back to, used as the default for the C2 address
+   * in the agent configuration. Editable afterwards from the deploy modal.
+   */
+  C2_PUBLIC_URL: z
     .string()
-    .min(1, "DEFEND_API_URL is required")
-    .transform((val) => {
-      const trimmed = val.trim();
-      // Check if it already has a scheme
-      const hasScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(trimmed);
-      const candidateBase = hasScheme ? trimmed : `https://${trimmed}`;
-
-      // Validate it's a proper URL
+    .trim()
+    .min(1)
+    .default("http://0.0.0.0:4200")
+    .refine((value) => {
       try {
-        new URL("/", candidateBase);
-        return candidateBase;
+        new URL(value);
+        return true;
       } catch {
-        throw new Error(
-          `DEFEND_API_URL is invalid: "${val}". Must be a valid URL (e.g., "api.example.com" or "https://api.example.com")`
-        );
+        return false;
       }
-    }),
+    }, "C2_PUBLIC_URL must be a valid URL (e.g. \"http://10.0.0.5:4200\")"),
 
-  DEFEND_API_KEY: z.string().min(1, "DEFEND_API_KEY is required"),
+  /** Directory holding the sandcat binaries served by /file/download. */
+  C2_PAYLOAD_DIR: z.string().trim().optional(),
 
-  // Manx Sessions API Configuration
-  MANX_SESSIONS_URL: z
-    .string()
-    .min(1, "MANX_SESSIONS_URL is required")
-    .url("MANX_SESSIONS_URL must be a valid URL"),
+  /** Directory where agent uploads land. */
+  C2_EXFIL_DIR: z.string().trim().optional(),
 });
 
 /**
@@ -47,9 +42,9 @@ const envSchema = z.object({
  * environment variable is missing or invalid.
  */
 export const env = envSchema.parse({
-  DEFEND_API_URL: process.env.DEFEND_API_URL,
-  DEFEND_API_KEY: process.env.DEFEND_API_KEY,
-  MANX_SESSIONS_URL: process.env.MANX_SESSIONS_URL,
+  C2_PUBLIC_URL: process.env.C2_PUBLIC_URL,
+  C2_PAYLOAD_DIR: process.env.C2_PAYLOAD_DIR,
+  C2_EXFIL_DIR: process.env.C2_EXFIL_DIR,
 });
 
 /**
@@ -57,6 +52,6 @@ export const env = envSchema.parse({
  *
  * Usage:
  *   import { env } from "~/config/env";
- *   const apiUrl = env.DEFEND_API_URL; // Fully typed!
+ *   const c2Url = env.C2_PUBLIC_URL; // Fully typed!
  */
 export type Env = z.infer<typeof envSchema>;
