@@ -12,6 +12,7 @@ It combines operational visibility, ATT&CK-aligned attack content, fuzzing job o
 - `Fuzzing`: job lifecycle and report ingestion for protocol fuzzing workflows
 - `Playground`: interactive session control through WebSocket-based terminal UX
 - `Analysis Workspace`: analysis interface for code/security review flows (currently mock-data driven)
+- `Integrations`: connect external security products over their API, or collect logs from products without one through a generated Fluent Bit install script
 
 ## Repository Layout
 
@@ -37,12 +38,16 @@ five projects sharing this machine.
 | 4202 | MySQL (host mapping for the `mysql` container, which still listens on 3306 internally) |
 | 4203 | Prisma Studio (`pnpm prisma:studio`) |
 
+Integrated products listen on their own ports and are configured per integration
+from the Integrations page, not through this range.
+
 Ports belonging to external systems (defend API, terminal WebSocket, fuzzing targets) are configured through `.env` and are not part of this range.
 
 ## System Model
 
 - External APIs provide live agent and session data.
-- Prisma + MySQL store abilities, MITRE metadata, fuzzing jobs, and reports.
+- Integrations reach products two ways: API-mode adapters poll the product directly, while AGENT-mode products push records to `/api/ingest` from a Fluent Bit agent installed with a generated, per-integration token.
+- Prisma + MySQL store abilities, MITRE metadata, fuzzing jobs, reports, integrations, and collected logs.
 - tRPC routes in `apps/web` expose typed server operations to the UI.
 - WebSocket channels support interactive terminal and notification flows.
 
