@@ -120,3 +120,78 @@ export const sessionSchema = z.object({
 export const sessionsListResponseSchema = z.object({
   sessions: z.array(sessionSchema),
 });
+
+// ---------------------------------------------------------------------------
+// Agent deployment (Caldera `/api/v2/deploy_commands`)
+// ---------------------------------------------------------------------------
+
+/** Platforms we ship deployment instructions for. */
+export const DEPLOY_PLATFORMS = ["linux", "windows", "darwin"] as const;
+
+export const deployPlatformSchema = z.enum(DEPLOY_PLATFORMS);
+
+export const deployCommandVariationSchema = z.object({
+  description: z.string(),
+  command: z.string(),
+});
+
+export const deployCommandAbilitySchema = z.object({
+  name: z.string(),
+  platform: z.string(),
+  executor: z.string(),
+  description: z.string(),
+  command: z.string(),
+  variations: z.array(deployCommandVariationSchema).default([]),
+});
+
+/**
+ * `app_config` mixes strings, numbers and string arrays (e.g. `app.contact.ftp.port`
+ * is a number, `agents.bootstrap_abilities` is an array), so it is accepted loosely
+ * here and flattened to strings before it reaches the client.
+ */
+export const deployCommandsResponseSchema = z.object({
+  abilities: z.array(deployCommandAbilitySchema),
+  app_config: z.record(z.string(), z.unknown()),
+});
+
+/** The Sandcat-only, client-facing shape. */
+export const sandcatDeploymentSchema = z.object({
+  platform: deployPlatformSchema,
+  executor: z.string(),
+  description: z.string(),
+  command: z.string(),
+  variations: z.array(deployCommandVariationSchema),
+});
+
+export const sandcatDeployResponseSchema = z.object({
+  deployments: z.array(sandcatDeploymentSchema),
+  appConfig: z.record(z.string(), z.string()),
+});
+
+// ---------------------------------------------------------------------------
+// Global agent configuration (Caldera `/api/v2/config/agents`)
+// ---------------------------------------------------------------------------
+
+export const agentConfigSchema = z.object({
+  implant_name: z.string(),
+  sleep_min: z.number().int().nonnegative(),
+  sleep_max: z.number().int().nonnegative(),
+  watchdog: z.number().int().nonnegative(),
+  untrusted_timer: z.number().int().nonnegative(),
+  bootstrap_abilities: z.array(z.string()).default([]),
+  deployments: z.array(z.string()).default([]),
+});
+
+/** The writable subset, mirroring Caldera's own ConfigModal validation. */
+export const agentConfigUpdateSchema = z
+  .object({
+    implant_name: z.string().min(1, "Implant name cannot be empty"),
+    sleep_min: z.number().int().nonnegative(),
+    sleep_max: z.number().int().nonnegative(),
+    watchdog: z.number().int().nonnegative(),
+    untrusted_timer: z.number().int().nonnegative(),
+  })
+  .refine((value) => value.sleep_min <= value.sleep_max, {
+    message: "Beacon min must be less than or equal to beacon max",
+    path: ["sleep_min"],
+  });

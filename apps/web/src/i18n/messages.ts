@@ -26,6 +26,7 @@ import { enAbilityModalExecutorsTabMessages, koAbilityModalExecutorsTabMessages 
 import { enAbilityModalGeneralTabMessages, koAbilityModalGeneralTabMessages } from "~/components/page/abilities/AbilityModal/GeneralTab.messages";
 import { enAbilityModalRequirementTabMessages, koAbilityModalRequirementTabMessages } from "~/components/page/abilities/AbilityModal/RequirementTab.messages";
 import { enAgentsTableMessages, koAgentsTableMessages } from "~/components/page/agents/AgentsTable.messages";
+import { enDeployAgentModalMessages, koDeployAgentModalMessages } from "~/components/page/agents/DeployAgentModal/DeployAgentModal.messages";
 import { enFuzzingConfigDownloadMessages, koFuzzingConfigDownloadMessages } from "~/components/page/fuzzing/ConfigDownload.messages";
 import { enFuzzingCreateJobModalMessages, koFuzzingCreateJobModalMessages } from "~/components/page/fuzzing/CreateJobModal.messages";
 import { enFuzzingFindingDetailMessages, koFuzzingFindingDetailMessages } from "~/components/page/fuzzing/FindingDetail.messages";
@@ -82,6 +83,7 @@ const enMessages = {
   ...enAbilityModalGeneralTabMessages,
   ...enAbilityModalRequirementTabMessages,
   ...enAgentsTableMessages,
+  ...enDeployAgentModalMessages,
   ...enFuzzingConfigDownloadMessages,
   ...enFuzzingCreateJobModalMessages,
   ...enFuzzingFindingDetailMessages,
@@ -135,6 +137,7 @@ const koMessages: Record<TranslationKey, string> = {
   ...koAbilityModalGeneralTabMessages,
   ...koAbilityModalRequirementTabMessages,
   ...koAgentsTableMessages,
+  ...koDeployAgentModalMessages,
   ...koFuzzingConfigDownloadMessages,
   ...koFuzzingCreateJobModalMessages,
   ...koFuzzingFindingDetailMessages,
