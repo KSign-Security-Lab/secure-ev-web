@@ -23,11 +23,11 @@ function TerminalLoadingFallback() {
 
   return (
     <div className="flex h-full flex-col gap-4">
-      <div className="flex items-center justify-between rounded-md border border-slate-700 bg-slate-900/60 px-4 py-2 text-sm text-slate-200">
+      <div className="flex items-center justify-between rounded-md border border-neutral-200 bg-white px-4 py-2 text-sm text-neutral-700">
         <span>{t("playground.page.dynamic.statusLoading")}</span>
       </div>
-      <div className="h-[540px] w-full overflow-hidden rounded-md border border-slate-800 bg-black shadow-lg flex items-center justify-center">
-        <p className="text-slate-400">{t("playground.page.dynamic.loadingTerminal")}</p>
+      <div className="h-[540px] w-full overflow-hidden rounded-md border border-neutral-800 bg-neutral-950 shadow-sm flex items-center justify-center">
+        <p className="text-neutral-400">{t("playground.page.dynamic.loadingTerminal")}</p>
       </div>
     </div>
   );
@@ -290,15 +290,15 @@ export default function AgentTerminal() {
                 <div className="flex items-center gap-2 mr-2">
                   <ConnectionPill state={connectionState} />
                   {selectedSessionId ? (
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/20 px-2.5 py-1 text-[10px] font-bold text-blue-300 ring-1 ring-inset ring-blue-500/30">
-                      <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-bold text-blue-700 ring-1 ring-inset ring-blue-200">
+                      <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
                       {t("playground.header.sessionSelected", {
                         id: selectedSessionId,
                       })}
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-500/20 px-2.5 py-1 text-[10px] font-bold text-slate-400 ring-1 ring-inset ring-slate-700/50">
-                      <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-2.5 py-1 text-[10px] font-bold text-neutral-500 ring-1 ring-inset ring-neutral-200">
+                      <span className="h-1.5 w-1.5 rounded-full bg-neutral-400" />
                       {t("playground.header.noSessionSelected")}
                     </span>
                   )}
@@ -308,7 +308,7 @@ export default function AgentTerminal() {
                   size="sm"
                   onClick={handleRefreshSessions}
                   disabled={isLoadingSessions}
-                  className="gap-2 border-slate-700/50 hover:bg-slate-800 text-[10px] font-bold uppercase tracking-widest"
+                  className="gap-2 border-neutral-200 hover:bg-neutral-100 text-xs font-medium"
                 >
                   <RefreshCw className={`h-3.5 w-3.5 ${isLoadingSessions ? "animate-spin" : ""}`} />
                   {t("common.refresh")}

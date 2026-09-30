@@ -38,10 +38,10 @@ export const AssessmentTable: React.FC<AssessmentTableProps> = ({
       label: t("assessment.table.name"),
       render: (item) => (
         <div className="flex flex-col gap-0.5 min-w-0">
-          <span className="text-sm font-bold text-slate-100 truncate">
+          <span className="text-sm font-bold text-neutral-900 truncate">
             {item.name}
           </span>
-          <span className="text-[10px] text-slate-500 uppercase tracking-widest font-mono">
+          <span className="text-[10px] text-neutral-500 uppercase tracking-widest font-mono">
             ID: {item.id}
           </span>
         </div>
@@ -49,22 +49,22 @@ export const AssessmentTable: React.FC<AssessmentTableProps> = ({
     },
     {
       label: t("assessment.table.target"),
-      className: "font-mono text-xs text-slate-400 font-bold",
+      className: "font-mono text-xs text-neutral-500 font-bold",
       render: (item) => item.target,
     },
     {
       label: t("assessment.table.attackCount"),
-      className: "text-slate-200 font-bold tabular-nums",
+      className: "text-neutral-900 font-bold tabular-nums",
       render: (item) => item.attackCount,
     },
     {
       label: t("assessment.table.repeatCount"),
-      className: "text-slate-400 font-medium tabular-nums",
+      className: "text-neutral-500 font-medium tabular-nums",
       render: (item) => item.repeatCount,
     },
     {
       label: t("assessment.table.lastDate"),
-      className: "text-slate-500 text-xs italic",
+      className: "text-neutral-500 text-xs italic",
       render: (item) => item.lastExecutionDate || t("assessment.table.notYet"),
     },
   ];

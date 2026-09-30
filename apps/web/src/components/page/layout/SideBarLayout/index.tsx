@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React from "react";
 import {
   FlaskConical,
   Gauge,
@@ -12,7 +12,7 @@ import {
   ClipboardCheck,
   Plug,
 } from "lucide-react";
-import { MenuItemType, Sidebar, SidebarRef } from "./SideBar";
+import { AppTopBar, MenuItemType } from "../TopBar/AppTopBar";
 import { usePathname } from "next/navigation";
 import { useI18n } from "~/i18n/I18nProvider";
 
@@ -22,7 +22,6 @@ export default function SideBarLayout({
   children: React.ReactNode;
 }) {
   const { t } = useI18n();
-  const sidebarRef = useRef<SidebarRef>(null);
   const pathname = usePathname();
 
   const menuItems: MenuItemType[] = [
@@ -79,22 +78,22 @@ export default function SideBarLayout({
     },
   ];
 
-  // Check if current page is within the fuzzing section (Landing or Jobs)
+  // Fuzzing section (landing + xyflow canvases) renders full-bleed.
   const isFuzzingSection = pathname?.startsWith("/fuzzing");
 
   return (
-    <div className="flex h-screen min-h-screen overflow-hidden text-white">
-      <Sidebar ref={sidebarRef} menus={menuItems} />
-      
-      <div
-        className={`flex w-full flex-1 flex-col bg-base-950 min-w-0 min-h-0 overflow-hidden ${
-          isFuzzingSection ? "p-0" : "p-8"
-        }`}
+    <div className="flex min-h-screen flex-col bg-neutral-100 text-neutral-900">
+      <AppTopBar menus={menuItems} />
+
+      <main
+        className={
+          isFuzzingSection
+            ? "w-full flex-1"
+            : "mx-auto w-full max-w-7xl flex-1 px-4 py-5"
+        }
       >
-        <main className="flex flex-col w-full flex-1 min-h-0 min-w-0 overflow-x-hidden overflow-y-auto">
-          {children}
-        </main>
-      </div>
+        {children}
+      </main>
     </div>
   );
 }

@@ -78,12 +78,12 @@ const barChartOptions = {
     x: {
       grid: {
         display: true,
-        color: "rgba(75, 85, 99, 0.2)",
+        color: "#e5e7eb",
         lineWidth: 1,
         drawBorder: false,
       },
       ticks: {
-        color: "#9CA3AF",
+        color: "#6b7280",
         font: {
           size: 11,
           family: "inherit",
@@ -95,13 +95,13 @@ const barChartOptions = {
     y: {
       grid: {
         display: true,
-        color: "rgba(75, 85, 99, 0.2)",
+        color: "#e5e7eb",
         lineWidth: 1,
         drawBorder: false,
         drawOnChartArea: true,
       },
       ticks: {
-        color: "#9CA3AF",
+        color: "#6b7280",
         font: {
           size: 11,
           family: "inherit",
@@ -130,7 +130,7 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
           SCIENTIFIC_COLORS.trusted,
           SCIENTIFIC_COLORS.untrusted,
         ],
-        borderColor: "rgba(31, 41, 55, 0.8)",
+        borderColor: "#ffffff",
         borderWidth: 2,
         hoverBorderWidth: 3,
         hoverBorderColor: "#FFFFFF",
@@ -203,14 +203,14 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
     <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
       {/* Trust Status */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between border-b border-base-700/50 pb-2">
+        <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
           <div className="flex items-center gap-2">
-            <div className="w-1 h-5 bg-green-400 rounded-full" />
-            <h3 className="text-xs font-semibold text-neutral-200 uppercase tracking-wider">
+            <div className="w-1 h-5 bg-green-600 rounded-full" />
+            <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">
               {t("dashboard.chart.trustStatus")}
             </h3>
           </div>
-          <div className="text-xs text-neutral-400 font-mono">
+          <div className="text-xs text-neutral-500 font-mono">
             n = {data.totalCount}
           </div>
         </div>
@@ -218,10 +218,10 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
           <Doughnut data={trustChartData} options={chartOptions} />
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="text-center">
-              <div className="text-xl font-bold text-white mb-1">
+              <div className="text-xl font-bold text-neutral-950 mb-1">
                 {trustPercentage}%
               </div>
-              <div className="text-xs text-neutral-400 uppercase tracking-wide">
+              <div className="text-xs text-neutral-500 uppercase tracking-wide">
                 {t("dashboard.chart.trusted")}
               </div>
             </div>
@@ -229,27 +229,27 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
         </div>
         {/* Legend */}
         <div className="space-y-1.5 text-xs">
-          <div className="flex items-center gap-2 p-1.5 rounded bg-base-800/50 border border-base-700/30">
+          <div className="flex items-center gap-2 p-1.5 rounded bg-neutral-50 border border-neutral-200">
             <div
               className="w-2.5 h-2.5 rounded-full shrink-0"
               style={{ backgroundColor: SCIENTIFIC_COLORS.trusted }}
             />
-            <span className="text-neutral-300 flex-1 text-xs">
+            <span className="text-neutral-700 flex-1 text-xs">
               {t("dashboard.chart.trusted")}
             </span>
-            <span className="text-neutral-400 font-mono text-xs">
+            <span className="text-neutral-500 font-mono text-xs">
               {data.trustedCount}
             </span>
           </div>
-          <div className="flex items-center gap-2 p-1.5 rounded bg-base-800/50 border border-base-700/30">
+          <div className="flex items-center gap-2 p-1.5 rounded bg-neutral-50 border border-neutral-200">
             <div
               className="w-2.5 h-2.5 rounded-full shrink-0"
               style={{ backgroundColor: SCIENTIFIC_COLORS.untrusted }}
             />
-            <span className="text-neutral-300 flex-1 text-xs">
+            <span className="text-neutral-700 flex-1 text-xs">
               {t("dashboard.chart.untrusted")}
             </span>
-            <span className="text-neutral-400 font-mono text-xs">
+            <span className="text-neutral-500 font-mono text-xs">
               {data.untrustedCount}
             </span>
           </div>
@@ -258,14 +258,14 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
 
       {/* Platform Distribution */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between border-b border-base-700/50 pb-2">
+        <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
           <div className="flex items-center gap-2">
-            <div className="w-1 h-5 bg-primary-400 rounded-full" />
-            <h3 className="text-xs font-semibold text-neutral-200 uppercase tracking-wider">
+            <div className="w-1 h-5 bg-blue-600 rounded-full" />
+            <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">
               {t("dashboard.chart.byPlatform")}
             </h3>
           </div>
-          <div className="text-xs text-neutral-400 font-mono">
+          <div className="text-xs text-neutral-500 font-mono">
             n = {data.byPlatform.reduce((sum, item) => sum + item.value, 0)}
           </div>
         </div>
@@ -273,9 +273,9 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
           <Bar data={platformChartData} options={barChartOptions} />
         </div>
         {/* Summary Stats */}
-        <div className="flex items-center justify-between text-xs pt-2 border-t border-base-700/30">
-          <span className="text-neutral-400">{t("dashboard.chart.platforms")}</span>
-          <span className="text-neutral-300 font-mono">
+        <div className="flex items-center justify-between text-xs pt-2 border-t border-neutral-200">
+          <span className="text-neutral-500">{t("dashboard.chart.platforms")}</span>
+          <span className="text-neutral-700 font-mono">
             {t("dashboard.chart.unique", { count: data.byPlatform.length })}
           </span>
         </div>
@@ -284,14 +284,14 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
       {/* Group Distribution */}
       {data.byGroup.length > 0 && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between border-b border-base-700/50 pb-2">
+          <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
             <div className="flex items-center gap-2">
-              <div className="w-1 h-5 bg-accent-400 rounded-full" />
-              <h3 className="text-xs font-semibold text-neutral-200 uppercase tracking-wider">
+              <div className="w-1 h-5 bg-sky-600 rounded-full" />
+              <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">
                 {t("dashboard.chart.byGroup")}
               </h3>
             </div>
-            <div className="text-xs text-neutral-400 font-mono">
+            <div className="text-xs text-neutral-500 font-mono">
               n = {data.byGroup.reduce((sum, item) => sum + item.value, 0)}
             </div>
           </div>
@@ -299,9 +299,9 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
             <Bar data={groupChartData} options={barChartOptions} />
           </div>
           {/* Summary Stats */}
-          <div className="flex items-center justify-between text-xs pt-2 border-t border-base-700/30">
-            <span className="text-neutral-400">{t("dashboard.chart.groups")}</span>
-            <span className="text-neutral-300 font-mono">
+          <div className="flex items-center justify-between text-xs pt-2 border-t border-neutral-200">
+            <span className="text-neutral-500">{t("dashboard.chart.groups")}</span>
+            <span className="text-neutral-700 font-mono">
               {t("dashboard.chart.unique", { count: data.byGroup.length })}
             </span>
           </div>
@@ -311,14 +311,14 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
       {/* Privilege Distribution */}
       {data.byPrivilege.length > 0 && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between border-b border-base-700/50 pb-2">
+          <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
             <div className="flex items-center gap-2">
-              <div className="w-1 h-5 bg-green-400 rounded-full" />
-              <h3 className="text-xs font-semibold text-neutral-200 uppercase tracking-wider">
+              <div className="w-1 h-5 bg-green-600 rounded-full" />
+              <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">
                 {t("dashboard.chart.byPrivilege")}
               </h3>
             </div>
-            <div className="text-xs text-neutral-400 font-mono">
+            <div className="text-xs text-neutral-500 font-mono">
               n = {data.byPrivilege.reduce((sum, item) => sum + item.value, 0)}
             </div>
           </div>
@@ -326,11 +326,11 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
             <Bar data={privilegeChartData} options={horizontalBarOptions} />
           </div>
           {/* Summary Stats */}
-          <div className="flex items-center justify-between text-xs pt-2 border-t border-base-700/30">
-            <span className="text-neutral-400">
+          <div className="flex items-center justify-between text-xs pt-2 border-t border-neutral-200">
+            <span className="text-neutral-500">
               {t("dashboard.chart.privilegeLevels")}
             </span>
-            <span className="text-neutral-300 font-mono">
+            <span className="text-neutral-700 font-mono">
               {t("dashboard.chart.unique", { count: data.byPrivilege.length })}
             </span>
           </div>

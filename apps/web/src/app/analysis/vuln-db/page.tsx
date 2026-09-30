@@ -37,7 +37,7 @@ export default function VulnDBPage() {
   };
 
   return (
-    <div className="flex flex-col flex-1 w-full min-h-0 min-w-0 bg-base-950">
+    <div className="flex flex-col flex-1 w-full min-h-0 min-w-0 bg-neutral-100">
       {/* Main Content Section */}
       <div className="flex-1 min-w-0 overflow-x-hidden">
         <SignatureList onSelect={handleSelect} />

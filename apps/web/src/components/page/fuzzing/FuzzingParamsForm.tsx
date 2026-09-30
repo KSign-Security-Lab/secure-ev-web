@@ -33,7 +33,7 @@ export function FuzzingParamsForm({
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium mb-2 text-white">
+        <label className="block text-sm font-medium mb-2 text-neutral-900">
           {t("duration")}
         </label>
         <input
@@ -42,7 +42,7 @@ export function FuzzingParamsForm({
           onChange={(e) =>
             handleChange("duration", e.target.value ? parseInt(e.target.value) : undefined)
           }
-          className="w-full bg-base-800 p-2 rounded border border-base-850 text-white"
+          className="w-full bg-neutral-50 p-2 rounded border border-neutral-200 text-neutral-900"
           placeholder="3600"
           min="1"
         />
@@ -52,7 +52,7 @@ export function FuzzingParamsForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2 text-white">
+        <label className="block text-sm font-medium mb-2 text-neutral-900">
           {t("maxCases")}
         </label>
         <input
@@ -64,7 +64,7 @@ export function FuzzingParamsForm({
               e.target.value ? parseInt(e.target.value) : undefined
             )
           }
-          className="w-full bg-base-800 p-2 rounded border border-base-850 text-white"
+          className="w-full bg-neutral-50 p-2 rounded border border-neutral-200 text-neutral-900"
           placeholder="10000"
           min="1"
         />
@@ -74,7 +74,7 @@ export function FuzzingParamsForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2 text-white">
+        <label className="block text-sm font-medium mb-2 text-neutral-900">
           {t("aggressiveness")}
         </label>
         <select
@@ -85,7 +85,7 @@ export function FuzzingParamsForm({
               e.target.value as "low" | "medium" | "high"
             )
           }
-          className="w-full bg-base-800 p-2 rounded border border-base-850 text-white"
+          className="w-full bg-neutral-50 p-2 rounded border border-neutral-200 text-neutral-900"
         >
           <option value="low">{t("low")}</option>
           <option value="medium">{t("medium")}</option>
@@ -100,7 +100,7 @@ export function FuzzingParamsForm({
           onChange={(e) => handleChange("mutatePayloadFields", e.target.checked)}
           className="mr-2"
         />
-        <label className="text-sm text-white">{t("mutate")}</label>
+        <label className="text-sm text-neutral-900">{t("mutate")}</label>
       </div>
 
       <div className="flex items-center">
@@ -110,7 +110,7 @@ export function FuzzingParamsForm({
           onChange={(e) => handleChange("timingJitter", e.target.checked)}
           className="mr-2"
         />
-        <label className="text-sm text-white">{t("jitter")}</label>
+        <label className="text-sm text-neutral-900">{t("jitter")}</label>
       </div>
     </div>
   );

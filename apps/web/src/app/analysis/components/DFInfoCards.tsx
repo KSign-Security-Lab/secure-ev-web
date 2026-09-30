@@ -10,9 +10,9 @@ interface DFInfoCardsProps {
 }
 
 const PropRow = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex justify-between items-center py-1 text-sm border-b border-[#30363d] last:border-0">
-    <span className="text-[#8b949e]">{label}</span>
-    <span className="font-mono text-[#8b949e] text-right wrap-break-word" title={value}>
+  <div className="flex justify-between items-center py-1 text-sm border-b border-neutral-200 last:border-0">
+    <span className="text-neutral-500">{label}</span>
+    <span className="font-mono text-neutral-700 text-right wrap-break-word" title={value}>
       {value}
     </span>
   </div>
@@ -24,9 +24,9 @@ export default function DFInfoCards({ dfInfo }: DFInfoCardsProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
       {/* Destination */}
-      <Card className="bg-[#0d1117] border-[#30363d]">
-        <CardHeader className="p-3 border-b border-[#30363d]">
-          <CardTitle className="text-sm font-semibold text-[#79c0ff]">
+      <Card className="bg-white border-neutral-200">
+        <CardHeader className="p-3 border-b border-neutral-200">
+          <CardTitle className="text-sm font-semibold text-blue-700">
             {t("analysis.df.destination")}
           </CardTitle>
         </CardHeader>
@@ -39,9 +39,9 @@ export default function DFInfoCards({ dfInfo }: DFInfoCardsProps) {
       </Card>
 
       {/* Capacity */}
-      <Card className="bg-[#0d1117] border-[#30363d]">
-        <CardHeader className="p-3 border-b border-[#30363d]">
-          <CardTitle className="text-sm font-semibold text-[#56d364]">
+      <Card className="bg-white border-neutral-200">
+        <CardHeader className="p-3 border-b border-neutral-200">
+          <CardTitle className="text-sm font-semibold text-green-700">
             {t("analysis.df.capacity")}
           </CardTitle>
         </CardHeader>
@@ -54,9 +54,9 @@ export default function DFInfoCards({ dfInfo }: DFInfoCardsProps) {
       </Card>
 
       {/* Request */}
-      <Card className="bg-[#0d1117] border-[#30363d]">
-        <CardHeader className="p-3 border-b border-[#30363d]">
-          <CardTitle className="text-sm font-semibold text-[#bc8cff]">
+      <Card className="bg-white border-neutral-200">
+        <CardHeader className="p-3 border-b border-neutral-200">
+          <CardTitle className="text-sm font-semibold text-purple-700">
             {t("analysis.df.request")}
           </CardTitle>
         </CardHeader>
@@ -69,9 +69,9 @@ export default function DFInfoCards({ dfInfo }: DFInfoCardsProps) {
       </Card>
 
       {/* Validation */}
-      <Card className="bg-[#0d1117] border-[#30363d]">
-        <CardHeader className="p-3 border-b border-[#30363d]">
-          <CardTitle className="text-sm font-semibold text-[#d29922]">
+      <Card className="bg-white border-neutral-200">
+        <CardHeader className="p-3 border-b border-neutral-200">
+          <CardTitle className="text-sm font-semibold text-amber-700">
             {t("analysis.df.validation")}
           </CardTitle>
         </CardHeader>
@@ -84,9 +84,9 @@ export default function DFInfoCards({ dfInfo }: DFInfoCardsProps) {
       </Card>
 
       {/* Diagnostics */}
-      <Card className="bg-[#0d1117] border-[#30363d]">
-        <CardHeader className="p-3 border-b border-[#30363d]">
-          <CardTitle className="text-sm font-semibold text-[#ff7b72]">
+      <Card className="bg-white border-neutral-200">
+        <CardHeader className="p-3 border-b border-neutral-200">
+          <CardTitle className="text-sm font-semibold text-rose-700">
             {t("analysis.df.diagnostics")}
           </CardTitle>
         </CardHeader>
@@ -98,9 +98,9 @@ export default function DFInfoCards({ dfInfo }: DFInfoCardsProps) {
       </Card>
 
       {/* Root Cause */}
-      <Card className="bg-[#0d1117] border-[#30363d]">
-        <CardHeader className="p-3 border-b border-[#30363d]">
-          <CardTitle className="text-sm font-semibold text-[#d29922]">
+      <Card className="bg-white border-neutral-200">
+        <CardHeader className="p-3 border-b border-neutral-200">
+          <CardTitle className="text-sm font-semibold text-amber-700">
             {t("analysis.df.rootCause")}
           </CardTitle>
         </CardHeader>

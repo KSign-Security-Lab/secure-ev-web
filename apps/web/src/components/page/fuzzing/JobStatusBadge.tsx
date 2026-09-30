@@ -24,13 +24,13 @@ export function JobStatusBadge({ status }: JobStatusBadgeProps) {
   return (
     <span
       className={clsx(
-        "text-xs font-mono px-2 py-0.5 rounded uppercase",
+        "text-xs font-mono px-2 py-0.5 rounded border",
         {
-          "bg-blue-500/20 text-blue-300 animate-pulse": status === "RUNNING",
-          "bg-green-500/20 text-green-300": status === "COMPLETED",
-          "bg-red-500/20 text-red-300": status === "FAILED",
-          "bg-yellow-500/20 text-yellow-300": status === "PENDING",
-          "bg-slate-800 text-slate-400": !["RUNNING", "COMPLETED", "FAILED", "PENDING"].includes(status),
+          "border-blue-300 bg-blue-50 text-blue-700 animate-pulse": status === "RUNNING",
+          "border-green-300 bg-green-50 text-green-700": status === "COMPLETED",
+          "border-rose-300 bg-rose-50 text-rose-700": status === "FAILED",
+          "border-amber-300 bg-amber-50 text-amber-700": status === "PENDING",
+          "border-neutral-300 bg-neutral-50 text-neutral-700": !["RUNNING", "COMPLETED", "FAILED", "PENDING"].includes(status),
         }
       )}
     >

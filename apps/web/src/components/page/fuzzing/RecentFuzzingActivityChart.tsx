@@ -20,10 +20,10 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
 type FuzzingJob = RouterOutputs["fuzzing"]["list"]["jobs"][0];
 
 const CHART_COLORS = {
-  bar: "rgba(59, 130, 246, 0.8)", // Blue 500
-  hover: "rgba(96, 165, 250, 0.9)", // Blue 400
-  grid: "rgba(75, 85, 99, 0.2)", // Gray 600
-  text: "#9CA3AF", // Gray 400
+  bar: "#2563eb", // Blue
+  hover: "#1d4ed8", // Blue
+  grid: "#e5e7eb",
+  text: "#6b7280",
 };
 
 export function RecentFuzzingActivityChart() {
@@ -188,20 +188,20 @@ export function RecentFuzzingActivityChart() {
      <div className="w-full h-full flex flex-col">
         <div className="flex items-center justify-between mb-6">
             <div>
-                <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+                <h3 className="text-2xl font-bold text-neutral-900 flex items-center gap-2">
                     {t("fuzzing.activity.title")} 
-                    <span className="text-xs font-normal text-slate-500 bg-slate-800/50 px-2 py-0.5 rounded-full border border-slate-700">24H</span>
+                    <span className="text-xs font-normal text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full border border-neutral-200">24H</span>
                 </h3>
-                <p className="text-slate-400 text-sm mt-1">
+                <p className="text-neutral-500 text-sm mt-1">
                   {t("fuzzing.activity.subtitle")}
                 </p>
             </div>
             <div className="text-right">
-                <div className="text-2xl font-bold text-blue-400 flex items-center justify-end gap-2">
+                <div className="text-2xl font-bold text-blue-700 flex items-center justify-end gap-2">
                     {isLoading ? <Loader2 className="animate-spin" size={20} /> : totalJobs24h}
-                    <TrendingUp size={20} className="text-blue-500/50" />
+                    <TrendingUp size={20} className="text-blue-700/50" />
                 </div>
-                <div className="text-xs text-slate-500">
+                <div className="text-xs text-neutral-500">
                   {t("fuzzing.activity.totalJobs")}
                 </div>
             </div>
@@ -210,7 +210,7 @@ export function RecentFuzzingActivityChart() {
         <div className="flex-1 min-h-[200px] w-full relative">
             {isLoading ? (
                 <div className="absolute inset-0 flex items-center justify-center">
-                    <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+                    <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
                 </div>
             ) : (
                 <Bar options={options} data={chartData} />

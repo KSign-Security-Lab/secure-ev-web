@@ -54,7 +54,7 @@ export const RequirementTab = () => {
         {modules.map((mod, index) => (
           <div
             key={index}
-            className="border border-neutral-600 p-4 rounded space-y-4 bg-base-800"
+            className="border border-neutral-200 p-4 rounded space-y-4 bg-white"
           >
             {[
               {
@@ -86,7 +86,7 @@ export const RequirementTab = () => {
                 <label className="font-bold">{label}</label>
                 <input
                   type="text"
-                  className="p-2 border border-neutral-500 rounded bg-base-800 text-white"
+                  className="p-2 border border-neutral-200 rounded bg-neutral-50 text-neutral-900"
                   value={value}
                   onChange={(e) =>
                     handleChange(index, key as keyof FactModule, e.target.value)
@@ -98,7 +98,7 @@ export const RequirementTab = () => {
             <div className="text-right">
               <button
                 onClick={() => removeModule(index)}
-                className="bg-red-500 text-white px-4 py-2 rounded"
+                className="border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-md px-3 py-2 text-sm font-semibold"
               >
                 {t("abilities.requirement.delete")}
               </button>

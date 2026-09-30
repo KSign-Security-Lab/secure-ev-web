@@ -14,16 +14,16 @@ export function ConnectionPill({ state }: { state: ConnectionState }) {
 
   const dot =
     state === "connected"
-      ? "bg-emerald-400"
+      ? "bg-green-500"
       : state === "connecting"
-      ? "bg-yellow-400"
+      ? "bg-amber-500"
       : state === "error"
-      ? "bg-red-400"
-      : "bg-slate-500";
+      ? "bg-rose-500"
+      : "bg-neutral-400";
   return (
-    <div className="inline-flex items-center gap-1 rounded-full bg-slate-800/60 px-2.5 py-1 ring-1 ring-inset ring-slate-700">
+    <div className="inline-flex items-center gap-1 rounded-full bg-neutral-100 px-2.5 py-1 ring-1 ring-inset ring-neutral-200">
       <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
-      <span className="text-[10px] font-medium capitalize text-slate-300">
+      <span className="text-[10px] font-medium capitalize text-neutral-600">
         {stateLabel}
       </span>
     </div>

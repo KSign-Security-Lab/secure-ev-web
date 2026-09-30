@@ -70,14 +70,14 @@ export default function AssessmentPage() {
         badge="Playground"
         actions={
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={handleRegister}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition-all font-bold uppercase text-[11px] tracking-widest shadow-[0_0_15px_rgba(59,130,246,0.2)]"
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm font-semibold transition-colors"
             >
               <SaveIcon className="w-4 h-4" />
               {t("assessment.page.register")}
             </button>
-            <button className="flex items-center gap-2 bg-red-600/20 hover:bg-red-600/30 text-red-500 px-4 py-2 rounded-lg transition-all font-bold uppercase text-[11px] tracking-widest border border-red-500/20">
+            <button className="flex items-center gap-2 border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 px-3 py-2 rounded-md text-sm font-semibold transition-colors">
               <Trash2 className="w-4 h-4" />
               {t("assessment.page.delete")}
             </button>
@@ -89,7 +89,7 @@ export default function AssessmentPage() {
         <FilterBar 
           handleSearch={handleSearch} 
           searchPlaceholder={t("assessment.page.searchPlaceholder")}
-          className="bg-slate-900/50"
+          className="bg-white"
         />
 
         <div className="flex-1">

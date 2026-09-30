@@ -45,7 +45,7 @@ export default function Agents() {
         actions={
           <button
             onClick={() => setIsDeployOpen(true)}
-            className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:shadow-[0_0_25px_rgba(59,130,246,0.5)] transition-all duration-300 font-bold uppercase text-[11px] tracking-widest"
+            className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm font-semibold transition-colors"
           >
             <Rocket className="w-4 h-4 transition-transform duration-300 group-hover:-translate-y-0.5" />
             {t("agents.page.deploy")}

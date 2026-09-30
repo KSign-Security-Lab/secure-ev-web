@@ -120,7 +120,7 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
     <div className="flex flex-col items-center justify-center w-full max-w-2xl mx-auto h-full space-y-8">
       <div className="text-center">
         <h1 className="text-3xl font-bold mb-2">{t("analysis.upload.title")}</h1>
-        <p className="text-[#8b949e]">{t("analysis.upload.subtitle")}</p>
+        <p className="text-neutral-500">{t("analysis.upload.subtitle")}</p>
       </div>
 
       <input
@@ -135,25 +135,25 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
       <div
         className={`w-full border-2 border-dashed rounded-lg p-12 flex flex-col items-center justify-center cursor-pointer transition-all duration-200 ${
           isDragging
-            ? "border-blue-500 bg-blue-500/10 scale-[1.01] shadow-[0_0_20px_-5px_rgba(59,130,246,0.3)]"
-            : "border-[#8b949e] hover:border-blue-500 bg-transparent"
+            ? "border-blue-500 bg-blue-50 scale-[1.01]"
+            : "border-neutral-300 hover:border-blue-500 bg-transparent"
         }`}
         onClick={() => fileInputRef.current?.click()}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
-        <UploadCloud className={`w-12 h-12 mb-4 transition-colors ${isDragging ? "text-blue-400" : "text-[#8b949e]"}`} />
-        <p className={`font-medium transition-colors ${isDragging ? "text-blue-200" : "text-[#8b949e]"}`}>
+        <UploadCloud className={`w-12 h-12 mb-4 transition-colors ${isDragging ? "text-blue-700" : "text-neutral-500"}`} />
+        <p className={`font-medium transition-colors ${isDragging ? "text-blue-700" : "text-neutral-500"}`}>
           {t("analysis.upload.dropzoneInstruction")}
         </p>
-        <p className={`text-sm mt-1 transition-colors ${isDragging ? "text-blue-300/60" : "text-[#8b949e]"}`}>
+        <p className={`text-sm mt-1 transition-colors ${isDragging ? "text-blue-700" : "text-neutral-500"}`}>
           {t("analysis.upload.dropzoneFormats")}
         </p>
       </div>
 
       {error && (
-        <div className="w-full p-4 bg-red-900/30 border border-red-800 text-red-200 rounded-md flex items-center gap-3">
+        <div className="w-full p-4 border border-rose-300 bg-rose-50 text-rose-700 rounded-md flex items-center gap-3">
            <AlertCircle className="w-5 h-5 shrink-0" />
            <p className="text-sm">{error}</p>
         </div>
@@ -167,9 +167,9 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
             </h3>
             <button
               onClick={removeAll}
-              className="text-xs text-[#8b949e] hover:text-[#ff7b72] flex items-center gap-1 transition-colors group"
+              className="text-xs text-neutral-500 hover:text-rose-700 flex items-center gap-1 transition-colors group"
             >
-              <Trash2 className="w-3 h-3 transition-colors group-hover:text-[#ff7b72]" />
+              <Trash2 className="w-3 h-3 transition-colors group-hover:text-rose-700" />
               {t("analysis.upload.deleteAll")}
             </button>
           </div>
@@ -177,18 +177,18 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
             {files.map((file, idx) => (
               <div
                 key={idx}
-                className="flex items-center justify-between p-3 bg-[#21262d] rounded-md border border-[#30363d]"
+                className="flex items-center justify-between p-3 bg-neutral-50 rounded-md border border-neutral-200"
               >
                 <div className="flex items-center space-x-3 truncate mr-4">
-                  <FileIcon className="w-5 h-5 text-[#79c0ff] shrink-0" />
+                  <FileIcon className="w-5 h-5 text-blue-700 shrink-0" />
                   <div className="truncate">
-                    <p className="text-sm font-medium text-[#c9d1d9] truncate">{file.path}</p>
-                    <p className="text-xs text-[#8b949e]">{formatSize(file.content?.length || 0)}</p>
+                    <p className="text-sm font-medium text-neutral-900 truncate">{file.path}</p>
+                    <p className="text-xs text-neutral-500">{formatSize(file.content?.length || 0)}</p>
                   </div>
                 </div>
                 <button
                   onClick={() => removeFile(idx)}
-                  className="p-1 shrink-0 hover:bg-[#30363d] rounded text-[#8b949e] hover:text-[#ff7b72] transition-colors"
+                  className="p-1 shrink-0 hover:bg-neutral-100 rounded text-neutral-500 hover:text-rose-700 transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

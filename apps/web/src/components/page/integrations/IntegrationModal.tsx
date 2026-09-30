@@ -27,8 +27,8 @@ const SEVERITY_CLASS: Record<string, string> = {
   critical: "text-red-400",
   error: "text-red-400",
   warning: "text-yellow-400",
-  info: "text-slate-400",
-  debug: "text-slate-600",
+  info: "text-neutral-400",
+  debug: "text-neutral-500",
 };
 
 function formatTime(iso: string): string {
@@ -228,18 +228,18 @@ export const IntegrationModal: React.FC<IntegrationModalProps> = ({
                   t("integrations.modal.secretPlaceholder")
                 }
               />
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-neutral-500">
                 {t("integrations.modal.secretHint")}
               </p>
             </div>
           )}
 
-          <label className="flex items-center gap-2 text-sm text-slate-300 select-none">
+          <label className="flex items-center gap-2 text-sm text-neutral-700 select-none">
             <input
               type="checkbox"
               checked={insecureTls}
               onChange={(event) => setInsecureTls(event.target.checked)}
-              className="h-4 w-4 rounded border-slate-600 bg-slate-900"
+              className="h-4 w-4 rounded border-neutral-300 bg-white"
             />
             {t("integrations.modal.insecureTls")}
           </label>
@@ -277,7 +277,7 @@ export const IntegrationModal: React.FC<IntegrationModalProps> = ({
         </div>
       ) : (
         <div className="flex flex-col gap-4">
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-neutral-500">
             {t("integrations.modal.agentHint")}
           </p>
 
@@ -296,7 +296,7 @@ export const IntegrationModal: React.FC<IntegrationModalProps> = ({
           </Button>
 
           {ingestUrl && (
-            <p className="rounded-lg border border-yellow-500/20 bg-yellow-500/5 p-3 text-xs text-yellow-200/80">
+            <p className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs text-amber-700">
               {t("integrations.modal.ingestUrlNotice", { url: ingestUrl })}
             </p>
           )}
@@ -305,14 +305,14 @@ export const IntegrationModal: React.FC<IntegrationModalProps> = ({
             <ol className="flex flex-col gap-5">
               {steps.map((step, index) => (
                 <li key={index} className="space-y-2">
-                  <p className="text-sm font-bold text-slate-100">
+                  <p className="text-sm font-bold text-neutral-900">
                     {step.title}
                   </p>
-                  <p className="text-xs text-slate-400 leading-relaxed">
+                  <p className="text-xs text-neutral-500 leading-relaxed">
                     {step.body}
                   </p>
                   <div className="relative">
-                    <pre className="max-h-72 overflow-auto rounded-lg border border-slate-700/50 bg-slate-950/60 p-4 pr-24 text-xs font-mono text-slate-300 whitespace-pre">
+                    <pre className="max-h-72 overflow-auto rounded-lg border border-neutral-800 bg-neutral-950 p-4 pr-24 text-xs font-mono text-neutral-100 whitespace-pre">
                       {step.code}
                     </pre>
                     <Button
@@ -334,7 +334,7 @@ export const IntegrationModal: React.FC<IntegrationModalProps> = ({
       )}
 
       {integration.lastError && (
-        <p className="rounded-lg border border-red-500/20 bg-red-500/5 p-3 text-xs font-mono text-red-300">
+        <p className="rounded-lg border border-rose-300 bg-rose-50 p-3 text-xs font-mono text-rose-700">
           {integration.lastError}
         </p>
       )}
@@ -343,9 +343,9 @@ export const IntegrationModal: React.FC<IntegrationModalProps> = ({
         <Label>
           {t("integrations.modal.recentLogs")} ({logs.length})
         </Label>
-        <div className="max-h-64 overflow-auto rounded-lg border border-slate-700/50 bg-slate-950/40 divide-y divide-slate-800/40">
+        <div className="max-h-64 overflow-auto rounded-lg border border-neutral-800 bg-neutral-950 divide-y divide-neutral-800">
           {logs.length === 0 ? (
-            <p className="p-4 text-xs text-slate-500">
+            <p className="p-4 text-xs text-neutral-400">
               {t("integrations.modal.noLogs")}
             </p>
           ) : (
@@ -353,7 +353,7 @@ export const IntegrationModal: React.FC<IntegrationModalProps> = ({
               <details key={log.id} className="group p-3 text-xs">
                 <summary className="flex cursor-pointer list-none gap-3">
                   <span
-                    className="shrink-0 font-mono text-slate-500 tabular-nums"
+                    className="shrink-0 font-mono text-neutral-400 tabular-nums"
                     title={t("integrations.modal.receivedAt", {
                       time: formatTime(log.collectedAt),
                     })}
@@ -363,7 +363,7 @@ export const IntegrationModal: React.FC<IntegrationModalProps> = ({
                   <span
                     className={cn(
                       "shrink-0 w-14 font-mono uppercase",
-                      SEVERITY_CLASS[log.severity ?? ""] ?? "text-slate-500"
+                      SEVERITY_CLASS[log.severity ?? ""] ?? "text-neutral-400"
                     )}
                   >
                     {log.severity ?? "-"}
@@ -371,11 +371,11 @@ export const IntegrationModal: React.FC<IntegrationModalProps> = ({
                   <span className="shrink-0 max-w-40 truncate font-mono text-blue-400/70">
                     {log.source}
                   </span>
-                  <span className="text-slate-300 break-all line-clamp-2 group-open:line-clamp-none">
+                  <span className="text-neutral-200 break-all line-clamp-2 group-open:line-clamp-none">
                     {log.message}
                   </span>
                 </summary>
-                <pre className="mt-2 max-h-64 overflow-auto rounded border border-slate-800/60 bg-slate-950/60 p-2 text-[11px] text-slate-400 whitespace-pre-wrap break-all">
+                <pre className="mt-2 max-h-64 overflow-auto rounded border border-neutral-800 bg-neutral-950 p-2 text-[11px] text-neutral-400 whitespace-pre-wrap break-all">
                   {JSON.stringify(log.raw, null, 2)}
                 </pre>
               </details>

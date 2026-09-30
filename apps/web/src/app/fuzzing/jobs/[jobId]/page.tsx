@@ -59,7 +59,7 @@ export default function FuzzingJobDetailPage() {
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center p-8 text-neutral-400">
-         <Loader2 className="animate-spin text-primary-500 mr-2" size={24} />
+         <Loader2 className="animate-spin text-blue-600 mr-2" size={24} />
          {t("fuzzing.jobDetail.loading")}
       </div>
     );
@@ -67,9 +67,9 @@ export default function FuzzingJobDetailPage() {
 
   if (!job) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-slate-400">
+      <div className="flex flex-col items-center justify-center h-full text-neutral-500">
         <p>{t("fuzzing.jobDetail.notFound")}</p>
-        <Link href="/fuzzing/jobs" className="text-primary-400 hover:underline mt-2">
+        <Link href="/fuzzing/jobs" className="text-blue-700 hover:text-blue-900 hover:underline mt-2">
           {t("fuzzing.jobDetail.returnToJobs")}
         </Link>
       </div>
@@ -79,28 +79,28 @@ export default function FuzzingJobDetailPage() {
   const hasReport = !!job.report;
 
   return (
-    <div className="flex flex-col h-full bg-slate-950">
+    <div className="flex flex-col h-full bg-neutral-100">
       {/* Header */}
-      <div className="flex-none p-4 border-b border-white/5 flex items-center justify-between bg-slate-900/30 backdrop-blur-md sticky top-0 z-20">
+      <div className="flex-none p-4 border-b border-neutral-200 flex items-center justify-between bg-white sticky top-0 z-20">
         <div className="flex items-center gap-4">
           <Link
             href="/fuzzing/jobs"
-            className="p-2 hover:bg-white/5 rounded-full text-slate-400 hover:text-white transition-colors"
+            className="p-2 hover:bg-neutral-100 rounded-full text-neutral-500 hover:text-neutral-900 transition-colors"
           >
             <ChevronLeft size={20} />
           </Link>
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-xl font-bold text-white">{job.name}</h1>
+              <h1 className="text-xl font-bold text-neutral-900">{job.name}</h1>
               <JobStatusBadge status={job.status} />
             </div>
-            <p className="text-sm text-slate-500 mt-1 font-mono">{job.id}</p>
+            <p className="text-sm text-neutral-500 mt-1 font-mono">{job.id}</p>
           </div>
         </div>
 
         {hasReport && (
             <div className="flex gap-2">
-                 <button className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-sm border border-slate-700 transition-colors">
+                 <button className="flex items-center gap-2 px-3 py-1.5 bg-neutral-50 hover:bg-neutral-100 text-neutral-700 rounded-lg text-sm border border-neutral-200 transition-colors">
                     <Download size={14} />
                     {t("fuzzing.jobDetail.exportReport")}
                  </button>
@@ -109,13 +109,13 @@ export default function FuzzingJobDetailPage() {
       </div>
 
       <div className="flex-1 overflow-hidden flex flex-col md:flex-row">
-        <div className="md:w-[440px] w-full flex-none p-4 border-r border-white/5 bg-slate-900/20 overflow-y-auto">
+        <div className="md:w-[440px] w-full flex-none p-4 border-r border-neutral-200 bg-white overflow-y-auto">
           <JobSummary job={job as FuzzingJobWithReport} />
           
           {!hasReport && (
-            <div className="mt-8 border-t border-slate-800 pt-6 space-y-6">
+            <div className="mt-8 border-t border-neutral-200 pt-6 space-y-6">
                 <div>
-                   <h3 className="text-sm font-medium text-slate-400 mb-3">
+                   <h3 className="text-sm font-medium text-neutral-500 mb-3">
                      {t("fuzzing.jobDetail.fuzzerSetup")}
                    </h3>
                    <ConfigDownload />
@@ -127,36 +127,36 @@ export default function FuzzingJobDetailPage() {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col min-w-0 bg-slate-950 relative">
+        <div className="flex-1 flex flex-col min-w-0 bg-neutral-100 relative">
             {!hasReport && !job.report ? (
               <div className="flex-1 flex flex-col items-center justify-center p-12 text-center">
-                 <div className="w-20 h-20 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center mb-6">
-                    <FileText size={40} className="text-slate-600" />
+                 <div className="w-20 h-20 rounded-lg bg-white border border-neutral-200 flex items-center justify-center mb-6">
+                    <FileText size={40} className="text-neutral-400" />
                  </div>
-                 <h3 className="text-xl font-medium text-white mb-2">
+                 <h3 className="text-xl font-medium text-neutral-900 mb-2">
                    {t("fuzzing.jobDetail.noReportTitle")}
                  </h3>
-                 <p className="text-slate-400 max-w-md">
+                 <p className="text-neutral-500 max-w-md">
                    {job.status === "COMPLETED" 
                      ? t("fuzzing.jobDetail.noReportCompleted")
                      : t("fuzzing.jobDetail.noReportPending")}
                  </p>
-                 <div className="mt-8 w-full max-w-sm bg-slate-900/50 p-6 rounded-xl border border-slate-800">
+                 <div className="mt-8 w-full max-w-sm bg-white p-6 rounded-lg border border-neutral-200">
                     <ReportUpload jobId={job.id} onUploadSuccess={() => refetch()} />
                  </div>
               </div>
             ) : (
              <>
                {/* Tabs Header */}
-               <div className="flex-none px-6 pt-4 pb-2 border-b border-slate-800 bg-slate-950/50 backdrop-blur sticky top-0 z-10">
+               <div className="flex-none px-6 pt-4 pb-2 border-b border-neutral-200 bg-neutral-100 sticky top-0 z-10">
                    <div className="flex gap-6">
                        <button
                           onClick={() => setActiveTab("overview")}
                           className={clsx(
                               "pb-2 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors",
                               activeTab === "overview" 
-                                ? "text-primary-400 border-primary-500" 
-                                : "text-slate-400 border-transparent hover:text-slate-200 hover:border-slate-700"
+                                ? "text-blue-700 border-blue-600" 
+                                : "text-neutral-500 border-transparent hover:text-neutral-900 hover:border-neutral-300"
                           )}
                        >
                            <LayoutDashboard size={16} />
@@ -167,8 +167,8 @@ export default function FuzzingJobDetailPage() {
                           className={clsx(
                               "pb-2 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors",
                               activeTab === "logs" 
-                                ? "text-primary-400 border-primary-500" 
-                                : "text-slate-400 border-transparent hover:text-slate-200 hover:border-slate-700"
+                                ? "text-blue-700 border-blue-600" 
+                                : "text-neutral-500 border-transparent hover:text-neutral-900 hover:border-neutral-300"
                           )}
                        >
                            <List size={16} />
@@ -178,9 +178,9 @@ export default function FuzzingJobDetailPage() {
                </div>
 
                {/* Tab Content */}
-               <div className="flex-1 overflow-hidden relative bg-slate-950">
+               <div className="flex-1 overflow-hidden relative bg-neutral-100">
                   {activeTab === "overview" && job.report && (
-                      <div className="h-full overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+                      <div className="h-full overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent">
                           <div className="max-w-6xl mx-auto space-y-4 animate-in fade-in duration-300">
                              <FuzzingInterpretation report={job.report} />
                              <VulnerabilityCharts report={job.report} />

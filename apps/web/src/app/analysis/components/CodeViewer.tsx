@@ -35,8 +35,8 @@ export default function CodeViewer({
 
   if (file.type === "binary") {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-[#8b949e] bg-[#0d1117]">
-        <FileDigit className="w-12 h-12 mb-4 text-gray-700" />
+      <div className="flex flex-col items-center justify-center h-full text-neutral-400 bg-neutral-950">
+        <FileDigit className="w-12 h-12 mb-4 text-neutral-600" />
         <p>{t("analysis.codeViewer.binaryUnavailable")}</p>
       </div>
     );
@@ -44,10 +44,10 @@ export default function CodeViewer({
 
   if (file.type === "large") {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-[#8b949e] bg-[#0d1117]">
-        <FileWarning className="w-12 h-12 mb-4 text-yellow-600" />
+      <div className="flex flex-col items-center justify-center h-full text-neutral-400 bg-neutral-950">
+        <FileWarning className="w-12 h-12 mb-4 text-amber-500" />
         <p>{t("analysis.codeViewer.largeUnavailable")}</p>
-        <button className="mt-4 px-4 py-2 bg-[#21262d] text-[#8b949e] rounded hover:bg-[#30363d] transition">
+        <button className="mt-4 px-4 py-2 bg-neutral-800 text-neutral-300 rounded hover:bg-neutral-700 transition">
           {t("analysis.codeViewer.loadTruncatedPreview")}
         </button>
       </div>
@@ -56,8 +56,8 @@ export default function CodeViewer({
 
   if (!file.content) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-[#8b949e] bg-[#0d1117]">
-        <FileQuestion className="w-12 h-12 mb-4 text-gray-700" />
+      <div className="flex flex-col items-center justify-center h-full text-neutral-400 bg-neutral-950">
+        <FileQuestion className="w-12 h-12 mb-4 text-neutral-600" />
         <p>{t("analysis.codeViewer.contentUnavailable")}</p>
       </div>
     );
@@ -71,8 +71,8 @@ export default function CodeViewer({
   const language = languageMap[extension] || 'text';
 
   return (
-    <div className="h-full flex flex-col bg-[#1e1e1e] text-[#d4d4d4] font-mono text-sm sm:text-base overflow-hidden rounded-md border border-[#30363d]">
-      <div className="flex items-center px-4 py-2 bg-[#2d2d2d] border-b border-[#30363d] text-xs sm:text-sm text-[#8b949e] gap-2">
+    <div className="h-full flex flex-col bg-neutral-950 text-neutral-100 font-mono text-sm sm:text-base overflow-hidden rounded-md border border-neutral-800">
+      <div className="flex items-center px-4 py-2 bg-neutral-900 border-b border-neutral-800 text-xs sm:text-sm text-neutral-400 gap-2">
         <Code2 className="w-4 h-4" />
         {file.path}
       </div>

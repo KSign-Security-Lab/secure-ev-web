@@ -72,7 +72,7 @@ export const AddIntegrationModal: React.FC<AddIntegrationModalProps> = ({
         </>
       }
     >
-      <p className="text-sm text-slate-400">{t("integrations.add.hint")}</p>
+      <p className="text-sm text-neutral-500">{t("integrations.add.hint")}</p>
 
       <div className="grid gap-2 sm:grid-cols-2">
         {integrations.map((integration) => {
@@ -85,20 +85,20 @@ export const AddIntegrationModal: React.FC<AddIntegrationModalProps> = ({
               className={cn(
                 "flex flex-col gap-1 rounded-lg border p-3 text-left transition-colors",
                 isSelected
-                  ? "border-primary-500/50 bg-primary-500/10"
-                  : "border-slate-700/50 bg-slate-900/40 hover:border-slate-600"
+                  ? "border-blue-300 bg-blue-50"
+                  : "border-neutral-200 bg-white hover:border-neutral-300"
               )}
             >
-              <span className="flex items-center gap-2 text-sm font-bold text-slate-100">
-                <Plug className="h-3.5 w-3.5 text-primary-400" />
+              <span className="flex items-center gap-2 text-sm font-bold text-neutral-900">
+                <Plug className="h-3.5 w-3.5 text-blue-700" />
                 {integration.name}
                 {integration.configured && (
-                  <span className="text-[10px] font-black uppercase tracking-widest text-green-400/70">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-green-700">
                     {t("integrations.add.alreadyConfigured")}
                   </span>
                 )}
               </span>
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-neutral-500">
                 {integration.vendor} · {integration.category}
               </span>
             </button>
@@ -107,16 +107,16 @@ export const AddIntegrationModal: React.FC<AddIntegrationModalProps> = ({
       </div>
 
       {selected && (
-        <div className="space-y-2 border-t border-slate-800/60 pt-4">
-          <p className="text-xs font-black uppercase tracking-widest text-slate-400">
+        <div className="space-y-2 border-t border-neutral-200 pt-4">
+          <p className="text-xs font-black uppercase tracking-widest text-neutral-500">
             {t("integrations.add.method")}
           </p>
 
-          <div className="flex items-center gap-2 text-sm text-slate-300">
+          <div className="flex items-center gap-2 text-sm text-neutral-700">
             {mode === "API" ? (
-              <Cable className="h-4 w-4 text-primary-400" />
+              <Cable className="h-4 w-4 text-blue-700" />
             ) : (
-              <Terminal className="h-4 w-4 text-primary-400" />
+              <Terminal className="h-4 w-4 text-blue-700" />
             )}
             <span>
               {t(

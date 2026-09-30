@@ -58,7 +58,7 @@ export function FindingsList({ runs }: FindingsListProps) {
       render: (run) => (
         <button
           onClick={() => setSelectedRun(run)}
-          className="text-primary-300 hover:text-primary-400 hover:underline text-left font-mono text-xs truncate max-w-[200px]"
+          className="text-blue-700 hover:text-blue-900 hover:underline text-left font-mono text-xs truncate max-w-[200px]"
         >
           {run.input}
         </button>
@@ -67,7 +67,7 @@ export function FindingsList({ runs }: FindingsListProps) {
     {
       label: t("fuzzing.logs.column.output"),
       render: (run) => (
-        <span className="text-neutral-200 font-mono text-xs truncate max-w-[200px] block">
+        <span className="text-neutral-700 font-mono text-xs truncate max-w-[200px] block">
           {run.output}
         </span>
       ),
@@ -88,7 +88,7 @@ export function FindingsList({ runs }: FindingsListProps) {
     <>
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-             <h2 className="text-xl font-bold text-white">
+             <h2 className="text-xl font-bold text-neutral-900">
                {t("fuzzing.findings.title")}
              </h2>
              <div className="text-sm text-neutral-400">
@@ -108,7 +108,7 @@ export function FindingsList({ runs }: FindingsListProps) {
             <select
               value={resultFilter}
               onChange={(e) => setResultFilter(e.target.value)}
-              className="bg-slate-900 p-2 rounded-lg border border-slate-700 text-slate-200 focus:outline-none focus:border-blue-500"
+              className="bg-neutral-50 p-2 rounded-lg border border-neutral-200 text-neutral-900 focus:outline-none focus:border-blue-500"
             >
               <option value="all">{t("fuzzing.findings.allResults")}</option>
               {resultsPoints.map((r) => (

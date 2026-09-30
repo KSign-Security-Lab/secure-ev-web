@@ -192,20 +192,20 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
       open={open}
       onClose={onClose}
       title=""
-      className="max-w-4xl bg-slate-900 border border-slate-800 shadow-2xl p-0! overflow-hidden [&>div:first-child]:hidden space-y-0!"
+      className="max-w-4xl bg-white border border-neutral-200 shadow-sm p-0! overflow-hidden [&>div:first-child]:hidden space-y-0!"
     >
       <div className="flex flex-col max-h-[85vh]">
         {/* Header */}
-        <div className="flex items-start justify-between gap-4 px-6 py-5 border-b border-slate-800">
+        <div className="flex items-start justify-between gap-4 px-6 py-5 border-b border-neutral-200">
           <div className="flex items-start gap-3">
-            <div className="mt-0.5 rounded-lg bg-blue-500/10 border border-blue-500/20 p-2">
-              <Rocket className="w-4 h-4 text-blue-400" />
+            <div className="mt-0.5 rounded-lg bg-blue-50 border border-blue-200 p-2">
+              <Rocket className="w-4 h-4 text-blue-700" />
             </div>
             <div>
-              <h2 className="text-lg font-bold uppercase tracking-tight text-white">
+              <h2 className="text-lg font-bold tracking-tight text-neutral-950">
                 {t("deploy.modal.title")}
               </h2>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-neutral-500">
                 {t("deploy.modal.subtitle")}
               </p>
             </div>
@@ -214,7 +214,7 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
             type="button"
             onClick={onClose}
             aria-label={t("deploy.modal.close")}
-            className="text-slate-500 hover:text-white transition-colors"
+            className="text-neutral-500 hover:text-neutral-700 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -230,8 +230,8 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
               className={cn(
                 "px-4 py-2 rounded-t-lg text-[11px] font-bold uppercase tracking-widest transition-colors",
                 tab === value
-                  ? "bg-slate-800/60 text-white"
-                  : "text-slate-500 hover:text-slate-300"
+                  ? "bg-neutral-50 text-neutral-900"
+                  : "text-neutral-500 hover:text-neutral-700"
               )}
             >
               {t(value === "deploy" ? "deploy.tab.deploy" : "deploy.tab.config")}
@@ -242,7 +242,7 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
         {/* Body */}
         <div className="flex-1 overflow-y-auto custom-scrollbar px-6 py-5 space-y-5">
           {isLoading && (
-            <p className="flex items-center gap-2 text-xs text-slate-500 py-8 justify-center">
+            <p className="flex items-center gap-2 text-xs text-neutral-500 py-8 justify-center">
               <Loader2 size={14} className="animate-spin" />
               {t("deploy.state.loading")}
             </p>
@@ -267,7 +267,7 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
               <>
                 {/* Platform tiles */}
                 <div className="space-y-2">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500">
                     {t("deploy.platform.label")}
                   </span>
                   <div className="grid grid-cols-3 gap-3">
@@ -283,8 +283,8 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
                           className={cn(
                             "flex flex-col items-center gap-2 rounded-xl border px-4 py-4 transition-all duration-200",
                             selected
-                              ? "border-blue-500/50 bg-blue-500/10 text-white shadow-[0_0_15px_rgba(59,130,246,0.15)]"
-                              : "border-slate-800 bg-slate-900/40 text-slate-500 hover:border-slate-700 hover:text-slate-300"
+                              ? "border-blue-200 bg-blue-50 text-blue-700"
+                              : "border-neutral-200 bg-white text-neutral-500 hover:border-neutral-300 hover:text-neutral-700"
                           )}
                         >
                           {Glyph && <Glyph className="w-6 h-6" />}
@@ -327,12 +327,12 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
                     />
 
                     {/* Direct binary download */}
-                    <div className="rounded-xl border border-slate-800 bg-slate-900/40 px-4 py-3 space-y-3">
+                    <div className="rounded-xl border border-neutral-200 bg-white px-4 py-3 space-y-3">
                       <div>
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500">
                           {t("deploy.binary.label")}
                         </span>
-                        <p className="text-xs text-slate-500 mt-1">
+                        <p className="text-xs text-neutral-500 mt-1">
                           {t("deploy.binary.description")}
                         </p>
                       </div>
@@ -342,7 +342,7 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
                           type="button"
                           onClick={handleDownloadBinary}
                           disabled={isDownloadingBinary}
-                          className="flex items-center gap-2 rounded-lg border border-slate-700 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-300 transition-colors hover:border-slate-600 hover:text-white disabled:opacity-50 disabled:pointer-events-none"
+                          className="flex items-center gap-2 rounded-lg border border-neutral-200 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-neutral-500 transition-colors hover:border-neutral-300 hover:text-neutral-700 disabled:opacity-50 disabled:pointer-events-none"
                         >
                           {isDownloadingBinary ? (
                             <Loader2 size={13} className="animate-spin" />

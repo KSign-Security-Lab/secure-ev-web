@@ -41,25 +41,25 @@ export default function SystemLogPanel({ logs, onClear, className }: Props) {
   return (
     <div
       className={cn(
-        "flex flex-1 h-full min-h-0 max-h-full flex-col overflow-hidden rounded-lg border border-base-700/50 bg-base-900/50",
+        "flex flex-1 h-full min-h-0 max-h-full flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white",
         className
       )}
     >
-      <div className="flex shrink-0 items-center justify-between border-b border-base-700/50 px-3 py-2">
-        <span className="text-xs font-semibold uppercase tracking-wide text-neutral-300">
+      <div className="flex shrink-0 items-center justify-between border-b border-neutral-200 px-3 py-2">
+        <span className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
           {t("playground.systemLog.title")}
         </span>
         {onClear && logs.length > 0 && (
           <button
             type="button"
             onClick={onClear}
-            className="text-[10px] font-medium text-neutral-400 transition-colors hover:text-neutral-200"
+            className="text-[10px] font-medium text-neutral-500 transition-colors hover:text-neutral-700"
           >
             {t("playground.systemLog.clear")}
           </button>
         )}
       </div>
-      <div className="flex flex-col min-h-0 flex-1 overflow-y-auto px-3 py-3 space-y-1">
+      <div className="flex flex-col min-h-0 flex-1 overflow-y-auto bg-neutral-950 px-3 py-3 space-y-1">
         {logs.length === 0 ? (
           <p className="text-xs text-neutral-500">
             {t("playground.systemLog.noEvents")}

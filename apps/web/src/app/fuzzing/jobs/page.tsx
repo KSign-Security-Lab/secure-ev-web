@@ -132,12 +132,12 @@ export default function FuzzingJobsPage() {
       label: t("fuzzing.jobs.table.jobName"),
       render: (job) => (
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded bg-slate-800 text-blue-400">
+          <div className="p-2 rounded bg-neutral-100 text-blue-700">
             <FileText size={16} />
           </div>
           <div>
-            <div className="font-semibold text-white group-hover:text-blue-400 transition-colors">{job.name}</div>
-            <div className="text-xs text-slate-500 font-mono italic">{job.id.slice(0, 8)}...</div>
+            <div className="font-semibold text-neutral-900 group-hover:text-blue-700 transition-colors">{job.name}</div>
+            <div className="text-xs text-neutral-500 font-mono italic">{job.id.slice(0, 8)}...</div>
           </div>
         </div>
       ),
@@ -145,8 +145,8 @@ export default function FuzzingJobsPage() {
     {
       label: t("fuzzing.jobs.table.target"),
       render: (job) => (
-        <div className="flex items-center gap-2 text-slate-300 font-medium">
-          {job.targetType === 'ISO15118' ? <Zap size={14} className="text-yellow-500" /> : <Server size={14} className="text-cyan-500" />}
+        <div className="flex items-center gap-2 text-neutral-700 font-medium">
+          {job.targetType === 'ISO15118' ? <Zap size={14} className="text-amber-600" /> : <Server size={14} className="text-sky-600" />}
           {getTargetTypeLabel(job.targetType)}
         </div>
       )
@@ -158,7 +158,7 @@ export default function FuzzingJobsPage() {
     {
       label: t("fuzzing.jobs.table.environment"),
       render: (job) => (
-        <span className="text-slate-400 font-medium">
+        <span className="text-neutral-500 font-medium">
           {job.environment || t("fuzzing.jobs.environment.production")}
         </span>
       ),
@@ -166,9 +166,9 @@ export default function FuzzingJobsPage() {
     {
       label: t("fuzzing.jobs.table.created"),
       render: (job) => (
-        <div className="text-slate-400 tabular-nums text-sm">
+        <div className="text-neutral-500 tabular-nums text-sm">
           {new Date(job.createdAt).toLocaleDateString(locale === "ko" ? "ko-KR" : "en-US")} 
-          <span className="text-slate-600 text-xs ml-2 italic">{new Date(job.createdAt).toLocaleTimeString(locale === "ko" ? "ko-KR" : "en-US")}</span>
+          <span className="text-neutral-400 text-xs ml-2 italic">{new Date(job.createdAt).toLocaleTimeString(locale === "ko" ? "ko-KR" : "en-US")}</span>
         </div>
       ),
     },
@@ -184,24 +184,24 @@ export default function FuzzingJobsPage() {
               e.stopPropagation();
               setActiveActionRowId(activeActionRowId === job.id ? null : job.id);
             }}
-            className="p-2 hover:bg-slate-700/50 rounded-lg text-slate-400 hover:text-white transition-all transform active:scale-95"
+            className="p-2 hover:bg-neutral-100 rounded-lg text-neutral-500 hover:text-neutral-900 transition-all transform active:scale-95"
           >
             <MoreHorizontal size={18} />
           </button>
           
           {activeActionRowId === job.id && (
-            <div className="absolute right-0 mt-8 w-48 bg-slate-900 border border-slate-700 rounded-lg shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="absolute right-0 mt-8 w-48 bg-white border border-neutral-200 rounded-lg shadow-sm z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
               <div className="py-1 text-left">
                 <button
                   onClick={(e) => handleEditSub(job.id, e)}
-                  className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-slate-800 hover:text-white flex items-center gap-2 transition-colors"
+                  className="w-full px-4 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900 flex items-center gap-2 transition-colors"
                 >
                   <Edit size={14} />
                   {t("fuzzing.jobs.action.editConfiguration")}
                 </button>
                 <button
                   onClick={(e) => handleDeleteClick(job.id, e)}
-                  className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 flex items-center gap-2 transition-colors"
+                  className="w-full px-4 py-2 text-left text-sm text-rose-600 hover:bg-rose-50 hover:text-rose-700 flex items-center gap-2 transition-colors"
                 >
                   <Trash2 size={14} />
                   {t("fuzzing.jobs.action.deleteJob")}
@@ -215,7 +215,7 @@ export default function FuzzingJobsPage() {
   ];
 
   return (
-    <div className="w-full min-h-screen bg-slate-950 text-slate-200 font-sans px-6 py-4 md:px-12 md:py-6 selection:bg-blue-500/30">
+    <div className="w-full min-h-screen bg-neutral-100 text-neutral-900 font-sans px-6 py-4 md:px-12 md:py-6 selection:bg-blue-100">
       <div className="w-full space-y-4 max-w-7xl mx-auto">
         
         <PageHeader 
@@ -227,7 +227,7 @@ export default function FuzzingJobsPage() {
                 setEditingJobId(null);
                 setIsCreateModalOpen(true);
               }}
-              className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:shadow-[0_0_25px_rgba(59,130,246,0.5)] transition-all duration-300 font-bold uppercase text-[11px] tracking-widest"
+              className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-md shadow-sm transition-all duration-300 font-semibold text-sm"
             >
               <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
               {t("fuzzing.jobs.newJob")}

@@ -34,50 +34,50 @@ export function IconCard({
       variant={variant === "cyan" ? "cyan" : "default"} 
       className={cn(
         "p-8 h-full flex flex-col transition-all duration-300 group",
-        href && !comingSoon && "hover:bg-slate-800/40 hover:-translate-y-1 hover:shadow-2xl hover:border-slate-600/50",
+        href && !comingSoon && "hover:bg-neutral-50 hover:-translate-y-1 hover:shadow-sm hover:border-neutral-300",
         className
       )}
     >
       <div className={cn(
         "w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-all duration-300 group-hover:scale-110",
         {
-          "bg-blue-500/10 text-blue-400 group-hover:bg-blue-500/20 group-hover:text-blue-300": variant === "blue",
-          "bg-cyan-500/10 text-cyan-400 group-hover:bg-cyan-500/20 group-hover:text-cyan-300": variant === "cyan",
-          "bg-purple-500/10 text-purple-400 group-hover:bg-purple-500/20 group-hover:text-purple-300": variant === "purple",
-          "bg-slate-500/10 text-slate-400 group-hover:bg-slate-500/20 group-hover:text-slate-300": variant === "slate",
+          "bg-blue-50 text-blue-700 group-hover:bg-blue-100 group-hover:text-blue-800": variant === "blue",
+          "bg-sky-50 text-sky-700 group-hover:bg-sky-100 group-hover:text-sky-800": variant === "cyan",
+          "bg-purple-50 text-purple-700 group-hover:bg-purple-100 group-hover:text-purple-800": variant === "purple",
+          "bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200 group-hover:text-neutral-700": variant === "slate",
         },
         iconClassName
       )}>
         <Icon size={24} />
       </div>
-      
-      <h3 className="text-xl font-bold text-white mb-2 uppercase tracking-tight italic leading-none">
+
+      <h3 className="text-xl font-bold text-neutral-950 mb-2 tracking-tight italic leading-none">
         {title}
       </h3>
-      
-      <p className="text-slate-400 mb-8 flex-1 text-sm font-medium leading-relaxed tracking-wide">
+
+      <p className="text-neutral-500 mb-8 flex-1 text-sm font-medium leading-relaxed tracking-wide">
         {description}
       </p>
-      
+
       {comingSoon ? (
-        <span className="inline-flex items-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 cursor-not-allowed">
+        <span className="inline-flex items-center text-[10px] font-semibold uppercase tracking-wide text-neutral-500 cursor-not-allowed">
           Coming Soon
         </span>
       ) : href && (
-        <div className="inline-flex items-center text-sm font-bold uppercase tracking-widest transition-all duration-300 group-hover:gap-3 gap-2">
+        <div className="inline-flex items-center text-sm font-semibold transition-all duration-300 group-hover:gap-3 gap-2">
           <span className={cn({
-            "text-blue-400": variant === "blue",
-            "text-cyan-400": variant === "cyan",
-            "text-purple-400": variant === "purple",
-            "text-slate-400": variant === "slate",
+            "text-blue-700": variant === "blue",
+            "text-sky-700": variant === "cyan",
+            "text-purple-700": variant === "purple",
+            "text-neutral-500": variant === "slate",
           })}>
             {ctaText || "Learn More"}
           </span>
           <ArrowRight size={16} className={cn({
-            "text-blue-400": variant === "blue",
-            "text-cyan-400": variant === "cyan",
-            "text-purple-400": variant === "purple",
-            "text-slate-400": variant === "slate",
+            "text-blue-700": variant === "blue",
+            "text-sky-700": variant === "cyan",
+            "text-purple-700": variant === "purple",
+            "text-neutral-500": variant === "slate",
           })} />
         </div>
       )}

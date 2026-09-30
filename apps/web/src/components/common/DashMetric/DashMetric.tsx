@@ -12,13 +12,13 @@ interface DashMetricProps {
 }
 
 const colorVariants = {
-  blue: "text-blue-500 bg-blue-500/10 border-blue-500/20 shadow-blue-500/5",
-  red: "text-red-500 bg-red-500/10 border-red-500/20 shadow-red-500/5",
-  purple: "text-purple-500 bg-purple-500/10 border-purple-500/20 shadow-purple-500/5",
-  cyan: "text-cyan-500 bg-cyan-500/10 border-cyan-500/20 shadow-cyan-500/5",
-  green: "text-green-500 bg-green-500/10 border-green-500/20 shadow-green-500/5",
-  yellow: "text-yellow-500 bg-yellow-500/10 border-yellow-500/20 shadow-yellow-500/5",
-  slate: "text-slate-400 bg-slate-800/20 border-slate-700/50",
+  blue: "text-blue-700 bg-blue-50 border-blue-200",
+  red: "text-rose-700 bg-rose-50 border-rose-200",
+  purple: "text-purple-700 bg-purple-50 border-purple-200",
+  cyan: "text-sky-700 bg-sky-50 border-sky-200",
+  green: "text-green-700 bg-green-50 border-green-200",
+  yellow: "text-amber-700 bg-amber-50 border-amber-200",
+  slate: "text-neutral-500 bg-neutral-50 border-neutral-200",
 };
 
 export function DashMetric({
@@ -30,14 +30,14 @@ export function DashMetric({
 }: DashMetricProps) {
   return (
     <div className={cn(
-      "py-2.5 px-4 rounded-xl border border-slate-800/80 bg-slate-900/30 backdrop-blur-sm flex items-center justify-between transition-all hover:bg-slate-800/40 hover:border-slate-700 shadow-xl group",
+      "py-2.5 px-4 rounded-lg border border-neutral-200 bg-white flex items-center justify-between transition-all hover:bg-neutral-50 hover:border-neutral-300 group",
       className
     )}>
       <div className="flex flex-col overflow-hidden gap-1">
-        <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] leading-none group-hover:text-slate-400 transition-colors">
+        <span className="text-[10px] font-semibold text-neutral-500 uppercase tracking-wide leading-none group-hover:text-neutral-600 transition-colors">
           {label}
         </span>
-        <span className="text-lg font-black text-slate-200 uppercase tracking-tighter truncate group-hover:text-white transition-colors leading-tight">
+        <span className="text-lg font-bold text-neutral-900 tracking-tight truncate group-hover:text-neutral-950 transition-colors leading-tight">
           {value}
         </span>
       </div>

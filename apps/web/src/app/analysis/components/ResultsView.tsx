@@ -134,25 +134,25 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
       <div key={node.path} className="flex flex-col">
         <button
           onClick={() => togglePath(node.path)}
-          className={`flex items-center gap-2 py-2 w-full text-left rounded-md text-base transition-colors hover:bg-[#161b22] ${isFileSelected && node.type === 'file' ? 'text-[#c9d1d9] bg-[#161b22]/50' : 'text-[#8b949e]'}`}
+          className={`flex items-center gap-2 py-2 w-full text-left rounded-md text-base transition-colors hover:bg-neutral-100 ${isFileSelected && node.type === 'file' ? 'text-neutral-900 bg-neutral-100' : 'text-neutral-500'}`}
           style={{ paddingLeft }}
         >
           {node.type === 'dir' || node.results.length > 0 ? (
-            isExpanded ? <ChevronDown className="w-4 h-4 text-[#8b949e] shrink-0" /> : <ChevronRight className="w-4 h-4 text-[#8b949e] shrink-0" />
+            isExpanded ? <ChevronDown className="w-4 h-4 text-neutral-500 shrink-0" /> : <ChevronRight className="w-4 h-4 text-neutral-500 shrink-0" />
           ) : (
              <span className="w-4 h-4 shrink-0" />
           )}
 
           {node.type === 'dir' ? (
-            <Folder className="w-4 h-4 shrink-0 text-[#79c0ff]" />
+            <Folder className="w-4 h-4 shrink-0 text-blue-700" />
           ) : (
-             <FileIcon className={`w-4 h-4 shrink-0 ${node.vulns > 0 ? 'text-[#ff7b72]' : 'text-[#8b949e]'}`} />
+             <FileIcon className={`w-4 h-4 shrink-0 ${node.vulns > 0 ? 'text-rose-700' : 'text-neutral-500'}`} />
           )}
 
           <span className="truncate font-medium">{node.name}</span>
 
           {node.vulns > 0 && node.type === 'dir' && (
-            <Badge variant="outline" className="ml-auto shrink-0 h-4 min-w-[16px] px-1 py-0 flex items-center justify-center rounded-full text-[10px] border-[#30363d] text-[#8b949e]">
+            <Badge variant="outline" className="ml-auto shrink-0 h-4 min-w-[16px] px-1 py-0 flex items-center justify-center rounded-full text-[10px] border-neutral-200 text-neutral-500">
               {node.vulns}
             </Badge>
           )}
@@ -171,7 +171,7 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
 
         {isExpanded && node.type === 'file' && node.results.length > 0 && (
           <div className="flex flex-col space-y-1 my-1 pl-4" style={{ paddingLeft: `${(level + 1) * 12 + 16}px` }}>
-            <div className="border-l border-[#30363d] pl-2 space-y-1">
+            <div className="border-l border-neutral-200 pl-2 space-y-1">
               {node.results.map((res: any) => {
                 const isSelected = selectedResultId === res.id;
                 return (
@@ -179,7 +179,7 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
                     key={res.id}
                     onClick={() => handleResultSelect(res.id)}
                     className={`text-left p-2 rounded-md transition-colors text-xs flex flex-col gap-1 w-full ${
-                      isSelected ? "bg-blue-900/30 border border-[rgba(88,166,255,0.4)]" : "hover:bg-[#161b22] border border-transparent"
+                      isSelected ? "bg-blue-50 border border-blue-200" : "hover:bg-neutral-100 border border-transparent"
                     }`}
                   >
                     <div className="flex justify-between items-center w-full">
@@ -187,9 +187,9 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
                         status={res.risk} 
                         className="text-[10px] px-1.5 py-0 leading-tight h-4"
                       />
-                      <span className="text-xs text-[#8b949e] font-mono">L{res.lineInfo.split('-')[0]}</span>
+                      <span className="text-xs text-neutral-500 font-mono">L{res.lineInfo.split('-')[0]}</span>
                     </div>
-                    <span className={`truncate font-mono ${isSelected ? 'text-blue-200' : 'text-[#8b949e]'}`}>
+                    <span className={`truncate font-mono ${isSelected ? 'text-blue-700' : 'text-neutral-500'}`}>
                       {res.functionName}
                     </span>
                   </button>
@@ -211,11 +211,11 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
       />
 
       {/* Main Split View: Left sidebar for Files/Issues, Center/Right for Code/Explanation */}
-      <div className="flex flex-1 overflow-hidden border border-slate-800/80 rounded-2xl bg-slate-900/20 backdrop-blur-sm">
+      <div className="flex flex-1 overflow-hidden border border-neutral-200 rounded-lg bg-white">
 
         {/* Left: Files & Issues Explorer */}
-        <div className="w-80 shrink-0 bg-slate-900/40 border-r border-slate-800/80 flex flex-col">
-          <div className="p-4 text-[10px] font-black uppercase tracking-[0.2em] leading-none text-slate-500 border-b border-slate-800/50 bg-slate-900/50">
+        <div className="w-80 shrink-0 bg-neutral-50 border-r border-neutral-200 flex flex-col">
+          <div className="p-4 text-[10px] font-black uppercase tracking-[0.2em] leading-none text-neutral-500 border-b border-neutral-200 bg-neutral-50">
             {t("analysis.results.filesAndIssues")}
           </div>
           <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
@@ -224,7 +224,7 @@ export default function ResultsView({ uploadedFiles }: ResultsViewProps) {
         </div>
 
         {/* Center: Code Viewer */}
-        <div className="flex-1 overflow-hidden bg-slate-950/30 relative">
+        <div className="flex-1 overflow-hidden bg-neutral-950 relative">
            <CodeViewer
              file={selectedFile}
              vulnerabilities={activeResults.filter(r => r.filePath === selectedFilePath)}

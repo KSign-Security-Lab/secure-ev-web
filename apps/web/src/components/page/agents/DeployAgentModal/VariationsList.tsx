@@ -35,7 +35,7 @@ export const VariationsList: React.FC<VariationsListProps> = ({
         type="button"
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
-        className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-slate-300 transition-colors"
+        className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500 hover:text-neutral-700 transition-colors"
       >
         <ChevronRight
           size={13}

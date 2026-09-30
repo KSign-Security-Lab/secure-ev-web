@@ -64,7 +64,7 @@ export function FindingDetail({ run, onClose }: FindingDetailProps) {
           <label className="text-sm text-neutral-400">
             {t("fuzzing.findingDetail.inputPayload")}
           </label>
-          <div className="mt-1 bg-slate-900 border border-slate-700 rounded-lg overflow-hidden">
+          <div className="mt-1 bg-neutral-950 border border-neutral-800 rounded-lg overflow-hidden">
              <SyntaxHighlighter
                 language="json"
                 style={vscDarkPlus}
@@ -80,7 +80,7 @@ export function FindingDetail({ run, onClose }: FindingDetailProps) {
           <label className="text-sm text-neutral-400">
             {t("fuzzing.findingDetail.outputResponse")}
           </label>
-           <div className="mt-1 bg-slate-900 border border-slate-700 rounded-lg overflow-hidden">
+           <div className="mt-1 bg-neutral-950 border border-neutral-800 rounded-lg overflow-hidden">
              <SyntaxHighlighter
                 language="json"
                 style={vscDarkPlus}

@@ -79,7 +79,7 @@ export function RecentFuzzingJobs() {
     return (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[1, 2, 3].map((i) => (
-          <GlassCard key={i} className="h-48 animate-pulse bg-slate-800/50" />
+          <GlassCard key={i} className="h-48 animate-pulse bg-neutral-100" />
         ))}
       </div>
     );
@@ -87,16 +87,16 @@ export function RecentFuzzingJobs() {
 
   if (jobs.length === 0) {
     return (
-       <div className="w-full text-center py-12 bg-slate-900/30 rounded-2xl border border-slate-800/50">
-          <Shield className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-slate-300">
+       <div className="w-full text-center py-12 bg-white rounded-lg border border-neutral-200">
+          <Shield className="w-12 h-12 text-neutral-400 mx-auto mb-4" />
+          <h3 className="text-xl font-bold text-neutral-900">
             {t("fuzzing.recentJobs.emptyTitle")}
           </h3>
-          <p className="text-slate-500 mb-6">
+          <p className="text-neutral-500 mb-6">
             {t("fuzzing.recentJobs.emptyDescription")}
           </p>
           <Link href="/fuzzing/jobs">
-            <Button variant="outline" className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10 hover:text-blue-300">
+            <Button variant="outline" className="border-blue-200 text-blue-700 hover:bg-blue-50 hover:text-blue-900">
               {t("fuzzing.recentJobs.goToDashboard")}
             </Button>
           </Link>
@@ -107,10 +107,10 @@ export function RecentFuzzingJobs() {
   return (
     <div className="w-full space-y-6">
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-2xl font-bold text-white">
+        <h3 className="text-2xl font-bold text-neutral-900">
           {t("fuzzing.recentJobs.title")}
         </h3>
-        <Link href="/fuzzing/jobs" className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors">
+        <Link href="/fuzzing/jobs" className="text-sm text-blue-700 hover:text-blue-900 flex items-center gap-1 transition-colors">
           {t("fuzzing.recentJobs.viewAll")} <ArrowRight size={14} />
         </Link>
       </div>
@@ -120,43 +120,43 @@ export function RecentFuzzingJobs() {
           <Reveal key={job.id} delay={index * 100}>
             <Link href={`/fuzzing/jobs/${job.id}`}>
               <GlassCard 
-                className="h-full hover:border-blue-500/30 hover:bg-slate-800/60 transition-all duration-300 group relative overflow-hidden"
+                className="h-full hover:border-blue-200 hover:bg-neutral-50 transition-all duration-300 group relative overflow-hidden"
               >
                 {/* Status Indicator Line */}
                 <div 
                   className={`absolute top-0 left-0 w-1 h-full transition-colors ${
                     job.status === 'COMPLETED' ? 'bg-green-500' :
-                    job.status === 'RUNNING' ? 'bg-blue-500' :
-                    job.status === 'FAILED' ? 'bg-red-500' :
-                    'bg-slate-600'
-                  }`} 
+                    job.status === 'RUNNING' ? 'bg-blue-600' :
+                    job.status === 'FAILED' ? 'bg-rose-500' :
+                    'bg-neutral-300'
+                  }`}
                 />
 
                 <div className="pl-3">
                   <div className="flex justify-between items-start mb-4">
-                    <Badge variant="outline" className="bg-slate-900/50 border-slate-700 text-slate-400 text-xs">
+                    <Badge variant="outline" className="bg-neutral-50 border-neutral-200 text-neutral-500 text-xs">
                       {getTargetTypeLabel(job.targetType)}
                     </Badge>
-                    <span className={`text-xs font-mono px-2 py-0.5 rounded ${
-                        job.status === 'RUNNING' ? 'bg-blue-500/20 text-blue-300 animate-pulse' :
-                        job.status === 'COMPLETED' ? 'bg-green-500/20 text-green-300' :
-                        'bg-slate-800 text-slate-400'
+                    <span className={`text-xs font-mono px-2 py-0.5 rounded border ${
+                        job.status === 'RUNNING' ? 'border-blue-300 bg-blue-50 text-blue-700 animate-pulse' :
+                        job.status === 'COMPLETED' ? 'border-green-300 bg-green-50 text-green-700' :
+                        'border-neutral-300 bg-neutral-50 text-neutral-700'
                     }`}>
                         {getStatusLabel(job.status)}
                     </span>
                   </div>
 
-                  <h4 className="text-lg font-bold text-white mb-2 group-hover:text-blue-400 transition-colors truncate">
+                  <h4 className="text-lg font-bold text-neutral-900 mb-2 group-hover:text-blue-700 transition-colors truncate">
                     {job.name}
                   </h4>
 
-                  <div className="flex items-center gap-4 text-xs text-slate-500 mt-auto pt-4 border-t border-slate-800/50">
+                  <div className="flex items-center gap-4 text-xs text-neutral-500 mt-auto pt-4 border-t border-neutral-200">
                     <span className="flex items-center gap-1">
                       <Clock size={12} />
                       {new Date(job.createdAt).toLocaleDateString(locale === "ko" ? "ko-KR" : "en-US")}
                     </span>
                     <span className="flex items-center gap-1 ml-auto">
-                        <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-blue-400" />
+                        <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-blue-700" />
                     </span>
                   </div>
                 </div>

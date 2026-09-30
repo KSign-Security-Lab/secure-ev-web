@@ -22,17 +22,17 @@ interface AbilitiesChartsProps {
 }
 
 const SCIENTIFIC_COLORS = {
-  primary: "rgba(66, 140, 244, 0.8)",
-  secondary: "rgba(0, 159, 227, 0.8)",
+  primary: "rgba(37, 99, 235, 0.85)",
+  secondary: "rgba(2, 132, 199, 0.85)",
   palette: [
-    "rgba(66, 140, 244, 0.85)",
-    "rgba(0, 159, 227, 0.85)",
-    "rgba(76, 175, 80, 0.85)",
-    "rgba(249, 200, 81, 0.85)",
-    "rgba(255, 92, 91, 0.85)",
-    "rgba(156, 39, 176, 0.85)",
-    "rgba(255, 152, 0, 0.85)",
-    "rgba(0, 188, 212, 0.85)",
+    "rgba(37, 99, 235, 0.85)",
+    "rgba(2, 132, 199, 0.85)",
+    "rgba(22, 163, 74, 0.85)",
+    "rgba(217, 119, 6, 0.85)",
+    "rgba(220, 38, 38, 0.85)",
+    "rgba(147, 51, 234, 0.85)",
+    "rgba(234, 88, 12, 0.85)",
+    "rgba(8, 145, 178, 0.85)",
   ],
 };
 
@@ -85,12 +85,12 @@ const barChartOptions = {
     x: {
       grid: {
         display: true,
-        color: "rgba(75, 85, 99, 0.2)",
+        color: "#e5e7eb",
         lineWidth: 1,
         drawBorder: false,
       },
       ticks: {
-        color: "#9CA3AF",
+        color: "#6b7280",
         font: {
           size: 11,
           family: "inherit",
@@ -102,13 +102,13 @@ const barChartOptions = {
     y: {
       grid: {
         display: true,
-        color: "rgba(75, 85, 99, 0.2)",
+        color: "#e5e7eb",
         lineWidth: 1,
         drawBorder: false,
         drawOnChartArea: true,
       },
       ticks: {
-        color: "#9CA3AF",
+        color: "#6b7280",
         font: {
           size: 11,
           family: "inherit",
@@ -129,7 +129,7 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
       {
         data: data.byTactic.map((item) => item.value),
         backgroundColor: SCIENTIFIC_COLORS.palette,
-        borderColor: "rgba(31, 41, 55, 0.8)",
+        borderColor: "#ffffff",
         borderWidth: 2,
         hoverBorderWidth: 3,
         hoverBorderColor: "#FFFFFF",
@@ -188,14 +188,14 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
     <div className="grid gap-6 grid-cols-1 md:grid-cols-3">
       {/* Tactic Distribution */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between border-b border-base-700/50 pb-2">
+        <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
           <div className="flex items-center gap-2">
-            <div className="w-1 h-5 bg-primary-400 rounded-full" />
-            <h3 className="text-xs font-semibold text-neutral-200 uppercase tracking-wider">
+            <div className="w-1 h-5 bg-blue-600 rounded-full" />
+            <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">
               {t("dashboard.chart.byTactic")}
             </h3>
           </div>
-          <div className="text-xs text-neutral-400 font-mono">
+          <div className="text-xs text-neutral-500 font-mono">
             n = {data.totalCount}
           </div>
         </div>
@@ -203,10 +203,10 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
           <Doughnut data={tacticChartData} options={chartOptions} />
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="text-center">
-              <div className="text-xl font-bold text-white mb-1">
+              <div className="text-xl font-bold text-neutral-950 mb-1">
                 {data.totalCount.toLocaleString()}
               </div>
-              <div className="text-xs text-neutral-400 uppercase tracking-wide">
+              <div className="text-xs text-neutral-500 uppercase tracking-wide">
                 {t("dashboard.chart.total")}
               </div>
             </div>
@@ -217,7 +217,7 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
           {data.byTactic.slice(0, 4).map((item, index) => (
             <div
               key={item.name}
-              className="flex items-center gap-2 p-1.5 rounded bg-base-800/50 border border-base-700/30"
+              className="flex items-center gap-2 p-1.5 rounded bg-neutral-50 border border-neutral-200"
             >
               <div
                 className="w-2.5 h-2.5 rounded-full shrink-0"
@@ -225,10 +225,10 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
                   backgroundColor: SCIENTIFIC_COLORS.palette[index] || "#666",
                 }}
               />
-              <span className="text-neutral-300 truncate flex-1 text-xs">
+              <span className="text-neutral-700 truncate flex-1 text-xs">
                 {item.name}
               </span>
-              <span className="text-neutral-400 font-mono text-xs">
+              <span className="text-neutral-500 font-mono text-xs">
                 {item.value}
               </span>
             </div>
@@ -238,14 +238,14 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
 
       {/* Platform Distribution */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between border-b border-base-700/50 pb-2">
+        <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
           <div className="flex items-center gap-2">
-            <div className="w-1 h-5 bg-accent-400 rounded-full" />
-            <h3 className="text-xs font-semibold text-neutral-200 uppercase tracking-wider">
+            <div className="w-1 h-5 bg-sky-600 rounded-full" />
+            <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">
               {t("dashboard.chart.byPlatform")}
             </h3>
           </div>
-          <div className="text-xs text-neutral-400 font-mono">
+          <div className="text-xs text-neutral-500 font-mono">
             n = {data.byPlatform.reduce((sum, item) => sum + item.value, 0)}
           </div>
         </div>
@@ -253,9 +253,9 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
           <Bar data={platformChartData} options={barChartOptions} />
         </div>
         {/* Summary Stats */}
-        <div className="flex items-center justify-between text-xs pt-2 border-t border-base-700/30">
-          <span className="text-neutral-400">{t("dashboard.chart.platforms")}</span>
-          <span className="text-neutral-300 font-mono">
+        <div className="flex items-center justify-between text-xs pt-2 border-t border-neutral-200">
+          <span className="text-neutral-500">{t("dashboard.chart.platforms")}</span>
+          <span className="text-neutral-700 font-mono">
             {t("dashboard.chart.unique", { count: data.byPlatform.length })}
           </span>
         </div>
@@ -264,14 +264,14 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
       {/* Type Distribution */}
       {data.byType.length > 0 && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between border-b border-base-700/50 pb-2">
+          <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
             <div className="flex items-center gap-2">
-              <div className="w-1 h-5 bg-secondary-400 rounded-full" />
-              <h3 className="text-xs font-semibold text-neutral-200 uppercase tracking-wider">
+              <div className="w-1 h-5 bg-sky-600 rounded-full" />
+              <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">
                 {t("dashboard.chart.byType")}
               </h3>
             </div>
-            <div className="text-xs text-neutral-400 font-mono">
+            <div className="text-xs text-neutral-500 font-mono">
               n = {data.byType.reduce((sum, item) => sum + item.value, 0)}
             </div>
           </div>
@@ -279,9 +279,9 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
             <Bar data={typeChartData} options={horizontalBarOptions} />
           </div>
           {/* Summary Stats */}
-          <div className="flex items-center justify-between text-xs pt-2 border-t border-base-700/30">
-            <span className="text-neutral-400">{t("dashboard.chart.types")}</span>
-            <span className="text-neutral-300 font-mono">
+          <div className="flex items-center justify-between text-xs pt-2 border-t border-neutral-200">
+            <span className="text-neutral-500">{t("dashboard.chart.types")}</span>
+            <span className="text-neutral-700 font-mono">
               {t("dashboard.chart.unique", { count: data.byType.length })}
             </span>
           </div>

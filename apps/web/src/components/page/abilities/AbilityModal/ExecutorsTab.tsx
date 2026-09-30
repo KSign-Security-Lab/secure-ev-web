@@ -42,7 +42,7 @@ const InnerContent: React.FC<InnerContentProps> = ({
       {/* Payloads */}
       <div>
         <textarea
-          className="bg-base-800 p-2 w-full rounded resize-none"
+          className="bg-neutral-50 p-2 w-full rounded resize-none"
           placeholder={t("abilities.executors.payloadPlaceholder")}
           rows={3}
           defaultValue={execData.payloads.join("\n")}
@@ -55,7 +55,7 @@ const InnerContent: React.FC<InnerContentProps> = ({
           {t("abilities.executors.command")}
         </label>
         <textarea
-          className="bg-base-800 p-2 w-full rounded resize-none font-mono text-sm leading-relaxed"
+          className="bg-neutral-950 text-neutral-100 p-2 w-full rounded resize-none font-mono text-sm leading-relaxed"
           rows={6}
           defaultValue={execData.command}
         />
@@ -69,7 +69,7 @@ const InnerContent: React.FC<InnerContentProps> = ({
           </label>
           <input
             type="number"
-            className="bg-base-800 p-2 rounded w-full"
+            className="bg-neutral-50 p-2 rounded w-full"
             defaultValue={execData.timeout}
           />
         </div>
@@ -79,7 +79,7 @@ const InnerContent: React.FC<InnerContentProps> = ({
           </label>
           <input
             type="number"
-            className="bg-base-800 p-2 rounded w-full"
+            className="bg-neutral-50 p-2 rounded w-full"
             defaultValue={execData.cleanup}
           />
         </div>
@@ -101,7 +101,7 @@ export const ExecutorsTab: React.FC<ExecutorsTabProps> = ({ data }) => {
       {/* Choose Dropdown */}
       <div>
         <select
-          className="w-full bg-base-800 p-2 rounded"
+          className="w-full bg-neutral-50 p-2 rounded"
           onChange={(e) => {
             setExecutorData(data[Number(e.currentTarget.value)]);
           }}

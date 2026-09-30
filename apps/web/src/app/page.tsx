@@ -140,14 +140,14 @@ export default function Dashboard() {
 
       <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-4">
         {/* MITRE Coverage Visualization */}
-        <Card className="border-base-700/50 lg:col-span-1">
-          <CardHeader className="border-b border-base-700/50 pb-4">
+        <Card className="border-neutral-200 lg:col-span-1">
+          <CardHeader className="border-b border-neutral-200 pb-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <CardTitle className="text-xl font-semibold text-white">
+                <CardTitle className="text-xl font-semibold text-neutral-950">
                   {t("dashboard.mitre.title")}
                 </CardTitle>
-                <CardDescription className="text-sm text-neutral-400">
+                <CardDescription className="text-sm text-neutral-500">
                   {t("dashboard.mitre.desc")}
                 </CardDescription>
               </div>
@@ -161,7 +161,7 @@ export default function Dashboard() {
             ) : abilitiesStats?.mitreCoverage ? (
               <MitreCoverageCharts data={abilitiesStats.mitreCoverage} />
             ) : (
-              <div className="text-center text-neutral-400 py-16">
+              <div className="text-center text-neutral-500 py-16">
                 <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />
                 <p className="text-lg font-medium">
                   {t("dashboard.mitre.empty")}
@@ -172,14 +172,14 @@ export default function Dashboard() {
         </Card>
 
         {/* Abilities Visualization */}
-        <Card className="border-base-700/50 lg:col-span-3">
-          <CardHeader className="border-b border-base-700/50 pb-4">
+        <Card className="border-neutral-200 lg:col-span-3">
+          <CardHeader className="border-b border-neutral-200 pb-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <CardTitle className="text-xl font-semibold text-white">
+                <CardTitle className="text-xl font-semibold text-neutral-950">
                   {t("dashboard.abilities.title")}
                 </CardTitle>
-                <CardDescription className="text-sm text-neutral-400">
+                <CardDescription className="text-sm text-neutral-500">
                   {t("dashboard.abilities.desc")}
                 </CardDescription>
               </div>
@@ -199,7 +199,7 @@ export default function Dashboard() {
             ) : abilitiesStats ? (
               <AbilitiesCharts data={abilitiesStats} />
             ) : (
-              <div className="text-center text-neutral-400 py-16">
+              <div className="text-center text-neutral-500 py-16">
                 <Database className="h-12 w-12 mx-auto mb-4 opacity-50" />
                 <p className="text-lg font-medium">
                   {t("dashboard.abilities.empty")}
@@ -211,14 +211,14 @@ export default function Dashboard() {
       </div>
 
       {/* Agents Visualization */}
-      <Card className="border-base-700/50">
-        <CardHeader className="border-b border-base-700/50 pb-4">
+      <Card className="border-neutral-200">
+        <CardHeader className="border-b border-neutral-200 pb-4">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <CardTitle className="text-xl font-semibold text-white">
+              <CardTitle className="text-xl font-semibold text-neutral-950">
                 {t("dashboard.agents.title")}
               </CardTitle>
-              <CardDescription className="text-sm text-neutral-400">
+              <CardDescription className="text-sm text-neutral-500">
                 {t("dashboard.agents.desc")}
               </CardDescription>
             </div>
@@ -238,7 +238,7 @@ export default function Dashboard() {
           ) : agentsStats ? (
             <AgentsCharts data={agentsStats} />
           ) : (
-            <div className="text-center text-neutral-400 py-16">
+            <div className="text-center text-neutral-500 py-16">
               <Server className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p className="text-lg font-medium">
                 {t("dashboard.agents.empty")}

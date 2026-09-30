@@ -36,7 +36,7 @@ export const AbilitiesTable: React.FC<AbilitiesTableProps> = ({
       render: (item) => (
         <button 
           onClick={() => onOpen(item)}
-          className="text-blue-400 hover:text-blue-300 font-bold transition-colors mx-auto"
+          className="text-blue-700 hover:text-blue-900 font-bold transition-colors mx-auto"
         >
           {item.ability_name}
         </button>
@@ -45,7 +45,7 @@ export const AbilitiesTable: React.FC<AbilitiesTableProps> = ({
     {
       label: t("abilities.table.tactics"),
       render: (item) => (
-        <span className="text-slate-400 uppercase text-[10px] font-black tracking-widest">
+        <span className="text-neutral-500 uppercase text-[10px] font-black tracking-widest">
             {item.tactic}
         </span>
       ),
@@ -53,7 +53,7 @@ export const AbilitiesTable: React.FC<AbilitiesTableProps> = ({
     {
       label: t("abilities.table.techniqueId"),
       render: (item) => (
-        <code className="bg-slate-800/50 px-2 py-0.5 rounded border border-slate-700/50 text-slate-300 font-mono text-xs">
+        <code className="bg-neutral-50 px-2 py-0.5 rounded border border-neutral-200 text-neutral-700 font-mono text-xs">
             {item.technique_id}
         </code>
       ),
@@ -61,7 +61,7 @@ export const AbilitiesTable: React.FC<AbilitiesTableProps> = ({
     {
       label: t("abilities.table.techniqueName"),
       render: (item) => (
-        <span className="text-slate-300 font-medium italic">
+        <span className="text-neutral-500 font-medium italic">
             {item.technique_name}
         </span>
       ),
@@ -69,7 +69,7 @@ export const AbilitiesTable: React.FC<AbilitiesTableProps> = ({
     {
       label: t("abilities.table.type"),
       render: (item) => (
-        <span className="text-[10px] font-black tracking-[0.2em] text-slate-500 uppercase">
+        <span className="text-[10px] font-black tracking-[0.2em] text-neutral-500 uppercase">
             {item.type}
         </span>
       ),

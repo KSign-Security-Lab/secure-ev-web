@@ -43,20 +43,20 @@ export function ConfirmationDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-slate-900 border-slate-800 text-slate-100 shadow-2xl">
+      <DialogContent className="sm:max-w-md bg-white border-neutral-200 text-neutral-900">
         <DialogHeader className="gap-2">
           <div className={cn(
             "w-12 h-12 rounded-full flex items-center justify-center mb-2",
-            variant === "danger" ? "bg-red-500/10 text-red-500" :
-            variant === "warning" ? "bg-yellow-500/10 text-yellow-500" :
-            "bg-blue-500/10 text-blue-500"
+            variant === "danger" ? "bg-rose-50 text-rose-700" :
+            variant === "warning" ? "bg-amber-50 text-amber-700" :
+            "bg-blue-50 text-blue-700"
           )}>
             <Icon size={24} />
           </div>
-          <DialogTitle className="text-xl font-bold uppercase tracking-tight italic">
+          <DialogTitle className="text-xl font-bold text-neutral-950 tracking-tight italic">
             {title}
           </DialogTitle>
-          <DialogDescription className="text-slate-400 text-sm font-medium leading-relaxed">
+          <DialogDescription className="text-neutral-500 text-sm font-medium leading-relaxed">
             {description}
           </DialogDescription>
         </DialogHeader>
@@ -66,7 +66,7 @@ export function ConfirmationDialog({
             variant="ghost"
             onClick={() => onOpenChange(false)}
             disabled={isLoading}
-            className="text-slate-400 hover:text-white hover:bg-slate-800 uppercase text-[10px] font-bold tracking-widest"
+            className="text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 text-xs font-semibold"
           >
             {cancelText || t("common.cancel") || "Cancel"}
           </Button>
@@ -76,10 +76,10 @@ export function ConfirmationDialog({
             disabled={isLoading}
             variant={variant === "danger" ? "destructive" : variant === "warning" ? "default" : "default"}
             className={cn(
-              "uppercase text-[10px] font-bold tracking-widest px-6",
-              variant === "danger" && "bg-red-600 hover:bg-red-500 shadow-[0_0_20px_rgba(220,38,38,0.2)]",
-              variant === "warning" && "bg-yellow-600 hover:bg-yellow-500 shadow-[0_0_20px_rgba(202,138,4,0.2)]",
-              variant === "info" && "bg-blue-600 hover:bg-blue-500 shadow-[0_0_20px_rgba(37,99,235,0.2)]"
+              "text-xs font-semibold px-6",
+              variant === "danger" && "bg-rose-600 hover:bg-rose-700",
+              variant === "warning" && "bg-amber-600 hover:bg-amber-700",
+              variant === "info" && "bg-blue-600 hover:bg-blue-700"
             )}
           >
             {isLoading ? (

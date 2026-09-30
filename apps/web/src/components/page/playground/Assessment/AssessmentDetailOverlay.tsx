@@ -167,34 +167,34 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
       onClose={onClose}
       hideHeader={true}
       disableDefaultStyles={true}
-      className="max-w-5xl bg-slate-900 border border-slate-800 shadow-2xl p-0 overflow-hidden"
+      className="max-w-5xl bg-white border border-neutral-200 shadow-sm p-0 overflow-hidden"
     >
       <div className="flex flex-col h-[880px] max-h-[95vh]">
         {/* Top Dynamic Progress Bar */}
-        <div className="absolute top-0 left-0 bg-blue-600 h-[2px] shadow-[0_0_10px_rgba(37,99,235,0.5)] transition-all duration-700 ease-out z-50 rounded-full" 
+        <div className="absolute top-0 left-0 bg-blue-600 h-[2px] transition-all duration-700 ease-out z-50 rounded-full" 
           style={{ width: currentStep === 1 ? '50%' : '100%' }}
         />
-        <div className="relative w-full h-[2px] bg-slate-800 shrink-0" />
+        <div className="relative w-full h-[2px] bg-neutral-100 shrink-0" />
 
         {/* Header */}
-        <header className="px-6 py-4 border-b border-slate-800/50 bg-slate-900/50 backdrop-blur-xl flex justify-between items-center shrink-0">
+        <header className="px-6 py-4 border-b border-neutral-200 bg-white  flex justify-between items-center shrink-0">
           <div className="flex flex-col gap-5 flex-1 mr-8">
             <input
               type="text"
               value={assessmentName}
               onChange={(e) => setAssessmentName(e.target.value)}
               placeholder={t("assessment.detail.newAssessment")}
-              className="bg-transparent text-2xl font-bold text-white tracking-tight uppercase leading-none border-none outline-hidden focus:ring-0 w-full hover:bg-white/5 rounded px-2 -ml-2 transition-colors cursor-text"
+              className="bg-transparent text-2xl font-bold text-neutral-950 tracking-tight leading-none border-none outline-hidden focus:ring-0 w-full hover:bg-neutral-100 rounded px-2 -ml-2 transition-colors cursor-text"
             />
-            <div className="flex items-center gap-4 text-sm font-bold text-slate-500 uppercase tracking-widest leading-none">
-              <span className="flex items-center gap-2 opacity-70"><ShieldAlert size={16} className="text-orange-500" /> ID: {item?.id}</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-slate-800" />
+            <div className="flex items-center gap-4 text-sm font-bold text-neutral-500 uppercase tracking-widest leading-none">
+              <span className="flex items-center gap-2 opacity-70"><ShieldAlert size={16} className="text-amber-600" /> ID: {item?.id}</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-neutral-300" />
               <span className="text-xs opacity-50 italic lowercase">{item ? t("assessment.detail.inspectionMode") : t("assessment.detail.creationMode")}</span>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-500 hover:text-white hover:bg-slate-800 rounded-lg transition-all"
+            className="p-2 text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-all"
           >
             <X size={20} />
           </button>
@@ -202,22 +202,22 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
 
 
           {/* Content Area - Scrollable */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent">
           {/* Minimalist Phase Header */}
-          <div className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 px-8 h-14 flex items-center justify-between">
+          <div className="sticky top-0 z-40 bg-white  border-b border-neutral-200 px-8 h-14 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className={cn(
                 "w-8 h-8 rounded-lg border flex items-center justify-center",
-                currentStep === 1 ? "border-blue-500/30 text-blue-500 bg-blue-500/5" : "border-slate-800 text-slate-400 bg-slate-900"
+                currentStep === 1 ? "border-blue-200 text-blue-700 bg-blue-50" : "border-neutral-200 text-neutral-500 bg-white"
               )}>
                 {currentStep === 1 ? <Sliders size={18} /> : <Crosshair size={18} />}
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[10px] font-mono font-black text-slate-500 uppercase tracking-widest leading-none">
+                <span className="text-[10px] font-mono font-black text-neutral-500 uppercase tracking-widest leading-none">
                   PHASE 0{currentStep}
                 </span>
-                <span className="w-1 h-1 rounded-full bg-slate-800" />
-                <h2 className="text-sm font-bold text-slate-100 uppercase tracking-widest leading-none">
+                <span className="w-1 h-1 rounded-full bg-neutral-300" />
+                <h2 className="text-sm font-bold text-neutral-900 uppercase tracking-widest leading-none">
                   {currentStep === 1 ? t("assessment.detail.step1") : t("assessment.detail.step2")}
                 </h2>
               </div>
@@ -225,8 +225,8 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
             
             <div className="flex items-center gap-2">
               <div className="flex gap-1">
-                <div className={cn("h-1 w-6 rounded-full", currentStep >= 1 ? "bg-blue-500" : "bg-slate-800")} />
-                <div className={cn("h-1 w-6 rounded-full", currentStep >= 2 ? "bg-blue-500" : "bg-slate-800")} />
+                <div className={cn("h-1 w-6 rounded-full", currentStep >= 1 ? "bg-blue-500" : "bg-neutral-100")} />
+                <div className={cn("h-1 w-6 rounded-full", currentStep >= 2 ? "bg-blue-500" : "bg-neutral-100")} />
               </div>
             </div>
           </div>
@@ -247,16 +247,16 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                       <div className="flex gap-2">
                          <button 
                           onClick={handleRegisterAbility}
-                          className="px-3 py-1.5 rounded-lg bg-blue-600 text-[10px] font-black text-white hover:bg-blue-500 transition-all flex items-center gap-1.5 uppercase tracking-widest shadow-lg shadow-blue-600/20 active:scale-95"
+                          className="px-3 py-1.5 rounded-lg bg-blue-600 text-[10px] font-black text-white hover:bg-blue-700 transition-all flex items-center gap-1.5 uppercase tracking-widest  active:scale-95"
                          >
                           <Plus size={12} /> {t("assessment.page.register")}
                          </button>
                       </div>
                     }
                   />
-                  <div className="overflow-hidden border border-slate-800/60 rounded-2xl bg-slate-900/30 shadow-2xl backdrop-blur-sm">
+                  <div className="overflow-hidden border border-neutral-200 rounded-lg bg-white shadow-sm">
                     <table className="w-full text-left text-xs font-mono border-collapse">
-                      <thead className="bg-slate-900/80 border-b border-slate-800/50 text-slate-500 uppercase tracking-widest font-black text-[10px]">
+                      <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500 uppercase tracking-widest font-black text-[10px]">
                         <tr>
                           <th className="px-4 py-3 w-16 text-center opacity-40 italic">#</th>
                           <th className="px-4 py-3">{t("assessment.detail.capabilityName")}</th>
@@ -266,10 +266,10 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                           <th className="px-4 py-3 w-16 text-center">{t("assessment.detail.op")}</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-800/40 text-slate-400 text-sm">
+                      <tbody className="divide-y divide-neutral-200 text-neutral-500 text-sm">
                         {abilities.map((ability, index) => (
                           <tr key={ability.id} className="transition-colors group">
-                            <td className="px-4 py-2 text-center font-bold text-slate-600 italic">
+                            <td className="px-4 py-2 text-center font-bold text-neutral-400 italic">
                                 {String(index + 1).padStart(2, '0')}
                             </td>
                             <td className="px-4 py-2">
@@ -277,7 +277,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                                 type="text"
                                 value={ability.name}
                                 onChange={(e) => handleUpdateAbility(ability.id, "name", e.target.value)}
-                                className="w-full bg-slate-800/20 border-b border-white/5 hover:border-blue-500/50 hover:bg-slate-800/40 text-slate-100 font-bold focus:border-blue-500 focus:bg-slate-800/60 rounded-md px-3 py-1.5 transition-all outline-hidden cursor-text shadow-inner"
+                                className="w-full bg-neutral-50 border-b border-neutral-200 hover:border-blue-300 hover:bg-neutral-100 text-neutral-900 font-bold focus:border-blue-500 focus:bg-white rounded-md px-3 py-1.5 transition-all outline-hidden cursor-text "
                               />
                             </td>
                             <td className="p-5">
@@ -285,7 +285,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                                 type="text"
                                 value={ability.source}
                                 onChange={(e) => handleUpdateAbility(ability.id, "source", e.target.value)}
-                                className="w-full bg-transparent border-b border-slate-800 text-slate-500 focus:text-slate-300 focus:border-slate-600 px-2 py-1 transition-all outline-hidden"
+                                className="w-full bg-transparent border-b border-neutral-200 text-neutral-500 focus:text-neutral-700 focus:border-neutral-400 px-2 py-1 transition-all outline-hidden"
                               />
                             </td>
                             <td className="p-5">
@@ -293,7 +293,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                                 type="text"
                                 value={ability.param1}
                                 onChange={(e) => handleUpdateAbility(ability.id, "param1", e.target.value)}
-                                className="w-full bg-transparent border-b border-slate-800 text-slate-600 focus:text-slate-400 focus:border-slate-600 px-2 py-1 transition-all outline-hidden"
+                                className="w-full bg-transparent border-b border-neutral-200 text-neutral-400 focus:text-neutral-600 focus:border-neutral-400 px-2 py-1 transition-all outline-hidden"
                               />
                             </td>
                             <td className="p-5">
@@ -301,13 +301,13 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                                 type="text"
                                 value={ability.param2}
                                 onChange={(e) => handleUpdateAbility(ability.id, "param2", e.target.value)}
-                                className="w-full bg-transparent border-b border-slate-800 text-blue-500/70 font-bold focus:text-blue-400 focus:border-blue-500/50 px-2 py-1 transition-all outline-hidden"
+                                className="w-full bg-transparent border-b border-neutral-200 text-blue-700 font-bold focus:text-blue-800 focus:border-blue-500 px-2 py-1 transition-all outline-hidden"
                               />
                             </td>
                             <td className="px-4 py-2 text-center">
                               <button 
                                 onClick={(e) => handleRemoveAbility(e, ability.id)}
-                                className="p-2 text-slate-700 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                                className="p-2 text-neutral-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
                               >
                                 <Trash2 size={16} />
                               </button>
@@ -317,7 +317,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                       </tbody>
                     </table>
                     {abilities.length === 0 && (
-                      <div className="p-12 text-center text-slate-700 italic text-[10px] uppercase tracking-[0.3em]">
+                      <div className="p-12 text-center text-neutral-400 italic text-[10px] uppercase tracking-[0.3em]">
                         {t("assessment.detail.noCapabilities")}
                       </div>
                     )}
@@ -330,7 +330,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                     actions={
                       <button 
                         onClick={handleRegisterSource}
-                        className="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-[10px] font-black text-slate-400 hover:text-white hover:bg-slate-700 transition-all flex items-center gap-1.5 uppercase tracking-widest"
+                        className="px-3 py-1.5 rounded-lg bg-neutral-100 border border-neutral-200 text-[10px] font-black text-neutral-600 hover:text-neutral-700 hover:bg-neutral-200 transition-all flex items-center gap-1.5 uppercase tracking-widest"
                        >
                         <Plus size={12} /> {t("assessment.page.register")}
                        </button>
@@ -338,20 +338,20 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                   />
                   <div className="grid grid-cols-4 gap-4">
                     {sources.map((source) => (
-                      <div key={source.id} className="p-5 rounded-2xl border border-slate-800/80 bg-slate-900/40 hover:bg-slate-900/60 hover:border-slate-600 transition-all shadow-xl group flex items-center justify-between">
+                      <div key={source.id} className="p-5 rounded-lg border border-neutral-200 bg-white hover:bg-neutral-50 hover:border-neutral-300 transition-all shadow-sm group flex items-center justify-between">
                         <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-                          <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] leading-none mb-1">{source.id}</span>
+                          <span className="text-[9px] font-black text-neutral-400 uppercase tracking-[0.2em] leading-none mb-1">{source.id}</span>
                           <input 
                             type="text"
                             value={source.value}
                             onChange={(e) => handleUpdateSource(source.id, e.target.value)}
-                            className="bg-slate-900/50 border border-slate-800/50 text-blue-400 font-mono font-bold tracking-tight focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 rounded-lg px-3 py-1.5 transition-all outline-hidden w-full cursor-text text-sm shadow-inner"
+                            className="bg-neutral-50 border border-neutral-200 text-blue-700 font-mono font-bold tracking-tight focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 rounded-lg px-3 py-1.5 transition-all outline-hidden w-full cursor-text text-sm "
                           />
                         </div>
                         <div className="flex items-center ml-3">
                           <button 
                             onClick={(e) => handleRemoveSource(e, source.id)}
-                            className="p-1.5 text-slate-700 hover:text-red-500 hover:bg-red-500/10 rounded transition-all"
+                            className="p-1.5 text-neutral-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-all"
                           >
                             <Trash2 size={14} />
                           </button>
@@ -370,16 +370,16 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                       <div className="flex gap-2">
                          <button 
                           onClick={handleRegisterTarget}
-                          className="px-3 py-1.5 rounded-lg bg-blue-600 text-[10px] font-black text-white hover:bg-blue-500 transition-all flex items-center gap-1.5 uppercase tracking-widest shadow-lg shadow-blue-600/20"
+                          className="px-3 py-1.5 rounded-lg bg-blue-600 text-[10px] font-black text-white hover:bg-blue-700 transition-all flex items-center gap-1.5 uppercase tracking-widest "
                          >
                           <Plus size={12} /> {t("assessment.page.register")}
                          </button>
                       </div>
                     }
                   />
-                  <div className="overflow-hidden border border-slate-800/60 rounded-2xl bg-slate-900/30 shadow-2xl backdrop-blur-sm">
+                  <div className="overflow-hidden border border-neutral-200 rounded-lg bg-white shadow-sm">
                     <table className="w-full text-left text-xs font-mono border-collapse">
-                      <thead className="bg-slate-900/80 border-b border-slate-800/50 text-slate-500 uppercase tracking-widest font-black text-[10px]">
+                      <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500 uppercase tracking-widest font-black text-[10px]">
                         <tr>
                           <th className="px-4 py-3 w-16 text-center opacity-40 italic">#</th>
                           <th className="px-4 py-3">Asset Descriptor</th>
@@ -389,10 +389,10 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                           <th className="px-4 py-3 w-16 text-center">Op</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-800/40 text-slate-400 text-sm">
+                      <tbody className="divide-y divide-neutral-200 text-neutral-500 text-sm">
                         {targets.map((target, index) => (
                           <tr key={target.id} className="transition-colors group">
-                            <td className="px-4 py-2 text-center font-bold text-slate-600 italic">
+                            <td className="px-4 py-2 text-center font-bold text-neutral-400 italic">
                                 {String(index + 1).padStart(2, '0')}
                             </td>
                             <td className="p-5">
@@ -400,7 +400,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                                 type="text"
                                 value={target.name}
                                 onChange={(e) => handleUpdateTarget(target.id, "name", e.target.value)}
-                                className="w-full bg-slate-800/20 border-b border-white/5 hover:border-blue-500/50 hover:bg-slate-800/40 text-slate-100 font-bold focus:border-blue-500 focus:bg-slate-800/60 rounded-md px-3 py-1.5 transition-all outline-hidden cursor-text"
+                                className="w-full bg-neutral-50 border-b border-neutral-200 hover:border-blue-300 hover:bg-neutral-100 text-neutral-900 font-bold focus:border-blue-500 focus:bg-white rounded-md px-3 py-1.5 transition-all outline-hidden cursor-text"
                               />
                             </td>
                             <td className="p-5">
@@ -408,11 +408,11 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                                 type="text"
                                 value={target.ip}
                                 onChange={(e) => handleUpdateTarget(target.id, "ip", e.target.value)}
-                                className="w-full bg-transparent border-b border-slate-800 text-slate-400 focus:text-slate-200 focus:border-slate-600 px-2 py-1 transition-all outline-hidden font-bold"
+                                className="w-full bg-transparent border-b border-neutral-200 text-neutral-500 focus:text-neutral-700 focus:border-neutral-400 px-2 py-1 transition-all outline-hidden font-bold"
                               />
                             </td>
                             <td className="px-4 py-2 text-center">
-                              <span className="px-2 py-0.5 rounded border border-slate-800 text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-slate-900/50">
+                              <span className="px-2 py-0.5 rounded border border-neutral-200 text-[10px] font-bold text-neutral-500 uppercase tracking-widest bg-neutral-50">
                                 {target.os}
                               </span>
                             </td>
@@ -420,17 +420,17 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                                 <div className={cn(
                                   "inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all",
                                   target.status.includes("Connected") 
-                                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
-                                    : "bg-slate-800/50 border-slate-700 text-slate-500"
+                                    ? "bg-green-50 border-green-300 text-green-700"
+                                    : "bg-neutral-50 border-neutral-200 text-neutral-500"
                                 )}>
-                                  <div className={cn("w-1.5 h-1.5 rounded-full", target.status.includes("Connected") ? "bg-emerald-500 animate-pulse" : "bg-slate-600")} />
+                                  <div className={cn("w-1.5 h-1.5 rounded-full", target.status.includes("Connected") ? "bg-green-500 animate-pulse" : "bg-neutral-400")} />
                                   {target.status}
                                 </div>
                             </td>
                             <td className="px-4 py-2 text-center">
                               <button 
                                 onClick={(e) => handleRemoveTarget(e, target.id)}
-                                className="p-2 text-slate-700 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                                className="p-2 text-neutral-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
                               >
                                 <Trash2 size={16} />
                               </button>
@@ -440,7 +440,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                       </tbody>
                     </table>
                     {targets.length === 0 && (
-                       <div className="p-12 text-center text-slate-700 italic text-[10px] uppercase tracking-[0.3em]">
+                       <div className="p-12 text-center text-neutral-400 italic text-[10px] uppercase tracking-[0.3em]">
                          NO TARGET ASSETS REGISTERED IN BUFFER
                        </div>
                     )}
@@ -453,7 +453,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                     actions={
                       <button 
                         onClick={handleRegisterSource}
-                        className="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-[10px] font-black text-slate-400 hover:text-white hover:bg-slate-700 transition-all flex items-center gap-1.5 uppercase tracking-widest"
+                        className="px-3 py-1.5 rounded-lg bg-neutral-100 border border-neutral-200 text-[10px] font-black text-neutral-600 hover:text-neutral-700 hover:bg-neutral-200 transition-all flex items-center gap-1.5 uppercase tracking-widest"
                        >
                         <Plus size={12} /> {t("assessment.page.register")}
                        </button>
@@ -461,20 +461,20 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                   />
                   <div className="grid grid-cols-4 gap-4">
                     {sources.map((source) => (
-                      <div key={source.id} className="p-5 rounded-2xl border border-slate-800/80 bg-slate-900/40 hover:bg-slate-900/60 hover:border-slate-600 transition-all shadow-xl group flex items-center justify-between">
+                      <div key={source.id} className="p-5 rounded-lg border border-neutral-200 bg-white hover:bg-neutral-50 hover:border-neutral-300 transition-all shadow-sm group flex items-center justify-between">
                         <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-                          <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] leading-none mb-1">{source.id}</span>
+                          <span className="text-[9px] font-black text-neutral-400 uppercase tracking-[0.2em] leading-none mb-1">{source.id}</span>
                           <input 
                             type="text"
                             value={source.value}
                             onChange={(e) => handleUpdateSource(source.id, e.target.value)}
-                            className="bg-slate-900/50 border border-slate-800/50 text-blue-400 font-mono font-bold tracking-tight focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 rounded-lg px-3 py-1.5 transition-all outline-hidden w-full cursor-text text-sm shadow-inner"
+                            className="bg-neutral-50 border border-neutral-200 text-blue-700 font-mono font-bold tracking-tight focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 rounded-lg px-3 py-1.5 transition-all outline-hidden w-full cursor-text text-sm "
                           />
                         </div>
                         <div className="flex items-center ml-3">
                           <button 
                             onClick={(e) => handleRemoveSource(e, source.id)}
-                            className="p-1.5 text-slate-700 hover:text-red-500 hover:bg-red-500/10 rounded transition-all"
+                            className="p-1.5 text-neutral-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-all"
                           >
                             <Trash2 size={14} />
                           </button>
@@ -490,15 +490,15 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
       </div> {/* Close overflow-y-auto scrollable area */}
 
         {/* Footer Navigation */}
-        <footer className="px-6 py-4 bg-slate-900/30 border-t border-slate-800/50 flex justify-between items-center shrink-0">
+        <footer className="px-6 py-4 bg-white border-t border-neutral-200 flex justify-between items-center shrink-0">
           <button
             onClick={() => setCurrentStep(1)}
             disabled={currentStep === 1}
             className={cn(
-              "flex items-center gap-2 px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-[0.2em] transition-all",
+              "flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold transition-all",
               currentStep === 1
-                ? "text-slate-700 cursor-not-allowed"
-                : "text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800/50"
+                ? "text-neutral-400 cursor-not-allowed"
+                : "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 border border-neutral-200"
             )}
           >
             <ChevronLeft size={16} />
@@ -508,7 +508,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
           {currentStep === 1 ? (
             <button
               onClick={() => setCurrentStep(2)}
-              className="flex items-center justify-center gap-2 px-8 py-2.5 rounded-lg text-xs font-bold uppercase tracking-[0.2em] transition-all bg-blue-600/90 text-white hover:bg-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.2)]"
+              className="flex items-center justify-center gap-2 px-8 py-2.5 rounded-lg text-sm font-semibold transition-all bg-blue-600 text-white hover:bg-blue-700"
             >
               {t("common.next") || "Next"}
               <ChevronRight size={16} />
@@ -516,7 +516,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
           ) : (
             <button
               onClick={handleSave}
-              className="flex items-center justify-center gap-2 px-8 py-2.5 rounded-lg text-xs font-bold uppercase tracking-[0.2em] transition-all bg-red-600/90 text-white hover:bg-red-500 shadow-[0_0_20px_rgba(239,68,68,0.2)] border border-red-500/30"
+              className="flex items-center justify-center gap-2 px-8 py-2.5 rounded-lg text-sm font-semibold transition-all bg-rose-600 text-white hover:bg-rose-700"
             >
               <Save size={16} />
               {t("abilities.page.save") || "Save"}
@@ -531,10 +531,10 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
 /* --- Secondary Component: SectionHeader --- */
 function SectionHeader({ title, actions }: { title: string; actions?: React.ReactNode }) {
   return (
-    <div className="flex justify-between items-center bg-slate-900/40 backdrop-blur-sm border-b border-slate-800/60 pb-3 mb-4">
+    <div className="flex justify-between items-center bg-white  border-b border-neutral-200 pb-3 mb-4">
       <div className="flex items-center gap-3">
-        <div className="w-1 h-5 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.4)]" />
-        <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.3em] leading-none">
+        <div className="w-1 h-5 bg-blue-500 rounded-full" />
+        <h3 className="text-xs font-black text-neutral-500 uppercase tracking-[0.3em] leading-none">
           {title}
         </h3>
       </div>

@@ -107,27 +107,27 @@ export const CallbackWatcher: React.FC<CallbackWatcherProps> = ({
   }, [armed, watchNonce, knownPaws]);
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/40 px-4 py-3">
+    <div className="rounded-xl border border-neutral-200 bg-white px-4 py-3">
       <div className="flex items-center gap-2 mb-2">
-        <Satellite size={13} className="text-slate-500" />
-        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+        <Satellite size={13} className="text-neutral-500" />
+        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500">
           {t("deploy.watcher.title")}
         </span>
       </div>
 
       {state.status === "idle" && (
-        <p className="text-xs text-slate-500">{t("deploy.watcher.idle")}</p>
+        <p className="text-xs text-neutral-500">{t("deploy.watcher.idle")}</p>
       )}
 
       {state.status === "waiting" && (
-        <p className="flex items-center gap-2 text-xs text-blue-400">
+        <p className="flex items-center gap-2 text-xs text-blue-700">
           <Loader2 size={13} className="animate-spin" />
           {t("deploy.watcher.waiting")}
         </p>
       )}
 
       {state.status === "found" && (
-        <p className="flex items-center gap-2 text-xs text-green-400">
+        <p className="flex items-center gap-2 text-xs text-green-700">
           <CheckCircle2 size={13} />
           {t("deploy.watcher.found", { host: state.host, paw: state.paw })}
         </p>
@@ -135,13 +135,13 @@ export const CallbackWatcher: React.FC<CallbackWatcherProps> = ({
 
       {state.status === "timeout" && (
         <div className="space-y-2">
-          <p className="text-xs text-yellow-500">
+          <p className="text-xs text-amber-700">
             {t("deploy.watcher.timeout")}
           </p>
           <button
             type="button"
             onClick={onRearm}
-            className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-white transition-colors"
+            className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-neutral-500 hover:text-neutral-700 transition-colors"
           >
             <RefreshCw size={12} />
             {t("deploy.watcher.retry")}

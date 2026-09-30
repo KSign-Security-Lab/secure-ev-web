@@ -28,7 +28,7 @@ export const DeployFields: React.FC<DeployFieldsProps> = ({
 
   return (
     <div className="space-y-2">
-      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500">
         {t("deploy.fields.label")}
       </span>
 
@@ -45,7 +45,7 @@ export const DeployFields: React.FC<DeployFieldsProps> = ({
             >
               <label
                 htmlFor={`deploy-field-${field}`}
-                className="w-full sm:w-48 shrink-0 font-mono text-xs text-slate-400"
+                className="w-full sm:w-48 shrink-0 font-mono text-xs text-neutral-500"
               >
                 {field}
               </label>
@@ -69,7 +69,7 @@ export const DeployFields: React.FC<DeployFieldsProps> = ({
                   aria-label={t("deploy.fields.reset")}
                   disabled={!isDirty}
                   onClick={() => onChange(field, fallback)}
-                  className="shrink-0 h-9 w-9 flex items-center justify-center rounded-md border border-base-700 text-slate-500 transition-colors hover:text-white hover:border-slate-600 disabled:opacity-30 disabled:pointer-events-none"
+                  className="shrink-0 h-9 w-9 flex items-center justify-center rounded-md border border-neutral-200 text-neutral-500 transition-colors hover:text-neutral-700 hover:border-neutral-300 disabled:opacity-30 disabled:pointer-events-none"
                 >
                   <RotateCcw size={13} />
                 </button>

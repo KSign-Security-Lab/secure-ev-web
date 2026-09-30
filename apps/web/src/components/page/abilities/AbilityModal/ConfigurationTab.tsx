@@ -22,8 +22,8 @@ export const ConfigurationTab = () => {
   ];
 
   return (
-    <div className="w-full max-w-xl overflow-hidden rounded-md border border-white">
-      <table className="table-fixed w-full text-white border-collapse">
+    <div className="w-full max-w-xl overflow-hidden rounded-md border border-neutral-200">
+      <table className="table-fixed w-full text-neutral-900 border-collapse">
         <colgroup>
           <col style={{ width: "25%" }} />
           <col style={{ width: "75%" }} />
@@ -33,10 +33,10 @@ export const ConfigurationTab = () => {
             <tr
               key={key}
               className={
-                idx !== config.length - 1 ? "border-b border-white" : ""
+                idx !== config.length - 1 ? "border-b border-neutral-200" : ""
               }
             >
-              <td className="px-4 py-3 font-bold align-top border-r border-white bg-neutral-400">
+              <td className="px-4 py-3 font-bold align-top border-r border-neutral-200 bg-neutral-50">
                 {label}
               </td>
               <td className="px-4 py-3">

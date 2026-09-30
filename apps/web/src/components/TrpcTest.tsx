@@ -41,14 +41,14 @@ export default function TrpcTest() {
       <div className="space-x-4">
         <button
           onClick={handleLoadAbilities}
-          className="bg-primary-500 px-4 py-2 rounded text-white font-semibold"
+          className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white font-semibold"
           disabled={loading}
         >
           {loading ? "Loading..." : "Test tRPC: Abilities"}
         </button>
         <button
           onClick={handleLoadAgents}
-          className="bg-primary-700 px-4 py-2 rounded text-white font-semibold"
+          className="bg-blue-800 hover:bg-blue-900 px-4 py-2 rounded text-white font-semibold"
           disabled={loading}
         >
           {loading ? "Loading..." : "Test tRPC: Agents"}
@@ -60,7 +60,7 @@ export default function TrpcTest() {
         </pre>
       )}
       {result !== null && (
-        <pre className="text-white bg-base-800 p-4 rounded max-w-3xl overflow-auto w-full">
+        <pre className="text-neutral-100 bg-neutral-950 p-4 rounded max-w-3xl overflow-auto w-full">
           {JSON.stringify(result, null, 2)}
         </pre>
       )}

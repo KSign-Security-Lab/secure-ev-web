@@ -29,11 +29,11 @@ export function CodeViewer({
   };
 
   return (
-    <div className={cn("border border-slate-800 rounded-2xl overflow-hidden bg-slate-900 shadow-2xl flex flex-col h-full", className)}>
-      <div className="flex items-center justify-between px-6 py-3 border-b border-slate-800 bg-slate-900/40">
+    <div className={cn("border border-neutral-800 rounded-lg overflow-hidden bg-neutral-950 flex flex-col h-full", className)}>
+      <div className="flex items-center justify-between px-6 py-3 border-b border-neutral-800 bg-neutral-900">
         <div className="flex items-center gap-3">
           <FileCode size={16} className="text-blue-500" />
-          <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
+          <span className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wide">
             {filename || language}
           </span>
         </div>
@@ -41,15 +41,15 @@ export function CodeViewer({
           variant="ghost"
           size="sm"
           onClick={handleCopy}
-          className="h-8 px-2 text-slate-500 hover:text-white hover:bg-slate-800 gap-2"
+          className="h-8 px-2 text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 gap-2"
         >
           {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
-          <span className="text-[9px] font-bold uppercase tracking-widest leading-none">
+          <span className="text-[9px] font-semibold uppercase tracking-wide leading-none">
             {copied ? "Copied" : "Copy"}
           </span>
         </Button>
       </div>
-      <div className="flex-1 overflow-auto bg-slate-900/50">
+      <div className="flex-1 overflow-auto bg-neutral-950">
         <SyntaxHighlighter
           language={language}
           style={vscDarkPlus}

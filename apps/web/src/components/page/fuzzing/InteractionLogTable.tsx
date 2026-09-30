@@ -138,7 +138,7 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
       render: (run) => (
         <button
           onClick={() => setSelectedRun(run)}
-          className="text-primary-300 hover:text-primary-400 hover:underline text-left font-mono text-xs truncate w-full block"
+          className="text-blue-700 hover:text-blue-900 hover:underline text-left font-mono text-xs truncate w-full block"
         >
           {run.input}
         </button>
@@ -148,7 +148,7 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
       label: t("fuzzing.logs.column.output"),
       className: "w-[35%]",
       render: (run) => (
-        <span className="text-neutral-200 font-mono text-xs truncate w-full block text-left">
+        <span className="text-neutral-700 font-mono text-xs truncate w-full block text-left">
           {run.output}
         </span>
       ),
@@ -168,17 +168,17 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
 
   return (
     <div className="flex flex-col h-full gap-4">
-      <div className="flex-none flex flex-col gap-4 bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+      <div className="flex-none flex flex-col gap-4 bg-white p-4 rounded-lg border border-neutral-200">
           <div className="flex flex-col md:flex-row gap-4 justify-between">
              {/* Left: Search */}
              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 w-4 h-4" />
                 <input 
                    type="text"
                    placeholder={t("fuzzing.logs.searchPlaceholder")}
                    value={searchQuery}
                    onChange={(e) => setSearchQuery(e.target.value)}
-                   className="w-full bg-slate-900 border border-slate-700 rounded-lg py-2 pl-10 pr-4 text-sm text-white focus:ring-1 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+                   className="w-full bg-neutral-50 border border-neutral-200 rounded-lg py-2 pl-10 pr-4 text-sm text-neutral-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                 />
              </div>
              
@@ -187,7 +187,7 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
                  <select
                     value={resultFilter}
                     onChange={(e) => setResultFilter(e.target.value)}
-                    className="bg-slate-900 border border-slate-700 rounded-lg py-2 px-3 text-sm text-slate-300 outline-none focus:border-primary-500"
+                    className="bg-neutral-50 border border-neutral-200 rounded-lg py-2 px-3 text-sm text-neutral-900 outline-none focus:border-blue-500"
                  >
                     <option value="all">{t("fuzzing.logs.allResults")}</option>
                     {resultsPoints.map(r => <option key={r} value={r}>{getLocalizedResultLabel(r)}</option>)}
@@ -196,7 +196,7 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
                  <select
                     value={typeFilter}
                     onChange={(e) => setTypeFilter(e.target.value)}
-                    className="bg-slate-900 border border-slate-700 rounded-lg py-2 px-3 text-sm text-slate-300 outline-none focus:border-primary-500"
+                    className="bg-neutral-50 border border-neutral-200 rounded-lg py-2 px-3 text-sm text-neutral-900 outline-none focus:border-blue-500"
                  >
                     <option value="all">{t("fuzzing.logs.allTypes")}</option>
                     {typesPoints.map((typeName) => (
@@ -207,14 +207,14 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
                  </select>
                  
                  {/* Explicit Sort Control since Table headers might not be clickable */}
-                 <div className="flex items-center gap-2 bg-slate-900 border border-slate-700 rounded-lg px-2">
-                    <span className="text-xs text-slate-500 px-1">
+                 <div className="flex items-center gap-2 bg-neutral-50 border border-neutral-200 rounded-lg px-2">
+                    <span className="text-xs text-neutral-500 px-1">
                       {t("fuzzing.logs.sortBy")}
                     </span>
                     <select
                         value={sortField}
                         onChange={(e) => handleSort(e.target.value as SortField)}
-                        className="bg-transparent text-sm text-slate-300 outline-none py-2"
+                        className="bg-transparent text-sm text-neutral-900 outline-none py-2"
                     >
                         <option value="none">{t("fuzzing.logs.sortDefault")}</option>
                         <option value="type">{t("fuzzing.logs.sortType")}</option>
@@ -223,7 +223,7 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
                     </select>
                     <button 
                         onClick={() => setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')}
-                        className="p-1 hover:bg-slate-800 rounded text-slate-400"
+                        className="p-1 hover:bg-neutral-100 rounded text-neutral-500"
                         title={t("fuzzing.logs.toggleSortDirection")}
                     >
                         <ChevronDown className={clsx("w-4 h-4 transition-transform", sortDirection === 'desc' && "rotate-180")} />
@@ -233,13 +233,13 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
           </div>
       </div>
 
-      <div className="flex-1 min-h-0 overflow-y-auto rounded-xl border border-slate-800 bg-slate-900/30">
+      <div className="flex-1 min-h-0 overflow-y-auto rounded-lg border border-neutral-200 bg-white">
         <Table data={currentRuns} columns={columns} striped />
       </div>
       
       {/* Pagination Controls */}
       <div className="flex-none flex justify-between items-center px-2 py-2">
-          <div className="text-sm text-slate-400">
+          <div className="text-sm text-neutral-500">
               {t("fuzzing.logs.showingEntries", {
                 start: Math.min(filteredRuns.length, (currentPage - 1) * pageSize + 1),
                 end: Math.min(filteredRuns.length, currentPage * pageSize),
@@ -251,7 +251,7 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
              <select
                 value={pageSize}
                 onChange={(e) => setPageSize(Number(e.target.value))}
-                className="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-slate-300 outline-none mr-4"
+                className="bg-neutral-50 border border-neutral-200 rounded px-2 py-1 text-xs text-neutral-900 outline-none mr-4"
              >
                 <option value={20}>{t("fuzzing.logs.perPage", { count: 20 })}</option>
                 <option value={50}>{t("fuzzing.logs.perPage", { count: 50 })}</option>
@@ -261,11 +261,11 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
              <button
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="px-3 py-1 bg-slate-800 border border-slate-700 rounded text-sm text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-700"
+                className="px-3 py-1 bg-neutral-50 border border-neutral-200 rounded text-sm text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-100"
              >
                 {t("common.previous")}
              </button>
-             <span className="text-sm text-white px-2">
+             <span className="text-sm text-neutral-900 px-2">
                  {t("fuzzing.logs.pageOf", {
                    page: currentPage,
                    total: totalPages || 1,
@@ -274,7 +274,7 @@ export function InteractionLogTable({ runs }: InteractionLogTableProps) {
              <button
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages || totalPages === 0}
-                className="px-3 py-1 bg-slate-800 border border-slate-700 rounded text-sm text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-700"
+                className="px-3 py-1 bg-neutral-50 border border-neutral-200 rounded text-sm text-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-100"
              >
                  {t("common.next")}
              </button>

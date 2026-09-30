@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "~/lib/utils"
 
 const glassCardVariants = cva(
-  "relative rounded-3xl bg-slate-900/40 border border-slate-800 backdrop-blur-sm transition-all duration-300",
+  "relative rounded-lg bg-white border border-neutral-200 text-neutral-900 transition-all duration-300",
   {
     variants: {
       variant: {

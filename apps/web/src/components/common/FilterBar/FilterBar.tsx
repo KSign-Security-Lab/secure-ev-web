@@ -38,17 +38,17 @@ export function FilterSelect({
   const { t } = useI18n();
   return (
     <div className="relative group">
-      {Icon && <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors z-10" />}
+      {Icon && <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500 group-hover:text-blue-700 transition-colors z-10" />}
       <Select value={value} onValueChange={onValueChange}>
         <SelectTrigger className={cn(
-          "bg-slate-900 border-slate-700 text-slate-200 text-sm rounded-lg pr-8 py-2 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none cursor-pointer hover:border-slate-500 transition-all",
+          "bg-white border-neutral-200 text-neutral-900 text-sm rounded-lg pr-8 py-2 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-600 outline-none cursor-pointer hover:border-neutral-300 transition-all",
           Icon ? "pl-10" : "pl-4"
         )}>
           <SelectValue placeholder={`[${label}]`} />
         </SelectTrigger>
-        <SelectContent className="bg-slate-900 border-slate-700">
+        <SelectContent className="bg-white border-neutral-200">
           {showAll && (
-            <SelectItem value="all" className="text-xs uppercase font-bold text-slate-500 italic hover:text-white transition-colors">
+            <SelectItem value="all" className="text-xs uppercase font-semibold text-neutral-500 italic hover:text-neutral-900 transition-colors">
               {t("vulndb.filters.all") || "All"} {label}s
             </SelectItem>
           )}
@@ -81,7 +81,7 @@ export function FilterBar({
   className,
 }: FilterBarProps) {
   return (
-    <div className={cn("flex flex-col md:flex-row gap-4 bg-slate-900/50 p-4 rounded-xl border border-slate-700 backdrop-blur-sm shadow-xl", className)}>
+    <div className={cn("flex flex-col md:flex-row gap-4 bg-white p-4 rounded-lg border border-neutral-200", className)}>
       {handleSearch && (
         <div className="flex-1 flex gap-4 min-w-[200px]">
           <div className="relative flex-1 max-w-xl">

@@ -75,13 +75,13 @@ const AbilityModal: React.FC<AbilityModalProps> = ({
       footer={
         <div className="flex justify-end space-x-2">
           <button
-            className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
             onClick={onSave}
           >
             {t("abilities.modal.save")}
           </button>
           <button
-            className="bg-gray-500 hover:bg-neutral-500 px-4 py-2 rounded"
+            className="bg-neutral-100 hover:bg-neutral-200 text-neutral-700 px-4 py-2 rounded"
             onClick={onClose}
           >
             {t("abilities.modal.cancel")}
@@ -89,14 +89,14 @@ const AbilityModal: React.FC<AbilityModalProps> = ({
         </div>
       }
     >
-      <div className="flex border-b border-base-800 space-x-4 mb-4">
+      <div className="flex border-b border-neutral-200 space-x-4 mb-4">
         {Object.values(AbilityModalTabs).map((t) => (
           <button
             key={t}
             className={`py-2 px-4 font-medium transition-colors ${
               tab === t
-                ? "border-b-2 border-blue-400 text-blue-400"
-                : "text-neutral-400 hover:text-white"
+                ? "border-b-2 border-blue-600 text-blue-700"
+                : "text-neutral-500 hover:text-neutral-700"
             }`}
             onClick={() => setTab(t)}
           >

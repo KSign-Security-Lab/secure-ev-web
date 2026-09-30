@@ -313,8 +313,8 @@ export function CreateJobModal({
         return (
           <div className="space-y-6">
             <div className="space-y-3">
-              <Label htmlFor="name" className="text-slate-300">
-                {t("fuzzing.create.form.jobName")} <span className="text-blue-500">*</span>
+              <Label htmlFor="name" className="text-neutral-700">
+                {t("fuzzing.create.form.jobName")} <span className="text-blue-600">*</span>
               </Label>
               <Input
                 id="name"
@@ -325,26 +325,26 @@ export function CreateJobModal({
                 aria-invalid={!!errors.name}
               />
               {errors.name && (
-                <p className="text-sm text-red-400">{errors.name}</p>
+                <p className="text-sm text-rose-600">{errors.name}</p>
               )}
             </div>
 
             <div className="space-y-3">
-              <Label htmlFor="environment" className="text-slate-300">
-                {t("fuzzing.create.form.environment")} <span className="text-blue-500">*</span>
+              <Label htmlFor="environment" className="text-neutral-700">
+                {t("fuzzing.create.form.environment")} <span className="text-blue-600">*</span>
               </Label>
               <Select value={environment} onValueChange={setEnvironment}>
-                <SelectTrigger id="environment" className="w-full bg-slate-900 border-slate-700 text-white focus:ring-blue-500/20">
+                <SelectTrigger id="environment" className="w-full bg-neutral-50 border-neutral-200 text-neutral-900 focus:ring-blue-500/20">
                   <SelectValue placeholder={t("fuzzing.create.placeholder.environment")} />
                 </SelectTrigger>
-                <SelectContent className="bg-slate-900 border-slate-700 text-white">
-                  <SelectItem value="dev" className="focus:bg-slate-800 focus:text-white">{t("fuzzing.environment.dev")}</SelectItem>
-                  <SelectItem value="stage" className="focus:bg-slate-800 focus:text-white">{t("fuzzing.environment.stage")}</SelectItem>
-                  <SelectItem value="prod" className="focus:bg-slate-800 focus:text-white">{t("fuzzing.environment.prod")}</SelectItem>
+                <SelectContent className="bg-white border-neutral-200 text-neutral-900">
+                  <SelectItem value="dev" className="focus:bg-neutral-100 focus:text-neutral-900">{t("fuzzing.environment.dev")}</SelectItem>
+                  <SelectItem value="stage" className="focus:bg-neutral-100 focus:text-neutral-900">{t("fuzzing.environment.stage")}</SelectItem>
+                  <SelectItem value="prod" className="focus:bg-neutral-100 focus:text-neutral-900">{t("fuzzing.environment.prod")}</SelectItem>
                 </SelectContent>
               </Select>
               {errors.environment && (
-                <p className="text-sm text-red-400">{errors.environment}</p>
+                <p className="text-sm text-rose-600">{errors.environment}</p>
               )}
             </div>
           </div>
@@ -355,7 +355,7 @@ export function CreateJobModal({
         return (
           <div className="space-y-8">
             <div className="space-y-3">
-              <Label className="text-slate-300">{t("fuzzing.create.form.targetDevice")} <span className="text-blue-500">*</span></Label>
+              <Label className="text-neutral-700">{t("fuzzing.create.form.targetDevice")} <span className="text-blue-600">*</span></Label>
               <div className="grid grid-cols-2 gap-4">
                  <div
                     onClick={() => {
@@ -365,8 +365,8 @@ export function CreateJobModal({
                     className={cn(
                         "cursor-pointer rounded-xl border-2 p-4 flex flex-col items-center gap-2 transition-all",
                         targetDevice === "CHARGER"
-                            ? "border-blue-500 bg-blue-500/10 text-blue-400"
-                            : "border-slate-800 bg-slate-900/50 text-slate-500 hover:border-slate-700"
+                            ? "border-blue-500 bg-blue-50 text-blue-700"
+                            : "border-neutral-200 bg-white text-neutral-500 hover:border-neutral-300"
                     )}
                  >
                     <Zap size={24} />
@@ -380,8 +380,8 @@ export function CreateJobModal({
                     className={cn(
                         "cursor-pointer rounded-xl border-2 p-4 flex flex-col items-center gap-2 transition-all",
                         targetDevice === "CSMS"
-                            ? "border-purple-500 bg-purple-500/10 text-purple-400"
-                            : "border-slate-800 bg-slate-900/50 text-slate-500 hover:border-slate-700"
+                            ? "border-blue-500 bg-blue-50 text-blue-700"
+                            : "border-neutral-200 bg-white text-neutral-500 hover:border-neutral-300"
                     )}
                  >
                     <Server size={24} />
@@ -389,14 +389,14 @@ export function CreateJobModal({
                  </div>
               </div>
               {errors.targetDevice && (
-                <p className="text-sm text-red-400">{errors.targetDevice}</p>
+                <p className="text-sm text-rose-600">{errors.targetDevice}</p>
               )}
             </div>
 
             {targetDevice && (
             <div className="space-y-8 animate-in fade-in slide-in-from-top-4 duration-500">
             <div className="space-y-4">
-              <Label className="text-slate-300">{t("fuzzing.create.form.targetProtocol")} <span className="text-blue-500">*</span></Label>
+              <Label className="text-neutral-700">{t("fuzzing.create.form.targetProtocol")} <span className="text-blue-600">*</span></Label>
               <RadioGroup
                 value={targetType}
                 onValueChange={(value) => {
@@ -411,30 +411,30 @@ export function CreateJobModal({
                     <div className={cn(
                         "relative flex flex-col items-center gap-3 rounded-xl border-2 p-4 transition-all duration-200 opacity-50 cursor-not-allowed",
                         targetType === "ISO15118"
-                            ? "border-blue-500 bg-blue-500/5"
-                            : "border-slate-800 bg-slate-900/50"
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-neutral-200 bg-white"
                     )}>
                     <RadioGroupItem value="ISO15118" id="iso15118" disabled className="absolute inset-0 w-full h-full opacity-0 cursor-not-allowed" />
-                    <div className={cn("p-3 rounded-full bg-slate-900", targetType === "ISO15118" ? "text-blue-400 ring-2 ring-blue-500/20" : "text-slate-500")}>
+                    <div className={cn("p-3 rounded-full bg-neutral-100", targetType === "ISO15118" ? "text-blue-700 ring-2 ring-blue-200" : "text-neutral-500")}>
                         <Zap size={24} />
                     </div>
-                    <Label htmlFor="iso15118" className="font-medium text-white text-center pointer-events-none opacity-50">
-                        ISO 15118<br/><span className="text-xs text-slate-400 font-normal">{t("fuzzing.create.form.protocolIsoSubtitle")}</span>
+                    <Label htmlFor="iso15118" className="font-medium text-neutral-900 text-center pointer-events-none opacity-50">
+                        ISO 15118<br/><span className="text-xs text-neutral-500 font-normal">{t("fuzzing.create.form.protocolIsoSubtitle")}</span>
                     </Label>
                     </div>
 
                     <div className={cn(
-                        "relative flex flex-col items-center gap-3 rounded-xl border-2 p-4 transition-all duration-200 hover:bg-slate-800/50",
+                        "relative flex flex-col items-center gap-3 rounded-xl border-2 p-4 transition-all duration-200 hover:bg-neutral-50",
                         targetType === "OCPP_CHARGER"
-                            ? "border-cyan-500 bg-cyan-500/5"
-                            : "border-slate-800 bg-slate-900/50 hover:border-slate-700"
+                            ? "border-sky-500 bg-sky-50"
+                            : "border-neutral-200 bg-white hover:border-neutral-300"
                     )}>
                     <RadioGroupItem value="OCPP_CHARGER" id="ocpp-charger" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                    <div className={cn("p-3 rounded-full bg-slate-900", targetType === "OCPP_CHARGER" ? "text-cyan-400 ring-2 ring-cyan-500/20" : "text-slate-500")}>
+                    <div className={cn("p-3 rounded-full bg-neutral-100", targetType === "OCPP_CHARGER" ? "text-sky-700 ring-2 ring-sky-200" : "text-neutral-500")}>
                         <Server size={24} />
                     </div>
-                    <Label htmlFor="ocpp-charger" className="font-medium text-white text-center pointer-events-none">
-                        OCPP<br/><span className="text-xs text-slate-400 font-normal">{t("fuzzing.create.form.protocolOcppChargerSubtitle")}</span>
+                    <Label htmlFor="ocpp-charger" className="font-medium text-neutral-900 text-center pointer-events-none">
+                        OCPP<br/><span className="text-xs text-neutral-500 font-normal">{t("fuzzing.create.form.protocolOcppChargerSubtitle")}</span>
                     </Label>
                     </div>
                     </>
@@ -442,17 +442,17 @@ export function CreateJobModal({
 
                 { targetDevice === "CSMS" && (
                     <div className={cn(
-                        "relative flex flex-col items-center gap-3 rounded-xl border-2 p-4 transition-all duration-200 hover:bg-slate-800/50",
+                        "relative flex flex-col items-center gap-3 rounded-xl border-2 p-4 transition-all duration-200 hover:bg-neutral-50",
                         targetType === "OCPP_SERVER"
-                            ? "border-purple-500 bg-purple-500/5"
-                            : "border-slate-800 bg-slate-900/50 hover:border-slate-700"
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-neutral-200 bg-white hover:border-neutral-300"
                     )}>
                     <RadioGroupItem value="OCPP_SERVER" id="ocpp-server" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                    <div className={cn("p-3 rounded-full bg-slate-900", targetType === "OCPP_SERVER" ? "text-purple-400 ring-2 ring-purple-500/20" : "text-slate-500")}>
+                    <div className={cn("p-3 rounded-full bg-neutral-100", targetType === "OCPP_SERVER" ? "text-blue-700 ring-2 ring-blue-200" : "text-neutral-500")}>
                         <Shield size={24} />
                     </div>
-                    <Label htmlFor="ocpp-server" className="font-medium text-white text-center pointer-events-none">
-                        OCPP<br/><span className="text-xs text-slate-400 font-normal">{t("fuzzing.create.form.protocolOcppServerSubtitle")}</span>
+                    <Label htmlFor="ocpp-server" className="font-medium text-neutral-900 text-center pointer-events-none">
+                        OCPP<br/><span className="text-xs text-neutral-500 font-normal">{t("fuzzing.create.form.protocolOcppServerSubtitle")}</span>
                     </Label>
                     </div>
                 )}
@@ -460,8 +460,8 @@ export function CreateJobModal({
             </div>
 
             <div className="space-y-4">
-              <Label className="text-slate-300">{t("fuzzing.create.form.connectionDetails")} <span className="text-blue-500">*</span></Label>
-              <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+              <Label className="text-neutral-700">{t("fuzzing.create.form.connectionDetails")} <span className="text-blue-600">*</span></Label>
+              <div className="rounded-lg border border-neutral-200 bg-white p-6">
                 <TargetConfigForm
                   key={targetType}
                   targetType={targetType}
@@ -471,8 +471,8 @@ export function CreateJobModal({
                 />
               </div>
               {errors.connectionConfig && (
-                <p className="text-sm text-red-400 flex items-center gap-2">
-                    <span className="w-1 h-1 rounded-full bg-red-400" />
+                <p className="text-sm text-rose-600 flex items-center gap-2">
+                    <span className="w-1 h-1 rounded-full bg-rose-500" />
                   {errors.connectionConfig}
                 </p>
               )}
@@ -486,9 +486,9 @@ export function CreateJobModal({
         return (
           <div className="space-y-4">
              {targetType === "ISO15118" ? (
-                <div className="h-40 flex items-center justify-center rounded-lg border border-dashed border-slate-700 bg-slate-900/30 text-slate-400">
+                <div className="h-40 flex items-center justify-center rounded-lg border border-dashed border-neutral-200 bg-neutral-50 text-neutral-500">
                     <div className="text-center">
-                        <p className="text-lg font-medium text-slate-300">{t("fuzzing.create.scope.notSupportedTitle")}</p>
+                        <p className="text-lg font-medium text-neutral-900">{t("fuzzing.create.scope.notSupportedTitle")}</p>
                         <p className="text-sm mt-1">{t("fuzzing.create.scope.notSupportedDescription")}</p>
                     </div>
                 </div>
@@ -501,7 +501,7 @@ export function CreateJobModal({
                     title={targetDevice === "CHARGER" ? t("fuzzing.create.scope.serverToCharger") : t("fuzzing.create.scope.chargerToServer")}
                 />
                 {errors.scope && (
-                  <p className="text-sm text-red-400 mt-2">{errors.scope}</p>
+                  <p className="text-sm text-rose-600 mt-2">{errors.scope}</p>
                 )}
                 </>
              )}
@@ -511,11 +511,11 @@ export function CreateJobModal({
       case 4:
         return (
           <div className="space-y-6">
-            <div className="rounded-lg bg-slate-900/50 p-4 border border-slate-800 text-sm text-slate-400">
+            <div className="rounded-lg bg-neutral-50 p-4 border border-neutral-200 text-sm text-neutral-500">
                {t("fuzzing.create.params.note")}
             </div>
 
-            <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+            <div className="rounded-lg border border-neutral-200 bg-white p-6">
                 <FuzzingParamsForm
                 parameters={fuzzingParameters}
                 onChange={setFuzzingParameters}
@@ -534,19 +534,19 @@ export function CreateJobModal({
       open={open}
       onClose={handleClose}
       title=""
-      className="max-w-4xl bg-slate-900 border border-slate-800 shadow-2xl p-0! overflow-hidden [&>div:first-child]:hidden space-y-0!"
+      className="max-w-4xl bg-white border border-neutral-200 shadow-sm p-0! overflow-hidden [&>div:first-child]:hidden space-y-0!"
     >   
       {/* Custom Header with Gradient */}
-      <div className="relative w-full h-1 bg-linear-to-r from-blue-500 via-cyan-500 to-blue-600" />
+      <div className="relative w-full h-1 bg-blue-600" />
       
       {/* Custom Title Bar */}
-      <div className="flex items-center justify-between px-8 py-6 border-b border-slate-800/50">
-        <h2 className="text-xl font-bold text-white">
+      <div className="flex items-center justify-between px-8 py-6 border-b border-neutral-200">
+        <h2 className="text-xl font-bold text-neutral-900">
           {jobId ? t("fuzzing.create.titleEdit") : t("fuzzing.create.titleCreate")}
         </h2>
         <button 
             onClick={handleClose}
-            className="text-slate-400 hover:text-white transition-colors"
+            className="text-neutral-500 hover:text-neutral-900 transition-colors"
         >
             <div className="sr-only">{t("fuzzing.create.close")}</div>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -561,12 +561,12 @@ export function CreateJobModal({
                 <div key={step} className="flex flex-col items-center relative z-10 group">
                     <div
                         className={cn(
-                        "flex items-center justify-center w-12 h-12 rounded-2xl border-2 transition-all duration-300 shadow-lg",
+                        "flex items-center justify-center w-12 h-12 rounded-lg border-2 transition-all duration-300 shadow-sm",
                         currentStep === step
-                            ? "bg-blue-600 border-blue-500 text-white shadow-blue-500/25 scale-110"
+                            ? "bg-blue-600 border-blue-600 text-white scale-110"
                             : currentStep > step
-                            ? "bg-slate-900 border-blue-500/50 text-blue-400"
-                            : "bg-slate-900 border-slate-800 text-slate-600"
+                            ? "bg-white border-blue-200 text-blue-700"
+                            : "bg-white border-neutral-200 text-neutral-400"
                         )}
                     >
                         {currentStep > step ? (
@@ -577,12 +577,12 @@ export function CreateJobModal({
                     </div>
                     <span
                         className={cn(
-                        "mt-3 text-xs font-semibold tracking-wider uppercase transition-colors duration-300",
+                        "mt-3 text-xs font-semibold tracking-wide uppercase transition-colors duration-300",
                         currentStep === step
-                            ? "text-blue-400"
+                            ? "text-blue-700"
                             : currentStep > step
-                            ? "text-blue-500/70"
-                            : "text-slate-600"
+                            ? "text-blue-700/70"
+                            : "text-neutral-400"
                         )}
                     >
                         {getStepTitle(step as Step)}
@@ -591,9 +591,9 @@ export function CreateJobModal({
             ))}
             
             {/* Connecting Lines */}
-            <div className="absolute top-6 left-0 w-full h-0.5 bg-slate-800 -z-10" />
+            <div className="absolute top-6 left-0 w-full h-0.5 bg-neutral-200 -z-10" />
             <div 
-                className="absolute top-6 left-0 h-0.5 bg-blue-500/50 -z-10 transition-all duration-500"
+                className="absolute top-6 left-0 h-0.5 bg-blue-600 -z-10 transition-all duration-500"
                 style={{ width: `${((currentStep - 1) / (totalSteps - 1)) * 100}%` }}
             />
             </div>
@@ -610,28 +610,28 @@ export function CreateJobModal({
         >
             <div className="min-h-[400px]">
                 <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-white mb-2">{getStepTitle(currentStep)}</h2>
-                    <p className="text-slate-400">{getStepDescription(currentStep)}</p>
+                    <h2 className="text-2xl font-bold text-neutral-950 mb-2">{getStepTitle(currentStep)}</h2>
+                    <p className="text-neutral-500">{getStepDescription(currentStep)}</p>
                 </div>
                 {renderStepContent()}
             </div>
 
             {/* Error Message */}
             {errors.submit && (
-            <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-4 flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                <p className="text-sm text-red-400 font-medium">{errors.submit}</p>
+            <div className="rounded-lg border border-rose-300 bg-rose-50 p-4 flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                <p className="text-sm text-rose-700 font-medium">{errors.submit}</p>
             </div>
             )}
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between items-center pt-8 border-t border-slate-800/50">
+            <div className="flex justify-between items-center pt-8 border-t border-neutral-200">
             <Button
                 type="button"
                 variant="ghost"
                 onClick={handlePrevious}
                 disabled={currentStep === 1 || isSubmitting || isStepTransitioning}
-                className="text-slate-400 hover:text-white hover:bg-slate-900"
+                className="text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100"
             >
                 <ChevronLeft className="w-4 h-4 mr-2" />
                 {t("fuzzing.create.button.back")}
@@ -643,7 +643,7 @@ export function CreateJobModal({
                 variant="ghost"
                 onClick={handleClose}
                 disabled={isSubmitting}
-                className="text-slate-400 hover:text-white hover:bg-slate-900"
+                className="text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100"
                 >
                 {t("fuzzing.create.button.cancel")}
                 </Button>
@@ -652,7 +652,7 @@ export function CreateJobModal({
                     type="button"
                     onClick={handleNext}
                     disabled={isSubmitting || isStepTransitioning || (currentStep === 2 && targetType === "OCPP_CHARGER" && connectionStatus !== "waiting")}
-                    className="bg-blue-600 hover:bg-blue-500 text-white min-w-[120px] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    className="bg-blue-600 hover:bg-blue-700 text-white min-w-[120px] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                     {t("fuzzing.create.button.next")}
                     <ChevronRight className="w-4 h-4 ml-2" />
@@ -661,7 +661,7 @@ export function CreateJobModal({
                 <Button 
                     type="submit" 
                     disabled={isSubmitting || isStepTransitioning}
-                    className="bg-blue-600 hover:bg-blue-500 text-white min-w-[140px] shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)]"
+                    className="bg-blue-600 hover:bg-blue-700 text-white min-w-[140px] shadow-sm"
                 >
                     {isSubmitting ? (
                         <div className="flex items-center gap-2">

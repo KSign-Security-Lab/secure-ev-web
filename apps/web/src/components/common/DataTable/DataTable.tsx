@@ -18,10 +18,10 @@ export function DataTableSkeleton({ columns = 5, rows = 5 }: { columns?: number,
   return (
     <>
       {Array.from({ length: rows }).map((_, rIdx) => (
-        <tr key={rIdx} className="border-b border-slate-800/30">
+        <tr key={rIdx} className="border-b border-neutral-200">
           {Array.from({ length: columns }).map((_, cIdx) => (
             <td key={cIdx} className="px-6 py-4">
-              <div className="h-4 bg-slate-800/50 rounded-md animate-pulse" style={{ width: `${Math.random() * 40 + 60}%` }} />
+              <div className="h-4 bg-neutral-200 rounded-md animate-pulse" style={{ width: `${Math.random() * 40 + 60}%` }} />
             </td>
           ))}
         </tr>
@@ -66,19 +66,19 @@ export function DataTable<T>({
   const isEmpty = !isLoading && (!data || data.length === 0);
 
   return (
-    <GlassCard className={cn("overflow-visible shadow-2xl p-0 border-slate-700/50 bg-slate-900/30 backdrop-blur-md rounded-3xl", className)}>
+    <GlassCard className={cn("overflow-visible p-0 border-neutral-200 bg-white rounded-lg", className)}>
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-slate-800/80 border-b border-slate-700/50 text-slate-400">
+            <tr className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
               {columns.map((col, idx) => (
                 <th
                   key={idx}
                   className={cn(
-                    "px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] leading-none text-center",
+                    "px-6 py-4 text-[10px] font-semibold uppercase tracking-wide leading-none text-center",
                     col.headerClassName,
-                    idx === 0 && "rounded-tl-3xl",
-                    idx === columns.length - 1 && "rounded-tr-3xl"
+                    idx === 0 && "rounded-tl-lg",
+                    idx === columns.length - 1 && "rounded-tr-lg"
                   )}
                 >
                   {col.label}
@@ -86,7 +86,7 @@ export function DataTable<T>({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/30">
+          <tbody className="divide-y divide-neutral-200">
             {isLoading ? (
               <DataTableSkeleton columns={columns.length} rows={8} />
             ) : isEmpty ? (
@@ -105,7 +105,7 @@ export function DataTable<T>({
                   onClick={() => onRowClick?.(item)}
                   className={cn(
                     "group transition-all duration-200 bg-transparent",
-                    onRowClick && "cursor-pointer hover:bg-blue-500/5",
+                    onRowClick && "cursor-pointer hover:bg-neutral-50",
                     rowClassName?.(item, rowIdx)
                   )}
                 >
@@ -113,7 +113,7 @@ export function DataTable<T>({
                     <td
                       key={colIdx}
                       className={cn(
-                        "px-6 py-4 text-sm font-medium text-slate-300 group-hover:text-white transition-colors text-center",
+                        "px-6 py-4 text-sm font-medium text-neutral-700 group-hover:text-neutral-900 transition-colors text-center",
                         col.className
                       )}
                     >
@@ -128,9 +128,9 @@ export function DataTable<T>({
       </div>
 
       {pagination && pagination.totalPages > 1 && (
-        <div className="px-6 py-4 border-t border-slate-800/50 bg-slate-900/30 rounded-b-3xl">
+        <div className="px-6 py-4 border-t border-neutral-200 bg-white rounded-b-lg">
           <div className="flex items-center justify-between">
-            <div className="text-xs text-slate-500 font-medium">
+            <div className="text-xs text-neutral-500 font-medium">
               {pagination.totalCount !== undefined
                 ? t("common.showingCount", {
                     count: data?.length || 0,

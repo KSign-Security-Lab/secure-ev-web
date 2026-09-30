@@ -47,10 +47,10 @@ export const useToast = () => {
 };
 
 const typeStyles: Record<NonNullable<Toast["type"]>, string> = {
-  info: "bg-blue-500 text-white",
-  success: "bg-green-500 text-white",
-  error: "bg-red-500 text-white",
-  warning: "bg-yellow-500 text-black",
+  info: "bg-blue-600 text-white",
+  success: "bg-green-600 text-white",
+  error: "bg-rose-600 text-white",
+  warning: "bg-amber-500 text-black",
 };
 
 export function ToastProvider({ children }: { children: ReactNode }) {

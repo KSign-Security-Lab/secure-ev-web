@@ -14,36 +14,32 @@ interface StatsCardProps {
 
 const VARIANTS = {
   primary: {
-    border: "hover:border-primary-500/50",
-    shadow: "hover:shadow-primary-500/10",
-    bg: "bg-primary-500/5",
-    iconBg: "bg-primary-500/10",
-    iconBorder: "border-primary-500/20",
-    iconColor: "text-primary-400",
+    border: "hover:border-blue-200",
+    shadow: "",
+    iconBg: "bg-blue-50",
+    iconBorder: "border-blue-200",
+    iconColor: "text-blue-700",
   },
   accent: {
-    border: "hover:border-accent-500/50",
-    shadow: "hover:shadow-accent-500/10",
-    bg: "bg-accent-500/5",
-    iconBg: "bg-accent-500/10",
-    iconBorder: "border-accent-500/20",
-    iconColor: "text-accent-400",
+    border: "hover:border-sky-200",
+    shadow: "",
+    iconBg: "bg-sky-50",
+    iconBorder: "border-sky-200",
+    iconColor: "text-sky-700",
   },
   success: {
-    border: "hover:border-green-500/50",
-    shadow: "hover:shadow-green-500/10",
-    bg: "bg-green-500/5",
-    iconBg: "bg-green-500/10",
-    iconBorder: "border-green-500/20",
-    iconColor: "text-green-400",
+    border: "hover:border-green-200",
+    shadow: "",
+    iconBg: "bg-green-50",
+    iconBorder: "border-green-200",
+    iconColor: "text-green-700",
   },
   danger: {
-    border: "hover:border-danger-500/50",
-    shadow: "hover:shadow-danger-500/10",
-    bg: "bg-danger-500/5",
-    iconBg: "bg-danger-500/10",
-    iconBorder: "border-danger-500/20",
-    iconColor: "text-danger-500",
+    border: "hover:border-rose-200",
+    shadow: "",
+    iconBg: "bg-rose-50",
+    iconBorder: "border-rose-200",
+    iconColor: "text-rose-700",
   },
 };
 
@@ -61,20 +57,14 @@ export function StatsCard({
   return (
     <Card
       className={cn(
-        "relative overflow-hidden border-base-700/50 transition-all duration-300 hover:shadow-lg",
+        "relative overflow-hidden border-neutral-200 transition-all duration-300 hover:shadow-sm",
         styles.border,
         styles.shadow
       )}
     >
-      <div
-        className={cn(
-          "absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl",
-          styles.bg
-        )}
-      />
       <CardHeader className="pb-3">
         <div className="flex flex-row items-center justify-between">
-          <CardTitle className="text-sm font-medium text-neutral-300 uppercase tracking-wide">
+          <CardTitle className="text-sm font-medium text-neutral-500 uppercase tracking-wide">
             {title}
           </CardTitle>
           <div
@@ -90,7 +80,7 @@ export function StatsCard({
       </CardHeader>
       <CardContent className="pt-0">
         <div className="flex items-baseline gap-2">
-          <div className="text-3xl font-bold text-white">
+          <div className="text-3xl font-bold text-neutral-950">
             {typeof value === "number" ? value.toLocaleString() : value}
           </div>
           {trend ? (
@@ -101,7 +91,7 @@ export function StatsCard({
             <TrendIcon className={cn("h-4 w-4", styles.iconColor)} />
           )}
         </div>
-        <p className="text-sm text-neutral-400 mt-2">{description}</p>
+        <p className="text-sm text-neutral-500 mt-2">{description}</p>
       </CardContent>
     </Card>
   );

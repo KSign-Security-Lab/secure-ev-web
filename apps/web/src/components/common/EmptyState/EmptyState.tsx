@@ -23,15 +23,15 @@ export function EmptyState({
   const { t } = useI18n();
 
   return (
-    <div className={cn("flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-dashed border-slate-700 bg-slate-900/20 backdrop-blur-sm", className)}>
-      <div className="p-4 rounded-full bg-slate-800/50 text-slate-500 mb-4 animate-in zoom-in-50 duration-500">
+    <div className={cn("flex flex-col items-center justify-center p-12 text-center rounded-lg border border-dashed border-neutral-200 bg-neutral-50", className)}>
+      <div className="p-4 rounded-full bg-neutral-100 text-neutral-500 mb-4 animate-in zoom-in-50 duration-500">
         <Icon size={48} strokeWidth={1.5} />
       </div>
-      <h3 className="text-xl font-bold text-white mb-2 leading-none uppercase tracking-tight">
+      <h3 className="text-xl font-bold text-neutral-950 mb-2 leading-none tracking-tight">
         {title || t("common.noDataAvailable") || "No Data Available"}
       </h3>
       {description && (
-        <p className="text-slate-400 max-w-xs mb-6 text-sm font-medium">
+        <p className="text-neutral-500 max-w-xs mb-6 text-sm font-medium">
           {description}
         </p>
       )}

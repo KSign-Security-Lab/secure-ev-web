@@ -89,14 +89,14 @@ export function ReportUpload({ jobId, onUploadSuccess }: ReportUploadProps) {
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-2 text-white">
+          <label className="block text-sm font-medium mb-2 text-neutral-900">
             {t("selectReport")}
           </label>
           <input
             type="file"
             accept=".json,application/json"
             onChange={handleFileChange}
-            className="w-full bg-slate-900 p-2 rounded-lg border border-slate-700 text-white file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-600 file:text-white file:hover:bg-blue-700 file:cursor-pointer hover:border-slate-600 transition-colors"
+            className="w-full bg-neutral-50 p-2 rounded-lg border border-neutral-200 text-neutral-900 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-600 file:text-white file:hover:bg-blue-700 file:cursor-pointer hover:border-neutral-300 transition-colors"
           />
           <p className="text-xs text-neutral-400 mt-1">
             {t("maxSize")}
@@ -104,15 +104,15 @@ export function ReportUpload({ jobId, onUploadSuccess }: ReportUploadProps) {
         </div>
 
         {error && (
-          <div className="bg-red-500/20 border border-red-500/50 rounded p-3 flex items-start gap-2">
-            <AlertCircle size={16} className="text-red-400 mt-0.5 shrink-0" />
-            <p className="text-sm text-red-300">{error}</p>
+          <div className="border border-rose-300 bg-rose-50 rounded p-3 flex items-start gap-2">
+            <AlertCircle size={16} className="text-rose-700 mt-0.5 shrink-0" />
+            <p className="text-sm text-rose-700">{error}</p>
           </div>
         )}
 
         {success && (
-          <div className="bg-green-500/20 border border-green-500/50 rounded p-3">
-            <p className="text-sm text-green-300">
+          <div className="border border-green-300 bg-green-50 rounded p-3">
+            <p className="text-sm text-green-700">
               {t("uploadSuccess")}
             </p>
           </div>
@@ -121,7 +121,7 @@ export function ReportUpload({ jobId, onUploadSuccess }: ReportUploadProps) {
         <button
           onClick={handleUpload}
           disabled={!file || uploading}
-          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg transition"
+          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-neutral-300 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg transition"
         >
           <Upload size={16} />
           {uploading ? t("uploading") : t("uploadReport")}

@@ -14,12 +14,12 @@ export default function Loading({ text = "Loading..." }: LoadingProps) {
         <div className="spinner w-12 h-12"></div>
 
         {/* Loading Text */}
-        <span className="text-sm font-medium text-gray-500">{text}</span>
+        <span className="text-sm font-medium text-neutral-500">{text}</span>
       </div>
 
       <style jsx>{`
         .spinner {
-          border: 4px solid #3b82f6; /* blue-500 */
+          border: 4px solid #2563eb; /* blue-600 */
           border-top: 4px solid transparent;
           border-radius: 9999px;
           width: 48px;

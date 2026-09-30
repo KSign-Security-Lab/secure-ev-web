@@ -37,7 +37,7 @@ export default function ResultDetail({ result }: ResultDetailProps) {
 
   if (!result) {
     return (
-      <div className="w-80 md:w-96 shrink-0 flex items-center justify-center text-[#8b949e] bg-[#0d1117] border-l border-[#30363d]">
+      <div className="w-80 md:w-96 shrink-0 flex items-center justify-center text-neutral-500 bg-white border-l border-neutral-200">
         <p className="text-sm text-center px-6">
           {t("analysis.resultDetail.emptyState")}
         </p>
@@ -48,9 +48,9 @@ export default function ResultDetail({ result }: ResultDetailProps) {
   const isDangerous = result.dfInfo.validation.upper_vs_capacity === "Unbounded" || result.dfInfo.validation.upper === "None";
 
   return (
-    <div className="flex flex-col h-full bg-[#161b22] border-l border-[#30363d] w-80 md:w-96 shrink-0 overflow-hidden">
-      <div className="p-4 border-b border-[#30363d] flex justify-between items-center bg-[#0d1117]">
-        <h3 className="text-sm font-semibold text-[#c9d1d9]">
+    <div className="flex flex-col h-full bg-white border-l border-neutral-200 w-80 md:w-96 shrink-0 overflow-hidden">
+      <div className="p-4 border-b border-neutral-200 flex justify-between items-center bg-neutral-50">
+        <h3 className="text-sm font-semibold text-neutral-900">
           {t("analysis.resultDetail.title")}
         </h3>
 
@@ -67,28 +67,28 @@ export default function ResultDetail({ result }: ResultDetailProps) {
                   risk: getRiskLabel(result.risk),
                 })}
               </Badge>
-              <Badge variant="outline" className="border-[#30363d] text-[#8b949e] truncate">
+              <Badge variant="outline" className="border-neutral-200 text-neutral-500 truncate">
                 {result.sinkKind}
               </Badge>
             </div>
-            <h4 className="text-lg font-bold font-mono text-[#c9d1d9] break-all whitespace-normal">
+            <h4 className="text-lg font-bold font-mono text-neutral-900 break-all whitespace-normal">
               {result.functionName}
             </h4>
-            <p className="text-sm text-[#8b949e] mt-1 font-mono break-all whitespace-normal">
+            <p className="text-sm text-neutral-500 mt-1 font-mono break-all whitespace-normal">
               {result.filePath}:{result.startLine}-{result.endLine}
             </p>
           </div>
 
           {/* Core Reasoning */}
           <div className="space-y-3">
-               <div className="bg-[#0d1117] border border-[#30363d] p-3 rounded-md">
+               <div className="bg-neutral-50 border border-neutral-200 p-3 rounded-md">
                   <div className="flex items-start gap-2">
-                     {isDangerous ? <AlertTriangle className="w-4 h-4 text-[#f85149] mt-0.5 shrink-0" /> : <Info className="w-4 h-4 text-[#58a6ff] mt-0.5 shrink-0" />}
+                     {isDangerous ? <AlertTriangle className="w-4 h-4 text-rose-700 mt-0.5 shrink-0" /> : <Info className="w-4 h-4 text-blue-700 mt-0.5 shrink-0" />}
                      <div>
-                       <span className="text-sm font-semibold text-[#c9d1d9] block mb-1 break-all whitespace-normal">
+                       <span className="text-sm font-semibold text-neutral-900 block mb-1 break-all whitespace-normal">
                          {result.dfInfo.diagnostics.class}
                        </span>
-                       <div className="text-sm text-[#8b949e] leading-relaxed wrap-break-word whitespace-normal">
+                       <div className="text-sm text-neutral-500 leading-relaxed wrap-break-word whitespace-normal">
                          <p className="inline wrap-break-word">
                            {result.dfInfo.diagnostics.notes}.{" "}
                            {t("analysis.resultDetail.requestCapacitySentence", {
@@ -101,31 +101,31 @@ export default function ResultDetail({ result }: ResultDetailProps) {
                   </div>
                </div>
 
-               <div className="flex items-center gap-2 text-sm text-[#8b949e] bg-[#0d1117] p-3 rounded-md border border-[#30363d]">
-                  <span className="text-[#8b949e]">
+               <div className="flex items-center gap-2 text-sm text-neutral-500 bg-neutral-50 p-3 rounded-md border border-neutral-200">
+                  <span className="text-neutral-500">
                     {t("analysis.resultDetail.rootCause")}
                   </span>
-                  <span className="text-[#d29922] font-medium break-all">{result.dfInfo.root_cause.kind}</span>
+                  <span className="text-amber-700 font-medium break-all">{result.dfInfo.root_cause.kind}</span>
 
                </div>
             </div>
 
 
           {/* Advanced Sections (Modals) */}
-          <div className="pt-4 border-t border-[#30363d] space-y-2">
+          <div className="pt-4 border-t border-neutral-200 space-y-2">
 
             <Dialog>
               <DialogTrigger asChild>
-                <button className="w-full flex items-center justify-between p-3 bg-blue-900/20 hover:bg-blue-800/30 border border-blue-500/30 hover:border-blue-500/60 rounded-lg transition-all group shadow-[0_0_15px_-5px_rgba(59,130,246,0.1)]">
+                <button className="w-full flex items-center justify-between p-3 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition-all group">
                   <span className="flex items-center gap-3">
-                     <div className="p-2 rounded-md bg-blue-500/20 text-[#79c0ff] group-hover:bg-blue-500/30 group-hover:text-white border border-blue-500/30 transition-all">
+                     <div className="p-2 rounded-md bg-blue-100 text-blue-700 group-hover:bg-blue-200 border border-blue-200 transition-all">
                         <Info className="w-4 h-4" />
                      </div>
-                     <span className="text-sm font-semibold text-[#c9d1d9] group-hover:text-white transition-colors">
+                     <span className="text-sm font-semibold text-neutral-900 transition-colors">
                         {t("analysis.resultDetail.fullDataFlowAnalysis")}
                      </span>
                   </span>
-                  <ChevronRight className="w-4 h-4 text-[#79c0ff]/60 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+                  <ChevronRight className="w-4 h-4 text-blue-700 group-hover:translate-x-0.5 transition-all" />
                 </button>
               </DialogTrigger>
               <DialogContent className="max-w-4xl h-[85vh] flex flex-col p-6 overflow-hidden">
@@ -133,7 +133,7 @@ export default function ResultDetail({ result }: ResultDetailProps) {
                   <DialogTitle>
                     {t("analysis.resultDetail.fullDataFlowAnalysis")}
                   </DialogTitle>
-                  <p className="text-sm text-[#8b949e] mt-2 wrap-break-word">
+                  <p className="text-sm text-neutral-500 mt-2 wrap-break-word">
                     {t("analysis.resultDetail.fullDataFlowDescription")}
                   </p>
                 </DialogHeader>
@@ -159,7 +159,7 @@ export default function ResultDetail({ result }: ResultDetailProps) {
                     </TabsContent>
                   </Tabs>
                 </div>
-                <DialogFooter className="shrink-0 border-t border-[#30363d] pt-4 mt-6">
+                <DialogFooter className="shrink-0 border-t border-neutral-200 pt-4 mt-6">
                   <DialogClose asChild>
                     <Button variant="outline">
                       {t("analysis.resultDetail.close")}
@@ -171,16 +171,16 @@ export default function ResultDetail({ result }: ResultDetailProps) {
 
             <Dialog>
               <DialogTrigger asChild>
-                <button className="w-full flex items-center justify-between p-3 bg-purple-900/20 hover:bg-purple-800/30 border border-purple-500/30 hover:border-purple-500/60 rounded-lg transition-all group shadow-[0_0_15px_-5px_rgba(168,85,247,0.1)]">
+                <button className="w-full flex items-center justify-between p-3 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-lg transition-all group">
                   <span className="flex items-center gap-3">
-                     <div className="p-2 rounded-md bg-purple-500/20 text-[#d2a8ff] group-hover:bg-purple-500/30 group-hover:text-white border border-purple-500/30 transition-all">
+                     <div className="p-2 rounded-md bg-purple-100 text-purple-700 group-hover:bg-purple-200 border border-purple-200 transition-all">
                         <GitCompare className="w-4 h-4" />
                      </div>
-                     <span className="text-sm font-semibold text-[#c9d1d9] group-hover:text-white transition-colors">
+                     <span className="text-sm font-semibold text-neutral-900 transition-colors">
                         {t("analysis.resultDetail.similarSignatures")}
                      </span>
                   </span>
-                  <ChevronRight className="w-4 h-4 text-[#d2a8ff]/60 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+                  <ChevronRight className="w-4 h-4 text-purple-700 group-hover:translate-x-0.5 transition-all" />
                 </button>
               </DialogTrigger>
               <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -188,14 +188,14 @@ export default function ResultDetail({ result }: ResultDetailProps) {
                   <DialogTitle>
                     {t("analysis.resultDetail.similarSignatures")}
                   </DialogTitle>
-                  <p className="text-sm text-[#8b949e] mt-2">
+                  <p className="text-sm text-neutral-500 mt-2">
                     {t("analysis.resultDetail.similarSignaturesDescription")}
                   </p>
                 </DialogHeader>
                 <div className="mt-4">
                   <SimilarSignatures result={result} />
 
-                <DialogFooter className="mt-6 border-t border-[#30363d] pt-4">
+                <DialogFooter className="mt-6 border-t border-neutral-200 pt-4">
                   <DialogClose asChild>
                     <Button variant="outline">
                       {t("analysis.resultDetail.close")}

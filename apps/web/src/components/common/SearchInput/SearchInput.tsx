@@ -41,8 +41,8 @@ export default function SearchInput({
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
         className={cn(
-          "p-2 flex-1 border border-slate-600 text-slate-200 rounded-md bg-slate-800/50",
-          "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          "p-2 flex-1 border border-neutral-200 text-neutral-900 rounded-md bg-white",
+          "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-600"
         )}
       />
       {value && (
@@ -51,7 +51,7 @@ export default function SearchInput({
         </button>
       )}
       <button onClick={handleSearch} aria-label={t("common.search")}>
-        <Search size={18} className="text-neutral-400" />
+        <Search size={18} className="text-neutral-500" />
       </button>
     </div>
   );

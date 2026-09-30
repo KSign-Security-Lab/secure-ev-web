@@ -104,7 +104,7 @@ export const AgentConfigPanel: React.FC<AgentConfigPanelProps> = ({
     <div className="space-y-1.5">
       <label
         htmlFor={`agent-config-${key}`}
-        className="block text-[10px] font-black uppercase tracking-[0.2em] text-slate-500"
+        className="block text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500"
       >
         {label}
       </label>
@@ -123,16 +123,16 @@ export const AgentConfigPanel: React.FC<AgentConfigPanelProps> = ({
   return (
     <div className="space-y-5">
       <div className="space-y-1">
-        <h3 className="text-sm font-bold uppercase tracking-tight text-white">
+        <h3 className="text-sm font-bold tracking-tight text-neutral-900">
           {t("deploy.config.title")}
         </h3>
-        <p className="text-xs text-slate-500">{t("deploy.config.description")}</p>
+        <p className="text-xs text-neutral-500">{t("deploy.config.description")}</p>
       </div>
 
       <div className="space-y-1.5">
         <label
           htmlFor="agent-config-c2url"
-          className="block text-[10px] font-black uppercase tracking-[0.2em] text-slate-500"
+          className="block text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500"
         >
           {t("deploy.config.c2Url")}
         </label>
@@ -144,7 +144,7 @@ export const AgentConfigPanel: React.FC<AgentConfigPanelProps> = ({
           onChange={(event) => set("c2_url", event.target.value)}
           className="font-mono text-xs"
         />
-        <p className="text-[11px] text-slate-600">
+        <p className="text-[11px] text-neutral-500">
           {t("deploy.config.c2UrlHint")}
         </p>
       </div>
@@ -152,7 +152,7 @@ export const AgentConfigPanel: React.FC<AgentConfigPanelProps> = ({
       <div className="space-y-1.5">
         <label
           htmlFor="agent-config-implant"
-          className="block text-[10px] font-black uppercase tracking-[0.2em] text-slate-500"
+          className="block text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500"
         >
           {t("deploy.config.implantName")}
         </label>
@@ -172,13 +172,13 @@ export const AgentConfigPanel: React.FC<AgentConfigPanelProps> = ({
         {numericField("untrusted_timer", t("deploy.config.untrustedTimer"))}
       </div>
 
-      {error && <p className="text-xs text-red-400">{error}</p>}
+      {error && <p className="text-xs text-red-600">{error}</p>}
 
       <button
         type="button"
         onClick={handleSave}
         disabled={isSaving}
-        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:pointer-events-none text-white px-5 py-2.5 rounded-lg transition-all duration-300 font-bold uppercase text-[11px] tracking-widest"
+        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none text-white px-5 py-2.5 rounded-lg transition-all duration-300 font-semibold text-sm"
       >
         {isSaving ? (
           <Loader2 className="w-4 h-4 animate-spin" />

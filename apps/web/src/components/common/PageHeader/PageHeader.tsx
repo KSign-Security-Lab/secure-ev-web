@@ -30,20 +30,20 @@ export function PageHeader({
         {badge && (
           <Badge variant={badgeVariant} className="mb-2">
             <span className={cn("flex h-2 w-2 rounded-full mr-2", {
-              "bg-blue-400 animate-pulse": badgeVariant === "blue",
-              "bg-cyan-400 animate-pulse": badgeVariant === "cyan",
-              "bg-green-400": badgeVariant === "green",
-              "bg-red-400": badgeVariant === "red",
-              "bg-yellow-400": badgeVariant === "yellow",
+              "bg-blue-500 animate-pulse": badgeVariant === "blue",
+              "bg-sky-500 animate-pulse": badgeVariant === "cyan",
+              "bg-green-500": badgeVariant === "green",
+              "bg-rose-500": badgeVariant === "red",
+              "bg-amber-500": badgeVariant === "yellow",
             })}></span>
             {badge}
           </Badge>
         )}
-        <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight uppercase leading-none">
+        <h1 className="text-2xl md:text-3xl font-bold text-neutral-950 tracking-tight leading-none">
           {title}
         </h1>
         {subtitle && (
-          <p className="text-slate-400 mt-2 text-base font-medium tracking-wide">
+          <p className="text-neutral-500 mt-2 text-base font-medium tracking-wide">
             {subtitle}
           </p>
         )}

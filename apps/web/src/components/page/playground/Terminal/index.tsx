@@ -340,7 +340,7 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
           )}
           {!sessionId && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none backdrop-blur-sm">
-              <div className="rounded-lg bg-slate-900/90 border border-slate-700/50 px-4 py-2 text-sm text-slate-300">
+              <div className="rounded-lg bg-neutral-900/90 border border-neutral-700 px-4 py-2 text-sm text-neutral-300">
                 {t("playground.terminal.selectSessionPrompt")}
               </div>
             </div>

@@ -158,52 +158,52 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
       onClose={onClose}
       hideHeader={true}
       disableDefaultStyles={true}
-      className="max-w-5xl bg-slate-900 border border-slate-800 shadow-2xl p-0 overflow-hidden"
+      className="max-w-5xl bg-white border border-neutral-200 shadow-sm p-0 overflow-hidden"
     >
       <div className="flex flex-col h-[880px] max-h-[95vh]">
-        <div className="relative w-full h-[2px] bg-slate-800 shrink-0" />
+        <div className="relative w-full h-[2px] bg-neutral-100 shrink-0" />
 
         {/* Header */}
-        <header className="px-6 py-4 border-b border-slate-800/50 bg-slate-900/40 backdrop-blur-xl flex justify-between items-center shrink-0">
+        <header className="px-6 py-4 border-b border-neutral-200 bg-white  flex justify-between items-center shrink-0">
           <div className="flex flex-col gap-5">
-            <h1 className="text-2xl font-bold text-white tracking-tight uppercase leading-none">
+            <h1 className="text-2xl font-bold text-neutral-950 tracking-tight leading-none">
               {item ? item.name : t("assessment.detail.newAssessment")}
             </h1>
-            <div className="flex items-center gap-4 text-sm font-bold text-slate-500 uppercase tracking-widest leading-none">
-              <span className="flex items-center gap-2 opacity-70"><ShieldAlert size={16} className="text-orange-500" /> ID: {item?.id}</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-slate-800" />
+            <div className="flex items-center gap-4 text-sm font-bold text-neutral-500 uppercase tracking-widest leading-none">
+              <span className="flex items-center gap-2 opacity-70"><ShieldAlert size={16} className="text-amber-600" /> ID: {item?.id}</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-neutral-300" />
               <span className="text-xs opacity-50 italic lowercase">v1.2.4-stable</span>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-500 hover:text-white hover:bg-slate-800 rounded-lg transition-all"
+            className="p-2 text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-all"
           >
             <X size={20} />
           </button>
         </header>
 
         {/* Content Area - Scrollable */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent">
           <div className="p-8 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Simulation History Section */}
             <div className="space-y-4">
               <header className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
-                    <div className="w-1.5 h-6 bg-red-500/80 rounded-full" />
-                    <span className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">{t("assessment.result.simulationHistory")}</span>
+                    <div className="w-1.5 h-6 bg-rose-500 rounded-full" />
+                    <span className="text-xs font-black text-neutral-500 uppercase tracking-[0.2em]">{t("assessment.result.simulationHistory")}</span>
                   </div>
                   <button 
                     onClick={handleRunSimulation}
-                    className="flex items-center gap-2 px-6 py-2 rounded-lg bg-slate-800 border border-slate-700 text-[10px] font-black text-slate-400 hover:text-white hover:bg-slate-700 transition-all uppercase tracking-widest shadow-lg active:scale-95"
+                    className="flex items-center gap-2 px-6 py-2 rounded-lg bg-neutral-100 border border-neutral-200 text-[10px] font-black text-neutral-600 hover:text-neutral-700 hover:bg-neutral-200 transition-all uppercase tracking-widest shadow-sm active:scale-95"
                   >
-                    <Play size={12} className="text-emerald-500" />
+                    <Play size={12} className="text-green-600" />
                     {t("assessment.detail.runSimulation")}
                   </button>
               </header>
-              <div className="border border-slate-800/60 rounded-2xl overflow-hidden bg-slate-900/30 shadow-2xl backdrop-blur-sm">
+              <div className="border border-neutral-200 rounded-lg overflow-hidden bg-white shadow-sm">
                 <table className="w-full text-left text-xs font-mono border-collapse">
-                  <thead className="bg-slate-900/80 border-b border-slate-800/50 text-slate-500 uppercase tracking-widest font-black text-[10px]">
+                  <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500 uppercase tracking-widest font-black text-[10px]">
                     <tr>
                       <th className="px-4 py-2 w-12 text-center opacity-40 italic">#</th>
                       <th className="px-4 py-2">{t("assessment.result.attack")}</th>
@@ -212,47 +212,47 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                       <th className="px-4 py-2 w-16 text-center">OP</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/40 text-slate-400">
+                  <tbody className="divide-y divide-neutral-200 text-neutral-500">
                     {runs.map((sim) => (
                       <tr 
                         key={sim.id} 
                         onClick={() => setSelectedRunId(sim.id)}
                         className={cn(
                           "transition-all group cursor-pointer border-l-2",
-                          selectedRunId === sim.id ? "bg-blue-500/5" : "border-l-transparent hover:bg-slate-800/20"
+                          selectedRunId === sim.id ? "bg-blue-50" : "border-l-transparent hover:bg-neutral-50"
                         )}
                         style={selectedRunId === sim.id ? { borderLeftColor: '#3b82f6' } : {}}
                       >
-                        <td className="px-4 py-2 text-center font-bold text-slate-600 italic">#{sim.id.padStart(2, '0')}</td>
+                        <td className="px-4 py-2 text-center font-bold text-neutral-400 italic">#{sim.id.padStart(2, '0')}</td>
                         <td className="px-4 py-2">
                           <div className="flex flex-col">
                             <span className={cn(
                               "font-bold transition-colors uppercase tracking-tight",
-                              selectedRunId === sim.id ? "text-white" : "text-slate-200 group-hover:text-white"
+                              selectedRunId === sim.id ? "text-blue-700" : "text-neutral-900 group-hover:text-neutral-900"
                             )}>{sim.attack}</span>
-                            <span className="text-[10px] text-slate-600 uppercase tracking-widest leading-none mt-1">VECTOR_ID: {sim.id}</span>
+                            <span className="text-[10px] text-neutral-400 uppercase tracking-widest leading-none mt-1">VECTOR_ID: {sim.id}</span>
                           </div>
                         </td>
                         <td className="px-4 py-2 text-center">
                           <span className={cn(
                             "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all",
                             sim.status === "Success" 
-                              ? "bg-emerald-500/5 border-emerald-500/20 text-emerald-500" 
+                              ? "bg-green-50 border-green-300 text-green-700" 
                               : sim.status === "Failed"
-                                ? "bg-red-500/5 border-red-500/20 text-red-500"
-                                : "bg-blue-500/5 border-blue-500/20 text-blue-400 animate-pulse"
+                                ? "bg-rose-50 border-rose-300 text-rose-700"
+                                : "bg-blue-50 border-blue-300 text-blue-700 animate-pulse"
                           )}>
-                            <div className={cn("w-1 h-1 rounded-full", sim.status === "Success" ? "bg-emerald-500" : sim.status === "Failed" ? "bg-red-500" : "bg-blue-400")} />
+                            <div className={cn("w-1 h-1 rounded-full", sim.status === "Success" ? "bg-green-500" : sim.status === "Failed" ? "bg-rose-500" : "bg-blue-500")} />
                             {sim.status}
                           </span>
                         </td>
-                        <td className="px-4 py-2 text-center font-mono text-slate-600 group-hover:text-slate-400 transition-colors uppercase tracking-widest">
+                        <td className="px-4 py-2 text-center font-mono text-neutral-400 group-hover:text-neutral-500 transition-colors uppercase tracking-widest">
                           {sim.time}
                         </td>
                         <td className="px-4 py-2 text-center">
                           <button 
                             onClick={(e) => handleDeleteRun(e, sim.id)}
-                            className="p-2 text-slate-700 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                            className="p-2 text-neutral-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
                           >
                             <Trash2 size={16} />
                           </button>
@@ -261,7 +261,7 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                     ))}
                     {runs.length === 0 && (
                       <tr>
-                        <td colSpan={6} className="p-12 text-center text-slate-600 italic uppercase tracking-[0.2em] text-[10px]">
+                        <td colSpan={6} className="p-12 text-center text-neutral-400 italic uppercase tracking-[0.2em] text-[10px]">
                           {t("assessment.result.noHistory")}
                         </td>
                       </tr>
@@ -276,11 +276,11 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                 {/* Process View Section */}
                 <div className="space-y-4">
                   <header className="flex items-center gap-3">
-                      <div className="w-1.5 h-6 bg-slate-700 rounded-full" />
-                      <span className="text-xs font-black text-slate-500 uppercase tracking-[0.2em]">{t("assessment.result.processView")}</span>
+                      <div className="w-1.5 h-6 bg-neutral-300 rounded-full" />
+                      <span className="text-xs font-black text-neutral-500 uppercase tracking-[0.2em]">{t("assessment.result.processView")}</span>
                   </header>
-                  <div className="p-8 border border-slate-800/60 rounded-2xl bg-slate-900/40 shadow-2xl relative min-h-[300px]">
-                    <div className="absolute left-[41px] top-12 bottom-12 w-[2px] bg-linear-to-b from-red-500/30 via-slate-800 to-slate-800" />
+                  <div className="p-8 border border-neutral-200 rounded-lg bg-white shadow-sm relative min-h-[300px]">
+                    <div className="absolute left-[41px] top-12 bottom-12 w-[2px] bg-neutral-200" />
                     
                     <div className="space-y-10 relative z-10">
                       {selectedRun.processSteps.map((step, idx) => (
@@ -288,29 +288,29 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                           <div className="relative shrink-0 flex items-center justify-center">
                             <div className={cn(
                               "w-4 h-4 rounded-full border-2 z-10 transition-all duration-500",
-                              step.status === "Completed" ? "bg-red-500 border-red-400 shadow-[0_0_10px_rgba(239,68,68,0.2)]" : 
-                              step.status === "Processing" ? "bg-orange-500 animate-pulse border-orange-400" : 
-                              step.status === "Failed" ? "bg-red-900 border-red-500" : "bg-slate-900 border-slate-800"
+                              step.status === "Completed" ? "bg-rose-500 border-rose-400" : 
+                              step.status === "Processing" ? "bg-amber-500 animate-pulse border-amber-400" : 
+                              step.status === "Failed" ? "bg-rose-700 border-rose-500" : "bg-neutral-100 border-neutral-300"
                             )} />
                             {step.status === "Processing" && (
-                              <div className="absolute inset-0 w-4 h-4 rounded-full bg-orange-500 animate-ping opacity-20" />
+                              <div className="absolute inset-0 w-4 h-4 rounded-full bg-amber-500 animate-ping opacity-20" />
                             )}
                           </div>
-                          <div className="flex-1 pb-6 border-b border-white/5">
+                          <div className="flex-1 pb-6 border-b border-neutral-200">
                               <div className="flex justify-between items-start mb-2">
                                   <h4 className={cn(
                                     "text-xs font-black uppercase tracking-[0.15em] transition-colors",
-                                    step.status === "Completed" ? "text-white" : 
-                                    step.status === "Processing" ? "text-orange-400" : 
-                                    step.status === "Failed" ? "text-red-500" : "text-slate-500"
+                                    step.status === "Completed" ? "text-neutral-900" :
+                                    step.status === "Processing" ? "text-amber-600" : 
+                                    step.status === "Failed" ? "text-rose-600" : "text-neutral-500"
                                   )}>
                                     {step.title}
                                   </h4>
-                                  <span className="text-[10px] font-mono text-slate-700 uppercase tracking-widest">
+                                  <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">
                                       {step.status === "Completed" ? "ACT_LOG_" + (idx+1) : "RT_STATUS"}
                                   </span>
                               </div>
-                              <p className="text-sm text-slate-400 leading-relaxed font-medium transition-colors group-hover:text-slate-300">
+                              <p className="text-sm text-neutral-500 leading-relaxed font-medium transition-colors group-hover:text-neutral-700">
                                 {step.description}
                               </p>
                           </div>
@@ -323,36 +323,36 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                 {/* Capability Results Section */}
                 <div className="space-y-4">
                      <header className="flex items-center gap-3">
-                        <div className="w-1.5 h-6 bg-red-600/80 rounded-full" />
-                        <span className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">{t("assessment.result.capabilityAnalysis")}</span>
+                        <div className="w-1.5 h-6 bg-rose-600 rounded-full" />
+                        <span className="text-xs font-black text-neutral-500 uppercase tracking-[0.2em]">{t("assessment.result.capabilityAnalysis")}</span>
                     </header>
-                    <div className="border border-slate-800/60 rounded-2xl overflow-hidden bg-slate-900/30 shadow-2xl backdrop-blur-sm">
+                    <div className="border border-neutral-200 rounded-lg overflow-hidden bg-white shadow-sm">
                       <table className="w-full text-left text-xs font-mono border-collapse">
-                        <thead className="bg-slate-900/80 border-b border-slate-800/50 text-slate-500 uppercase tracking-widest font-black text-[10px]">
+                        <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500 uppercase tracking-widest font-black text-[10px]">
                           <tr>
                             <th className="px-4 py-2">ID</th>
                             <th className="px-4 py-2">{t("assessment.result.capabilityName")}</th>
                             <th className="px-4 py-2 text-right">{t("assessment.result.status")}</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-800/40 text-slate-400">
+                        <tbody className="divide-y divide-neutral-200 text-neutral-500">
                           {selectedRun.results.map((res) => (
-                            <tr key={res.id} className="transition-colors group hover:bg-white/5">
-                              <td className="px-4 py-2 text-slate-600 italic">#{res.id.padStart(3, '0')}</td>
+                            <tr key={res.id} className="transition-colors group hover:bg-neutral-50">
+                              <td className="px-4 py-2 text-neutral-400 italic">#{res.id.padStart(3, '0')}</td>
                               <td className="px-4 py-2">
                                 <div className="flex flex-col">
-                                    <span className="text-slate-200 font-bold group-hover:text-white transition-all uppercase tracking-tight">{res.name}</span>
-                                    <span className="text-[9px] text-slate-700 uppercase tracking-[0.3em] font-black mt-1">SIG_MATCH: 0x82{res.id}</span>
+                                    <span className="text-neutral-900 font-bold group-hover:text-neutral-900 transition-all uppercase tracking-tight">{res.name}</span>
+                                    <span className="text-[9px] text-neutral-400 uppercase tracking-[0.3em] font-black mt-1">SIG_MATCH: 0x82{res.id}</span>
                                 </div>
                               </td>
                               <td className="px-4 py-2 text-right">
                                 <span className={cn(
                                   "inline-flex items-center gap-1.5 px-3 py-1 rounded border text-[10px] font-black uppercase tracking-widest transition-all",
                                   res.status === "Success" 
-                                    ? "bg-slate-800 border-slate-700 text-slate-500" 
+                                    ? "bg-neutral-100 border-neutral-200 text-neutral-600" 
                                     : res.status === "Processing"
-                                      ? "bg-blue-500/10 border-blue-500/30 text-blue-400"
-                                      : "bg-red-500/80 border-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.1)]"
+                                      ? "bg-blue-50 border-blue-300 text-blue-700"
+                                      : "bg-rose-600 border-rose-600 text-white"
                                 )}>
                                   {res.status}
                                 </span>
@@ -365,10 +365,10 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                   </div>
               </div>
             ) : (
-              <div className="h-64 flex items-center justify-center rounded-2xl border border-dashed border-slate-800 bg-slate-900/20">
+              <div className="h-64 flex items-center justify-center rounded-lg border border-dashed border-neutral-300 bg-neutral-50">
                 <div className="text-center space-y-2">
-                  <Activity className="w-8 h-8 text-slate-700 mx-auto opacity-20" />
-                  <p className="text-xs font-black text-slate-700 uppercase tracking-[0.3em]">{t("assessment.result.selectRun")}</p>
+                  <Activity className="w-8 h-8 text-neutral-400 mx-auto opacity-20" />
+                  <p className="text-xs font-black text-neutral-400 uppercase tracking-[0.3em]">{t("assessment.result.selectRun")}</p>
                 </div>
               </div>
             )}
@@ -376,10 +376,10 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
         </div>
 
         {/* Footer Navigation */}
-        <footer className="px-6 py-4 bg-slate-900/30 border-t border-slate-800/50 flex justify-end items-center shrink-0">
+        <footer className="px-6 py-4 bg-white border-t border-neutral-200 flex justify-end items-center shrink-0">
           <button
             onClick={onClose}
-            className="flex items-center justify-center gap-2 px-8 py-2.5 rounded-lg text-xs font-bold uppercase tracking-[0.2em] transition-all bg-slate-800 border border-slate-700 text-white hover:bg-slate-700 shadow-xl active:scale-95"
+            className="flex items-center justify-center gap-2 px-8 py-2.5 rounded-lg text-sm font-semibold transition-all bg-neutral-100 border border-neutral-200 text-neutral-700 hover:bg-neutral-200 shadow-sm active:scale-95"
           >
             <X size={14} />
             {t("common.close")}

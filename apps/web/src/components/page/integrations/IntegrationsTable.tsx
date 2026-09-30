@@ -40,8 +40,8 @@ const MODE_LABEL_KEY: Record<IntegrationMode, TranslationKey> = {
 };
 
 const MODE_CLASS: Record<IntegrationMode, string> = {
-  API: "text-blue-400/80 bg-blue-400/5 border-blue-400/10",
-  AGENT: "text-cyan-400/80 bg-cyan-400/5 border-cyan-400/10",
+  API: "text-blue-700 bg-blue-50 border-blue-300",
+  AGENT: "text-sky-700 bg-sky-50 border-sky-300",
 };
 
 export const IntegrationsTable: React.FC<IntegrationsTableProps> = ({
@@ -53,18 +53,18 @@ export const IntegrationsTable: React.FC<IntegrationsTableProps> = ({
   const columns: DataTableColumn<IntegrationsListResponse[number]>[] = [
     {
       label: t("integrations.table.name"),
-      className: "font-bold text-slate-200",
+      className: "font-bold text-neutral-900",
       render: (item) => item.name,
     },
     {
       label: t("integrations.table.vendor"),
-      className: "text-slate-400 font-medium",
+      className: "text-neutral-500 font-medium",
       render: (item) => item.vendor,
     },
     {
       label: t("integrations.table.category"),
       render: (item) => (
-        <span className="uppercase text-[10px] font-black tracking-widest text-slate-300 bg-slate-400/5 px-3 py-1 rounded border border-slate-400/10 inline-flex items-center">
+        <span className="uppercase text-[10px] font-black tracking-widest text-neutral-700 bg-neutral-50 px-3 py-1 rounded border border-neutral-200 inline-flex items-center">
           {item.category}
         </span>
       ),
@@ -81,7 +81,7 @@ export const IntegrationsTable: React.FC<IntegrationsTableProps> = ({
     },
     {
       label: t("integrations.table.endpoint"),
-      className: "text-slate-400 font-mono text-xs",
+      className: "text-neutral-500 font-mono text-xs",
       render: (item) => item.baseUrl || t("integrations.table.noEndpoint"),
     },
     {
@@ -95,12 +95,12 @@ export const IntegrationsTable: React.FC<IntegrationsTableProps> = ({
     },
     {
       label: t("integrations.table.collected"),
-      className: "font-mono text-xs text-slate-400 tabular-nums",
+      className: "font-mono text-xs text-neutral-500 tabular-nums",
       render: (item) => item.collectedCount.toLocaleString(),
     },
     {
       label: t("integrations.table.lastSync"),
-      className: "text-slate-500 tabular-nums italic text-xs",
+      className: "text-neutral-500 tabular-nums italic text-xs",
       render: (item) =>
         item.lastSyncAt
           ? item.lastSyncAt.replace("T", " ").slice(0, 19)

@@ -329,15 +329,15 @@ export function CommandFilterDropdown({
           type="button"
           onClick={() => setActiveFilter(isActive ? null : filterType)}
           className={cn(
-            "w-full px-3 py-2 text-left rounded-lg border transition-colors flex items-center justify-between bg-base-800/60 ring-1 ring-inset ring-base-700/60 hover:bg-base-800",
+            "w-full px-3 py-2 text-left rounded-lg border transition-colors flex items-center justify-between bg-neutral-50 ring-1 ring-inset ring-neutral-200 hover:bg-neutral-100",
             value
-              ? "border-primary-500/50 bg-primary-500/10 text-primary-100"
-              : "border-base-700/60 text-neutral-200",
-            isActive && "ring-2 ring-primary-500/60"
+              ? "border-blue-200 bg-blue-50 text-blue-700"
+              : "border-neutral-200 text-neutral-700",
+            isActive && "ring-2 ring-blue-500/40"
           )}
         >
           <div className="flex items-center gap-2 min-w-0">
-            <span className="text-[11px] uppercase tracking-wide text-neutral-400">
+            <span className="text-[11px] uppercase tracking-wide text-neutral-500">
               {label}
             </span>
             <span className="text-sm truncate font-medium">
@@ -351,7 +351,7 @@ export function CommandFilterDropdown({
                 e.stopPropagation();
                 handleClearFilter(filterType);
               }}
-              className="ml-2 text-neutral-400 hover:text-neutral-200 shrink-0"
+              className="ml-2 text-neutral-500 hover:text-neutral-700 shrink-0"
             >
               <X className="h-3 w-3" />
             </button>
@@ -359,10 +359,10 @@ export function CommandFilterDropdown({
         </button>
 
         {isActive && (
-          <div className="absolute top-full left-0 right-0 mt-2 z-50 overflow-hidden rounded-xl border border-base-700/70 bg-base-900/95 backdrop-blur shadow-2xl flex flex-col max-h-64">
-            <div className="p-3 border-b border-base-700/60">
+          <div className="absolute top-full left-0 right-0 mt-2 z-50 overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm flex flex-col max-h-64">
+            <div className="p-3 border-b border-neutral-200">
               <div className="relative">
-                <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-400" />
+                <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-500" />
                 <input
                   type="text"
                   value={searchQueries[filterType]}
@@ -373,14 +373,14 @@ export function CommandFilterDropdown({
                     }))
                   }
                   placeholder={t("common.searchPlaceholder")}
-                  className="w-full rounded-md border border-base-700/60 bg-base-800/80 pl-8 pr-3 py-2 text-sm text-neutral-100 placeholder:text-neutral-500 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+                  className="w-full rounded-md border border-neutral-200 bg-neutral-50 pl-8 pr-3 py-2 text-sm text-neutral-900 placeholder:text-neutral-500 focus:border-blue-500/60 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
                   autoFocus
                 />
               </div>
             </div>
             <div className="overflow-y-auto max-h-56 py-1 pr-1">
               {options.length === 0 ? (
-                  <div className="p-3 text-center text-xs text-neutral-400">
+                  <div className="p-3 text-center text-xs text-neutral-500">
                   {t("playground.filter.noOptionsFound")}
                 </div>
               ) : (
@@ -389,7 +389,7 @@ export function CommandFilterDropdown({
                     key={option}
                     type="button"
                     onClick={() => handleSelectOption(filterType, option)}
-                    className="w-full text-left px-3 py-2 text-sm text-neutral-100 transition-colors hover:bg-base-800/80 focus:bg-base-800/80"
+                    className="w-full text-left px-3 py-2 text-sm text-neutral-900 transition-colors hover:bg-neutral-50 focus:bg-neutral-50"
                   >
                     {option}
                   </button>
@@ -410,13 +410,13 @@ export function CommandFilterDropdown({
           setIsOpen((prev) => !prev);
         }}
         disabled={disabled}
-        className="w-full flex items-center gap-2 rounded-lg bg-base-900/70 px-4 py-3.5 text-sm font-medium text-neutral-200 ring-1 ring-inset ring-base-700/60 transition-colors hover:bg-base-800 focus:outline-none focus:ring-2 focus:ring-primary-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full flex items-center gap-2 rounded-lg bg-white px-4 py-3.5 text-sm font-medium text-neutral-700 ring-1 ring-inset ring-neutral-200 transition-colors hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-blue-500/40 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <Search className="h-4 w-4" />
         <span>{t("playground.filter.searchCommands")}</span>
         {isOpen && (
-          <span className="ml-auto flex items-center gap-2 text-xs text-neutral-400">
-            <span className="inline-flex items-center rounded-full bg-base-800 px-2 py-0.5 text-[10px] text-neutral-300 ring-1 ring-inset ring-base-700">
+          <span className="ml-auto flex items-center gap-2 text-xs text-neutral-500">
+            <span className="inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-[10px] text-neutral-600 ring-1 ring-inset ring-neutral-200">
               {activeFilterCount || t("playground.filter.noFilters")}{" "}
               {t("playground.filter.filters")}
             </span>
@@ -425,17 +425,17 @@ export function CommandFilterDropdown({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl border border-base-700/60 bg-base-950/90 shadow-2xl ring-1 ring-black/20 backdrop-blur z-50 overflow-visible">
+        <div className="absolute top-full left-0 right-0 mt-2 rounded-lg border border-neutral-200 bg-white shadow-sm ring-1 ring-neutral-200 z-50 overflow-visible">
           <div className="p-4 max-h-[75vh] overflow-visible">
             {/* Header */}
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-neutral-900 flex items-center gap-2">
                 {t("playground.filter.title")}
               </h3>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="rounded-md p-1 text-neutral-400 transition-colors hover:bg-base-800 hover:text-neutral-100"
+                className="rounded-md p-1 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -443,24 +443,24 @@ export function CommandFilterDropdown({
 
             {/* Keyword search */}
             <div className="mb-4">
-              <label className="text-[11px] font-semibold uppercase tracking-wide text-neutral-400">
+              <label className="text-[11px] font-semibold uppercase tracking-wide text-neutral-500">
                 {t("common.keyword")}
               </label>
               <div className="mt-2 relative">
-                <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-400" />
+                <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-500" />
                 <input
                   type="text"
                   value={keywordQuery}
                   onChange={(e) => setKeywordQuery(e.target.value)}
                   placeholder={t("playground.filter.searchByKeyword")}
-                  className="w-full rounded-md border border-base-700/60 bg-base-900/80 pl-8 pr-3 py-2 text-sm text-neutral-100 placeholder:text-neutral-500 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+                  className="w-full rounded-md border border-neutral-200 bg-neutral-50 pl-8 pr-3 py-2 text-sm text-neutral-900 placeholder:text-neutral-500 focus:border-blue-500/60 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
                 />
               </div>
             </div>
 
             {/* Filters Grid */}
             {isLoadingFilters ? (
-                <div className="p-4 text-center text-sm text-neutral-400">
+                <div className="p-4 text-center text-sm text-neutral-500">
                 {t("playground.filter.loadingFilters")}
               </div>
             ) : (
@@ -489,15 +489,15 @@ export function CommandFilterDropdown({
             )}
 
             {/* Results */}
-            <div className="border-t border-base-700/60 pt-4">
+            <div className="border-t border-neutral-200 pt-4">
               <div className="flex items-center justify-between mb-3">
-                <h4 className="text-[10px] font-semibold text-neutral-400 tracking-[0.08em] uppercase">
+                <h4 className="text-[10px] font-semibold text-neutral-500 tracking-[0.08em] uppercase">
                   {t("common.results")}
                 </h4>
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="text-xs text-neutral-400 hover:text-neutral-200 underline-offset-4 hover:underline"
+                  className="text-xs text-neutral-500 hover:text-neutral-700 underline-offset-4 hover:underline"
                 >
                   {t("common.resetAll")}
                 </button>
@@ -509,11 +509,11 @@ export function CommandFilterDropdown({
                 className="max-h-[30vh] overflow-y-auto space-y-1.5 pr-1"
               >
                 {isLoading ? (
-                  <div className="p-4 text-center text-sm text-neutral-400">
+                  <div className="p-4 text-center text-sm text-neutral-500">
                     {t("playground.autocomplete.searching")}
                   </div>
                 ) : commands.length === 0 ? (
-                  <div className="p-4 text-center text-sm text-neutral-400">
+                  <div className="p-4 text-center text-sm text-neutral-500">
                     {keywordQuery.trim()
                       ? t("playground.filter.noCommandsByKeyword")
                       : filterState.platform ||
@@ -530,19 +530,19 @@ export function CommandFilterDropdown({
                         key={cmd.id}
                         type="button"
                         onClick={() => handleSelectCommand(cmd.command)}
-                        className="w-full text-left px-4 py-3 rounded-lg transition-colors border border-base-800/80 bg-base-900/60 hover:border-primary-500/40 hover:bg-base-900"
+                        className="w-full text-left px-4 py-3 rounded-lg transition-colors border border-neutral-200 bg-white hover:border-blue-200 hover:bg-neutral-50"
                       >
-                        <div className="font-semibold text-white text-sm mb-1">
+                        <div className="font-semibold text-neutral-900 text-sm mb-1">
                           {cmd.ability_name}
                         </div>
-                        <div className="text-[11px] text-neutral-300 font-mono break-all mb-2">
+                        <div className="text-[11px] text-neutral-600 font-mono break-all mb-2">
                           {cmd.command}
                         </div>
-                        <div className="flex flex-wrap items-center gap-2 text-[11px] text-neutral-400">
-                          <span className="inline-flex items-center rounded-full bg-base-800/70 px-2 py-0.5 ring-1 ring-inset ring-base-700">
+                        <div className="flex flex-wrap items-center gap-2 text-[11px] text-neutral-500">
+                          <span className="inline-flex items-center rounded-full bg-neutral-100/70 px-2 py-0.5 ring-1 ring-inset ring-neutral-200">
                             {cmd.platform}
                           </span>
-                          <span className="inline-flex items-center rounded-full bg-base-800/70 px-2 py-0.5 ring-1 ring-inset ring-base-700">
+                          <span className="inline-flex items-center rounded-full bg-neutral-100/70 px-2 py-0.5 ring-1 ring-inset ring-neutral-200">
                             {cmd.type}
                           </span>
                           {cmd.technique_name && (
@@ -554,7 +554,7 @@ export function CommandFilterDropdown({
                       </button>
                     ))}
                     {isLoadingMore && (
-                      <div className="px-4 py-2 text-center text-xs text-neutral-400">
+                      <div className="px-4 py-2 text-center text-xs text-neutral-500">
                         {t("playground.filter.loadingMore")}
                       </div>
                     )}

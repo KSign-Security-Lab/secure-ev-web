@@ -25,10 +25,10 @@ export function FuzzingInterpretation({ report }: FuzzingInterpretationProps) {
           title: t("fuzzing.interpretation.criticalTitle"),
           color: "red",
           icon: ShieldAlert,
-          bg: "bg-red-500/10",
-          border: "border-red-500/20",
-          text: "text-red-200",
-          titleText: "text-red-100",
+          bg: "bg-rose-50",
+          border: "border-rose-200",
+          text: "text-rose-700",
+          titleText: "text-rose-800",
           summary: t("fuzzing.interpretation.criticalSummary", {
             count: stats.crashes,
           }),
@@ -39,10 +39,10 @@ export function FuzzingInterpretation({ report }: FuzzingInterpretationProps) {
           title: t("fuzzing.interpretation.performanceTitle"),
           color: "yellow",
           icon: AlertTriangle,
-          bg: "bg-yellow-500/10",
-          border: "border-yellow-500/20",
-          text: "text-yellow-200",
-          titleText: "text-yellow-100",
+          bg: "bg-amber-50",
+          border: "border-amber-200",
+          text: "text-amber-700",
+          titleText: "text-amber-800",
           summary: t("fuzzing.interpretation.performanceSummary", {
             count: stats.timeouts,
           }),
@@ -53,10 +53,10 @@ export function FuzzingInterpretation({ report }: FuzzingInterpretationProps) {
           title: t("fuzzing.interpretation.secureTitle"),
           color: "green",
           icon: ShieldCheck,
-          bg: "bg-green-500/10",
-          border: "border-green-500/20",
-          text: "text-green-200",
-          titleText: "text-green-100",
+          bg: "bg-green-50",
+          border: "border-green-200",
+          text: "text-green-700",
+          titleText: "text-green-800",
           summary: t("fuzzing.interpretation.secureSummary", {
             count: stats.total,
           }),
@@ -69,7 +69,7 @@ export function FuzzingInterpretation({ report }: FuzzingInterpretationProps) {
   const Icon = content.icon;
 
   return (
-    <div className={`p-6 rounded-3xl ${content.bg} border ${content.border} backdrop-blur-sm relative overflow-hidden group`}> 
+    <div className={`p-6 rounded-lg ${content.bg} border ${content.border} relative overflow-hidden group`}>
       {/* Decorative Background Icon */}
       <Icon className={`absolute -right-6 -bottom-6 w-32 h-32 opacity-5 ${content.text} group-hover:scale-110 transition-transform duration-500`} />
 
@@ -88,7 +88,7 @@ export function FuzzingInterpretation({ report }: FuzzingInterpretationProps) {
                 </p>
             </div>
             
-            <div className={`flex items-start gap-2 text-sm ${content.text} font-medium bg-black/20 p-3 rounded-lg border ${content.border}`}>
+            <div className={`flex items-start gap-2 text-sm ${content.text} font-medium bg-white p-3 rounded-lg border ${content.border}`}>
                 <CheckCircle size={16} className="mt-0.5 flex-none opacity-70" />
                 <span>{content.action}</span>
             </div>

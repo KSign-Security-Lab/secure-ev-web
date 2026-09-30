@@ -31,7 +31,7 @@ export function MitreCoverageCharts({ data }: MitreCoverageChartsProps) {
             {/* Circular Progress (CSS based) */}
             <svg className="w-full h-full" viewBox="0 0 100 100">
               <circle
-                className="text-base-700 stroke-current"
+                className="text-neutral-200 stroke-current"
                 strokeWidth="10"
                 cx="50"
                 cy="50"
@@ -39,7 +39,7 @@ export function MitreCoverageCharts({ data }: MitreCoverageChartsProps) {
                 fill="transparent"
               ></circle>
               <circle
-                className="text-primary-500 progress-ring__circle stroke-current"
+                className="text-blue-600 progress-ring__circle stroke-current"
                 strokeWidth="10"
                 strokeLinecap="round"
                 cx="50"
@@ -51,10 +51,10 @@ export function MitreCoverageCharts({ data }: MitreCoverageChartsProps) {
               ></circle>
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-4xl font-bold text-white">
+              <span className="text-4xl font-bold text-neutral-950">
                 {data.coveragePercentage}%
               </span>
-              <span className="text-xs text-neutral-400 uppercase tracking-widest mt-1">
+              <span className="text-xs text-neutral-500 uppercase tracking-wide mt-1">
                 {t("dashboard.chart.covered")}
               </span>
             </div>
@@ -62,18 +62,18 @@ export function MitreCoverageCharts({ data }: MitreCoverageChartsProps) {
 
           <div className="grid grid-cols-2 gap-4 w-full">
             <div className="p-3">
-              <div className="text-2xl font-bold text-white">
+              <div className="text-2xl font-bold text-neutral-950">
                 {data.coveredTechniques}
               </div>
-              <div className="text-xs text-neutral-400">
+              <div className="text-xs text-neutral-500">
                 {t("dashboard.chart.coveredTechniques")}
               </div>
             </div>
             <div className="p-3">
-              <div className="text-2xl font-bold text-neutral-300">
+              <div className="text-2xl font-bold text-neutral-500">
                 {data.totalTechniques}
               </div>
-              <div className="text-xs text-neutral-400">
+              <div className="text-xs text-neutral-500">
                 {t("dashboard.chart.totalTechniques")}
               </div>
             </div>

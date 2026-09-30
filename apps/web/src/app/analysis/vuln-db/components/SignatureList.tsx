@@ -63,7 +63,7 @@ export function SignatureList({ onSelect }: SignatureListProps) {
     {
       label: t("vulndb.columns.patternId"),
       render: (item) => (
-        <span className="font-bold font-mono text-blue-400 group-hover:text-blue-300 transition-colors">
+        <span className="font-bold font-mono text-blue-700 group-hover:text-blue-900 transition-colors">
           {item.patternId}
         </span>
       ),
@@ -72,7 +72,7 @@ export function SignatureList({ onSelect }: SignatureListProps) {
     {
       label: t("vulndb.columns.cwe"),
       render: (item) => (
-        <span className="font-mono text-xs text-slate-500 bg-slate-800/50 px-2 py-0.5 rounded border border-slate-700/50">
+        <span className="font-mono text-xs text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200">
           {item.cwe}
         </span>
       ),
@@ -83,13 +83,13 @@ export function SignatureList({ onSelect }: SignatureListProps) {
       render: (item) => (
         <div className="flex flex-col items-center gap-1 w-24 mx-auto">
           <StatusBadge status={item.risk} className="w-full justify-center" />
-          <div className="h-1 w-full bg-slate-800/50 rounded-full overflow-hidden">
-            <div 
+          <div className="h-1 w-full bg-neutral-200 rounded-full overflow-hidden">
+            <div
               className={cn(
                 "h-full rounded-full transition-all duration-1000",
-                item.risk === "HIGH" ? "w-full bg-red-400 shadow-[0_0_5px_rgba(239,68,68,0.5)]" : 
-                item.risk === "MEDIUM" ? "w-2/3 bg-yellow-400 shadow-[0_0_5px_rgba(234,179,8,0.5)]" : 
-                "w-1/3 bg-green-400 shadow-[0_0_5px_rgba(34,197,94,0.5)]"
+                item.risk === "HIGH" ? "w-full bg-rose-500" :
+                item.risk === "MEDIUM" ? "w-2/3 bg-amber-500" :
+                "w-1/3 bg-green-500"
               )} 
             />
           </div>
@@ -100,7 +100,7 @@ export function SignatureList({ onSelect }: SignatureListProps) {
     {
       label: t("vulndb.columns.sinkMode"),
       render: (item) => (
-        <span className="uppercase text-[10px] font-black tracking-widest text-slate-500 italic">
+        <span className="uppercase text-[10px] font-black tracking-widest text-neutral-500 italic">
           {item.sinkMode}
         </span>
       ),
@@ -110,8 +110,8 @@ export function SignatureList({ onSelect }: SignatureListProps) {
       label: t("vulndb.columns.api"),
       render: (item) => (
         <div className="flex items-center justify-center gap-2">
-            <Zap size={10} className="text-cyan-500 opacity-50" />
-            <code className="text-xs font-mono font-bold bg-slate-900/80 px-2 py-0.5 rounded border border-slate-700/50 text-slate-300">
+            <Zap size={10} className="text-sky-600 opacity-50" />
+            <code className="text-xs font-mono font-bold bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200 text-neutral-700">
                 {item.api}
             </code>
         </div>
@@ -121,7 +121,7 @@ export function SignatureList({ onSelect }: SignatureListProps) {
     {
       label: t("vulndb.columns.region"),
       render: (item) => (
-        <span className="font-black text-slate-600 uppercase text-[9px] tracking-[0.2em] leading-none">
+        <span className="font-black text-neutral-500 uppercase text-[9px] tracking-[0.2em] leading-none">
           {item.region}
         </span>
       ),
@@ -137,20 +137,20 @@ export function SignatureList({ onSelect }: SignatureListProps) {
         badge="Vulnerability Database"
         badgeVariant="cyan"
         actions={
-          <div className="flex items-center gap-6 text-[10px] font-black tracking-widest text-slate-500 uppercase">
+          <div className="flex items-center gap-6 text-[10px] font-black tracking-widest text-neutral-500 uppercase">
             <div className="flex items-center gap-4">
                {Object.entries(counts.cweCounts).map(([cwe, count]) => (
                  <div key={cwe} className="flex flex-col items-center">
-                   <span className="text-slate-600 mb-0.5">{cwe}</span>
-                   <span className="text-slate-300">{count}</span>
+                   <span className="text-neutral-500 mb-0.5">{cwe}</span>
+                   <span className="text-neutral-700">{count}</span>
                  </div>
                ))}
             </div>
-            <div className="w-px h-6 bg-slate-800" />
+            <div className="w-px h-6 bg-neutral-200" />
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.5)]" /> {counts.riskCounts.HIGH}</span>
-              <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.5)]" /> {counts.riskCounts.MEDIUM}</span>
-              <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]" /> {counts.riskCounts.LOW}</span>
+              <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-rose-500" /> {counts.riskCounts.HIGH}</span>
+              <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-amber-500" /> {counts.riskCounts.MEDIUM}</span>
+              <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-green-500" /> {counts.riskCounts.LOW}</span>
             </div>
           </div>
         }

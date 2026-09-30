@@ -11,9 +11,9 @@ interface ExplainabilityPanelsProps {
 }
 
 const InfoRow = ({ label, value }: { label: string; value?: string }) => (
-  <div className="flex items-center justify-between text-sm text-[#8b949e] py-1">
+  <div className="flex items-center justify-between text-sm text-neutral-500 py-1">
     <span>{label}</span>
-    <span className="font-mono text-[#c9d1d9] text-right wrap-break-word" title={value || "N/A"}>
+    <span className="font-mono text-neutral-900 text-right wrap-break-word" title={value || "N/A"}>
       {value || "N/A"}
     </span>
   </div>
@@ -54,16 +54,16 @@ export default function ExplainabilityPanels({ result }: ExplainabilityPanelsPro
 
   return (
     <div className="space-y-4">
-      <Card className="bg-[#0d1117] border-[#30363d]">
-        <CardHeader className="pb-2 border-b border-[#30363d]">
-          <div className="flex items-center gap-2 text-sm text-[#8b949e]">
-            <Icon className={tone === "danger" ? "text-[#f85149]" : tone === "safe" ? "text-[#56d364]" : "text-[#d29922]"} size={16} />
-            <span className="font-semibold text-[#c9d1d9]">{label}</span>
+      <Card className="bg-white border-neutral-200">
+        <CardHeader className="pb-2 border-b border-neutral-200">
+          <div className="flex items-center gap-2 text-sm text-neutral-500">
+            <Icon className={tone === "danger" ? "text-rose-700" : tone === "safe" ? "text-green-700" : "text-amber-700"} size={16} />
+            <span className="font-semibold text-neutral-900">{label}</span>
           </div>
-          <CardTitle className="text-base text-[#c9d1d9] wrap-break-word">{functionName}</CardTitle>
+          <CardTitle className="text-base text-neutral-900 wrap-break-word">{functionName}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 pt-4">
-          <p className="text-sm text-[#8b949e] leading-relaxed wrap-break-word">
+          <p className="text-sm text-neutral-500 leading-relaxed wrap-break-word">
             {dfInfo.diagnostics?.notes || t("analysis.explainability.summaryUnavailable")}
           </p>
           <div className="grid grid-cols-2 gap-3">
@@ -76,9 +76,9 @@ export default function ExplainabilityPanels({ result }: ExplainabilityPanelsPro
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="bg-[#0d1117] border-[#30363d]">
+        <Card className="bg-white border-neutral-200">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-[#79c0ff]">
+            <CardTitle className="text-sm text-blue-700">
               {t("analysis.explainability.destinationAndCapacity")}
             </CardTitle>
           </CardHeader>
@@ -90,9 +90,9 @@ export default function ExplainabilityPanels({ result }: ExplainabilityPanelsPro
           </CardContent>
         </Card>
 
-        <Card className="bg-[#0d1117] border-[#30363d]">
+        <Card className="bg-white border-neutral-200">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-[#bc8cff]">
+            <CardTitle className="text-sm text-purple-700">
               {t("analysis.explainability.requestAndValidation")}
             </CardTitle>
           </CardHeader>
@@ -105,12 +105,12 @@ export default function ExplainabilityPanels({ result }: ExplainabilityPanelsPro
         </Card>
       </div>
 
-      <Card className="bg-[#0d1117] border-[#30363d]">
+      <Card className="bg-white border-neutral-200">
         <CardHeader className="pb-2 flex flex-row items-center justify-between">
-          <CardTitle className="text-sm text-[#d29922]">
+          <CardTitle className="text-sm text-amber-700">
             {t("analysis.explainability.rootCauseChain")}
           </CardTitle>
-          <GitBranch size={16} className="text-[#8b949e]" />
+          <GitBranch size={16} className="text-neutral-500" />
         </CardHeader>
         <CardContent>
           <InfoRow label={t("analysis.explainability.classFamily")} value={formatValue(dfInfo.root_cause?.class_family)} />

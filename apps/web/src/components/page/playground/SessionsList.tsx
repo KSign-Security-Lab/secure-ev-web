@@ -22,10 +22,10 @@ const SESSIONS_PER_PAGE = 20;
 function PlatformBadge({ platform }: { platform: string }) {
   const cls =
     platform === "linux"
-      ? "bg-emerald-500/20 text-emerald-300"
+      ? "border border-green-300 bg-green-50 text-green-700"
       : platform === "windows"
-      ? "bg-primary-500/20 text-primary-300"
-      : "bg-base-700/50 text-neutral-400";
+      ? "border border-blue-300 bg-blue-50 text-blue-700"
+      : "border border-neutral-200 bg-neutral-50 text-neutral-500";
   return (
     <span
       className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium ${cls}`}
@@ -77,15 +77,15 @@ export function SessionsList({
   }, []);
 
   return (
-    <div className="flex h-full min-h-0 max-h-full flex-col overflow-hidden rounded-lg border border-base-700/50 bg-base-900/50">
-      <div className="sticky shrink-0 top-0 z-10 border-b border-base-700/50 bg-base-900/60 backdrop-blur px-3 py-2">
+    <div className="flex h-full min-h-0 max-h-full flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white">
+      <div className="sticky shrink-0 top-0 z-10 border-b border-neutral-200 bg-white px-3 py-2">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-sm font-semibold text-white">
+            <h2 className="text-sm font-semibold text-neutral-950">
               {t("playground.sessions.title")}
             </h2>
             {data && (
-              <p className="mt-0.5 text-xs text-neutral-400">
+              <p className="mt-0.5 text-xs text-neutral-500">
                 {t("playground.sessions.total", {
                   count: data.sessions.length,
                 })}
@@ -105,7 +105,7 @@ export function SessionsList({
             {[...Array(6)].map((_, i) => (
               <div
                 key={i}
-                className="h-[54px] animate-pulse rounded border border-base-700/50 bg-base-800/30"
+                className="h-[54px] animate-pulse rounded border border-neutral-200 bg-neutral-50"
               />
             ))}
           </div>
@@ -116,8 +116,8 @@ export function SessionsList({
         ) : !data || data.sessions.length === 0 ? (
           <div className="flex flex-1 items-center justify-center">
             <div className="text-center">
-              <div className="mx-auto mb-2 h-8 w-8 rounded-full bg-base-800/70" />
-              <p className="text-xs text-neutral-400">
+              <div className="mx-auto mb-2 h-8 w-8 rounded-full bg-neutral-100" />
+              <p className="text-xs text-neutral-500">
                 {t("playground.sessions.none")}
               </p>
             </div>
@@ -133,8 +133,8 @@ export function SessionsList({
             {filteredSessions.length === 0 ? (
               <div className="flex flex-1 items-center justify-center">
                 <div className="text-center">
-                  <div className="mx-auto mb-2 h-8 w-8 rounded-full bg-base-800/70" />
-                  <p className="text-xs text-neutral-400">
+                  <div className="mx-auto mb-2 h-8 w-8 rounded-full bg-neutral-100" />
+                  <p className="text-xs text-neutral-500">
                     {t("playground.sessions.noMatches")}
                   </p>
                 </div>
@@ -156,8 +156,8 @@ export function SessionsList({
                           onClick={() => onSelect(s.paw)}
                           className={`w-full rounded border px-3 py-2.5 text-left text-xs transition-colors ${
                             isSelected
-                              ? "border-primary-500/50 bg-primary-500/10 shadow-inner"
-                              : "border-base-700/50 bg-base-800/30 hover:border-base-600 hover:bg-base-800/50"
+                              ? "border-blue-200 bg-blue-50"
+                              : "border-neutral-200 bg-neutral-50 hover:border-neutral-300 hover:bg-neutral-100"
                           }`}
                         >
                           <div className="flex items-center justify-between gap-3">
@@ -166,15 +166,15 @@ export function SessionsList({
                                 <span
                                   className={`font-medium ${
                                     isSelected
-                                      ? "text-primary-300"
-                                      : "text-white"
+                                      ? "text-blue-700"
+                                      : "text-neutral-900"
                                   }`}
                                 >
                                   {s.paw}
                                 </span>
                                 <PlatformBadge platform={s.platform} />
                               </div>
-                              <div className="mt-1 truncate text-neutral-400">
+                              <div className="mt-1 truncate text-neutral-500">
                                 {s.info}
                               </div>
                               {shownExecutors.length > 0 && (
@@ -182,13 +182,13 @@ export function SessionsList({
                                   {shownExecutors.map((ex) => (
                                     <span
                                       key={ex}
-                                      className="inline-flex items-center rounded bg-base-800/60 px-1.5 py-0.5 text-[10px] text-neutral-300 ring-1 ring-inset ring-base-700"
+                                      className="inline-flex items-center rounded bg-neutral-100 px-1.5 py-0.5 text-[10px] text-neutral-600 ring-1 ring-inset ring-neutral-200"
                                     >
                                       {ex}
                                     </span>
                                   ))}
                                   {extra > 0 && (
-                                    <span className="inline-flex items-center rounded bg-base-800/60 px-1.5 py-0.5 text-[10px] text-neutral-300 ring-1 ring-inset ring-base-700">
+                                    <span className="inline-flex items-center rounded bg-neutral-100 px-1.5 py-0.5 text-[10px] text-neutral-600 ring-1 ring-inset ring-neutral-200">
                                       +{extra}
                                     </span>
                                   )}
@@ -201,7 +201,7 @@ export function SessionsList({
                     })}
                   </div>
                   {totalPages > 1 && (
-                    <div className="mt-3 border-t border-base-700/50 pt-3">
+                    <div className="mt-3 border-t border-neutral-200 pt-3">
                       <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}

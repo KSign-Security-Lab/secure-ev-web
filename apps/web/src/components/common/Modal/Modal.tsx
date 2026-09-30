@@ -86,7 +86,7 @@ export const Modal: React.FC<ModalProps> = ({
         onClick={(e) => e.stopPropagation()}
         onPointerDown={(e) => e.stopPropagation()}
         className={clsx(
-          "relative w-full sm:w-[95%] md:w-[90%] lg:max-w-[1200px] bg-base-900 text-white rounded-md shadow-lg transition-all duration-300 ease-out transform-gpu",
+          "relative w-full sm:w-[95%] md:w-[90%] lg:max-w-[1200px] bg-white text-neutral-900 rounded-lg border border-neutral-200 shadow-lg transition-all duration-300 ease-out transform-gpu",
           !disableDefaultStyles && "p-6 space-y-6 max-h-[90vh] overflow-y-auto m-6",
           visible
             ? "opacity-100 translate-y-0 scale-100"
@@ -95,9 +95,9 @@ export const Modal: React.FC<ModalProps> = ({
         )}
       >
         {!hideHeader && (
-          <div className={clsx("flex justify-between items-center border-b border-neutral-500", !disableDefaultStyles && "pb-6")}>
-            <div className="text-lg font-semibold">{title}</div>
-            <button onClick={onClose} className="text-xl">
+          <div className={clsx("flex justify-between items-center border-b border-neutral-200", !disableDefaultStyles && "pb-6")}>
+            <div className="text-lg font-semibold text-neutral-950">{title}</div>
+            <button onClick={onClose} className="text-neutral-500 hover:text-neutral-900">
               <XIcon className="w-5 h-5" />
             </button>
           </div>

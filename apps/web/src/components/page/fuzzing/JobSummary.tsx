@@ -73,10 +73,10 @@ export function JobSummary({ job }: JobSummaryProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400">
+        <div className="p-2 rounded-lg bg-blue-50 text-blue-700">
             <Activity size={20} />
         </div>
-        <h2 className="text-xl font-bold text-white">
+        <h2 className="text-xl font-bold text-neutral-900">
           {t("fuzzing.jobSummary.title")}
         </h2>
       </div>
@@ -84,13 +84,13 @@ export function JobSummary({ job }: JobSummaryProps) {
       <div className="grid grid-cols-1 gap-5">
         
         {/* Status Section */}
-        <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50 flex items-center justify-between group hover:border-slate-600 transition-colors">
+        <div className="p-4 rounded-lg bg-neutral-50 border border-neutral-200 flex items-center justify-between group hover:border-neutral-300 transition-colors">
             <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400">
+                <div className="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-500">
                     <Activity size={18} />
                 </div>
                 <div>
-                    <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">
+                    <span className="text-xs text-neutral-500 uppercase tracking-wide font-semibold">
                       {t("fuzzing.jobSummary.status")}
                     </span>
                     <div className="mt-1">
@@ -105,16 +105,16 @@ export function JobSummary({ job }: JobSummaryProps) {
         </div>
 
         {/* Target Info */}
-        <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50 flex items-center justify-between group hover:border-slate-600 transition-colors">
+        <div className="p-4 rounded-lg bg-neutral-50 border border-neutral-200 flex items-center justify-between group hover:border-neutral-300 transition-colors">
              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400">
+                <div className="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-500">
                     <Server size={18} />
                 </div>
                 <div>
-                    <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">
+                    <span className="text-xs text-neutral-500 uppercase tracking-wide font-semibold">
                       {t("fuzzing.jobSummary.target")}
                     </span>
-                    <p className="text-white font-medium mt-0.5 truncate">
+                    <p className="text-neutral-900 font-medium mt-0.5 truncate">
                       {getTargetTypeLabel(job.targetType)}
                     </p>
                 </div>
@@ -122,40 +122,40 @@ export function JobSummary({ job }: JobSummaryProps) {
         </div>
 
         {/* Environment */}
-        <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50 flex items-center justify-between group hover:border-slate-600 transition-colors">
+        <div className="p-4 rounded-lg bg-neutral-50 border border-neutral-200 flex items-center justify-between group hover:border-neutral-300 transition-colors">
              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400">
+                <div className="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-500">
                     <Globe size={18} />
                 </div>
                 <div>
-                    <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">
+                    <span className="text-xs text-neutral-500 uppercase tracking-wide font-semibold">
                       {t("fuzzing.jobSummary.environment")}
                     </span>
-                    <p className="text-white font-medium mt-0.5 capitalize truncate">{job.environment}</p>
+                    <p className="text-neutral-900 font-medium mt-0.5 capitalize truncate">{job.environment}</p>
                 </div>
             </div>
         </div>
 
         {/* Timestamps */}
-         <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50 flex flex-col gap-3 group hover:border-slate-600 transition-colors">
+         <div className="p-4 rounded-lg bg-neutral-50 border border-neutral-200 flex flex-col gap-3 group hover:border-neutral-300 transition-colors">
              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400">
+                <div className="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-500">
                     <Clock size={18} />
                 </div>
                 <div className="flex-1">
-                    <div className="flex justify-between items-center border-b border-slate-800/50 pb-2 mb-2">
-                        <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">
+                    <div className="flex justify-between items-center border-b border-neutral-200 pb-2 mb-2">
+                        <span className="text-xs text-neutral-500 uppercase tracking-wide font-semibold">
                           {t("fuzzing.jobSummary.created")}
                         </span>
-                        <span className="text-white font-mono text-xs">
+                        <span className="text-neutral-900 font-mono text-xs">
                           {formatDate(job.createdAt, locale)}
                         </span>
                     </div>
                     <div className="flex justify-between items-center">
-                        <span className="text-xs text-slate-300 uppercase tracking-wider font-semibold">
+                        <span className="text-xs text-neutral-500 uppercase tracking-wide font-semibold">
                           {t("fuzzing.jobSummary.updated")}
                         </span>
-                        <span className="text-white font-mono text-xs">
+                        <span className="text-neutral-900 font-mono text-xs">
                           {formatDate(job.updatedAt, locale)}
                         </span>
                     </div>

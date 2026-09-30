@@ -58,7 +58,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   return (
     <div className="flex justify-center space-x-2 mt-4">
       <button
-        className="w-8 h-8 rounded-full bg-base-800 text-white hover:bg-base-700 text-sm"
+        className="w-8 h-8 rounded-full bg-neutral-100 text-neutral-700 hover:bg-neutral-200 text-sm"
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
       >
         &laquo;
@@ -67,12 +67,12 @@ export const Pagination: React.FC<PaginationProps> = ({
         <button
           key={idx}
           className={clsx(
-            "w-8 h-8 rounded-full text-white transition-colors text-sm",
+            "w-8 h-8 rounded-full transition-colors text-sm",
             page === "..."
-              ? "pointer-events-none"
+              ? "pointer-events-none text-neutral-500"
               : page === currentPage
-              ? "bg-blue-400"
-              : "bg-base-800 hover:bg-base-700"
+              ? "bg-blue-600 text-white"
+              : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
           )}
           onClick={() => handleClick(page)}
         >
@@ -80,7 +80,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         </button>
       ))}
       <button
-        className="w-8 h-8 rounded-full bg-base-800 text-white hover:bg-base-700 text-sm"
+        className="w-8 h-8 rounded-full bg-neutral-100 text-neutral-700 hover:bg-neutral-200 text-sm"
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
       >
         &raquo;

@@ -17,7 +17,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({ data }) => {
             {t("abilities.general.abilityId")}
           </label>
           <input
-            className="bg-base-800 p-2 rounded border border-base-850"
+            className="bg-neutral-50 p-2 rounded border border-neutral-200"
             placeholder={t("abilities.general.placeholderId")}
             defaultValue={data.ability_id}
           />
@@ -27,7 +27,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({ data }) => {
             {t("abilities.general.abilityUid")}
           </label>
           <input
-            className="bg-base-800 p-2 rounded border border-base-850"
+            className="bg-neutral-50 p-2 rounded border border-neutral-200"
             placeholder={t("abilities.general.placeholderUid")}
             defaultValue={data.technique_id}
           />
@@ -37,7 +37,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({ data }) => {
             {t("abilities.general.name")}
           </label>
           <input
-            className="bg-base-800 p-2 rounded border border-base-850"
+            className="bg-neutral-50 p-2 rounded border border-neutral-200"
             placeholder={t("abilities.general.placeholderName")}
             defaultValue={data.ability_name}
           />
@@ -50,7 +50,7 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({ data }) => {
           {t("abilities.general.description")}
         </label>
         <textarea
-          className="bg-base-800 p-2 rounded w-full border border-base-850"
+          className="bg-neutral-50 p-2 rounded w-full border border-neutral-200"
           placeholder={t("abilities.general.placeholderContent")}
           rows={3}
           defaultValue={data.description}
@@ -82,11 +82,11 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({ data }) => {
       {/* Zip Inputs */}
       <div className="space-y-2">
         <input
-          className="bg-base-800 p-2 rounded w-full border border-base-850"
+          className="bg-neutral-50 p-2 rounded w-full border border-neutral-200"
           placeholder={t("abilities.general.placeholderZip")}
         />
         <input
-          className="bg-base-800 p-2 rounded w-full border border-base-850"
+          className="bg-neutral-50 p-2 rounded w-full border border-neutral-200"
           placeholder={t("abilities.general.placeholderZip")}
         />
       </div>
@@ -98,10 +98,10 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({ data }) => {
         </label>
         <input
           type="file"
-          className="bg-base-800 w-full text-sm text-gray-400 file:py-2 file:px-4 file:border-0 file:bg-neutral-500 file:hover:bg-neutral-600 file:text-white mb-2 file:rounded-l"
+          className="bg-neutral-50 w-full text-sm text-neutral-500 file:py-2 file:px-4 file:border-0 file:bg-neutral-500 file:hover:bg-neutral-600 file:text-white mb-2 file:rounded-l"
         />
         <textarea
-          className="bg-base-800 p-2 rounded w-full border border-base-850"
+          className="bg-neutral-50 p-2 rounded w-full border border-neutral-200"
           rows={3}
           defaultValue={data.description}
         ></textarea>
@@ -114,10 +114,10 @@ export const GeneralTab: React.FC<GeneralTabProps> = ({ data }) => {
         </label>
         <input
           type="file"
-          className="bg-base-800 w-full text-sm text-gray-400 file:py-2 file:px-4 file:border-0 file:bg-neutral-500 file:hover:bg-neutral-600 file:text-white mb-2 file:rounded-l"
+          className="bg-neutral-50 w-full text-sm text-neutral-500 file:py-2 file:px-4 file:border-0 file:bg-neutral-500 file:hover:bg-neutral-600 file:text-white mb-2 file:rounded-l"
         />
         <textarea
-          className="bg-base-800 p-2 rounded w-full border border-base-850"
+          className="bg-neutral-50 p-2 rounded w-full border border-neutral-200"
           rows={3}
           defaultValue={data.description}
         ></textarea>

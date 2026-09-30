@@ -116,7 +116,7 @@ export function CommandAutocomplete({
     const parts = text.split(new RegExp(`(${escapedQuery})`, "gi"));
     return parts.map((part, index) =>
       part.toLowerCase() === query.toLowerCase() ? (
-        <mark key={index} className="bg-primary-500/30 text-primary-200">
+        <mark key={index} className="bg-blue-100 text-blue-800">
           {part}
         </mark>
       ) : (
@@ -129,10 +129,10 @@ export function CommandAutocomplete({
     <div
       ref={containerRef}
       data-autocomplete="true"
-      className="max-h-80 w-full max-w-2xl overflow-y-auto rounded-lg border border-slate-700 bg-slate-900/95 shadow-xl backdrop-blur-sm"
+      className="max-h-80 w-full max-w-2xl overflow-y-auto rounded-lg border border-neutral-200 bg-white shadow-sm"
     >
       {isLoading ? (
-        <div className="p-4 text-center text-sm text-slate-400">
+        <div className="p-4 text-center text-sm text-neutral-500">
           {t("playground.autocomplete.searching")}
         </div>
       ) : (
@@ -151,31 +151,31 @@ export function CommandAutocomplete({
                 onMouseEnter={() => setSelectedIndex(index)}
                 className={cn(
                   "w-full px-4 py-3 text-left transition-all duration-150 relative",
-                  "hover:bg-slate-800/80 border-l-2 border-transparent",
-                  isSelected && "bg-slate-800/90 border-l-primary-500 shadow-sm"
+                  "hover:bg-neutral-100 border-l-2 border-transparent",
+                  isSelected && "bg-neutral-100 border-l-blue-500 shadow-sm"
                 )}
               >
                 <div className="flex items-start gap-3">
                   <div className="flex-1 flex flex-col gap-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <div className="font-medium text-slate-200 flex-1">
+                      <div className="font-medium text-neutral-900 flex-1">
                         {highlightText(
                           suggestion.ability_name,
                           currentInput.trim()
                         )}
                       </div>
                       {isSelected && (
-                        <div className="flex items-center gap-1 text-primary-400 text-xs font-medium shrink-0">
-                          <Check size={14} className="text-primary-400" />
+                        <div className="flex items-center gap-1 text-blue-700 text-xs font-medium shrink-0">
+                          <Check size={14} className="text-blue-700" />
                           <span>{t("common.selected")}</span>
                         </div>
                       )}
                     </div>
-                    <div className="text-xs text-slate-400 font-mono break-all">
+                    <div className="text-xs text-neutral-600 font-mono break-all">
                       {highlightText(suggestion.command, currentInput.trim())}
                     </div>
                     {suggestion.description && (
-                      <div className="text-xs text-slate-500 line-clamp-1">
+                      <div className="text-xs text-neutral-500 line-clamp-1">
                         {suggestion.description}
                       </div>
                     )}
@@ -186,10 +186,10 @@ export function CommandAutocomplete({
           })}
         </div>
       )}
-      <div className="border-t border-slate-700 px-4 py-2 text-xs text-slate-500 flex items-center justify-between">
+      <div className="border-t border-neutral-200 px-4 py-2 text-xs text-neutral-500 flex items-center justify-between">
         <span>
           {suggestions.length > 0 && (
-            <span className="text-slate-400">
+            <span className="text-neutral-500">
               {t("playground.autocomplete.selectedCount", {
                 current: selectedIndex + 1,
                 total: suggestions.length,

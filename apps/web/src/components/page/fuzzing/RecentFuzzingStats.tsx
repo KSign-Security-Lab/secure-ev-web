@@ -53,7 +53,7 @@ export function RecentFuzzingStats() {
       return (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[1, 2, 3].map(i => (
-                  <div key={i} className="h-40 rounded-xl bg-slate-800/50 animate-pulse" />
+                  <div key={i} className="h-40 rounded-lg bg-neutral-200 animate-pulse" />
               ))}
           </div>
       )
@@ -63,11 +63,11 @@ export function RecentFuzzingStats() {
     <div className="w-full">
       <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+            <h3 className="text-2xl font-bold text-neutral-900 flex items-center gap-2">
                 {t("fuzzing.recentStats.title")}
-                <span className="text-xs font-normal text-slate-500 bg-slate-800/50 px-2 py-0.5 rounded-full border border-slate-700">24H</span>
+                <span className="text-xs font-normal text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full border border-neutral-200">24H</span>
             </h3>
-            <p className="text-slate-400 text-sm mt-1">
+            <p className="text-neutral-500 text-sm mt-1">
               {t("fuzzing.recentStats.subtitle")}
             </p>
           </div>
