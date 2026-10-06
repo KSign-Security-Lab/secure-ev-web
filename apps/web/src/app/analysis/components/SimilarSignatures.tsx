@@ -99,7 +99,7 @@ export default function SimilarSignatures({ result }: SimilarSignaturesProps) {
         ))}
         {mockSimilarSignatures.length === 0 && (
           <div className="flex flex-col items-center justify-center p-12 text-neutral-500 border border-neutral-200 border-dashed rounded-lg bg-neutral-50">
-            <Search className="w-12 h-12 mb-4 text-neutral-400" />
+            <Search className="w-12 h-12 mb-4 text-neutral-500" />
             <p>{t("analysis.similar.empty")}</p>
           </div>
         )}

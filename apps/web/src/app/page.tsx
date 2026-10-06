@@ -17,6 +17,8 @@ import {
   ShieldAlert,
 } from "lucide-react";
 import Loading from "~/components/common/Loading/Loading";
+import { PageHeader } from "~/components/common/PageHeader/PageHeader";
+import { EmptyState } from "~/components/common/EmptyState/EmptyState";
 import { AbilitiesCharts } from "~/components/dashboard/AbilitiesCharts";
 import { AgentsCharts } from "~/components/dashboard/AgentsCharts";
 import { StatsCard } from "~/components/dashboard/StatsCard";
@@ -88,7 +90,12 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col w-full space-y-8">
-      {/* Statistics Cards */}
+      <PageHeader
+        title={t("dashboard.title")}
+        subtitle={t("dashboard.subtitle")}
+        badge={t("dashboard.eyebrow")}
+      />
+
       {/* Statistics Cards */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <StatsCard
@@ -161,12 +168,11 @@ export default function Dashboard() {
             ) : abilitiesStats?.mitreCoverage ? (
               <MitreCoverageCharts data={abilitiesStats.mitreCoverage} />
             ) : (
-              <div className="text-center text-neutral-500 py-16">
-                <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p className="text-lg font-medium">
-                  {t("dashboard.mitre.empty")}
-                </p>
-              </div>
+              <EmptyState
+                icon={Shield}
+                title={t("dashboard.mitre.empty")}
+                className="border-none bg-transparent"
+              />
             )}
           </CardContent>
         </Card>
@@ -199,12 +205,11 @@ export default function Dashboard() {
             ) : abilitiesStats ? (
               <AbilitiesCharts data={abilitiesStats} />
             ) : (
-              <div className="text-center text-neutral-500 py-16">
-                <Database className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p className="text-lg font-medium">
-                  {t("dashboard.abilities.empty")}
-                </p>
-              </div>
+              <EmptyState
+                icon={Database}
+                title={t("dashboard.abilities.empty")}
+                className="border-none bg-transparent"
+              />
             )}
           </CardContent>
         </Card>
@@ -238,12 +243,11 @@ export default function Dashboard() {
           ) : agentsStats ? (
             <AgentsCharts data={agentsStats} />
           ) : (
-            <div className="text-center text-neutral-500 py-16">
-              <Server className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium">
-                {t("dashboard.agents.empty")}
-              </p>
-            </div>
+            <EmptyState
+              icon={Server}
+              title={t("dashboard.agents.empty")}
+              className="border-none bg-transparent"
+            />
           )}
         </CardContent>
       </Card>

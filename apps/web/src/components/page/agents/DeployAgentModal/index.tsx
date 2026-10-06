@@ -221,17 +221,17 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 px-6 pt-4">
+        <div className="flex gap-1 px-6 pt-4 border-b border-neutral-200">
           {(["deploy", "config"] as const).map((value) => (
             <button
               key={value}
               type="button"
               onClick={() => setTab(value)}
               className={cn(
-                "px-4 py-2 rounded-t-lg text-[11px] font-bold uppercase tracking-widest transition-colors",
+                "px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-colors",
                 tab === value
-                  ? "bg-neutral-50 text-neutral-900"
-                  : "text-neutral-500 hover:text-neutral-700"
+                  ? "border-b-2 border-blue-600 text-blue-700"
+                  : "border-b-2 border-transparent text-neutral-500 hover:text-neutral-800"
               )}
             >
               {t(value === "deploy" ? "deploy.tab.deploy" : "deploy.tab.config")}
@@ -281,7 +281,7 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
                           onClick={() => setPlatform(deployment.platform)}
                           aria-pressed={selected}
                           className={cn(
-                            "flex flex-col items-center gap-2 rounded-xl border px-4 py-4 transition-all duration-200",
+                            "flex flex-col items-center gap-2 rounded-lg border px-4 py-4 transition-all duration-200",
                             selected
                               ? "border-blue-200 bg-blue-50 text-blue-700"
                               : "border-neutral-200 bg-white text-neutral-500 hover:border-neutral-300 hover:text-neutral-700"
@@ -327,7 +327,7 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
                     />
 
                     {/* Direct binary download */}
-                    <div className="rounded-xl border border-neutral-200 bg-white px-4 py-3 space-y-3">
+                    <div className="rounded-lg border border-neutral-200 bg-white px-4 py-3 space-y-3">
                       <div>
                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500">
                           {t("deploy.binary.label")}

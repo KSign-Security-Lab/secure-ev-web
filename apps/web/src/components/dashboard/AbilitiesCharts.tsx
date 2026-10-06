@@ -7,11 +7,17 @@ import {
   CategoryScale,
   LinearScale,
   BarElement,
-  TooltipItem,
 } from "chart.js";
 import { Doughnut, Bar } from "react-chartjs-2";
 import type { RouterOutputs } from "~/lib/trpc";
 import { useI18n } from "~/i18n/I18nProvider";
+import {
+  CHART_COLORS,
+  CHART_PALETTE,
+  baseChartOptions,
+  barChartOptions,
+  horizontalBarOptions,
+} from "./chartTheme";
 
 ChartJS.register(ArcElement, Tooltip, CategoryScale, LinearScale, BarElement);
 
@@ -21,106 +27,6 @@ interface AbilitiesChartsProps {
   data: AbilitiesStatistics;
 }
 
-const SCIENTIFIC_COLORS = {
-  primary: "rgba(37, 99, 235, 0.85)",
-  secondary: "rgba(2, 132, 199, 0.85)",
-  palette: [
-    "rgba(37, 99, 235, 0.85)",
-    "rgba(2, 132, 199, 0.85)",
-    "rgba(22, 163, 74, 0.85)",
-    "rgba(217, 119, 6, 0.85)",
-    "rgba(220, 38, 38, 0.85)",
-    "rgba(147, 51, 234, 0.85)",
-    "rgba(234, 88, 12, 0.85)",
-    "rgba(8, 145, 178, 0.85)",
-  ],
-};
-
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      display: false,
-    },
-    tooltip: {
-      backgroundColor: "rgba(31, 41, 55, 0.95)",
-      titleColor: "#FFFFFF",
-      bodyColor: "#D1D5DB",
-      borderColor: "rgba(75, 85, 99, 0.5)",
-      borderWidth: 1,
-      padding: 12,
-      cornerRadius: 8,
-      displayColors: true,
-      titleFont: {
-        size: 13,
-        weight: "bold" as const,
-      },
-      bodyFont: {
-        size: 12,
-      },
-      callbacks: {
-        label: (context: TooltipItem<"doughnut" | "bar">) => {
-          const label = context.label || "";
-          const value = typeof context.raw === "number" ? context.raw : 0;
-          const total = context.dataset.data.reduce(
-            (a: number, b: number | [number, number] | null | undefined) => {
-                if (typeof b === 'number') return a + b;
-                return a;
-            },
-            0
-          );
-          const percentage =
-            total > 0 ? ((value / total) * 100).toFixed(1) : "0.0";
-          return `${label}: ${value.toLocaleString()} (${percentage}%)`;
-        },
-      },
-    },
-  },
-};
-
-const barChartOptions = {
-  ...chartOptions,
-  scales: {
-    x: {
-      grid: {
-        display: true,
-        color: "#e5e7eb",
-        lineWidth: 1,
-        drawBorder: false,
-      },
-      ticks: {
-        color: "#6b7280",
-        font: {
-          size: 11,
-          family: "inherit",
-        },
-        maxRotation: 45,
-        minRotation: 0,
-      },
-    },
-    y: {
-      grid: {
-        display: true,
-        color: "#e5e7eb",
-        lineWidth: 1,
-        drawBorder: false,
-        drawOnChartArea: true,
-      },
-      ticks: {
-        color: "#6b7280",
-        font: {
-          size: 11,
-          family: "inherit",
-        },
-        precision: 0,
-      },
-      beginAtZero: true,
-    },
-  },
-  plugins: chartOptions.plugins,
-};
-
 export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
   const { t } = useI18n();
   const tacticChartData = {
@@ -128,7 +34,7 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
     datasets: [
       {
         data: data.byTactic.map((item) => item.value),
-        backgroundColor: SCIENTIFIC_COLORS.palette,
+        backgroundColor: CHART_PALETTE,
         borderColor: "#ffffff",
         borderWidth: 2,
         hoverBorderWidth: 3,
@@ -142,8 +48,8 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
     datasets: [
       {
         data: data.byPlatform.map((item) => item.value),
-        backgroundColor: SCIENTIFIC_COLORS.primary,
-        borderColor: SCIENTIFIC_COLORS.primary,
+        backgroundColor: CHART_COLORS.blue,
+        borderColor: CHART_COLORS.blue,
         borderWidth: 0,
         borderRadius: 4,
         maxBarThickness: 60,
@@ -156,32 +62,13 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
     datasets: [
       {
         data: data.byType.map((item) => item.value),
-        backgroundColor: SCIENTIFIC_COLORS.secondary,
-        borderColor: SCIENTIFIC_COLORS.secondary,
+        backgroundColor: CHART_COLORS.sky,
+        borderColor: CHART_COLORS.sky,
         borderWidth: 0,
         borderRadius: 4,
         maxBarThickness: 50,
       },
     ],
-  };
-
-  const horizontalBarOptions = {
-    ...barChartOptions,
-    indexAxis: "y" as const,
-    scales: {
-      x: {
-        ...barChartOptions.scales.y,
-        grid: {
-          ...barChartOptions.scales.y.grid,
-        },
-      },
-      y: {
-        ...barChartOptions.scales.x,
-        grid: {
-          display: false,
-        },
-      },
-    },
   };
 
   return (
@@ -200,7 +87,7 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
           </div>
         </div>
         <div className="h-[300px] w-full relative">
-          <Doughnut data={tacticChartData} options={chartOptions} />
+          <Doughnut data={tacticChartData} options={baseChartOptions} />
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="text-center">
               <div className="text-xl font-bold text-neutral-950 mb-1">
@@ -222,7 +109,7 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
               <div
                 className="w-2.5 h-2.5 rounded-full shrink-0"
                 style={{
-                  backgroundColor: SCIENTIFIC_COLORS.palette[index] || "#666",
+                  backgroundColor: CHART_PALETTE[index] || "#666",
                 }}
               />
               <span className="text-neutral-700 truncate flex-1 text-xs">

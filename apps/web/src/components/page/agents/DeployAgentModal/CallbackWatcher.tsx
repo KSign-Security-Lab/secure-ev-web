@@ -107,7 +107,7 @@ export const CallbackWatcher: React.FC<CallbackWatcherProps> = ({
   }, [armed, watchNonce, knownPaws]);
 
   return (
-    <div className="rounded-xl border border-neutral-200 bg-white px-4 py-3">
+    <div className="rounded-lg border border-neutral-200 bg-white px-4 py-3">
       <div className="flex items-center gap-2 mb-2">
         <Satellite size={13} className="text-neutral-500" />
         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500">

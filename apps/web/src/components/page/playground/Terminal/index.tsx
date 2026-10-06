@@ -315,7 +315,7 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
     const isAutocompleteFeatureEnabled = false;
     
     return (
-      <div className="flex h-full min-h-0 max-h-full w-full flex-col overflow-hidden rounded-lg">
+      <div className="flex h-full min-h-0 max-h-full w-full flex-col overflow-hidden rounded-lg border border-neutral-800 shadow-sm">
         {/* Terminal Body */}
         <div className="flex min-h-0 flex-1 relative overflow-hidden rounded-lg">
           <div

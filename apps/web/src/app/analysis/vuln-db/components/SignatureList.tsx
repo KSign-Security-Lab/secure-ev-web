@@ -87,9 +87,9 @@ export function SignatureList({ onSelect }: SignatureListProps) {
             <div
               className={cn(
                 "h-full rounded-full transition-all duration-1000",
-                item.risk === "HIGH" ? "w-full bg-rose-500" :
+                item.risk === "HIGH" ? "w-full bg-orange-500" :
                 item.risk === "MEDIUM" ? "w-2/3 bg-amber-500" :
-                "w-1/3 bg-green-500"
+                "w-1/3 bg-sky-500"
               )} 
             />
           </div>
@@ -148,9 +148,9 @@ export function SignatureList({ onSelect }: SignatureListProps) {
             </div>
             <div className="w-px h-6 bg-neutral-200" />
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-rose-500" /> {counts.riskCounts.HIGH}</span>
+              <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-orange-500" /> {counts.riskCounts.HIGH}</span>
               <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-amber-500" /> {counts.riskCounts.MEDIUM}</span>
-              <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-green-500" /> {counts.riskCounts.LOW}</span>
+              <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-sky-500" /> {counts.riskCounts.LOW}</span>
             </div>
           </div>
         }

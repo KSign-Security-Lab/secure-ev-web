@@ -69,7 +69,7 @@ export const DeployFields: React.FC<DeployFieldsProps> = ({
                   aria-label={t("deploy.fields.reset")}
                   disabled={!isDirty}
                   onClick={() => onChange(field, fallback)}
-                  className="shrink-0 h-9 w-9 flex items-center justify-center rounded-md border border-neutral-200 text-neutral-500 transition-colors hover:text-neutral-700 hover:border-neutral-300 disabled:opacity-30 disabled:pointer-events-none"
+                  className="shrink-0 h-9 w-9 flex items-center justify-center rounded-lg border border-neutral-200 text-neutral-500 transition-colors hover:text-neutral-700 hover:border-neutral-300 disabled:opacity-30 disabled:pointer-events-none"
                 >
                   <RotateCcw size={13} />
                 </button>

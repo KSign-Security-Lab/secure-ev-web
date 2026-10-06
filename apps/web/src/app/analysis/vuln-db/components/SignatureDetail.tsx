@@ -227,7 +227,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                         <table className="w-full text-left text-sm font-mono border-collapse">
                             <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500 uppercase tracking-widest font-black text-[11px]">
                                 <tr>
-                                    <th className="p-6 w-16 text-center opacity-40">#</th>
+                                    <th className="p-6 w-16 text-center">#</th>
                                     <th className="p-6 text-center">{t("vulndb.detail.trace.executionPath")}</th>
                                     <th className="p-6 text-center w-32">{t("vulndb.detail.trace.weight")}</th>
                                 </tr>
@@ -235,7 +235,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                             <tbody className="divide-y divide-neutral-200">
                                 {data.statementFlow.map((step, idx) => (
                                     <tr key={step.id} className={cn("hover:bg-neutral-50 transition-colors group", step.step === "SINK" && "bg-rose-50")}>
-                                        <td className="p-6 text-center opacity-30 text-sm italic">
+                                        <td className="p-6 text-center text-neutral-500 text-sm italic">
                                             {String(idx + 1).padStart(2, '0')}
                                         </td>
                                         <td className="p-6 text-center">
@@ -293,7 +293,7 @@ function IntegrityGaugeRestored({ capacity, request }: { capacity: number, reque
                     <span className="text-[11px] font-bold text-neutral-500 uppercase tracking-[0.2em] leading-none mb-1 font-sans">{t("vulndb.detail.gauge.boundary")}</span>
                     <div className="flex items-center gap-3 font-mono font-bold text-lg leading-none">
                         <span className="text-blue-700">{capacity} B</span>
-                        <ArrowRight size={14} className="text-neutral-400" />
+                        <ArrowRight size={14} className="text-neutral-500" />
                         <span className={cn(isOverflow ? "text-rose-600" : "text-green-600")}>{request} B</span>
                     </div>
                 </div>
@@ -318,9 +318,7 @@ function IntegrityGaugeRestored({ capacity, request }: { capacity: number, reque
                     <div
                         className="h-full bg-rose-500 rounded-[4px] relative z-20 animate-pulse ml-0.5"
                         style={{ width: 'calc(20% - 2px)' }}
-                    >
-                        <div className="absolute inset-0 bg-white/10" />
-                    </div>
+                    />
                 )}
             </div>
 

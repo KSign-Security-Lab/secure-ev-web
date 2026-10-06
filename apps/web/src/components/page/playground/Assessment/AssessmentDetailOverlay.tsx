@@ -293,7 +293,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
                                 type="text"
                                 value={ability.param1}
                                 onChange={(e) => handleUpdateAbility(ability.id, "param1", e.target.value)}
-                                className="w-full bg-transparent border-b border-neutral-200 text-neutral-400 focus:text-neutral-600 focus:border-neutral-400 px-2 py-1 transition-all outline-hidden"
+                                className="w-full bg-transparent border-b border-neutral-200 text-neutral-600 focus:text-neutral-600 focus:border-neutral-400 px-2 py-1 transition-all outline-hidden"
                               />
                             </td>
                             <td className="p-5">
@@ -516,7 +516,7 @@ export const AssessmentDetailOverlay: React.FC<AssessmentDetailOverlayProps> = (
           ) : (
             <button
               onClick={handleSave}
-              className="flex items-center justify-center gap-2 px-8 py-2.5 rounded-lg text-sm font-semibold transition-all bg-rose-600 text-white hover:bg-rose-700"
+              className="flex items-center justify-center gap-2 px-8 py-2.5 rounded-lg text-sm font-semibold transition-all bg-blue-600 text-white hover:bg-blue-700"
             >
               <Save size={16} />
               {t("abilities.page.save") || "Save"}

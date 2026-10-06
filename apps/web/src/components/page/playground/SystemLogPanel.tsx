@@ -23,7 +23,7 @@ const levelStyles: Record<LogLevel, string> = {
   info: "text-neutral-300",
   success: "text-emerald-300",
   warning: "text-amber-300",
-  error: "text-danger-500",
+  error: "text-rose-400",
 };
 
 export default function SystemLogPanel({ logs, onClear, className }: Props) {

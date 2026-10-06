@@ -4,33 +4,19 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  /* Light palette matching ev-fuzzer. base-* is repainted from dark-navy to a
-     white -> neutral ramp so any hardcoded base-* usage lands on light values. */
-  --color-base-950: rgb(243, 244, 246); /* canvas  (neutral-100) */
-  --color-base-900: rgb(255, 255, 255); /* card    (white) */
-  --color-base-850: rgb(249, 250, 251); /* surface (neutral-50) */
-  --color-base-800: rgb(243, 244, 246); /* control (neutral-100) */
-  --color-base-700: rgb(229, 231, 235); /* border  (neutral-200) */
-  --color-base-600: rgb(209, 213, 219); /* hover border (neutral-300) */
-
-  --color-primary-600: rgb(29, 78, 216); /* blue-700 */
-  --color-primary-500: rgb(37, 99, 235); /* blue-600 */
-  --color-primary-400: rgb(59, 130, 246); /* blue-500 */
-  --color-primary-300: rgb(96, 165, 250); /* blue-400 */
-
-  --color-accent-600: rgb(2, 132, 199); /* sky-600 */
-  --color-accent-500: rgb(14, 165, 233); /* sky-500 */
-  --color-accent-400: rgb(56, 189, 248); /* sky-400 */
-
-  --color-danger-600: rgb(190, 18, 60); /* rose-700 */
-  --color-danger-500: rgb(225, 29, 72); /* rose-600 */
-
-  --color-warning-500: rgb(217, 119, 6); /* amber-600 */
-
-  --color-neutral-500: rgb(107, 114, 128); /* neutral-500 */
-  --color-neutral-400: rgb(156, 163, 175); /* neutral-400 */
-  --color-neutral-300: rgb(209, 213, 219); /* neutral-300 */
-  --color-neutral-100: rgb(243, 244, 246); /* neutral-100 */
+  /* Neutral ramp aligned to a single cool gray so borders and the #f3f4f6
+     canvas share one temperature (matches ev-fuzzer). */
+  --color-neutral-50: rgb(249, 250, 251);
+  --color-neutral-100: rgb(243, 244, 246);
+  --color-neutral-200: rgb(229, 231, 235);
+  --color-neutral-300: rgb(209, 213, 219);
+  --color-neutral-400: rgb(156, 163, 175);
+  --color-neutral-500: rgb(107, 114, 128);
+  --color-neutral-600: rgb(75, 85, 99);
+  --color-neutral-700: rgb(55, 65, 81);
+  --color-neutral-800: rgb(31, 41, 55);
+  --color-neutral-900: rgb(17, 24, 39);
+  --color-neutral-950: rgb(3, 7, 18);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -103,45 +89,7 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  --color-base-950: rgb(243, 244, 246);
-  --color-base-900: rgb(255, 255, 255);
-  --color-base-850: rgb(249, 250, 251);
-  --color-base-800: rgb(243, 244, 246);
-  --color-base-700: rgb(229, 231, 235);
-  --color-base-600: rgb(209, 213, 219);
-
-  --color-primary-600: rgb(29, 78, 216);
-  --color-primary-500: rgb(37, 99, 235);
-  --color-primary-400: rgb(59, 130, 246);
-  --color-primary-300: rgb(96, 165, 250);
-
-  --color-accent-600: rgb(2, 132, 199);
-  --color-accent-500: rgb(14, 165, 233);
-  --color-accent-400: rgb(56, 189, 248);
-
-  --color-danger-600: rgb(190, 18, 60);
-  --color-danger-500: rgb(225, 29, 72);
-
-  --color-warning-500: rgb(217, 119, 6);
-
-  --color-neutral-500: rgb(107, 114, 128);
-  --color-neutral-400: rgb(156, 163, 175);
-  --color-neutral-300: rgb(209, 213, 219);
-  --color-neutral-100: rgb(243, 244, 246);
-
-  --color-purple-400: #4d59a0;
-  --color-purple-300: #5b69bc;
-
-  /* ev-fuzzer semantic tokens */
-  --surface: #ffffff;
-  --surface-2: #f9fafb;
-  --surface-3: #e5e7eb;
-  --border-color: #d1d5db;
-  --muted: #6b7280;
-  --success: #16a34a;
-  --warning: #d97706;
-  --danger: #dc2626;
-
+  /* ev-fuzzer light canvas */
   --background: #f3f4f6;
   --foreground: #111827;
 }

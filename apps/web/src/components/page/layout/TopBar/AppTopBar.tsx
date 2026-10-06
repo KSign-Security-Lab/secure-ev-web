@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronDown, Globe } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -21,11 +21,14 @@ interface AppTopBarProps {
 
 /**
  * ev-fuzzer-style sticky top bar. Replaces the former sidebar while keeping the
- * same menu data, active-route detection and locale toggle behaviour.
+ * same menu data, active-route detection and locale toggle behaviour. Grouped
+ * items open as an accessible click/keyboard disclosure (not hover-only).
  */
 export function AppTopBar({ menus }: AppTopBarProps) {
   const { locale, setLocale, t } = useI18n();
   const pathname = usePathname();
+  const navRef = useRef<HTMLDivElement>(null);
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
 
   const isActive = useCallback(
     (url: string) => {
@@ -42,11 +45,49 @@ export function AppTopBar({ menus }: AppTopBarProps) {
     [isActive],
   );
 
-  const itemBase =
-    "rounded px-3 py-1.5 text-sm font-medium transition-colors";
+  // Close on Escape and on click outside the nav.
+  useEffect(() => {
+    if (!openGroup) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpenGroup(null);
+    };
+    const onPointer = (e: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setOpenGroup(null);
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onPointer);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onPointer);
+    };
+  }, [openGroup]);
+
+  const itemBase = "rounded px-3 py-1.5 text-sm font-medium transition-colors";
+
+  const dropdownLink = (entry: MenuItemType) => (
+    <Link
+      key={entry.url}
+      href={entry.url}
+      role="menuitem"
+      onClick={() => setOpenGroup(null)}
+      className={clsx(
+        "flex items-center gap-2 rounded px-3 py-1.5 text-sm font-medium",
+        isActive(entry.url)
+          ? "bg-neutral-50 text-blue-700"
+          : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-950",
+      )}
+    >
+      <span className="flex h-4 w-4 items-center justify-center [&_svg]:h-4 [&_svg]:w-4">
+        {entry.icon}
+      </span>
+      {entry.name}
+    </Link>
+  );
 
   return (
-    <header className="sticky top-0 z-40 border-b border-neutral-200 bg-white/95 px-4 py-3 backdrop-blur">
+    <header className="z-40 shrink-0 border-b border-neutral-200 bg-white px-4 py-3">
       <div className="mx-auto flex max-w-7xl flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <Link
           href="/"
@@ -64,14 +105,20 @@ export function AppTopBar({ menus }: AppTopBarProps) {
 
         <div className="flex flex-wrap items-center gap-2">
           <nav
+            ref={navRef}
             className="flex flex-wrap items-center gap-0.5 rounded-md border border-neutral-200 bg-neutral-50 p-1"
             aria-label={t("menu.dashboard")}
           >
             {menus.map((item) =>
               item.children ? (
-                <div key={item.url} className="group relative">
+                <div key={item.url} className="relative">
                   <button
                     type="button"
+                    aria-haspopup="menu"
+                    aria-expanded={openGroup === item.url}
+                    onClick={() =>
+                      setOpenGroup((cur) => (cur === item.url ? null : item.url))
+                    }
                     className={clsx(
                       itemBase,
                       "inline-flex items-center gap-1",
@@ -81,43 +128,25 @@ export function AppTopBar({ menus }: AppTopBarProps) {
                     )}
                   >
                     {item.name}
-                    <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
+                    <ChevronDown
+                      className={clsx(
+                        "h-3.5 w-3.5 transition-transform",
+                        openGroup === item.url && "rotate-180",
+                      )}
+                      aria-hidden="true"
+                    />
                   </button>
-                  <div className="invisible absolute left-0 top-full z-50 min-w-[12rem] pt-1 opacity-0 transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-                    <div className="flex flex-col gap-0.5 rounded-md border border-neutral-200 bg-white p-1 shadow-sm">
-                      <Link
-                        href={item.url}
-                        className={clsx(
-                          "flex items-center gap-2 rounded px-3 py-1.5 text-sm font-medium",
-                          isActive(item.url)
-                            ? "bg-neutral-50 text-blue-700"
-                            : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-950",
-                        )}
-                      >
-                        <span className="flex h-4 w-4 items-center justify-center [&_svg]:h-4 [&_svg]:w-4">
-                          {item.icon}
-                        </span>
-                        {item.name}
-                      </Link>
-                      {item.children.map((child) => (
-                        <Link
-                          key={child.url}
-                          href={child.url}
-                          className={clsx(
-                            "flex items-center gap-2 rounded px-3 py-1.5 text-sm font-medium",
-                            isActive(child.url)
-                              ? "bg-neutral-50 text-blue-700"
-                              : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-950",
-                          )}
-                        >
-                          <span className="flex h-4 w-4 items-center justify-center [&_svg]:h-4 [&_svg]:w-4">
-                            {child.icon}
-                          </span>
-                          {child.name}
-                        </Link>
-                      ))}
+                  {openGroup === item.url && (
+                    <div
+                      role="menu"
+                      className="absolute left-0 top-full z-50 min-w-[12rem] pt-1"
+                    >
+                      <div className="flex flex-col gap-0.5 rounded-md border border-neutral-200 bg-white p-1 shadow-sm">
+                        {dropdownLink(item)}
+                        {item.children.map((child) => dropdownLink(child))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               ) : (
                 <Link

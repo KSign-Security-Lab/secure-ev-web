@@ -246,7 +246,7 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                             {sim.status}
                           </span>
                         </td>
-                        <td className="px-4 py-2 text-center font-mono text-neutral-400 group-hover:text-neutral-500 transition-colors uppercase tracking-widest">
+                        <td className="px-4 py-2 text-center font-mono text-neutral-600 group-hover:text-neutral-500 transition-colors uppercase tracking-widest">
                           {sim.time}
                         </td>
                         <td className="px-4 py-2 text-center">
@@ -347,12 +347,12 @@ export const AssessmentResultOverlay: React.FC<AssessmentResultOverlayProps> = (
                               </td>
                               <td className="px-4 py-2 text-right">
                                 <span className={cn(
-                                  "inline-flex items-center gap-1.5 px-3 py-1 rounded border text-[10px] font-black uppercase tracking-widest transition-all",
-                                  res.status === "Success" 
-                                    ? "bg-neutral-100 border-neutral-200 text-neutral-600" 
+                                  "inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all",
+                                  res.status === "Success"
+                                    ? "bg-green-50 border-green-300 text-green-700"
                                     : res.status === "Processing"
                                       ? "bg-blue-50 border-blue-300 text-blue-700"
-                                      : "bg-rose-600 border-rose-600 text-white"
+                                      : "bg-rose-50 border-rose-300 text-rose-700"
                                 )}>
                                   {res.status}
                                 </span>

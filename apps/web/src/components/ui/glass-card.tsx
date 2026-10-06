@@ -1,34 +1,23 @@
 import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "~/lib/utils"
 
-const glassCardVariants = cva(
-  "relative rounded-lg bg-white border border-neutral-200 text-neutral-900 transition-all duration-300",
-  {
-    variants: {
-      variant: {
-        default: "",
-        cyan: "",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
-  }
-)
+/**
+ * Flat white surface primitive (light theme). Unlike `Card` it is unopinionated
+ * about padding/gap, so callers control their own layout (tables, feature tiles).
+ */
+export interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export interface GlassCardProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof glassCardVariants> {}
-
-function GlassCard({ className, variant, ...props }: GlassCardProps) {
+function GlassCard({ className, ...props }: GlassCardProps) {
   return (
     <div
-      className={cn(glassCardVariants({ variant }), className)}
+      className={cn(
+        "relative rounded-lg border border-neutral-200 bg-white text-neutral-900 transition-all duration-300",
+        className
+      )}
       {...props}
     />
   )
 }
 
-export { GlassCard, glassCardVariants }
+export { GlassCard }

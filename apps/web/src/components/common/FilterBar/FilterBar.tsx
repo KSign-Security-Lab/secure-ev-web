@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { Search, Filter, Server, Shield } from "lucide-react";
 import SearchInput from "../SearchInput/SearchInput";
 import { 
   Select, 

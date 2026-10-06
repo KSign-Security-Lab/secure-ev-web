@@ -30,8 +30,7 @@ export function IconCard({
   iconClassName,
 }: IconCardProps) {
   const content = (
-    <GlassCard 
-      variant={variant === "cyan" ? "cyan" : "default"} 
+    <GlassCard
       className={cn(
         "p-8 h-full flex flex-col transition-all duration-300 group",
         href && !comingSoon && "hover:bg-neutral-50 hover:-translate-y-1 hover:shadow-sm hover:border-neutral-300",
@@ -51,7 +50,7 @@ export function IconCard({
         <Icon size={24} />
       </div>
 
-      <h3 className="text-xl font-bold text-neutral-950 mb-2 tracking-tight italic leading-none">
+      <h3 className="text-xl font-bold text-neutral-950 mb-2 tracking-tight leading-none">
         {title}
       </h3>
 

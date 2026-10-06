@@ -78,21 +78,27 @@ export default function SideBarLayout({
     },
   ];
 
-  // Fuzzing section (landing + xyflow canvases) renders full-bleed.
+  // Fuzzing section (landing + xyflow canvases) renders full-bleed and
+  // scrolls as a normal document. Analysis uses bounded-height full-width
+  // panes (code viewer / split views that rely on flex-1 + min-h-0). All
+  // other pages render centered in a max-w-7xl column.
   const isFuzzingSection = pathname?.startsWith("/fuzzing");
+  const isAnalysisSection = pathname?.startsWith("/analysis");
 
   return (
-    <div className="flex min-h-screen flex-col bg-neutral-100 text-neutral-900">
+    <div className="flex h-screen flex-col overflow-hidden bg-neutral-100 text-neutral-900">
       <AppTopBar menus={menuItems} />
 
-      <main
-        className={
-          isFuzzingSection
-            ? "w-full flex-1"
-            : "mx-auto w-full max-w-7xl flex-1 px-4 py-5"
-        }
-      >
-        {children}
+      <main className="flex w-full flex-1 flex-col min-h-0 overflow-y-auto">
+        {isFuzzingSection ? (
+          children
+        ) : isAnalysisSection ? (
+          <div className="flex w-full flex-1 flex-col min-h-0 p-4">
+            {children}
+          </div>
+        ) : (
+          <div className="mx-auto w-full max-w-7xl px-4 py-5">{children}</div>
+        )}
       </main>
     </div>
   );

@@ -41,7 +41,7 @@ export const AssessmentTopology: React.FC<AssessmentTopologyProps> = ({ classNam
       {/* Node 1: Control Center */}
       <div className="relative z-10 flex flex-col items-center gap-3 animate-in fade-in slide-in-from-left-4 duration-700">
         <div className="w-14 h-14 rounded-lg bg-white border border-blue-200 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-          <Server className="text-blue-500 w-7 h-7" />
+          <Server className="text-blue-600 w-7 h-7" />
           <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white animate-pulse" />
         </div>
         <div className="flex flex-col items-center">
@@ -50,8 +50,8 @@ export const AssessmentTopology: React.FC<AssessmentTopologyProps> = ({ classNam
         </div>
       </div>
 
-      <div className="z-10 text-neutral-300">
-        <ArrowRight size={16} className="opacity-30" />
+      <div className="z-10 text-neutral-400">
+        <ArrowRight size={16} />
       </div>
 
       {/* Node 2: Attack Proxy */}
@@ -66,8 +66,8 @@ export const AssessmentTopology: React.FC<AssessmentTopologyProps> = ({ classNam
         </div>
       </div>
 
-      <div className="z-10 text-neutral-300">
-        <ArrowRight size={16} className="opacity-30" />
+      <div className="z-10 text-neutral-400">
+        <ArrowRight size={16} />
       </div>
 
       {/* Node 3: Target Vehicle */}
@@ -81,8 +81,8 @@ export const AssessmentTopology: React.FC<AssessmentTopologyProps> = ({ classNam
         </div>
       </div>
 
-      <div className="z-10 text-neutral-300">
-        <ArrowRight size={16} className="opacity-30" />
+      <div className="z-10 text-neutral-400">
+        <ArrowRight size={16} />
       </div>
 
       {/* Node 4: Backend Cloud */}

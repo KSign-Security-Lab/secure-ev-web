@@ -59,7 +59,7 @@ export const CommandBlock: React.FC<CommandBlockProps> = ({
   };
 
   return (
-    <div className="rounded-xl border border-neutral-200 bg-neutral-950 overflow-hidden">
+    <div className="rounded-lg border border-neutral-200 bg-neutral-950 overflow-hidden">
       <div className="flex items-center justify-between gap-3 px-4 py-2.5 border-b border-neutral-800 bg-neutral-900">
         <div className="flex items-center gap-2 min-w-0">
           {Glyph && <Glyph className="w-3.5 h-3.5 text-neutral-400 shrink-0" />}
@@ -73,7 +73,7 @@ export const CommandBlock: React.FC<CommandBlockProps> = ({
           <button
             type="button"
             onClick={handleDownloadScript}
-            className="flex items-center gap-1.5 h-7 px-2 rounded text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 transition-colors"
+            className="flex items-center gap-1.5 h-7 px-2 rounded-lg text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 transition-colors"
           >
             <FileDown size={13} />
             <span className="text-[9px] font-bold uppercase tracking-widest leading-none">
@@ -83,7 +83,7 @@ export const CommandBlock: React.FC<CommandBlockProps> = ({
           <button
             type="button"
             onClick={handleCopy}
-            className="flex items-center gap-1.5 h-7 px-2 rounded text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 transition-colors"
+            className="flex items-center gap-1.5 h-7 px-2 rounded-lg text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 transition-colors"
           >
             {copied ? (
               <Check size={13} className="text-green-500" />

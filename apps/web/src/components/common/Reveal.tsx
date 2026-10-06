@@ -17,10 +17,14 @@ export const Reveal = ({ children, width = "fit-content", className, delay = 0 }
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // Bidirectional: Update state based on isIntersecting
-        setIsVisible(entry.isIntersecting);
+        // One-shot: reveal on first intersection and stop observing so the
+        // header doesn't re-animate every time it scrolls in and out.
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
       },
-      { threshold: 0.15 } // Slightly higher threshold to avoid flickering at edges
+      { threshold: 0.15 }
     );
 
     const currentRef = ref.current;
@@ -40,10 +44,10 @@ export const Reveal = ({ children, width = "fit-content", className, delay = 0 }
       ref={ref}
       style={{ width }}
       className={cn(
-        "transition-all duration-1000 ease-out transform will-change-transform",
-        isVisible 
-            ? "opacity-100 translate-y-0 scale-100 blur-0" 
-            : "opacity-0 translate-y-12 scale-95 blur-sm",
+        "transition-all duration-500 ease-out transform will-change-transform",
+        isVisible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-4",
         className
       )}
     >

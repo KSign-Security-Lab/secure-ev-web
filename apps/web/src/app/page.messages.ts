@@ -1,4 +1,7 @@
 export const enDashboardPageMessages = {
+  "dashboard.title": "Dashboard",
+  "dashboard.subtitle": "Breach & attack simulation overview",
+  "dashboard.eyebrow": "Overview",
   "dashboard.stats.totalAbilities": "Total Abilities",
   "dashboard.stats.totalAbilitiesDesc": "Available attack techniques",
   "dashboard.stats.totalAgents": "Total Agents",
@@ -22,6 +25,9 @@ export const enDashboardPageMessages = {
 type DashboardPageMessageKey = keyof typeof enDashboardPageMessages;
 
 export const koDashboardPageMessages: Record<DashboardPageMessageKey, string> = {
+  "dashboard.title": "대시보드",
+  "dashboard.subtitle": "침해 및 공격 시뮬레이션 개요",
+  "dashboard.eyebrow": "개요",
   "dashboard.stats.totalAbilities": "전체 공격 기법",
   "dashboard.stats.totalAbilitiesDesc": "사용 가능한 공격 기법",
   "dashboard.stats.totalAgents": "전체 에이전트",

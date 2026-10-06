@@ -7,11 +7,16 @@ import {
   CategoryScale,
   LinearScale,
   BarElement,
-  TooltipItem,
 } from "chart.js";
 import { Doughnut, Bar } from "react-chartjs-2";
 import type { RouterOutputs } from "~/lib/trpc";
 import { useI18n } from "~/i18n/I18nProvider";
+import {
+  CHART_COLORS,
+  baseChartOptions,
+  barChartOptions,
+  horizontalBarOptions,
+} from "./chartTheme";
 
 ChartJS.register(ArcElement, Tooltip, CategoryScale, LinearScale, BarElement);
 
@@ -22,96 +27,11 @@ interface AgentsChartsProps {
 }
 
 const SCIENTIFIC_COLORS = {
-  trusted: "rgba(76, 175, 80, 0.85)",
-  untrusted: "rgba(255, 92, 91, 0.85)",
-  primary: "rgba(66, 140, 244, 0.8)",
-  secondary: "rgba(0, 159, 227, 0.8)",
-  accent: "rgba(76, 175, 80, 0.8)",
-};
-
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      display: false,
-    },
-    tooltip: {
-      backgroundColor: "rgba(31, 41, 55, 0.95)",
-      titleColor: "#FFFFFF",
-      bodyColor: "#D1D5DB",
-      borderColor: "rgba(75, 85, 99, 0.5)",
-      borderWidth: 1,
-      padding: 12,
-      cornerRadius: 8,
-      displayColors: true,
-      titleFont: {
-        size: 13,
-        weight: "bold" as const,
-      },
-      bodyFont: {
-        size: 12,
-      },
-      callbacks: {
-        label: (context: TooltipItem<"doughnut" | "bar">) => {
-          const label = context.label || "";
-          const value = typeof context.raw === "number" ? context.raw : 0;
-          const total = context.dataset.data.reduce(
-            (a: number, b: number | [number, number] | null | undefined) => {
-                if (typeof b === 'number') return a + b;
-                return a;
-            },
-            0
-          );
-          const percentage =
-            total > 0 ? ((value / total) * 100).toFixed(1) : "0.0";
-          return `${label}: ${value.toLocaleString()} (${percentage}%)`;
-        },
-      },
-    },
-  },
-};
-
-const barChartOptions = {
-  ...chartOptions,
-  scales: {
-    x: {
-      grid: {
-        display: true,
-        color: "#e5e7eb",
-        lineWidth: 1,
-        drawBorder: false,
-      },
-      ticks: {
-        color: "#6b7280",
-        font: {
-          size: 11,
-          family: "inherit",
-        },
-        maxRotation: 45,
-        minRotation: 0,
-      },
-    },
-    y: {
-      grid: {
-        display: true,
-        color: "#e5e7eb",
-        lineWidth: 1,
-        drawBorder: false,
-        drawOnChartArea: true,
-      },
-      ticks: {
-        color: "#6b7280",
-        font: {
-          size: 11,
-          family: "inherit",
-        },
-        precision: 0,
-      },
-      beginAtZero: true,
-    },
-  },
-  plugins: chartOptions.plugins,
+  trusted: CHART_COLORS.green,
+  untrusted: CHART_COLORS.rose,
+  primary: CHART_COLORS.blue,
+  secondary: CHART_COLORS.sky,
+  accent: CHART_COLORS.purple,
 };
 
 export function AgentsCharts({ data }: AgentsChartsProps) {
@@ -180,25 +100,6 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
     ],
   };
 
-  const horizontalBarOptions = {
-    ...barChartOptions,
-    indexAxis: "y" as const,
-    scales: {
-      x: {
-        ...barChartOptions.scales.y,
-        grid: {
-          ...barChartOptions.scales.y.grid,
-        },
-      },
-      y: {
-        ...barChartOptions.scales.x,
-        grid: {
-          display: false,
-        },
-      },
-    },
-  };
-
   return (
     <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
       {/* Trust Status */}
@@ -215,7 +116,7 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
           </div>
         </div>
         <div className="h-[300px] w-full relative">
-          <Doughnut data={trustChartData} options={chartOptions} />
+          <Doughnut data={trustChartData} options={baseChartOptions} />
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="text-center">
               <div className="text-xl font-bold text-neutral-950 mb-1">

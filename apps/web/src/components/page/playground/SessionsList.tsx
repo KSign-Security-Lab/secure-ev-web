@@ -110,8 +110,8 @@ export function SessionsList({
             ))}
           </div>
         ) : error ? (
-          <div className="rounded border border-danger-500/20 bg-danger-500/10 p-3">
-            <p className="text-xs font-medium text-danger-500">{error}</p>
+          <div className="rounded-md border border-rose-300 bg-rose-50 p-3">
+            <p className="text-xs font-medium text-rose-700">{error}</p>
           </div>
         ) : !data || data.sessions.length === 0 ? (
           <div className="flex flex-1 items-center justify-center">

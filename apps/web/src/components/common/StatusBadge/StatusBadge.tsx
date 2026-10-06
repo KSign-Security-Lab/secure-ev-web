@@ -13,25 +13,32 @@ interface StatusBadgeProps {
   className?: string;
 }
 
-const getStatusVariant = (status: string): "green" | "blue" | "red" | "yellow" | "outline" => {
+const getStatusVariant = (
+  status: string,
+): "green" | "blue" | "red" | "orange" | "yellow" | "cyan" | "outline" => {
   const normalized = status.toUpperCase();
   switch (normalized) {
     case "COMPLETED":
     case "SUCCESS":
-    case "LOW":
+    case "PASS":
       return "green";
     case "RUNNING":
     case "ACTIVE":
+    case "INFO":
       return "blue";
     case "FAILED":
     case "ERROR":
     case "CRITICAL":
-    case "HIGH":
       return "red";
+    // Severity scale: critical=rose > high=orange > medium=amber > low=sky
+    case "HIGH":
+      return "orange";
     case "PENDING":
     case "WARNING":
     case "MEDIUM":
       return "yellow";
+    case "LOW":
+      return "cyan";
     case "DRAFT":
       return "outline";
     default:
