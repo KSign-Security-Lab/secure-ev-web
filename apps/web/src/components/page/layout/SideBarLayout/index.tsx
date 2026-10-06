@@ -26,7 +26,6 @@ export default function SideBarLayout({
 
   const menuItems: MenuItemType[] = [
     { name: t("menu.dashboard"), icon: <Gauge />, url: "/" },
-    { name: t("menu.fuzzing"), icon: <Zap />, url: "/fuzzing" },
     {
       name: t("menu.playground"),
       icon: <FlaskConical />,
@@ -78,11 +77,9 @@ export default function SideBarLayout({
     },
   ];
 
-  // Fuzzing section (landing + xyflow canvases) renders full-bleed and
-  // scrolls as a normal document. Analysis uses bounded-height full-width
-  // panes (code viewer / split views that rely on flex-1 + min-h-0). All
-  // other pages render centered in a max-w-7xl column.
-  const isFuzzingSection = pathname?.startsWith("/fuzzing");
+  // Analysis uses bounded-height full-width panes (code viewer / split views
+  // that rely on flex-1 + min-h-0). All other pages render centered in a
+  // max-w-7xl column.
   const isAnalysisSection = pathname?.startsWith("/analysis");
 
   return (
@@ -90,9 +87,7 @@ export default function SideBarLayout({
       <AppTopBar menus={menuItems} />
 
       <main className="flex w-full flex-1 flex-col min-h-0 overflow-y-auto">
-        {isFuzzingSection ? (
-          children
-        ) : isAnalysisSection ? (
+        {isAnalysisSection ? (
           <div className="flex w-full flex-1 flex-col min-h-0 p-4">
             {children}
           </div>

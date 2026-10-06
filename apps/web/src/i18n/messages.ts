@@ -10,9 +10,6 @@ import { enAnalysisResultDetailMessages, koAnalysisResultDetailMessages } from "
 import { enAnalysisResultsViewMessages, koAnalysisResultsViewMessages } from "~/app/analysis/components/ResultsView.messages";
 import { enAnalysisSimilarSignaturesMessages, koAnalysisSimilarSignaturesMessages } from "~/app/analysis/components/SimilarSignatures.messages";
 import { enAnalysisUploadViewMessages, koAnalysisUploadViewMessages } from "~/app/analysis/components/UploadView.messages";
-import { enFuzzingJobDetailPageMessages, koFuzzingJobDetailPageMessages } from "~/app/fuzzing/jobs/[jobId]/page.messages";
-import { enFuzzingJobsPageMessages, koFuzzingJobsPageMessages } from "~/app/fuzzing/jobs/page.messages";
-import { enFuzzingLandingPageMessages, koFuzzingLandingPageMessages } from "~/app/fuzzing/page.messages";
 import { enDashboardPageMessages, koDashboardPageMessages } from "~/app/page.messages";
 import { enAgentsPageMessages, koAgentsPageMessages } from "~/app/playground/agents/page.messages";
 import { enIntegrationsPageMessages, koIntegrationsPageMessages } from "~/app/playground/integrations/page.messages";
@@ -29,19 +26,6 @@ import { enAbilityModalRequirementTabMessages, koAbilityModalRequirementTabMessa
 import { enAgentsTableMessages, koAgentsTableMessages } from "~/components/page/agents/AgentsTable.messages";
 import { enDeployAgentModalMessages, koDeployAgentModalMessages } from "~/components/page/agents/DeployAgentModal/DeployAgentModal.messages";
 import { enIntegrationsTableMessages, koIntegrationsTableMessages } from "~/components/page/integrations/IntegrationsTable.messages";
-import { enFuzzingConfigDownloadMessages, koFuzzingConfigDownloadMessages } from "~/components/page/fuzzing/ConfigDownload.messages";
-import { enFuzzingCreateJobModalMessages, koFuzzingCreateJobModalMessages } from "~/components/page/fuzzing/CreateJobModal.messages";
-import { enFuzzingFindingDetailMessages, koFuzzingFindingDetailMessages } from "~/components/page/fuzzing/FindingDetail.messages";
-import { enFuzzingFindingsListMessages, koFuzzingFindingsListMessages } from "~/components/page/fuzzing/FindingsList.messages";
-import { enFuzzingInterpretationMessages, koFuzzingInterpretationMessages } from "~/components/page/fuzzing/FuzzingInterpretation.messages";
-import { enFuzzingInteractionLogTableMessages, koFuzzingInteractionLogTableMessages } from "~/components/page/fuzzing/InteractionLogTable.messages";
-import { enFuzzingJobSummaryMessages, koFuzzingJobSummaryMessages } from "~/components/page/fuzzing/JobSummary.messages";
-import { enFuzzingMessageSelectorMessages, koFuzzingMessageSelectorMessages } from "~/components/page/fuzzing/MessageSelector.messages";
-import { enFuzzingRecentActivityChartMessages, koFuzzingRecentActivityChartMessages } from "~/components/page/fuzzing/RecentFuzzingActivityChart.messages";
-import { enFuzzingRecentJobsMessages, koFuzzingRecentJobsMessages } from "~/components/page/fuzzing/RecentFuzzingJobs.messages";
-import { enFuzzingRecentStatsMessages, koFuzzingRecentStatsMessages } from "~/components/page/fuzzing/RecentFuzzingStats.messages";
-import { enFuzzingVulnerabilityChartsMessages, koFuzzingVulnerabilityChartsMessages } from "~/components/page/fuzzing/VulnerabilityCharts.messages";
-import { enFuzzingSharedMessages, koFuzzingSharedMessages } from "~/components/page/fuzzing/shared.messages";
 import { enPlaygroundCommandFilterDropdownMessages, koPlaygroundCommandFilterDropdownMessages } from "~/components/page/playground/CommandFilterDropdown.messages";
 import { enPlaygroundConnectionPillMessages, koPlaygroundConnectionPillMessages } from "~/components/page/playground/ConnectionPill.messages";
 import { enPlaygroundPageHeaderMessages, koPlaygroundPageHeaderMessages } from "~/components/page/playground/PageHeader.messages";
@@ -69,9 +53,6 @@ const enMessages = {
   ...enAnalysisResultsViewMessages,
   ...enAnalysisSimilarSignaturesMessages,
   ...enAnalysisUploadViewMessages,
-  ...enFuzzingJobDetailPageMessages,
-  ...enFuzzingJobsPageMessages,
-  ...enFuzzingLandingPageMessages,
   ...enDashboardPageMessages,
   ...enAgentsPageMessages,
   ...enIntegrationsPageMessages,
@@ -88,19 +69,6 @@ const enMessages = {
   ...enAgentsTableMessages,
   ...enDeployAgentModalMessages,
   ...enIntegrationsTableMessages,
-  ...enFuzzingConfigDownloadMessages,
-  ...enFuzzingCreateJobModalMessages,
-  ...enFuzzingFindingDetailMessages,
-  ...enFuzzingFindingsListMessages,
-  ...enFuzzingInterpretationMessages,
-  ...enFuzzingInteractionLogTableMessages,
-  ...enFuzzingJobSummaryMessages,
-  ...enFuzzingMessageSelectorMessages,
-  ...enFuzzingRecentActivityChartMessages,
-  ...enFuzzingRecentJobsMessages,
-  ...enFuzzingRecentStatsMessages,
-  ...enFuzzingVulnerabilityChartsMessages,
-  ...enFuzzingSharedMessages,
   ...enPlaygroundCommandFilterDropdownMessages,
   ...enPlaygroundConnectionPillMessages,
   ...enPlaygroundPageHeaderMessages,
@@ -125,9 +93,6 @@ const koMessages: Record<TranslationKey, string> = {
   ...koAnalysisResultsViewMessages,
   ...koAnalysisSimilarSignaturesMessages,
   ...koAnalysisUploadViewMessages,
-  ...koFuzzingJobDetailPageMessages,
-  ...koFuzzingJobsPageMessages,
-  ...koFuzzingLandingPageMessages,
   ...koDashboardPageMessages,
   ...koAgentsPageMessages,
   ...koIntegrationsPageMessages,
@@ -144,19 +109,6 @@ const koMessages: Record<TranslationKey, string> = {
   ...koAgentsTableMessages,
   ...koDeployAgentModalMessages,
   ...koIntegrationsTableMessages,
-  ...koFuzzingConfigDownloadMessages,
-  ...koFuzzingCreateJobModalMessages,
-  ...koFuzzingFindingDetailMessages,
-  ...koFuzzingFindingsListMessages,
-  ...koFuzzingInterpretationMessages,
-  ...koFuzzingInteractionLogTableMessages,
-  ...koFuzzingJobSummaryMessages,
-  ...koFuzzingMessageSelectorMessages,
-  ...koFuzzingRecentActivityChartMessages,
-  ...koFuzzingRecentJobsMessages,
-  ...koFuzzingRecentStatsMessages,
-  ...koFuzzingVulnerabilityChartsMessages,
-  ...koFuzzingSharedMessages,
   ...koPlaygroundCommandFilterDropdownMessages,
   ...koPlaygroundConnectionPillMessages,
   ...koPlaygroundPageHeaderMessages,
