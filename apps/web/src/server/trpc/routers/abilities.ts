@@ -245,16 +245,21 @@ export const abilitiesRouter = router({
         .sort((a, b) => b.value - a.value)
         .slice(0, 6);
 
-      // MITRE Coverage Calculation
+      // MITRE Coverage Calculation — unique Enterprise parent techniques. The
+      // Mitre table can list a technique more than once, so dedupe by ID.
       const allMitre = await prisma.mitre.findMany({
-        select: { tactic: true, technique_id: true },
+        where: { platform: "Enterprise" },
+        select: { technique_id: true },
       });
-      const totalTechniques = allMitre.length;
+      const mitreTechniqueIds = new Set(
+        allMitre.map((tech) => tech.technique_id)
+      );
+      const totalTechniques = mitreTechniqueIds.size;
       const uniqueAbilityTechiqueIds = new Set<string>(
         abilities.map((ab) => ab.technique_id.split(".")[0])
       );
-      const coveredTechniques = allMitre.filter((tech) =>
-        uniqueAbilityTechiqueIds.has(tech.technique_id)
+      const coveredTechniques = [...mitreTechniqueIds].filter((id) =>
+        uniqueAbilityTechiqueIds.has(id)
       ).length;
 
       return {
