@@ -45,7 +45,7 @@ export const enDeployAgentModalMessages = {
   "deploy.state.errorTitle": "Could not load deployment commands",
   "deploy.state.emptyTitle": "No Sandcat deployment configured",
   "deploy.state.emptyDescription":
-    "The defend API returned no Sandcat install commands for Linux, Windows or macOS.",
+    "No agent install commands are configured for Linux, Windows or macOS.",
 
   "deploy.config.title": "Agent configuration",
   "deploy.config.description":
@@ -120,7 +120,7 @@ export const koDeployAgentModalMessages: Record<
   "deploy.state.errorTitle": "배포 명령어를 불러오지 못했습니다",
   "deploy.state.emptyTitle": "구성된 Sandcat 배포가 없습니다",
   "deploy.state.emptyDescription":
-    "defend API 가 리눅스, 윈도우, macOS 용 Sandcat 설치 명령어를 반환하지 않았습니다.",
+    "리눅스, 윈도우, macOS 용 에이전트 설치 명령어가 구성되어 있지 않습니다.",
 
   "deploy.config.title": "에이전트 설정",
   "deploy.config.description":

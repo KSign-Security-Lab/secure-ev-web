@@ -14,7 +14,7 @@ export const RequirementTab = () => {
   const { t } = useI18n();
   const [modules, setModules] = useState<FactModule[]>([
     {
-      module: "plugins.stockpile.app.requirements.paw_provenance",
+      module: "",
       source: "host.user.name",
       edge: "undefined",
       target: "undefined",
@@ -35,7 +35,7 @@ export const RequirementTab = () => {
     setModules([
       ...modules,
       {
-        module: "plugins.stockpile.app.requirements.paw_provenance",
+        module: "",
         source: "host.user.name",
         edge: "undefined",
         target: "undefined",

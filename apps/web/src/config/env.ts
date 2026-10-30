@@ -18,7 +18,7 @@ const envSchema = z.object({
     .string()
     .trim()
     .min(1)
-    .default("http://0.0.0.0:4200")
+    .default("http://0.0.0.0:4204")
     .refine((value) => {
       try {
         new URL(value);
@@ -26,13 +26,7 @@ const envSchema = z.object({
       } catch {
         return false;
       }
-    }, "C2_PUBLIC_URL must be a valid URL (e.g. \"http://10.0.0.5:4200\")"),
-
-  /** Directory holding the sandcat binaries served by /file/download. */
-  C2_PAYLOAD_DIR: z.string().trim().optional(),
-
-  /** Directory where agent uploads land. */
-  C2_EXFIL_DIR: z.string().trim().optional(),
+    }, "C2_PUBLIC_URL must be a valid URL (e.g. \"http://10.0.0.5:4204\")"),
 });
 
 /**
@@ -43,8 +37,6 @@ const envSchema = z.object({
  */
 export const env = envSchema.parse({
   C2_PUBLIC_URL: process.env.C2_PUBLIC_URL,
-  C2_PAYLOAD_DIR: process.env.C2_PAYLOAD_DIR,
-  C2_EXFIL_DIR: process.env.C2_EXFIL_DIR,
 });
 
 /**

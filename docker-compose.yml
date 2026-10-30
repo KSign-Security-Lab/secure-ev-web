@@ -9,3 +9,28 @@ services:
       - ./db/mysql/data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: 1234
+
+  # Standalone C2 — the only service exposed to target hosts. Serves the three
+  # agent-facing endpoints (/beacon, /file/download, /file/upload) on 4204. The
+  # operator UI and API stay in the web app on 4200 and are not reachable here.
+  c2:
+    build:
+      context: .
+      dockerfile: apps/c2/Dockerfile
+    container_name: bas-c2
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - "4204:4204"
+    environment:
+      DATABASE_URL: "mysql://root:1234@mysql:3306/attack-database"
+      C2_PORT: "4204"
+      C2_PAYLOAD_DIR: /data/payloads
+      C2_EXFIL_DIR: /data/exfil
+      C2_MAX_UPLOAD_MB: "100"
+    volumes:
+      # Agent binaries are seeded into payloads at startup; drop collected
+      # ability payloads here too. exfil collects agent uploads.
+      - ./apps/c2/data/payloads:/data/payloads
+      - ./apps/c2/data/exfil:/data/exfil

@@ -25,6 +25,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import uuid
@@ -239,8 +240,9 @@ class ExtractionError(Exception):
 
 
 class AtomicConverter:
-    def __init__(self, repo_dir):
+    def __init__(self, repo_dir, payload_out=None):
         self.repo_dir = repo_dir
+        self.payload_out = payload_out
         self.technique_to_tactics = defaultdict(list)
         stix = os.path.join(repo_dir, "atomic_red_team", "enterprise-attack.json")
         if os.path.isfile(stix):
@@ -307,6 +309,11 @@ class AtomicConverter:
                 name = self.payload_name(path)
                 payloads.append(name)
                 text = text.replace(fullpath, name)
+                if self.payload_out:
+                    dest = os.path.join(self.payload_out, name)
+                    if not os.path.isfile(dest):
+                        os.makedirs(self.payload_out, exist_ok=True)
+                        shutil.copyfile(path, dest)
         return text, payloads
 
     def use_default_inputs(self, test, platform, text):
@@ -494,6 +501,12 @@ def main():
     parser.add_argument("--cache", default=DEFAULT_CACHE, help="where source repositories are cloned")
     parser.add_argument("--data", default=DEFAULT_DATA, help="seed file to rebuild")
     parser.add_argument("--fetch", action="store_true", help="clone or update the source repositories first")
+    parser.add_argument(
+        "--payload-out",
+        help="also collect referenced payload files into this directory (serve it as the C2 payload dir). "
+        "Only Atomic Red Team ships its attachments; plugin and OT binaries are not in the source repos "
+        "and are reported as missing.",
+    )
     args = parser.parse_args()
 
     if args.fetch:
@@ -501,7 +514,9 @@ def main():
 
     sources = {
         "caldera plugins": import_plugins(args.cache),
-        "atomic red team": AtomicConverter(os.path.join(args.cache, ATOMIC_REPO[0])).rows(),
+        "atomic red team": AtomicConverter(
+            os.path.join(args.cache, ATOMIC_REPO[0]), payload_out=args.payload_out
+        ).rows(),
         "emulation library": import_emu(args.cache),
         "micro emulation plans": import_micro_plans(args.cache),
     }
@@ -515,6 +530,24 @@ def main():
             existing = json.load(f)
     rows, kept = merge(existing, imported)
     print(f"kept {kept} existing rows not superseded by an import", file=sys.stderr)
+
+    if args.payload_out:
+        referenced = set()
+        for row in imported:
+            referenced.update(name for name in row["payloads"].split(",") if name)
+        collected = set(os.listdir(args.payload_out)) if os.path.isdir(args.payload_out) else set()
+        missing = sorted(referenced - collected)
+        print(
+            f"payloads: collected {len(referenced & collected)}/{len(referenced)} referenced files "
+            f"into {args.payload_out}",
+            file=sys.stderr,
+        )
+        if missing:
+            print(
+                f"payloads: {len(missing)} not available offline (not shipped in the source repos), "
+                f"e.g. {', '.join(missing[:8])}",
+                file=sys.stderr,
+            )
 
     with open(args.data, "w", encoding="utf-8") as f:
         json.dump(rows, f, indent=1, ensure_ascii=False)

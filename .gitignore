@@ -9,6 +9,8 @@ prisma/data.csv
 
 # dependencies
 /node_modules
+**/node_modules/
+__pycache__/
 .pnpm-store/
 
 # testing
@@ -42,7 +44,9 @@ next-env.d.ts
 # prisma
 src/prisma
 
-# Sandcat agent binaries served by /file/download — not committed:
-# they are large (~19MB) and this repo is public. Populate from a Caldera
-# checkout: cp <caldera>/plugins/sandcat/payloads/sandcat.go-* apps/web/payloads/
-apps/web/payloads/sandcat.go-*
+# C2 runtime data: built agent binaries are seeded here at startup, and
+# collected ability payloads are dropped here. Not committed — large and, for
+# ability payloads, offensive tooling in a public repo.
+apps/c2/data/
+# Agent build output (build from vendored source with agent/build.sh).
+agent/out/

@@ -15,8 +15,8 @@ interface VariationsListProps {
 }
 
 /**
- * Collapsed by default — darwin alone ships 11 variations, and Caldera renders
- * them all inline, which buries the default command.
+ * Collapsed by default — the deploy variations are stacked here and the default command renders
+ * above, so collapsing keeps the default prominent.
  */
 export const VariationsList: React.FC<VariationsListProps> = ({
   platform,
