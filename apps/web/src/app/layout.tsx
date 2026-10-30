@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { ToastProvider } from "~/components/ToastProvider/ToastProvider";
 import NotificationListner from "~/components/NotificationListener/NotificationListner";
@@ -8,14 +8,22 @@ import { cookies } from "next/headers";
 import { I18nProvider } from "~/i18n/I18nProvider";
 import { defaultLocale, isLocale } from "~/i18n/messages";
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
+// Self-hosted (next/font/local) so the app builds and runs fully offline. The
+// woff2 files live in src/fonts (OFL-1.1, see src/fonts/OFL.txt). Space Grotesk
+// is a variable font, so one file covers all weights.
+const spaceGrotesk = localFont({
+  src: "../fonts/space-grotesk.woff2",
   variable: "--font-display",
+  display: "swap",
 });
-const plexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+const plexMono = localFont({
+  src: [
+    { path: "../fonts/ibm-plex-mono-400.woff2", weight: "400", style: "normal" },
+    { path: "../fonts/ibm-plex-mono-500.woff2", weight: "500", style: "normal" },
+    { path: "../fonts/ibm-plex-mono-600.woff2", weight: "600", style: "normal" },
+  ],
   variable: "--font-mono-display",
+  display: "swap",
 });
 
 export const metadata: Metadata = {

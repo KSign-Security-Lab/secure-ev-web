@@ -1,0 +1,18 @@
+These fonts are licensed under the SIL Open Font License, Version 1.1.
+
+- IBM Plex Mono © IBM Corp. (https://github.com/IBM/plex)
+- Space Grotesk © Florian Karsten (https://github.com/floriankarsten/space-grotesk)
+
+The woff2 files here are the latin subset, retrieved from Google Fonts. They
+are self-hosted so the application builds and runs on a closed network, with no
+request to fonts.googleapis.com / fonts.gstatic.com at build or run time.
+
+Full license text: https://openfontlicense.org/open-font-license-official-text/
+
+SIL OPEN FONT LICENSE Version 1.1 — summary of terms:
+The fonts may be used, studied, modified and redistributed freely as long as
+they are not sold by themselves. They may be bundled, embedded, redistributed
+and/or sold with any software provided that any reserved names are not used by
+derivative works. The fonts and derivatives cannot be released under any other
+type of license. The requirement for fonts to remain under this license does
+not apply to any document created using the fonts or their derivatives.
