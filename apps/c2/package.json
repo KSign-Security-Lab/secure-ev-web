@@ -1,0 +1,24 @@
+{
+  "name": "@secure-ev-web/c2",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "main": "src/server.ts",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test src/**/*.test.ts"
+  },
+  "dependencies": {
+    "@secure-ev-web/prisma": "workspace:^",
+    "zod": "^4.6.1",
+    "@secure-ev-web/c2-core": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.8.3"
+  }
+}
