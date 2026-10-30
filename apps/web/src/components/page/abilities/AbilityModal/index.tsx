@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Crosshair } from "lucide-react";
 import { GeneralTab } from "./GeneralTab";
 import { ExecutorsTab } from "./ExecutorsTab";
 import { RequirementTab } from "./RequirementTab";
@@ -50,7 +52,17 @@ const AbilityModal: React.FC<AbilityModalProps> = ({
   onSave,
 }) => {
   const { t } = useI18n();
+  const router = useRouter();
   const [tab, setTab] = useState<AbilityModalTabs>(AbilityModalTabs.General);
+
+  const runAbility = () => {
+    const query = new URLSearchParams({
+      ability: modalData.ability_id,
+      name: modalData.ability_name,
+      platform: modalData.platform ?? "",
+    });
+    router.push(`/playground/operations?${query.toString()}`);
+  };
 
   const tabLabel = (tabValue: AbilityModalTabs) => {
     switch (tabValue) {
@@ -74,6 +86,13 @@ const AbilityModal: React.FC<AbilityModalProps> = ({
       title={t("abilities.modal.title")}
       footer={
         <div className="flex justify-end space-x-2">
+          <button
+            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded"
+            onClick={runAbility}
+          >
+            <Crosshair className="w-4 h-4" />
+            Run on agent
+          </button>
           <button
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
             onClick={onSave}

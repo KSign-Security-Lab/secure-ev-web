@@ -11,6 +11,7 @@ import {
   Database,
   ClipboardCheck,
   Plug,
+  Crosshair,
 } from "lucide-react";
 import { AppTopBar, MenuItemType } from "../TopBar/AppTopBar";
 import { usePathname } from "next/navigation";
@@ -45,6 +46,11 @@ export default function SideBarLayout({
           name: t("menu.abilities"),
           icon: <Zap />,
           url: "/playground/abilities",
+        },
+        {
+          name: t("menu.operations"),
+          icon: <Crosshair />,
+          url: "/playground/operations",
         },
         {
           name: t("menu.assessment"),
