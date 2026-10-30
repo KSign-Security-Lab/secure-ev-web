@@ -148,6 +148,9 @@ enum InstructionStatus {
   SENT
   COMPLETE
   TIMEOUT
+  /// An operation step that could not be tasked to the agent (no compatible
+  /// executor, or a #{fact} the fact store could not resolve). Terminal.
+  SKIPPED
 }
 
 model AgentInstruction {
@@ -164,8 +167,51 @@ model AgentInstruction {
   completedAt DateTime?
   result      AgentResult?
 
+  /// When set, this instruction is one step of an operation (see Operation).
+  /// Null for ad-hoc terminal commands.
+  operationId String?     @db.VarChar(191)
+  operation   Operation?  @relation(fields: [operationId], references: [id], onDelete: Cascade)
+  /// Zero-based index into Operation.plan.
+  stepOrder   Int?
+  abilityId   String?     @db.VarChar(191)
+  abilityName String?
+  /// string[] of payload filenames the agent must fetch from /file/download.
+  payloads    Json        @default("[]")
+
   @@index([paw, status])
   @@index([queuedAt])
+  @@index([operationId, stepOrder])
+}
+
+enum OperationState {
+  RUNNING
+  PAUSED
+  FINISHED
+}
+
+/// An ordered sequence of abilities fanned out across a set of agents, with a
+/// shared fact store that chains one step's captured output into later steps.
+model Operation {
+  id           String         @id @default(uuid())
+  name         String
+  state        OperationState @default(RUNNING)
+  /// string[] of agent paws resolved when the operation started.
+  targetPaws   Json
+  /// Optional group label the paws were resolved from (display only).
+  targetGroup  String?
+  /// Ordered plan: [{ abilityId, abilityName, captures: [{ fact, regex }] }].
+  plan         Json
+  /// Shared fact store { "fact.name": "value" } — operator-provided and captured.
+  facts        Json
+  /// Stop an agent's remaining steps once one of its steps is skipped/fails.
+  stopOnError  Boolean        @default(false)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  finishedAt   DateTime?
+
+  instructions AgentInstruction[]
+
+  @@index([state])
 }
 
 model AgentResult {
