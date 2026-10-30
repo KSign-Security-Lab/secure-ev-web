@@ -8,6 +8,28 @@ importers:
 
   .: {}
 
+  apps/c2:
+    dependencies:
+      '@secure-ev-web/c2-core':
+        specifier: workspace:^
+        version: link:../../packages/c2-core
+      '@secure-ev-web/prisma':
+        specifier: workspace:^
+        version: link:../../packages/prisma
+      zod:
+        specifier: ^4.6.1
+        version: 4.6.1
+    devDependencies:
+      '@types/node':
+        specifier: ^24.10.0
+        version: 24.13.4
+      tsx:
+        specifier: ^4.20.6
+        version: 4.23.13
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+
   apps/web:
     dependencies:
       '@prisma/client':
@@ -40,6 +62,9 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.2.8
         version: 1.2.16(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@secure-ev-web/c2-core':
+        specifier: workspace:^
+        version: link:../../packages/c2-core
       '@secure-ev-web/prisma':
         specifier: workspace:^
         version: link:../../packages/prisma
@@ -164,6 +189,22 @@ importers:
       typescript-eslint:
         specifier: ^8.50.0
         version: 8.70.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
+
+  packages/c2-core:
+    dependencies:
+      '@secure-ev-web/prisma':
+        specifier: workspace:^
+        version: link:../prisma
+    devDependencies:
+      '@types/node':
+        specifier: ^24.10.0
+        version: 24.13.4
+      tsx:
+        specifier: ^4.20.6
+        version: 4.23.13
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
 
   packages/prisma:
     dependencies:
