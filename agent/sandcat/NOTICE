@@ -1,0 +1,8 @@
+This directory contains the gocat agent source from MITRE Caldera's sandcat
+plugin (https://github.com/mitre/sandcat), licensed under the Apache License,
+Version 2.0 (see LICENSE).
+
+Modifications by the secure-ev-web project:
+- Vendored Go module dependencies under vendor/ for offline, reproducible builds.
+- No changes to agent source files; the default build (HTTP contact only, no
+  gocat-extensions) is produced by ../build.sh.

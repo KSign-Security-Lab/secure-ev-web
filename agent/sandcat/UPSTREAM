@@ -1,0 +1,8 @@
+MITRE Caldera sandcat plugin — gocat agent source
+Repository: https://github.com/mitre/sandcat
+Commit:     ec3e2db425eb6333b9e1fa4fd03e9b94ef05c082
+Version:    2.9.0-0723cabdd66b38575d2f2e7d0fe67fa9
+License:    Apache-2.0 (see LICENSE)
+
+Vendored into this repository so the agent can be built from source offline,
+without a Caldera checkout. Go module dependencies are committed under vendor/.
