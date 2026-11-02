@@ -1,0 +1,40 @@
+---
+api_version: 2.0
+uuid: fb25e5c8-75cd-4425-b64d-68ce8315f67c
+name: macOS api prompt
+authors:
+  - cedowens
+  - I50
+description: |
+  This TTP uses the osascript library (via API calls) to launch a fake
+  authentication prompt.
+
+requirements:
+  platforms:
+    - os: darwin
+
+mitre:
+  tactics:
+    - "TA0002 Execution"
+    - "TA0006 Credential Access"
+  techniques:
+    - "T1059 Command and Scripting Interpreter"
+    - "T1056 Input Capture"
+  subtechniques:
+    - "T1059.002 AppleScript"
+    - "T1056.002 GUI Input Capture"
+
+steps:
+  - name: prompt-api
+    inline: |
+      echo -e "==> Launching a fake authentication prompt via the osascript library (on-disk osascript binary not used)..."
+      echo -e "The fake prompt will timeout after 10 seconds."
+      echo -e "First building the source swift file into a binary..."
+      swiftc prompt-api.swift -o prompt-api
+      echo -e "Next, executing the compiled prompt-api binary..."
+      timeout 10 ./prompt-api
+      echo "Done!"
+    cleanup:
+      inline: |
+        echo "Deleting the compiled binary..."
+        rm -f prompt-api

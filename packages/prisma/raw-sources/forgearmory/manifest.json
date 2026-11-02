@@ -1,0 +1,775 @@
+{
+ "repository": "https://github.com/facebookincubator/ForgeArmory",
+ "commit": "bc1d58880d504d8ce953d5f30f2bc1b1b28c54fb",
+ "license": "LICENSE",
+ "files": [
+  {
+   "path": "ttps/collection/archive-files-for-exfiltration/ttp.yaml",
+   "abilities": [
+    "0dcff7d2-69f7-4042-b5e4-b367706bd23d"
+   ]
+  },
+  {
+   "path": "ttps/collection/aws-secretsmanager-steal-secretsmanager-secret/ttp.yaml",
+   "abilities": [
+    "1e7fbacb-fe75-4b7c-ae0d-857984342a87"
+   ]
+  },
+  {
+   "path": "ttps/collection/bitblt-screen-capture/ttp.yaml",
+   "abilities": [
+    "d3fe80b4-9971-480c-aa44-2201067b6d47"
+   ]
+  },
+  {
+   "path": "ttps/collection/check-tcc-permissions/ttp.yaml",
+   "abilities": [
+    "c07ef548-3a83-48a3-b701-4620d31f2248"
+   ]
+  },
+  {
+   "path": "ttps/collection/continuous-screenshots/ttp.yaml",
+   "abilities": [
+    "aebebf78-9e7f-4170-8030-02222f45cd72"
+   ]
+  },
+  {
+   "path": "ttps/collection/dump-clipboard-api/ttp.yaml",
+   "abilities": [
+    "ee1306db-5ff4-4e71-99b6-dab5625b8737"
+   ]
+  },
+  {
+   "path": "ttps/collection/dump-clipboard-cli/ttp.yaml",
+   "abilities": [
+    "f89d630a-3529-4ee8-ae1e-67a105ffc2b7"
+   ]
+  },
+  {
+   "path": "ttps/collection/execute-swiftbelt/ttp.yaml",
+   "abilities": [
+    "2cd0cb25-4863-4937-85d6-b971eca4118b"
+   ]
+  },
+  {
+   "path": "ttps/collection/execute-swiftspy/ttp.yaml",
+   "abilities": [
+    "2d144076-aac8-4641-81ed-ecf86ac5139d"
+   ]
+  },
+  {
+   "path": "ttps/collection/export-tableau-sites/ttp.yaml",
+   "abilities": [
+    "5484250c-6af2-42d7-afa9-641a850b1623"
+   ]
+  },
+  {
+   "path": "ttps/collection/gather-system-information/ttp.yaml",
+   "abilities": [
+    "967b803e-a4c1-4ad6-b838-8174fabeaf75"
+   ]
+  },
+  {
+   "path": "ttps/collection/list-configuration-profiles/ttp.yaml",
+   "abilities": [
+    "2d2d8b6d-8f84-4ae6-ac8b-7343df021f1b"
+   ]
+  },
+  {
+   "path": "ttps/collection/list-running-processes/ttp.yaml",
+   "abilities": [
+    "a34410f5-d18d-417c-968d-176dec5047dc"
+   ]
+  },
+  {
+   "path": "ttps/collection/screen-capture/ttp.yaml",
+   "abilities": [
+    "0f642862-93f1-4737-a32a-e918737ddbd2"
+   ]
+  },
+  {
+   "path": "ttps/command-and-control/download-using-imewdbld/ttp.yaml",
+   "abilities": [
+    "8c94f849-5ebe-41b2-a472-a97fce82facf"
+   ]
+  },
+  {
+   "path": "ttps/command-and-control/enable-remote-desktop/ttp.yaml",
+   "abilities": [
+    "12b5e9d3-eeb2-47be-a32d-22cc66fe1f8b"
+   ]
+  },
+  {
+   "path": "ttps/command-and-control/establish-tor-proxy/ttp.yaml",
+   "abilities": [
+    "dfdada2c-f1f9-4f2a-9a02-241fc1e7393b"
+   ]
+  },
+  {
+   "path": "ttps/command-and-control/malicious-domain-dns/ttp.yaml",
+   "abilities": [
+    "107827fc-0d46-422c-8d77-8860e8340619"
+   ]
+  },
+  {
+   "path": "ttps/command-and-control/protocol-tunneling-ssh/ttp.yaml",
+   "abilities": [
+    "8ddd006b-b80f-49e8-b78b-f0a7e94cf263"
+   ]
+  },
+  {
+   "path": "ttps/credential-access/aws-ec2-exfil-instance-profile-creds/ttp.yaml",
+   "abilities": [
+    "a04757b1-6512-448e-b3ab-f53a4d5bf30b"
+   ]
+  },
+  {
+   "path": "ttps/credential-access/copy-keychain-database/ttp.yaml",
+   "abilities": [
+    "c47c027e-9182-4307-9000-842d0220c074"
+   ]
+  },
+  {
+   "path": "ttps/credential-access/enumerate-creds-lazagne/ttp.yaml",
+   "abilities": [
+    "6c38bb09-9db6-4aa4-8d53-d07d4b35b823"
+   ]
+  },
+  {
+   "path": "ttps/credential-access/extract-cookies-from-chromium-browser/ttp.yaml",
+   "abilities": [
+    "2cd87e28-d207-4cc2-9b61-644e32aeba61"
+   ]
+  },
+  {
+   "path": "ttps/credential-access/extract-credentials-with-mimipenguin/ttp.yaml",
+   "abilities": [
+    "9992aa90-539f-4a71-ae4e-19d6f1f0e8e9"
+   ]
+  },
+  {
+   "path": "ttps/credential-access/extract-gpp-passwords/ttp.yaml",
+   "abilities": [
+    "0198218d-7c5f-4653-8141-cbe4354dda11"
+   ]
+  },
+  {
+   "path": "ttps/credential-access/extract-secrets-from-memory/ttp.yaml",
+   "abilities": [
+    "0b23149d-bd4d-4210-b615-c1c4496a3bb8"
+   ]
+  },
+  {
+   "path": "ttps/credential-access/firefox-cookies-dump/ttp.yaml",
+   "abilities": [
+    "a8bbed0c-2844-43f2-8837-d7bc138467fa"
+   ]
+  },
+  {
+   "path": "ttps/credential-access/forge-certificate-sudo/ttp.yaml",
+   "abilities": [
+    "164ef2b2-8d64-4546-93ff-5e6083b905b8"
+   ]
+  },
+  {
+   "path": "ttps/credential-access/keylogger-objc/ttp.yaml",
+   "abilities": [
+    "cab73752-6abf-44e1-bec7-a2b9a630b25d"
+   ]
+  },
+  {
+   "path": "ttps/credential-access/search-keychain-credentials/ttp.yaml",
+   "abilities": [
+    "27a4e324-7605-410c-9457-52d84775fcc9"
+   ]
+  },
+  {
+   "path": "ttps/credential-access/sideload-malicious-extension/ttp.yaml",
+   "abilities": [
+    "14fbe408-296c-4e33-9908-19711082efe7"
+   ]
+  },
+  {
+   "path": "ttps/credential-access/spotlight-aws-keys-search/ttp.yaml",
+   "abilities": [
+    "339cb8dd-4da8-4ff0-804a-41291eade1fd"
+   ]
+  },
+  {
+   "path": "ttps/credential-access/ssh-credential-logger/ttp.yaml",
+   "abilities": [
+    "07217ee1-9c00-41ac-8851-86e9c351f925"
+   ]
+  },
+  {
+   "path": "ttps/credential-access/stage-credential-files-for-exfil/ttp.yaml",
+   "abilities": [
+    "83b931ae-a5a7-4111-9313-23e0f9f50cac"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/aws-ec2-authorize-security-group-ingress/ttp.yaml",
+   "abilities": [
+    "a88fa6ff-5fc1-490f-8b11-cb1ec4b3af6b"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/aws-guardduty-create-sample-finding/ttp.yaml",
+   "abilities": [
+    "87b8e762-650e-4a0c-b2e0-2c88978c6dcd"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/block-defender-with-firewall/ttp.yaml",
+   "abilities": [
+    "1faa4749-81e8-4574-9ed8-bd0ffe5847a3"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/block-specific-outbound-traffic/ttp.yaml",
+   "abilities": [
+    "c40aaafa-ac13-4bb6-a459-28b7a1093dc8"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/bypass-uac-registry-hijacking/ttp.yaml",
+   "abilities": [
+    "88eeab98-ece3-4139-ae0e-b83424a9f1c6"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/command-line-spoofing/ttp.yaml",
+   "abilities": [
+    "434d54bd-77f4-4bad-8099-622331671609"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/create-and-execute-blocked-file/ttp.yaml",
+   "abilities": [
+    "fdf7a0d7-182e-4027-b441-d048cd5336f5"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/create-and-start-virtual-box/ttp.yaml",
+   "abilities": [
+    "34a6e159-3ce4-4048-bcc9-04cd59ddcdfd"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/disable-authentication-security/ttp.yaml",
+   "abilities": [
+    "c5e55e9d-843a-4cf2-9345-55f1b2559718"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/disable-event-logging/ttp.yaml",
+   "abilities": [
+    "bc50464b-2603-4b1b-8854-0c726423e3ec"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/disable-system-tools/ttp.yaml",
+   "abilities": [
+    "c79237c6-49d9-4110-bee5-62b54964bcbc"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/disable-system-updates/ttp.yaml",
+   "abilities": [
+    "fb5741e9-301f-438c-8c89-099d8e6fd8ea"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/disable-user-session-actions/ttp.yaml",
+   "abilities": [
+    "12ba273b-a9b1-4c10-b69e-5753b61a2f9e"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/disable-windows-notifications/ttp.yaml",
+   "abilities": [
+    "934ad994-c1c7-4bea-bb68-1fedf2c34639"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/disable-windows-update-features/ttp.yaml",
+   "abilities": [
+    "8ce51046-b56e-4590-a80e-6fb23df733d7"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/dylib-injection/ttp.yaml",
+   "abilities": [
+    "ea4ea068-05eb-4780-bb6d-4377111c34b3"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/dynamic-linker-hijacking/ttp.yaml",
+   "abilities": [
+    "c86e6442-522e-4b6e-912f-c3e97ba65d87"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/execute-file-for-santa-testing/ttp.yaml",
+   "abilities": [
+    "fc98201f-bb03-4e28-b5f7-1d7a00a6c73d"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/impair-firewall/ttp.yaml",
+   "abilities": [
+    "5b4b26a6-554e-4186-9d25-1509d6875425"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/impair-mde-1/ttp.yaml",
+   "abilities": [
+    "0f42ff86-a837-4cb8-b274-6a2894dc32f1"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/impair-mde-2/ttp.yaml",
+   "abilities": [
+    "b983354d-2abc-4759-8932-4ee230aa9480"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/load-krf-rootkit/ttp.yaml",
+   "abilities": [
+    "ab7b6460-685c-4561-8452-c4d55a6dc115"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/load-rootkit/ttp.yaml",
+   "abilities": [
+    "9310dda0-5b70-4f84-80f1-2bb61c7c4163"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/modify-file-timestamps/ttp.yaml",
+   "abilities": [
+    "545eeb09-aaa1-4aff-8b57-4226d8dc1e0b"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/remove-quarantine-attribute/ttp.yaml",
+   "abilities": [
+    "ac9c91e5-18e3-480d-93b8-5a83e02d99c2"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/replace-wdavdaemon/ttp.yaml",
+   "abilities": [
+    "6d4ddbd9-f7d2-4337-9308-107e06927109"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/signed-binary-proxy-regasm/ttp.yaml",
+   "abilities": [
+    "29bb4477-88e7-44e9-a6e8-21be79ff6ebc"
+   ]
+  },
+  {
+   "path": "ttps/defense-evasion/sshkeygen-dylib-hijack/ttp.yaml",
+   "abilities": [
+    "1b267e81-53a9-42b6-8b62-be88823b1cd8"
+   ]
+  },
+  {
+   "path": "ttps/discovery/aws-iam-enumerate-iam/ttp.yaml",
+   "abilities": [
+    "b8d069c2-7267-4a55-991f-8de5e4e6ac16"
+   ]
+  },
+  {
+   "path": "ttps/discovery/check-for-file-and-process/ttp.yaml",
+   "abilities": [
+    "3f725960-99c4-4698-8e4b-a342f2ca3c61"
+   ]
+  },
+  {
+   "path": "ttps/discovery/check-lockscreen-status/ttp.yaml",
+   "abilities": [
+    "d3fd6c22-4728-43ea-a94a-1043b4451d41"
+   ]
+  },
+  {
+   "path": "ttps/discovery/discover-suid-sgid-binaries/ttp.yaml",
+   "abilities": [
+    "04f6a109-36de-4522-824a-f5630c924450"
+   ]
+  },
+  {
+   "path": "ttps/discovery/discover-writable-directories/ttp.yaml",
+   "abilities": [
+    "da3377ef-a511-4c88-bc88-0a71793957d8"
+   ]
+  },
+  {
+   "path": "ttps/discovery/enumerate-computers-via-dns/ttp.yaml",
+   "abilities": [
+    "4775b841-2db5-4a14-8ec4-a1f2a62e6fb0"
+   ]
+  },
+  {
+   "path": "ttps/discovery/list-local-users/ttp.yaml",
+   "abilities": [
+    "bfa4dd17-b3e6-4361-a892-979c25cc705f"
+   ]
+  },
+  {
+   "path": "ttps/discovery/wmi-antivirus-discovery/ttp.yaml",
+   "abilities": [
+    "a7b8c9d0-e1f2-3a4b-5c6d-7e8f9a0b1c2d"
+   ]
+  },
+  {
+   "path": "ttps/discovery/wmi-host-os-discovery/ttp.yaml",
+   "abilities": [
+    "f1a2b3c4-d5e6-7f8a-9b0c-1d2e3f4a5b6c"
+   ]
+  },
+  {
+   "path": "ttps/discovery/wmi-network-discovery/ttp.yaml",
+   "abilities": [
+    "d0e1f2a3-b4c5-6d7e-8f9a-0b1c2d3e4f5a"
+   ]
+  },
+  {
+   "path": "ttps/discovery/wmi-service-discovery/ttp.yaml",
+   "abilities": [
+    "b8c9d0e1-f2a3-4b5c-6d7e-8f9a0b1c2d3e"
+   ]
+  },
+  {
+   "path": "ttps/discovery/wmi-user-group-discovery/ttp.yaml",
+   "abilities": [
+    "c9d0e1f2-a3b4-5c6d-7e8f-9a0b1c2d3e4f"
+   ]
+  },
+  {
+   "path": "ttps/execution/adload-trigger/ttp.yaml",
+   "abilities": [
+    "f6f0e809-1863-4748-9642-a3a4d37efec9"
+   ]
+  },
+  {
+   "path": "ttps/execution/arbitrary-script-execution-using-curl-to-pipe/ttp.yaml",
+   "abilities": [
+    "9f1d4cb9-e89c-4a0a-9de5-8aac63a7e8db"
+   ]
+  },
+  {
+   "path": "ttps/execution/download-post-exploitation-tool-with-powershell/ttp.yaml",
+   "abilities": [
+    "60f30b11-7e46-484d-bb02-8726019c6508"
+   ]
+  },
+  {
+   "path": "ttps/execution/dylib-execution/ttp.yaml",
+   "abilities": [
+    "bc46d797-3846-41b1-92b6-fbfbd135982f"
+   ]
+  },
+  {
+   "path": "ttps/execution/empyre-trigger/ttp.yaml",
+   "abilities": [
+    "fc49fca0-007c-4e94-b9ef-a83475a7e4e8"
+   ]
+  },
+  {
+   "path": "ttps/execution/identify-privilege-escalation-paths-with-linenum/ttp.yaml",
+   "abilities": [
+    "7ccde683-263a-4538-b07b-fc37945f9b1f"
+   ]
+  },
+  {
+   "path": "ttps/execution/identify-privilege-escalation-paths-with-linpeas/ttp.yaml",
+   "abilities": [
+    "46e2af43-e486-4a23-b0f2-a99eedce15da"
+   ]
+  },
+  {
+   "path": "ttps/execution/identify-privilege-escalation-paths-with-lse/ttp.yaml",
+   "abilities": [
+    "11b1b974-d720-4ab0-80c5-e539c103d0fd"
+   ]
+  },
+  {
+   "path": "ttps/execution/installcore-trigger/ttp.yaml",
+   "abilities": [
+    "7872b255-5b32-447d-aaf8-8d5850a03c50"
+   ]
+  },
+  {
+   "path": "ttps/execution/nc-portbind/ttp.yaml",
+   "abilities": [
+    "a6e8af9f-50d5-4c28-ad29-3e7686e250d0"
+   ]
+  },
+  {
+   "path": "ttps/execution/opentmp-trigger/ttp.yaml",
+   "abilities": [
+    "773aebf6-3488-4b8d-9681-dda40d31f122"
+   ]
+  },
+  {
+   "path": "ttps/execution/osascript-hiddendir/ttp.yaml",
+   "abilities": [
+    "24f0157e-6751-4b0c-81a3-e88efa3b8a6f"
+   ]
+  },
+  {
+   "path": "ttps/execution/osascript-netconn/ttp.yaml",
+   "abilities": [
+    "d92d64d2-5e08-4d6a-8d5e-381cdba51439"
+   ]
+  },
+  {
+   "path": "ttps/execution/osascript-reverse-shell/ttp.yaml",
+   "abilities": [
+    "fe4d33c6-6c83-48d6-9fa7-654e8bdde3c2"
+   ]
+  },
+  {
+   "path": "ttps/execution/python-portbind/ttp.yaml",
+   "abilities": [
+    "a7fe0635-a29a-482f-90f6-97937896fd82"
+   ]
+  },
+  {
+   "path": "ttps/execution/spawn-podman-container/ttp.yaml",
+   "abilities": [
+    "d3a11795-09e7-4003-ac6d-2eecfc3eb400"
+   ]
+  },
+  {
+   "path": "ttps/execution/spctl-trigger/ttp.yaml",
+   "abilities": [
+    "7b50992e-66c0-476f-99dd-a2bebd48c826"
+   ]
+  },
+  {
+   "path": "ttps/execution/tcl-dylib-hijack/ttp.yaml",
+   "abilities": [
+    "02f75a9c-94c6-4530-aa9b-b16dc05f1133"
+   ]
+  },
+  {
+   "path": "ttps/execution/user-prompt-api/ttp.yaml",
+   "abilities": [
+    "fb25e5c8-75cd-4425-b64d-68ce8315f67c"
+   ]
+  },
+  {
+   "path": "ttps/execution/user-prompt-cli/ttp.yaml",
+   "abilities": [
+    "12420421-a3af-4722-98a2-904659c3fd9f"
+   ]
+  },
+  {
+   "path": "ttps/exfiltration/dns-data-exfil/ttp.yaml",
+   "abilities": [
+    "08896c6c-4615-40b0-b6b7-3838768cd78f"
+   ]
+  },
+  {
+   "path": "ttps/exfiltration/exfil-data-discord/ttp.yaml",
+   "abilities": [
+    "78192bdd-7406-441d-abfc-aa601ad81ceb"
+   ]
+  },
+  {
+   "path": "ttps/exfiltration/exfil-data-telegram/ttp.yaml",
+   "abilities": [
+    "f99c8dbb-df67-431e-93ee-3f8a01635845"
+   ]
+  },
+  {
+   "path": "ttps/exfiltration/exfiltrate-data-https/ttp.yaml",
+   "abilities": [
+    "04035395-1a63-4a9f-89bd-0a18190d431d"
+   ]
+  },
+  {
+   "path": "ttps/exfiltration/exfiltrate-file-via-curl/ttp.yaml",
+   "abilities": [
+    "4e9c1f8a-3b7d-4c6e-8a1b-9f0e2d5c4a3b"
+   ]
+  },
+  {
+   "path": "ttps/exfiltration/exfiltrate-over-dns-dig/ttp.yaml",
+   "abilities": [
+    "b5eb16ec-07ed-49b6-acf3-8396ddd293bc"
+   ]
+  },
+  {
+   "path": "ttps/exfiltration/exfiltration-curl/ttp.yaml",
+   "abilities": [
+    "71d77f5e-5823-496a-b982-dcb2b43aed9e"
+   ]
+  },
+  {
+   "path": "ttps/exfiltration/http-non-std-port-exfil/ttp.yaml",
+   "abilities": [
+    "d4a1acfa-3e2e-4118-87c1-5d1d1fb98c25"
+   ]
+  },
+  {
+   "path": "ttps/exfiltration/http-uri-exfil/ttp.yaml",
+   "abilities": [
+    "5eff2c27-1d14-4b08-aa03-261d851cc712"
+   ]
+  },
+  {
+   "path": "ttps/impact/simulate-lotl-ransomware/ttp.yaml",
+   "abilities": [
+    "0fc4bb3a-b864-4c33-8516-9b0654324ad9"
+   ]
+  },
+  {
+   "path": "ttps/impact/simulate-ransomware-event/ttp.yaml",
+   "abilities": [
+    "2338787c-7cf9-4fd7-a4e2-c5c9cc5dcc37"
+   ]
+  },
+  {
+   "path": "ttps/lateral-movement/install-ssh-controlmaster/ttp.yaml",
+   "abilities": [
+    "6061b020-4525-42dd-af54-3603c76b7223"
+   ]
+  },
+  {
+   "path": "ttps/persistence/add-registry-runkey/ttp.yaml",
+   "abilities": [
+    "b0198d7b-be6a-4694-889f-7f9b3110f8ac"
+   ]
+  },
+  {
+   "path": "ttps/persistence/add-shortcut-startup/ttp.yaml",
+   "abilities": [
+    "f2d17902-e26a-4366-963a-5474fe94c457"
+   ]
+  },
+  {
+   "path": "ttps/persistence/aws-iam-add-iam-user-to-group/ttp.yaml",
+   "abilities": [
+    "c311c60f-9ccc-4487-b3ac-9c70e0aa0816"
+   ]
+  },
+  {
+   "path": "ttps/persistence/aws-iam-revive-old-iam-user/ttp.yaml",
+   "abilities": [
+    "ae55a815-9a7c-4691-a51f-59e8c70016bf"
+   ]
+  },
+  {
+   "path": "ttps/persistence/bashenv-persistence/ttp.yaml",
+   "abilities": [
+    "3647ce89-fdbc-4499-be2b-197128487a05"
+   ]
+  },
+  {
+   "path": "ttps/persistence/bashrc-persistence/ttp.yaml",
+   "abilities": [
+    "9ece9803-ff65-4ebe-8831-94696b5caa73"
+   ]
+  },
+  {
+   "path": "ttps/persistence/create-cronjob/ttp.yaml",
+   "abilities": [
+    "83e5e79f-497e-4c52-8aec-7a69be852252"
+   ]
+  },
+  {
+   "path": "ttps/persistence/create-local-account/ttp.yaml",
+   "abilities": [
+    "7227237b-38e6-4af6-b675-2f673b039e16"
+   ]
+  },
+  {
+   "path": "ttps/persistence/dll-side-loading/ttp.yaml",
+   "abilities": [
+    "a0dbea02-4978-4318-9af7-1aef1e2d2409"
+   ]
+  },
+  {
+   "path": "ttps/persistence/launch-agent-persistence/ttp.yaml",
+   "abilities": [
+    "73c1dfcb-e082-4946-9a7d-6f661e1efd44"
+   ]
+  },
+  {
+   "path": "ttps/persistence/login-item-persistence/ttp.yaml",
+   "abilities": [
+    "c56cc109-dd99-4719-b109-7f06556e8e8d"
+   ]
+  },
+  {
+   "path": "ttps/persistence/macos-login-item-osascript/ttp.yaml",
+   "abilities": [
+    "6c586278-85df-4f88-acb7-07151eaf6136"
+   ]
+  },
+  {
+   "path": "ttps/persistence/persist-zshrc/ttp.yaml",
+   "abilities": [
+    "7face526-f0bf-4327-aee1-a72a9294fb73"
+   ]
+  },
+  {
+   "path": "ttps/persistence/rc-scripts-persistence/ttp.yaml",
+   "abilities": [
+    "9b65bb2f-7ebf-4b99-a95e-e983fee766b7"
+   ]
+  },
+  {
+   "path": "ttps/persistence/sshrc-persistence/ttp.yaml",
+   "abilities": [
+    "17414f01-fd20-4c68-8384-79757ea432de"
+   ]
+  },
+  {
+   "path": "ttps/persistence/systemwide-at-job/ttp.yaml",
+   "abilities": [
+    "d30d1ad9-2edc-4e07-819b-d344440a573d"
+   ]
+  },
+  {
+   "path": "ttps/persistence/systemwide-cronjob/ttp.yaml",
+   "abilities": [
+    "b835ce7a-a320-4b68-acde-7c8c731eac93"
+   ]
+  },
+  {
+   "path": "ttps/persistence/systemwide-systemd-timers-transient-system/ttp.yaml",
+   "abilities": [
+    "2510e5b8-f821-42d0-b9bb-a9338b82bf81"
+   ]
+  },
+  {
+   "path": "ttps/persistence/xdg-autostart/ttp.yaml",
+   "abilities": [
+    "b90e6a0b-7ed7-4584-8457-22da7ccf564e"
+   ]
+  },
+  {
+   "path": "ttps/privilege-escalation/sedebugprivilege-token-dupl/ttp.yaml",
+   "abilities": [
+    "0495fc77-3ef2-4aff-ae1b-c50fcac5fe89"
+   ]
+  },
+  {
+   "path": "ttps/reconnaissance/network-service-discovery/ttp.yaml",
+   "abilities": [
+    "e80f7098-69ea-4e78-9a74-184b66795cc7"
+   ]
+  },
+  {
+   "path": "ttps/reconnaissance/scanning-ip-blocks/ttp.yaml",
+   "abilities": [
+    "e4fd43fb-78d2-489b-802e-ade98cfb6404"
+   ]
+  }
+ ]
+}

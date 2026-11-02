@@ -1,0 +1,25 @@
+---
+api_version: 2.0
+uuid: bfa4dd17-b3e6-4361-a892-979c25cc705f
+name: Gather macOS local user accounts.
+authors:
+  - sw8y
+  - I50
+description: |
+  This TTP uses the Directory Service Command Line (DSCL) utility to gather local user accounts.
+requirements:
+  platforms:
+    - os: darwin
+mitre:
+  tactics:
+    - "TA0007 Discovery"
+  techniques:
+    - "T1087 Account Discovery"
+  subtechniques:
+    - "T1087.001 Account Discovery: Local Account"
+steps:
+  - name: local_users
+    inline: |
+      echo -e "===> Gathering local user accounts using Directory Service Command Line (DSCL)..."
+      dscl . list /Users | grep -v “^_”
+      echo "[+] DONE!"

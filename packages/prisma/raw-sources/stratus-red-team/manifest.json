@@ -1,0 +1,103 @@
+{
+ "repository": "https://github.com/DataDog/stratus-red-team",
+ "commit": "92ff110d30bdc50f52fb7b8f4270bbde11fe8a56",
+ "license": "LICENSE",
+ "files": [
+  {
+   "path": "v2/internal/attacktechniques/aws/credential-access/ec2-steal-instance-credentials/main.go",
+   "abilities": [
+    "546ed7c2-2c6f-5520-b24f-7d9db27a41d0"
+   ]
+  },
+  {
+   "path": "v2/internal/attacktechniques/aws/defense-evasion/cloudtrail-delete/main.go",
+   "abilities": [
+    "44e7ebc4-dfa6-5900-a716-5fef86b2dea3"
+   ]
+  },
+  {
+   "path": "v2/internal/attacktechniques/aws/defense-evasion/cloudtrail-event-selectors/main.go",
+   "abilities": [
+    "207e8da3-5314-5274-be84-c7bd834ad596"
+   ]
+  },
+  {
+   "path": "v2/internal/attacktechniques/aws/defense-evasion/cloudtrail-lifecycle-rule/main.go",
+   "abilities": [
+    "c7f4dc9d-4ca1-5933-b42b-bef213ebe972"
+   ]
+  },
+  {
+   "path": "v2/internal/attacktechniques/aws/defense-evasion/cloudtrail-stop/main.go",
+   "abilities": [
+    "a1bf3314-3e6d-5984-9f7c-0779b7f499be"
+   ]
+  },
+  {
+   "path": "v2/internal/attacktechniques/aws/execution/ec2-launch-unusual-instances/main.go",
+   "abilities": [
+    "c22eaafe-b9e9-5d52-8c74-b3652f0d5a0e"
+   ]
+  },
+  {
+   "path": "v2/internal/attacktechniques/aws/exfiltration/ec2-security-group-open-port-22-ingress/main.go",
+   "abilities": [
+    "9f1fc8fd-ea76-5bcd-b227-b82b4985e130"
+   ]
+  },
+  {
+   "path": "v2/internal/attacktechniques/aws/exfiltration/ec2-share-ebs-snapshot/main.go",
+   "abilities": [
+    "01bdd9e4-554c-5638-9e5c-364bc6d8a811"
+   ]
+  },
+  {
+   "path": "v2/internal/attacktechniques/aws/exfiltration/ec2-share-ebs-volume/main.go",
+   "abilities": [
+    "83a547e0-e5a8-508f-9fc4-eafa467f8401"
+   ]
+  },
+  {
+   "path": "v2/internal/attacktechniques/aws/persistence/ec2-create-suspicious-keypair/main.go",
+   "abilities": [
+    "3c8d93b2-5285-5a9b-b60c-2d2a2f675b16"
+   ]
+  },
+  {
+   "path": "v2/internal/attacktechniques/aws/persistence/iam-backdoor-role/main.go",
+   "abilities": [
+    "3def30e7-58be-5005-acef-0627903497c7"
+   ]
+  },
+  {
+   "path": "v2/internal/attacktechniques/aws/persistence/iam-backdoor-user/main.go",
+   "abilities": [
+    "f8a4f9e0-a5da-5443-afc4-498986799e3f"
+   ]
+  },
+  {
+   "path": "v2/internal/attacktechniques/aws/persistence/iam-create-admin-user/main.go",
+   "abilities": [
+    "11ef4d53-6b22-5535-ac93-7606e2ed5aef"
+   ]
+  },
+  {
+   "path": "v2/internal/attacktechniques/aws/persistence/iam-create-backdoor-role/main.go",
+   "abilities": [
+    "f06f6698-150f-54c0-9aaf-9e680d29f4d4"
+   ]
+  },
+  {
+   "path": "v2/internal/attacktechniques/aws/persistence/iam-create-user-login-profile/main.go",
+   "abilities": [
+    "d73e65ef-e469-557d-a122-46d7576a40db"
+   ]
+  },
+  {
+   "path": "v2/internal/attacktechniques/aws/persistence/sts-federation-token/main.go",
+   "abilities": [
+    "9401dba4-bcfd-54bb-92b1-60d525733fb5"
+   ]
+  }
+ ]
+}

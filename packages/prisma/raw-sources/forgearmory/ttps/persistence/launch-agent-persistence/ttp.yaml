@@ -1,0 +1,50 @@
+---
+api_version: 2.0
+uuid: 73c1dfcb-e082-4946-9a7d-6f661e1efd44
+name: Launch Agent
+authors:
+  - d3sch41n
+  - cedowens
+  - I50
+description: |
+  This TTP creates a launch agent which executes a shell script to run a command.
+  If no `command_or_path` is provided, Calculator.app will be used.
+requirements:
+  platforms:
+    - os: darwin
+args:
+  - name: command_or_path
+    default: /Users/Shared/calc.sh
+mitre:
+  tactics:
+    - "TA0003 Persistence"
+  techniques:
+    - "T1543 Create or Modify System Process"
+  subtechniques:
+    - "T1543.001 Create or Modify System Process: Launch Agent"
+steps:
+  - name: launchagent
+    inline: |
+      set -e
+
+      echo "Compiling Swift source to binary..."
+      swiftc launchagent.swift -o launchagent
+
+      echo "Executing the launchagent binary. This will create a launch agent and load it using launchctl..."
+      ./launchagent "{{ .Args.command_or_path }}"
+
+      echo "TTP Execution Complete!"
+    cleanup:
+      inline: |
+        set -e
+
+        echo "Sleeping for 15 seconds before starting the cleanup process..."
+        sleep 15
+
+        echo "Closing the Calculator app and paper tape..."
+        osascript -e 'tell application "Calculator" to quit'
+        launchctl unload -w ~/Library/LaunchAgents/com.ttpforgelaunchagent.plist
+        rm -f "{{ .Args.command_or_path }}"
+        rm -f ~/Library/LaunchAgents/com.ttpforgelaunchagent.plist
+        rm -f launchagent
+        echo "Cleanup Complete!"

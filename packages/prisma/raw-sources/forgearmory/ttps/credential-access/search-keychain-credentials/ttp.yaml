@@ -1,0 +1,35 @@
+---
+api_version: 2.0
+uuid: 27a4e324-7605-410c-9457-52d84775fcc9
+name: Key search
+authors:
+  - cedowens
+  - I50
+description: |
+  This TTP searches for any files at ~/.ssh, ~/.aws, ~/.gcloud, and ~/.azure.
+
+requirements:
+  platforms:
+    - os: darwin
+
+mitre:
+  tactics:
+    - "TA0006 Credential Access"
+  techniques:
+    - "T1552 Unsecured Credentials"
+  subtechniques:
+    - "T1552.001 Credentials In Files"
+
+steps:
+  - name: keysearch
+    inline: |
+      echo -e "First, building the swift source file for this TTP and then executing the compiled binary..."
+      swiftc keysearch.swift -o keysearch
+      echo -e "Next, executing the compiled keysearch binary..."
+      ./keysearch
+      echo "TTP Done!"
+
+    cleanup:
+      inline: |
+        echo "Deleting the compiled binary..."
+        rm -f keysearch

@@ -1,0 +1,31 @@
+---
+api_version: 2.0
+uuid: d3fd6c22-4728-43ea-a94a-1043b4451d41
+name: Check if the target macOS screen is locked.
+authors:
+  - cedowens
+  - I50
+description: |
+  This TTP leverages ioreg to check and see if the macOS screen is locked.
+  If locked, then attacker may then perform actions that modify the GUI,
+  such as opening or closing windows.
+requirements:
+  platforms:
+    - os: darwin
+mitre:
+  tactics:
+    - "TA0007 Discovery"
+  techniques:
+    - "T1016 System Network Configuration Discovery"
+
+steps:
+  - name: lockscreen_check
+    inline: |
+      echo -e "Running an ioreg command to check the state of the lock screen..."
+      p=$(ioreg -n Root -d1 -a | grep CGSSession)
+      if [[ "$p" == *"CGSSessionScreenIsLocked"* ]]; then
+      echo "[+] Screen is currently LOCKED"
+      else
+          echo "[-] Screen is currently UNLOCKED"
+      fi
+      echo "[+] TTP Done!"

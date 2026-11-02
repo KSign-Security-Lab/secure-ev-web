@@ -1,0 +1,31 @@
+---
+api_version: 2.0
+uuid: 2cd0cb25-4863-4937-85d6-b971eca4118b
+name: Execute SwiftBelt code to gather host information.
+authors:
+  - cedowens
+  - I50
+description: |
+  This TTP executes SwiftBelt to gather host information.
+requirements:
+  platforms:
+    - os: darwin
+mitre:
+  tactics:
+    - "TA0009 Collection"
+  techniques:
+    - "T1119 Automated Collection"
+steps:
+  - name: swiftbelt-exec
+    inline: |
+      echo -e "First, building the SwiftBelt source file into a compiled binary for execution..."
+      swiftc SwiftBelt.swift -o SwiftBelt
+      echo -e "===> Executing SwiftBelt..."
+      ./SwiftBelt
+      echo -e "\n"
+      echo "[+] DONE!"
+    cleanup:
+      inline: |
+        echo "Cleaning up the compiled SwiftBelt binary..."
+        rm -f SwiftBelt
+        echo "Cleanup DONE!"

@@ -1,0 +1,37 @@
+---
+name: Delete AWS Config Rule
+author: Nick Jones
+description: |
+  None
+platform: aws
+category: Defense Evasion
+mitre_ids:
+  - T1562
+permissions:
+  - config:DeleteConfigRule
+input_arguments:
+  rulename:
+    description: Name of the rule to delete
+    type: str
+    value: "example-rule"
+executors:
+  sh:
+    code: |
+      aws configservice delete-config-rule --config-rule-name {{ rulename }}
+  leonidas_aws:
+    implemented: False
+    client:
+      - ConfigService
+    code: |
+      result = clients["ConfigService"].delete_config_rule(ConfigRuleName=rulename)
+detection:
+  sigma_id: 5934f0e7-e252-4f8c-bf2c-372da6ada60a
+  status: experimental
+  level: low
+  sources:
+    - name: "cloudtrail"
+      attributes:
+        eventName: "DeleteConfigRule"
+        eventSource: "*.config.amazonaws.com"
+  falsepositives:
+    - Developers making legitimate changes to the environment. Verify whether the user identity, user agent, and/or hostname should be making changes in your environment. 

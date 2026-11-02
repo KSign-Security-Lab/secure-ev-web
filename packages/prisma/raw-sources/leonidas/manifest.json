@@ -1,0 +1,361 @@
+{
+ "repository": "https://github.com/ReversecLabs/leonidas",
+ "commit": "77ec6bd17e65a111b30fc490476f28cb29308a0f",
+ "license": "LICENSE",
+ "files": [
+  {
+   "path": "definitions/credential_access/access-secrets-api-server.yml",
+   "abilities": [
+    "deae0d9b-ca10-5aca-b3b0-919fbc9da20c"
+   ]
+  },
+  {
+   "path": "definitions/credential_access/access-secrets-manager-secrets.yml",
+   "abilities": [
+    "e800a684-275b-547e-8bda-a328fc51e15a"
+   ]
+  },
+  {
+   "path": "definitions/credential_access/access-secrets-pod-filesystem.yml",
+   "abilities": [
+    "f509e3e7-f66c-56a7-b409-f0a23cc95964"
+   ]
+  },
+  {
+   "path": "definitions/credential_access/app-creds-configmaps.yml",
+   "abilities": [
+    "8775efc4-e669-52ed-aeac-d448a8d88edc"
+   ]
+  },
+  {
+   "path": "definitions/credential_access/app-creds-env.yml",
+   "abilities": [
+    "f5373b19-5464-50bd-89de-aa67d7748d23"
+   ]
+  },
+  {
+   "path": "definitions/defense_evasion/add-new-guardduty-ip-set.yml",
+   "abilities": [
+    "3c623d42-db38-5190-8674-88c23cf29675"
+   ]
+  },
+  {
+   "path": "definitions/defense_evasion/cloudtrail-alter-encryption-configuration.yml",
+   "abilities": [
+    "3a01d3a6-f5a4-55ec-b234-0419400180c8"
+   ]
+  },
+  {
+   "path": "definitions/defense_evasion/cloudtrail-change-destination-bucket.yml",
+   "abilities": [
+    "e6815425-e3a5-571b-941b-07390feb0ee4"
+   ]
+  },
+  {
+   "path": "definitions/defense_evasion/cloudtrail-delete-trail.yml",
+   "abilities": [
+    "c5f6915a-fa28-5d32-a354-b0a53e5c82ef"
+   ]
+  },
+  {
+   "path": "definitions/defense_evasion/cloudtrail-disable-global-event-logging.yml",
+   "abilities": [
+    "2a5ba4ec-18fd-5128-a7e8-f509e5b18c12"
+   ]
+  },
+  {
+   "path": "definitions/defense_evasion/cloudtrail-disable-log-file-validation.yml",
+   "abilities": [
+    "2de12f68-6f9a-5af3-98e3-fdb340907364"
+   ]
+  },
+  {
+   "path": "definitions/defense_evasion/cloudtrail-disable-multiregion-logging.yml",
+   "abilities": [
+    "8a5e60c3-9696-5902-a4c9-7ea79b219308"
+   ]
+  },
+  {
+   "path": "definitions/defense_evasion/cloudtrail-remove-sns-topic.yml",
+   "abilities": [
+    "9e654ac2-f106-5d87-99c0-23af6f532f0b"
+   ]
+  },
+  {
+   "path": "definitions/defense_evasion/config-delete-rule.yml",
+   "abilities": [
+    "1c4a4987-7db5-587d-904f-9f287fb78a3d"
+   ]
+  },
+  {
+   "path": "definitions/defense_evasion/delete-kubernetes-events.yml",
+   "abilities": [
+    "c7913696-3744-58ac-8e5c-1e87120f662a"
+   ]
+  },
+  {
+   "path": "definitions/defense_evasion/pod-name-similarity.yml",
+   "abilities": [
+    "781cab07-13cc-5a87-8c6f-16ce86e2278b"
+   ]
+  },
+  {
+   "path": "definitions/defense_evasion/update-guardduty-ip-set.yml",
+   "abilities": [
+    "454c3c11-143b-5350-9ef0-7b83ca339da0"
+   ]
+  },
+  {
+   "path": "definitions/discovery/enumerate-cloudtrail.yml",
+   "abilities": [
+    "7e75827f-2b65-5f3f-b9a6-03afc848bff8"
+   ]
+  },
+  {
+   "path": "definitions/discovery/enumerate-iam-getaccountauthorizationdetails.yml",
+   "abilities": [
+    "c808d9f6-6eb1-53d5-994d-24a90a2fc037"
+   ]
+  },
+  {
+   "path": "definitions/discovery/enumerate-iam-groups.yml",
+   "abilities": [
+    "37d126d8-f8de-5946-8686-f5f5fb92e7ca"
+   ]
+  },
+  {
+   "path": "definitions/discovery/enumerate-iam-users.yml",
+   "abilities": [
+    "26f2639d-10cd-5c74-bc10-24b2d5a478cf"
+   ]
+  },
+  {
+   "path": "definitions/discovery/enumerate-nodes.yml",
+   "abilities": [
+    "4bfbad29-fca3-5a75-acb1-5a22bc4a1c43"
+   ]
+  },
+  {
+   "path": "definitions/discovery/enumerate-pods.yml",
+   "abilities": [
+    "93f6f468-b7b4-51d4-9a36-2c87a680349b"
+   ]
+  },
+  {
+   "path": "definitions/discovery/enumerate-rbac-permissions.yml",
+   "abilities": [
+    "d36378cd-0b17-59f2-8dfc-88be3821b83b"
+   ]
+  },
+  {
+   "path": "definitions/discovery/enumerate-secrets-manager.yml",
+   "abilities": [
+    "9fa5e1f7-623d-5d66-93c3-9de8f8737b98"
+   ]
+  },
+  {
+   "path": "definitions/discovery/enumerate-vpc-flow-logs.yml",
+   "abilities": [
+    "0f05e181-eda3-5cc1-b64c-ecf4ee73e28e"
+   ]
+  },
+  {
+   "path": "definitions/discovery/enumerate-waf-rules.yml",
+   "abilities": [
+    "017a2531-d5d3-5a00-bf2f-9d07ae7cbd50"
+   ]
+  },
+  {
+   "path": "definitions/discovery/get-guardduty-detector.yml",
+   "abilities": [
+    "7d914b90-7fd4-52d5-aaef-4139ea3f21d3"
+   ]
+  },
+  {
+   "path": "definitions/discovery/get-identity.yml",
+   "abilities": [
+    "cccc0332-759a-5297-ab3d-953c38e41c21"
+   ]
+  },
+  {
+   "path": "definitions/discovery/list-guardduty-detectors.yml",
+   "abilities": [
+    "5b6d170d-d8a1-5dde-b9c2-407f5582e473"
+   ]
+  },
+  {
+   "path": "definitions/execution/create-pod.yml",
+   "abilities": [
+    "ea1c13b1-7e03-5f4f-8206-6238aa6967f9"
+   ]
+  },
+  {
+   "path": "definitions/execution/exec-into-container.yml",
+   "abilities": [
+    "e97246af-ba30-5b10-a6fb-4bd8453dc575"
+   ]
+  },
+  {
+   "path": "definitions/execution/modify-lambda-function-code.yml",
+   "abilities": [
+    "6803a2b5-bbed-5094-bec7-44dcc5d39227"
+   ]
+  },
+  {
+   "path": "definitions/impact/delete-deployment.yml",
+   "abilities": [
+    "a6bbcfbe-6e87-541c-81b1-a8a72e61da7b"
+   ]
+  },
+  {
+   "path": "definitions/impact/delete-iam-group.yml",
+   "abilities": [
+    "3d08ef28-f7ab-556b-8777-47fac30be6c9"
+   ]
+  },
+  {
+   "path": "definitions/impact/delete-iam-policy.yml",
+   "abilities": [
+    "bc0ea21a-7a29-5496-acba-e9803e29c0da"
+   ]
+  },
+  {
+   "path": "definitions/impact/delete-iam-role.yml",
+   "abilities": [
+    "3ec45dba-ff4b-5c55-9822-e3aaf8a55db7"
+   ]
+  },
+  {
+   "path": "definitions/impact/delete-iam-user.yml",
+   "abilities": [
+    "c482eac1-19a2-529a-a1f8-8008922671fb"
+   ]
+  },
+  {
+   "path": "definitions/impact/delete-login-profile-for-iam-user.yml",
+   "abilities": [
+    "7f72f3f3-6360-5497-b49f-ca682b5e84d8"
+   ]
+  },
+  {
+   "path": "definitions/impact/delete-pod.yml",
+   "abilities": [
+    "ddbc579a-e7d1-5bf7-9cd5-a88f8a13d950"
+   ]
+  },
+  {
+   "path": "definitions/persistence/add-api-key-to-iam-user.yml",
+   "abilities": [
+    "d5df0c29-ba4a-54f3-9c61-682b3373f899"
+   ]
+  },
+  {
+   "path": "definitions/persistence/add-iam-user.yml",
+   "abilities": [
+    "c5e19bad-3eff-573d-8049-577e13eeb3b3"
+   ]
+  },
+  {
+   "path": "definitions/persistence/alter-assume-role-policy-document.yml",
+   "abilities": [
+    "8c9f7d9e-9ee2-52d6-b2a7-a2dbad379ccc"
+   ]
+  },
+  {
+   "path": "definitions/persistence/change-current-iam-user-password.yml",
+   "abilities": [
+    "809b2050-0272-51f7-b6f5-d96f3f4948ea"
+   ]
+  },
+  {
+   "path": "definitions/persistence/create-iam-group.yml",
+   "abilities": [
+    "4854934b-cd8d-5f3c-9cc0-05282788e48a"
+   ]
+  },
+  {
+   "path": "definitions/persistence/create-login-profile-for-iam-user.yml",
+   "abilities": [
+    "728c674b-d0d8-5e10-8300-12331165c6bd"
+   ]
+  },
+  {
+   "path": "definitions/persistence/create-secrets-manager-secret.yml",
+   "abilities": [
+    "37f65f3e-6e88-5308-a50e-41e1bd9702d0"
+   ]
+  },
+  {
+   "path": "definitions/persistence/create-serviceaccount.yml",
+   "abilities": [
+    "23323049-a00c-5b53-b604-924daadcbba3"
+   ]
+  },
+  {
+   "path": "definitions/persistence/update-login-profile-for-iam-user.yml",
+   "abilities": [
+    "8842d548-b2f6-50d6-a794-511db123bd7d"
+   ]
+  },
+  {
+   "path": "definitions/privilege_escalation/add-iam-user-to-group.yml",
+   "abilities": [
+    "a478d39f-bdef-5914-9319-18e1dda7ac38"
+   ]
+  },
+  {
+   "path": "definitions/privilege_escalation/add-policy-to-iam-group.yml",
+   "abilities": [
+    "00d4171b-d68f-5a35-a013-42b041e191f0"
+   ]
+  },
+  {
+   "path": "definitions/privilege_escalation/add-policy-to-iam-user.yml",
+   "abilities": [
+    "5900d3b9-6591-514e-9f16-2e9e2ce19cf2"
+   ]
+  },
+  {
+   "path": "definitions/privilege_escalation/add-policy-to-role.yml",
+   "abilities": [
+    "88389cce-2886-5a80-ba23-4e836f7a8e66"
+   ]
+  },
+  {
+   "path": "definitions/privilege_escalation/add-role-to-new-ec2-instance.yml",
+   "abilities": [
+    "4ae913fb-7080-55c7-ac1c-6a9039e3cd6c"
+   ]
+  },
+  {
+   "path": "definitions/privilege_escalation/attach-malicious-lambda-layer.yml",
+   "abilities": [
+    "bd33ff65-fdf2-5088-930a-2ae3701621f4"
+   ]
+  },
+  {
+   "path": "definitions/privilege_escalation/create-iam-policy-version.yml",
+   "abilities": [
+    "ff03b7c6-9df2-5bd7-8b12-0afc460fa27f"
+   ]
+  },
+  {
+   "path": "definitions/privilege_escalation/create-iam-policy.yml",
+   "abilities": [
+    "a4e32f2e-e183-5ffa-9617-3cb9919406c2"
+   ]
+  },
+  {
+   "path": "definitions/privilege_escalation/set-default-iam-policy-version.yml",
+   "abilities": [
+    "3134d7ef-65cf-51e3-beba-2791f7e3ba7d"
+   ]
+  },
+  {
+   "path": "definitions/privilege_escalation/update-inline-policy-for-user.yml",
+   "abilities": [
+    "238fe75e-69b7-5fa6-b9a4-f81ab89ac766"
+   ]
+  }
+ ]
+}
