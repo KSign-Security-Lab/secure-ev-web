@@ -6,17 +6,16 @@ Mitre table carries the full matrix: every active parent technique and
 sub-technique, with the tactic column it sits in and the tactic's position in
 the matrix. Revoked and deprecated techniques are left out.
 
-The bundle is cached at .cache/attack/enterprise-attack.json:
+    python3 scripts/import_mitre.py
 
-    python3 scripts/import_mitre.py --fetch     # download the latest bundle
-    python3 scripts/import_mitre.py             # rebuild from the cache
+Downloads the latest bundle to .cache/attack/enterprise-attack.json (falling
+back to the cached copy when offline) and rewrites data/mitre_list.json.
 
 ``load_attack`` is also used by import_abilities.py to move ability rows off
 revoked technique IDs (e.g. T1562.001 -> T1685) via the bundle's revoked-by
 relationships.
 """
 
-import argparse
 import json
 import os
 import sys
@@ -134,28 +133,22 @@ def build_rows(attack):
 
 def fetch(stix_path):
     os.makedirs(os.path.dirname(stix_path), exist_ok=True)
-    print(f"downloading {STIX_URL}", file=sys.stderr)
     tmp = stix_path + ".part"
-    urllib.request.urlretrieve(STIX_URL, tmp)
-    os.replace(tmp, stix_path)
+    try:
+        urllib.request.urlretrieve(STIX_URL, tmp)
+        os.replace(tmp, stix_path)
+    except OSError as err:
+        if not os.path.exists(stix_path):
+            sys.exit(f"could not download {STIX_URL}: {err}")
+        print(f"download failed ({err}); using cached {stix_path}", file=sys.stderr)
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
-    )
-    parser.add_argument("--stix", default=DEFAULT_STIX, help="Enterprise ATT&CK STIX bundle")
-    parser.add_argument("--out", default=DEFAULT_OUT, help="mitre_list.json to write")
-    parser.add_argument("--fetch", action="store_true", help="download the latest bundle first")
-    args = parser.parse_args()
-
-    if args.fetch or not os.path.exists(args.stix):
-        fetch(args.stix)
-
-    attack = load_attack(args.stix)
+    fetch(DEFAULT_STIX)
+    attack = load_attack(DEFAULT_STIX)
     rows = build_rows(attack)
-    os.makedirs(os.path.dirname(args.out), exist_ok=True)
-    with open(args.out, "w", encoding="utf-8") as f:
+    os.makedirs(os.path.dirname(DEFAULT_OUT), exist_ok=True)
+    with open(DEFAULT_OUT, "w", encoding="utf-8") as f:
         json.dump(rows, f, indent=1, ensure_ascii=False)
         f.write("\n")
 
@@ -163,7 +156,7 @@ def main():
     subs = {r["subtechnique_id"] for r in rows if r["subtechnique_id"]}
     print(
         f"ATT&CK {attack['version']}: {len(attack['tactics'])} tactics, "
-        f"{len(parents)} techniques, {len(subs)} sub-techniques, {len(rows)} rows -> {args.out}",
+        f"{len(parents)} techniques, {len(subs)} sub-techniques -> {DEFAULT_OUT}",
         file=sys.stderr,
     )
 
