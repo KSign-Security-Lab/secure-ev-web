@@ -12,6 +12,7 @@ import {
   ClipboardCheck,
   Plug,
   Crosshair,
+  Grid3x3,
 } from "lucide-react";
 import { AppTopBar, MenuItemType } from "../TopBar/AppTopBar";
 import { usePathname } from "next/navigation";
@@ -51,6 +52,11 @@ export default function SideBarLayout({
           name: t("menu.operations"),
           icon: <Crosshair />,
           url: "/playground/operations",
+        },
+        {
+          name: t("menu.coverage"),
+          icon: <Grid3x3 />,
+          url: "/playground/coverage",
         },
         {
           name: t("menu.assessment"),
