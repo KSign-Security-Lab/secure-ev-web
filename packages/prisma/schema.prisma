@@ -87,14 +87,26 @@ enum MitrePlatform {
  ICS
 }
 
- model Mitre {
-  id String @id @default(uuid())
-  tactic String
-  technique_id String
-  technique_name String @db.VarChar(191)
-  subtechnique_id String? @unique
-  subtechnique_name String? @unique @db.VarChar(191)
-  platform MitrePlatform
+/// One row per (tactic, technique) and per (tactic, sub-technique) of the
+/// ATT&CK matrix, built by scripts/import_mitre.py. A technique that sits under
+/// several tactics has a row for each; sub-technique rows repeat their parent's
+/// technique_id/technique_name.
+model Mitre {
+  id                String        @id @default(uuid())
+  /// Tactic shortname, e.g. "defense-impairment".
+  tactic            String
+  tactic_name       String        @default("")
+  /// Column position of the tactic in the ATT&CK matrix.
+  tactic_order      Int           @default(0)
+  technique_id      String
+  technique_name    String        @db.VarChar(191)
+  subtechnique_id   String?       @db.VarChar(191)
+  subtechnique_name String?       @db.VarChar(191)
+  platform          MitrePlatform
+
+  @@index([technique_id])
+  @@index([subtechnique_id])
+  @@index([platform, tactic_order])
 }
 // ---------------------------------------------------------------------------
 // C2 — agent registry and tasking

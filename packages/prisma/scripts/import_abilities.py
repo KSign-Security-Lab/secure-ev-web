@@ -496,6 +496,43 @@ def merge(existing, imported):
     return rows + kept, len(kept)
 
 
+# ATT&CK tactics that no longer exist in the current matrix. v19 split
+# defense-evasion into stealth and defense-impairment.
+RETIRED_TACTICS = {"defense-evasion"}
+
+
+def remap_attack(rows, stix_path):
+    """Move rows onto current Enterprise ATT&CK IDs.
+
+    Uses the STIX bundle's revoked-by relationships, so abilities tagged with
+    a revoked ID (e.g. T1562.001 -> T1685, T1070.001 -> T1685.005) count
+    toward coverage again. Rows still labelled with a retired tactic get the
+    technique's current tactic. Returns (rows, number of IDs remapped,
+    number of tactics relabelled).
+    """
+    from import_mitre import load_attack
+
+    attack = load_attack(stix_path)
+    techniques, revoked = attack["techniques"], attack["revoked"]
+    current_tactics = {short for short, _ in attack["tactics"]}
+    remapped = relabelled = 0
+    for row in rows:
+        tid = (row.get("technique_id") or "").strip()
+        if tid in revoked:
+            tid = revoked[tid]
+            row["technique_name"] = techniques[tid]["name"]
+            remapped += 1
+        row["technique_id"] = tid
+
+        tactic = (row.get("tactic") or "").strip()
+        tech_tactics = techniques.get(tid, {}).get("tactics", [])
+        if tech_tactics and tactic in RETIRED_TACTICS and tactic not in current_tactics:
+            preferred = [t for t in tech_tactics if t in ("stealth", "defense-impairment")]
+            row["tactic"] = (preferred or tech_tactics)[0]
+            relabelled += 1
+    return rows, remapped, relabelled
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--cache", default=DEFAULT_CACHE, help="where source repositories are cloned")
@@ -507,7 +544,37 @@ def main():
         "Only Atomic Red Team ships its attachments; plugin and OT binaries are not in the source repos "
         "and are reported as missing.",
     )
+    parser.add_argument(
+        "--attack-stix",
+        default=os.path.join(ROOT, ".cache", "attack", "enterprise-attack.json"),
+        help="Enterprise ATT&CK bundle used to remap revoked technique IDs "
+        "(download it with scripts/import_mitre.py --fetch); skipped if missing",
+    )
+    parser.add_argument(
+        "--remap-only",
+        action="store_true",
+        help="only remap revoked technique IDs in the existing seed file, without re-importing",
+    )
     args = parser.parse_args()
+
+    def write_remapped(rows):
+        if os.path.isfile(args.attack_stix):
+            rows, remapped, relabelled = remap_attack(rows, args.attack_stix)
+            print(
+                f"ATT&CK remap: {remapped} revoked technique IDs replaced, "
+                f"{relabelled} tactics relabelled",
+                file=sys.stderr,
+            )
+        else:
+            print(f"ATT&CK remap skipped: {args.attack_stix} not found", file=sys.stderr)
+        with open(args.data, "w", encoding="utf-8") as f:
+            json.dump(rows, f, indent=1, ensure_ascii=False)
+        print(f"wrote {len(rows)} rows to {args.data}", file=sys.stderr)
+
+    if args.remap_only:
+        with open(args.data, encoding="utf-8") as f:
+            write_remapped(json.load(f))
+        return
 
     if args.fetch:
         fetch(args.cache)
@@ -549,9 +616,7 @@ def main():
                 file=sys.stderr,
             )
 
-    with open(args.data, "w", encoding="utf-8") as f:
-        json.dump(rows, f, indent=1, ensure_ascii=False)
-    print(f"wrote {len(rows)} rows to {args.data}", file=sys.stderr)
+    write_remapped(rows)
 
 
 if __name__ == "__main__":

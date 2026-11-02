@@ -30,13 +30,17 @@ async function main() {
     })),
   });
   await prisma.mitre.createMany({
-    data: mitre.map((attack) => ({
-      technique_id: attack.technique_id,
-      technique_name: attack.technique_name,
+    // Built by scripts/import_mitre.py: one row per (tactic, technique) and per
+    // (tactic, sub-technique) of the Enterprise matrix.
+    data: mitre.map((row) => ({
+      tactic: row.tactic,
+      tactic_name: row.tactic_name,
+      tactic_order: row.tactic_order,
+      technique_id: row.technique_id,
+      technique_name: row.technique_name,
+      subtechnique_id: row.subtechnique_id ?? null,
+      subtechnique_name: row.subtechnique_name ?? null,
       platform: "Enterprise",
-      tactic: "",
-      subtechnique_id: undefined,
-      subtechnique_name: undefined,
     })),
   });
 }
