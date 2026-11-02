@@ -27,7 +27,7 @@ export default function CoveragePage() {
     <div className="w-full space-y-4">
       <PageHeader
         title="MITRE ATT&CK Coverage"
-        subtitle="How much of the ATT&CK matrix the ability library can exercise."
+        subtitle="The full Enterprise ATT&CK matrix: every technique and sub-technique, shaded by how many abilities exercise it."
         badge="Playground"
       />
       {loading ? (

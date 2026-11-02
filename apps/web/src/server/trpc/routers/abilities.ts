@@ -279,116 +279,139 @@ export const abilitiesRouter = router({
     }),
 
   /**
-   * MITRE ATT&CK coverage matrix for the heatmap.
+   * Full Enterprise ATT&CK matrix with ability coverage, for the heatmap.
    *
-   * Built from the ability library: every ability row carries its tactic and
-   * technique, so we group abilities by tactic → parent technique and count the
-   * variants (depth of coverage). Enterprise coverage breadth (how many of the
-   * ATT&CK techniques we can exercise at all) is measured against the Mitre
-   * table, which also gives us the list of uncovered techniques (the gaps).
+   * The Mitre table (scripts/import_mitre.py) holds every active tactic,
+   * technique and sub-technique, so every cell of the matrix is returned —
+   * including techniques with no ability (gaps). Coverage is keyed by
+   * technique ID, not by the ability's tactic label: an ability on T1059.001
+   * covers that sub-technique and its parent in every tactic column T1059
+   * appears under.
    */
   coverage: publicProcedure.query(async () => {
-    const abilities = await prisma.ability.findMany({
-      select: { tactic: true, technique_id: true, technique_name: true },
-    });
-    const mitre = await prisma.mitre.findMany({
-      where: { platform: "Enterprise" },
-      select: { technique_id: true, technique_name: true },
-    });
+    const [abilities, mitre] = await Promise.all([
+      prisma.ability.findMany({ select: { technique_id: true } }),
+      prisma.mitre.findMany({
+        where: { platform: "Enterprise" },
+        select: {
+          tactic: true,
+          tactic_name: true,
+          tactic_order: true,
+          technique_id: true,
+          technique_name: true,
+          subtechnique_id: true,
+          subtechnique_name: true,
+        },
+      }),
+    ]);
 
-    const parentOf = (techniqueId: string) => techniqueId.split(".")[0];
-
-    // Enterprise technique universe, deduped by id.
-    const enterpriseNames = new Map<string, string>();
-    for (const tech of mitre) {
-      if (!enterpriseNames.has(tech.technique_id)) {
-        enterpriseNames.set(tech.technique_id, tech.technique_name);
-      }
-    }
-
-    // The 14 Enterprise tactics in kill-chain order. Anything else an ability
-    // carries (ICS tactics, Caldera plugin buckets) is appended after these so
-    // nothing is hidden, but the standard matrix reads left-to-right as ATT&CK.
-    const TACTIC_ORDER = [
-      "reconnaissance",
-      "resource-development",
-      "initial-access",
-      "execution",
-      "persistence",
-      "privilege-escalation",
-      "defense-evasion",
-      "credential-access",
-      "discovery",
-      "lateral-movement",
-      "collection",
-      "command-and-control",
-      "exfiltration",
-      "impact",
-    ];
-    const titleCase = (value: string) =>
-      value
-        .split(/[-\s]+/)
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
-
-    // tactic key → (parent technique id → { name, count })
-    const byTactic = new Map<string, Map<string, { name: string; count: number }>>();
-    const coveredParents = new Set<string>();
-
+    // Abilities per exact ATT&CK ID (parent or sub-technique).
+    const countById = new Map<string, number>();
     for (const ability of abilities) {
-      const tactic = (ability.tactic || "").trim().toLowerCase();
-      if (!tactic || tactic === "unknown" || tactic === "x") continue;
-      const parent = parentOf(ability.technique_id || "");
-      if (!parent) continue;
-      if (enterpriseNames.has(parent)) coveredParents.add(parent);
-
-      if (!byTactic.has(tactic)) byTactic.set(tactic, new Map());
-      const techniques = byTactic.get(tactic)!;
-      const existing = techniques.get(parent);
-      const name =
-        enterpriseNames.get(parent) || ability.technique_name || parent;
-      if (existing) existing.count += 1;
-      else techniques.set(parent, { name, count: 1 });
+      const id = (ability.technique_id || "").trim();
+      if (id) countById.set(id, (countById.get(id) ?? 0) + 1);
     }
 
-    const orderIndex = (key: string) => {
-      const idx = TACTIC_ORDER.indexOf(key);
-      return idx === -1 ? TACTIC_ORDER.length : idx;
-    };
-    const matrix = [...byTactic.entries()]
-      .map(([key, techniques]) => ({
-        key,
-        label: titleCase(key),
-        standard: TACTIC_ORDER.includes(key),
-        techniques: [...techniques.entries()]
-          .map(([id, info]) => ({ id, name: info.name, count: info.count }))
-          .sort((a, b) => b.count - a.count || a.id.localeCompare(b.id)),
-      }))
-      .sort((a, b) => orderIndex(a.key) - orderIndex(b.key) || a.label.localeCompare(b.label));
+    // Technique catalog (parent -> sub-techniques) and tactic columns.
+    const catalog = new Map<string, { name: string; subs: Map<string, string> }>();
+    const tactics = new Map<
+      string,
+      { label: string; order: number; techniqueIds: Set<string> }
+    >();
+    for (const row of mitre) {
+      let parent = catalog.get(row.technique_id);
+      if (!parent) {
+        parent = { name: row.technique_name, subs: new Map() };
+        catalog.set(row.technique_id, parent);
+      }
+      if (row.subtechnique_id) {
+        parent.subs.set(row.subtechnique_id, row.subtechnique_name ?? row.subtechnique_id);
+      }
+      let tactic = tactics.get(row.tactic);
+      if (!tactic) {
+        tactic = {
+          label: row.tactic_name || row.tactic,
+          order: row.tactic_order,
+          techniqueIds: new Set(),
+        };
+        tactics.set(row.tactic, tactic);
+      }
+      tactic.techniqueIds.add(row.technique_id);
+    }
 
-    const uncovered = [...enterpriseNames.entries()]
-      .filter(([id]) => !coveredParents.has(id))
-      .map(([id, name]) => ({ id, name }))
-      .sort((a, b) => a.id.localeCompare(b.id));
+    const techniques = new Map(
+      [...catalog.entries()].map(([id, info]) => {
+        const subs = [...info.subs.entries()]
+          .map(([subId, name]) => ({ id: subId, name, count: countById.get(subId) ?? 0 }))
+          .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
+        const direct = countById.get(id) ?? 0;
+        return [
+          id,
+          {
+            id,
+            name: info.name,
+            /** Abilities tagged with the technique itself. */
+            direct,
+            /** Abilities on the technique or any of its sub-techniques. */
+            count: direct + subs.reduce((sum, sub) => sum + sub.count, 0),
+            subsCovered: subs.filter((sub) => sub.count > 0).length,
+            subs,
+          },
+        ];
+      })
+    );
 
-    const totalTechniques = enterpriseNames.size;
-    const coveredTechniques = [...coveredParents].filter((id) =>
-      enterpriseNames.has(id)
-    ).length;
+    const matrix = [...tactics.entries()]
+      .sort(([, a], [, b]) => a.order - b.order)
+      .map(([key, tactic]) => {
+        const list = [...tactic.techniqueIds]
+          .map((id) => techniques.get(id)!)
+          .sort((a, b) => a.name.localeCompare(b.name));
+        return {
+          key,
+          label: tactic.label,
+          covered: list.filter((t) => t.count > 0).length,
+          techniques: list,
+        };
+      });
+
+    const allTechniques = [...techniques.values()];
+    const allSubs = allTechniques.flatMap((t) => t.subs);
+    const enterpriseIds = new Set([
+      ...techniques.keys(),
+      ...allSubs.map((sub) => sub.id),
+    ]);
+    const enterpriseAbilities = [...countById.entries()]
+      .filter(([id]) => enterpriseIds.has(id))
+      .reduce((sum, [, n]) => sum + n, 0);
+    const percent = (part: number, whole: number) =>
+      whole > 0 ? Math.round((part / whole) * 1000) / 10 : 0;
+
+    const coveredTechniques = allTechniques.filter((t) => t.count > 0).length;
+    const coveredSubs = allSubs.filter((sub) => sub.count > 0).length;
 
     return {
       summary: {
         totalAbilities: abilities.length,
-        totalTechniques,
-        coveredTechniques,
-        coveragePercentage:
-          totalTechniques > 0
-            ? Math.round((coveredTechniques / totalTechniques) * 100)
-            : 0,
-        tacticsCovered: matrix.filter((t) => t.standard).length,
+        enterpriseAbilities,
+        /** Untagged, ICS, or non-ATT&CK IDs — not placed on the matrix. */
+        otherAbilities: abilities.length - enterpriseAbilities,
+        techniques: {
+          covered: coveredTechniques,
+          total: allTechniques.length,
+          percentage: percent(coveredTechniques, allTechniques.length),
+        },
+        subtechniques: {
+          covered: coveredSubs,
+          total: allSubs.length,
+          percentage: percent(coveredSubs, allSubs.length),
+        },
+        tactics: {
+          covered: matrix.filter((t) => t.covered > 0).length,
+          total: matrix.length,
+        },
       },
       matrix,
-      uncovered,
     };
   }),
 });
