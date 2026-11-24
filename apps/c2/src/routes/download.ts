@@ -28,16 +28,19 @@ export function isAgentBinaryRequest(file: string): boolean {
  * Candidate file names for the agent binary, in preference order:
  * the arch-specific build, then the amd64 build, then the legacy
  * `sandcat.go-<platform>` name so a half-migrated payload directory works.
+ * Windows builds carry `.exe` (agent/build.sh), so those names are tried
+ * first, with the bare names kept as a fallback.
  * Returns [] for a platform we do not build for.
  */
 export function agentBinaryCandidates(platform: string, architecture: string): string[] {
   if (!PLATFORMS.has(platform)) return [];
   const arch = architecture || DEFAULT_ARCH;
-  return [
+  const names = [
     `sandcat-${platform}-${arch}`,
     `sandcat-${platform}-${DEFAULT_ARCH}`,
     `sandcat.go-${platform}`,
   ];
+  return platform === "windows" ? [...names.map((name) => `${name}.exe`), ...names] : names;
 }
 
 /**

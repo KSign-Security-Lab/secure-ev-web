@@ -66,6 +66,15 @@ test("agent binary candidates fall back arch -> amd64 -> legacy", () => {
     "sandcat-linux-amd64",
     "sandcat.go-linux",
   ]);
+  // Windows builds are named with .exe; bare names remain a fallback.
+  assert.deepEqual(agentBinaryCandidates("windows", "amd64"), [
+    "sandcat-windows-amd64.exe",
+    "sandcat-windows-amd64.exe",
+    "sandcat.go-windows.exe",
+    "sandcat-windows-amd64",
+    "sandcat-windows-amd64",
+    "sandcat.go-windows",
+  ]);
   // Unknown platform builds nothing.
   assert.deepEqual(agentBinaryCandidates("solaris", "amd64"), []);
 });
