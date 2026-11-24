@@ -9,6 +9,7 @@ import {
   decodeBeaconBody,
   encodeBeaconResponse,
   generatePaw,
+  profileFieldsFromBeacon,
   type Instruction,
 } from "../protocol.js";
 
@@ -32,9 +33,11 @@ const randomSleep = (min: number, max: number) =>
 
 export async function handleBeacon(req: IncomingMessage, res: ServerResponse): Promise<void> {
   let profile;
+  let decoded: unknown;
   try {
     const raw = (await readBody(req, MAX_BEACON_BYTES)).toString("utf-8");
-    profile = beaconProfileSchema.parse(decodeBeaconBody(raw));
+    decoded = decodeBeaconBody(raw);
+    profile = beaconProfileSchema.parse(decoded);
   } catch (error) {
     console.error("[c2] malformed beacon:", error);
     text(res, 400, "malformed beacon");
@@ -75,27 +78,9 @@ export async function handleBeacon(req: IncomingMessage, res: ServerResponse): P
       firstSeen: now,
       lastSeen: now,
     },
-    update: {
-      group: profile.group || "red",
-      architecture: profile.architecture ?? "",
-      platform: profile.platform ?? "",
-      server: profile.server ?? "",
-      upstreamDest: profile.upstream_dest ?? "",
-      username: profile.username ?? "",
-      location: profile.location ?? "",
-      pid: profile.pid,
-      ppid: profile.ppid,
-      executors: profile.executors ?? [],
-      privilege: profile.privilege ?? "",
-      exeName: profile.exe_name ?? "",
-      host: profile.host ?? "",
-      contact: profile.contact || "HTTP",
-      originLinkId: profile.origin_link_id ?? "",
-      deadmanEnabled: profile.deadman_enabled,
-      availableContacts: profile.available_contacts ?? [],
-      hostIpAddrs: profile.host_ip_addrs ?? [],
-      lastSeen: now,
-    },
+    // Only the keys this beacon carried: a result report sends a trimmed
+    // profile, and must not blank the executors the operation engine needs.
+    update: { ...profileFieldsFromBeacon(decoded, profile), lastSeen: now },
   });
 
   // Store results for instructions issued on an earlier beacon.
@@ -139,17 +124,26 @@ export async function handleBeacon(req: IncomingMessage, res: ServerResponse): P
     if (opId) affectedOperations.add(opId);
   }
 
-  // Queue the next step of any operation a result just advanced, before we claim
-  // queued work below — so a freshly-queued step goes out in this same beacon.
+  // Queue the next step of any operation a result just advanced.
   for (const operationId of affectedOperations) {
     await advanceOperation(prisma, operationId);
   }
 
+  // Results arrive on a separate report (`agent.go:RunInstruction` →
+  // `SendExecutionResults`) whose response the agent discards; only its regular
+  // beacon reads instructions, and that beacon never carries results. Handing
+  // out work here would mark it SENT while the agent never sees it, stalling
+  // operations and swallowing terminal commands. Leave it QUEUED for the next
+  // regular beacon instead (about a second away while a terminal is attached).
+  const isResultReport = profile.results.length > 0;
+
   // Claim anything queued for this agent.
-  const queued = await prisma.agentInstruction.findMany({
-    where: { paw, status: "QUEUED" },
-    orderBy: { queuedAt: "asc" },
-  });
+  const queued = isResultReport
+    ? []
+    : await prisma.agentInstruction.findMany({
+        where: { paw, status: "QUEUED" },
+        orderBy: { queuedAt: "asc" },
+      });
 
   if (queued.length > 0) {
     await prisma.agentInstruction.updateMany({

@@ -7,6 +7,7 @@ import {
   encodeBeaconResponse,
   generatePaw,
   defaultExecutor,
+  profileFieldsFromBeacon,
   type Instruction,
 } from "./protocol.ts";
 import { agentBinaryCandidates, isAgentBinaryRequest } from "./routes/download.ts";
@@ -73,4 +74,32 @@ test("isAgentBinaryRequest matches the self-download, not ability payloads", () 
   assert.equal(isAgentBinaryRequest("sandcat.go"), true);
   assert.equal(isAgentBinaryRequest(""), true);
   assert.equal(isAgentBinaryRequest("powerview.ps1"), false);
+});
+
+test("a trimmed result-report profile leaves executors and other fields alone", () => {
+  // What sandcat sends with a result (agent.go:GetTrimmedProfile).
+  const trimmed = {
+    paw: "abc123",
+    server: "http://c2:4204",
+    platform: "linux",
+    host: "web01",
+    contact: "HTTP",
+    upstream_dest: "http://c2:4204",
+    results: [{ id: "i1", output: "", stderr: "" }],
+  };
+  const fields = profileFieldsFromBeacon(trimmed, beaconProfileSchema.parse(trimmed));
+  assert.deepEqual(Object.keys(fields).sort(), ["contact", "host", "platform", "server", "upstreamDest"]);
+  assert.equal(fields.executors, undefined);
+  assert.equal(fields.group, undefined);
+  assert.equal(fields.pid, undefined);
+});
+
+test("a full profile updates every field it carries", () => {
+  const full = { paw: "abc123", group: "", executors: ["sh", "proc"], pid: "42", username: "", deadman_enabled: false };
+  const fields = profileFieldsFromBeacon(full, beaconProfileSchema.parse(full));
+  assert.deepEqual(fields.executors, ["sh", "proc"]);
+  assert.equal(fields.group, "red");
+  assert.equal(fields.pid, 42);
+  assert.equal(fields.username, "");
+  assert.equal(fields.deadmanEnabled, false);
 });

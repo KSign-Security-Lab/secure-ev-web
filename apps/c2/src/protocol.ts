@@ -66,6 +66,71 @@ export const beaconProfileSchema = z.object({
 
 export type BeaconProfile = z.infer<typeof beaconProfileSchema>;
 
+/** Agent columns a beacon can set, as written to the Agent row. */
+export interface AgentProfileFields {
+  group?: string;
+  architecture?: string;
+  platform?: string;
+  server?: string;
+  upstreamDest?: string;
+  username?: string;
+  location?: string;
+  pid?: number | null;
+  ppid?: number | null;
+  executors?: string[];
+  privilege?: string;
+  exeName?: string;
+  host?: string;
+  contact?: string;
+  proxyReceivers?: object;
+  proxyChain?: object;
+  originLinkId?: string;
+  deadmanEnabled?: boolean;
+  availableContacts?: string[];
+  hostIpAddrs?: string[];
+}
+
+/**
+ * The profile fields to write for one beacon, limited to the keys the agent
+ * actually sent.
+ *
+ * The agent does not always send its full profile. When it reports a result it
+ * sends a trimmed one (`agent.go:GetTrimmedProfile` — paw, server, platform,
+ * host, contact, upstream_dest only). Treating absent keys as empty would wipe
+ * the stored executors, group, username, pid, ... until the next full beacon,
+ * and the operation engine — which runs right after a result lands — would then
+ * see an agent with no executors and skip every later step. So a key the agent
+ * left out leaves the stored value alone.
+ */
+export function profileFieldsFromBeacon(raw: unknown, profile: BeaconProfile): AgentProfileFields {
+  const sent = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+  const has = (key: string) => Object.prototype.hasOwnProperty.call(sent, key);
+  const fields: AgentProfileFields = {};
+
+  if (has("group")) fields.group = profile.group || "red";
+  if (has("architecture")) fields.architecture = profile.architecture ?? "";
+  if (has("platform")) fields.platform = profile.platform ?? "";
+  if (has("server")) fields.server = profile.server ?? "";
+  if (has("upstream_dest")) fields.upstreamDest = profile.upstream_dest ?? "";
+  if (has("username")) fields.username = profile.username ?? "";
+  if (has("location")) fields.location = profile.location ?? "";
+  if (has("pid")) fields.pid = profile.pid;
+  if (has("ppid")) fields.ppid = profile.ppid;
+  if (has("executors")) fields.executors = profile.executors ?? [];
+  if (has("privilege")) fields.privilege = profile.privilege ?? "";
+  if (has("exe_name")) fields.exeName = profile.exe_name ?? "";
+  if (has("host")) fields.host = profile.host ?? "";
+  if (has("contact")) fields.contact = profile.contact || "HTTP";
+  if (has("proxy_receivers")) fields.proxyReceivers = (profile.proxy_receivers ?? {}) as object;
+  if (has("proxy_chain")) fields.proxyChain = (profile.proxy_chain ?? []) as object;
+  if (has("origin_link_id")) fields.originLinkId = profile.origin_link_id ?? "";
+  if (has("deadman_enabled")) fields.deadmanEnabled = profile.deadman_enabled;
+  if (has("available_contacts")) fields.availableContacts = profile.available_contacts ?? [];
+  if (has("host_ip_addrs")) fields.hostIpAddrs = profile.host_ip_addrs ?? [];
+
+  return fields;
+}
+
 /**
  * One instruction. Every field is mandatory: the agent uses Go type assertions
  * (`instruction["deadman"].(bool)`, `["sleep"].(float64)`, `["timeout"].(float64)`,
