@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import { useI18n } from "~/i18n/I18nProvider";
 import clsx from "clsx";
 
 interface PaginationProps {
@@ -47,6 +50,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   onPageChange,
 }) => {
+  const { t } = useI18n();
   const pages = getPageNumbers(currentPage, totalPages);
 
   const handleClick = (page: number | string) => {
@@ -56,9 +60,12 @@ export const Pagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <div className="flex justify-center space-x-2 mt-4">
+    <nav className="flex justify-center gap-1.5" aria-label={t("common.pagination")}>
       <button
-        className="w-8 h-8 rounded-full bg-neutral-100 text-neutral-700 hover:bg-neutral-200 text-sm"
+        type="button"
+        disabled={currentPage <= 1}
+        className="w-8 h-8 rounded-full bg-neutral-100 text-neutral-700 hover:bg-neutral-200 text-sm disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-neutral-100"
+        aria-label={t("common.previous")}
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
       >
         &laquo;
@@ -66,8 +73,10 @@ export const Pagination: React.FC<PaginationProps> = ({
       {pages.map((page, idx) => (
         <button
           key={idx}
+          type="button"
+          aria-current={page === currentPage ? "page" : undefined}
           className={clsx(
-            "w-8 h-8 rounded-full transition-colors text-sm",
+            "min-w-8 h-8 px-1 rounded-full transition-colors text-sm tabular-nums",
             page === "..."
               ? "pointer-events-none text-neutral-500"
               : page === currentPage
@@ -80,11 +89,14 @@ export const Pagination: React.FC<PaginationProps> = ({
         </button>
       ))}
       <button
-        className="w-8 h-8 rounded-full bg-neutral-100 text-neutral-700 hover:bg-neutral-200 text-sm"
+        type="button"
+        disabled={currentPage >= totalPages}
+        className="w-8 h-8 rounded-full bg-neutral-100 text-neutral-700 hover:bg-neutral-200 text-sm disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-neutral-100"
+        aria-label={t("common.next")}
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
       >
         &raquo;
       </button>
-    </div>
+    </nav>
   );
 };

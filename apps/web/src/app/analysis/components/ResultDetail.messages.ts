@@ -19,7 +19,7 @@ export const koAnalysisResultDetailMessages: Record<AnalysisResultDetailMessageK
   "analysis.resultDetail.emptyState": "상세 정보를 보려면 취약점 또는 코드 라인을 선택하세요.",
   "analysis.resultDetail.title": "이슈 설명",
   "analysis.resultDetail.riskBadge": "위험도 {risk}",
-  "analysis.resultDetail.requestCapacitySentence": "요청 기준은 {requestBasis}이고 용량은 {capacity}입니다.",
+  "analysis.resultDetail.requestCapacitySentence": "요청 크기 기준은 {requestBasis}, 버퍼 크기는 {capacity}입니다.",
   "analysis.resultDetail.rootCause": "근본 원인:",
   "analysis.resultDetail.fullDataFlowAnalysis": "전체 데이터 흐름 분석",
   "analysis.resultDetail.fullDataFlowDescription": "데이터가 코드에서 어떻게 흐르는지 확인하세요. 취약점 도달 가능성과 진단 정확성을 검증하는 데 도움이 됩니다.",

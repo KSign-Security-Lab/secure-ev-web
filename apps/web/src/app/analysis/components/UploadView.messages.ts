@@ -16,12 +16,12 @@ type AnalysisUploadViewMessageKey = keyof typeof enAnalysisUploadViewMessages;
 export const koAnalysisUploadViewMessages: Record<AnalysisUploadViewMessageKey, string> = {
   "analysis.upload.title": "코드 분석",
   "analysis.upload.subtitle": "소스 코드 파일을 업로드해 분석을 시작하세요",
-  "analysis.upload.dropzoneInstruction": "클릭하거나 파일을 드래그해 업로드하세요",
-  "analysis.upload.dropzoneFormats": ".c, .cpp, .java 또는 .zip 아카이브",
+  "analysis.upload.dropzoneInstruction": "클릭해 파일을 선택하거나 여기로 끌어다 놓으세요",
+  "analysis.upload.dropzoneFormats": ".c, .cpp, .java 또는 .zip 압축 파일",
   "analysis.upload.uploadedFiles": "업로드된 파일",
   "analysis.upload.runAnalysis": "분석 실행",
   "analysis.upload.deleteAll": "전체 삭제",
-  "analysis.upload.error.zipNoValidFiles": "ZIP 아카이브에 유효한 C/C++/Java 소스 파일이 없습니다.",
-  "analysis.upload.error.zipExtractFailed": "ZIP 아카이브를 추출하지 못했습니다.",
+  "analysis.upload.error.zipNoValidFiles": "ZIP 파일에 유효한 C/C++/Java 소스 파일이 없습니다.",
+  "analysis.upload.error.zipExtractFailed": "ZIP 파일의 압축을 풀지 못했습니다.",
   "analysis.upload.error.invalidFileType": "허용되지 않은 파일 형식입니다: {fileName}. C/C++/Java 파일과 ZIP만 지원됩니다.",
 };

@@ -119,7 +119,7 @@ export const mockSignatures: Signature[] = [
   },
   {
     id: "9",
-    patternId: "CWE-121_193_char_alloca_cpy",
+    patternId: "CWE121_193_char_alloca_cpy",
     cwe: "CWE-121",
     risk: "LOW",
     sinkMode: "COPY_FUNC",

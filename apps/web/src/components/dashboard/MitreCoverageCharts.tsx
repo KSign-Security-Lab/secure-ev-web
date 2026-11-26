@@ -26,7 +26,7 @@ export function MitreCoverageCharts({ data }: MitreCoverageChartsProps) {
     <div className="h-full">
       {/* Overall Stats */}
       <div className="space-y-6 h-full">
-        <div className="p-6 flex flex-col items-center justify-center text-center h-full">
+        <div className="p-2 flex flex-col items-center justify-center text-center h-full">
           <div className="relative w-40 h-40 flex items-center justify-center mb-4">
             {/* Circular Progress (CSS based) */}
             <svg className="w-full h-full" viewBox="0 0 100 100">
@@ -51,10 +51,10 @@ export function MitreCoverageCharts({ data }: MitreCoverageChartsProps) {
               ></circle>
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-4xl font-bold text-neutral-950">
+              <span className="text-4xl font-semibold tabular-nums text-neutral-950">
                 {data.coveragePercentage}%
               </span>
-              <span className="text-xs text-neutral-500 uppercase tracking-wide mt-1">
+              <span className="text-xs text-neutral-500 mt-1">
                 {t("dashboard.chart.covered")}
               </span>
             </div>
@@ -62,18 +62,18 @@ export function MitreCoverageCharts({ data }: MitreCoverageChartsProps) {
 
           <div className="grid grid-cols-2 gap-4 w-full">
             <div className="p-3">
-              <div className="text-2xl font-bold text-neutral-950">
-                {data.coveredTechniques}
+              <div className="text-2xl font-semibold tabular-nums text-neutral-950">
+                {data.coveredTechniques.toLocaleString()}
               </div>
-              <div className="text-xs text-neutral-500">
+              <div className="whitespace-nowrap text-xs text-neutral-500">
                 {t("dashboard.chart.coveredTechniques")}
               </div>
             </div>
             <div className="p-3">
-              <div className="text-2xl font-bold text-neutral-500">
-                {data.totalTechniques}
+              <div className="text-2xl font-semibold tabular-nums text-neutral-500">
+                {data.totalTechniques.toLocaleString()}
               </div>
-              <div className="text-xs text-neutral-500">
+              <div className="whitespace-nowrap text-xs text-neutral-500">
                 {t("dashboard.chart.totalTechniques")}
               </div>
             </div>

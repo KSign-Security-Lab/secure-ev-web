@@ -100,11 +100,15 @@ export const AgentConfigPanel: React.FC<AgentConfigPanelProps> = ({
     }
   };
 
-  const numericField = (key: (typeof NUMERIC_FIELDS)[number], label: string) => (
+  const numericField = (
+    key: (typeof NUMERIC_FIELDS)[number],
+    label: string,
+    hint: string,
+  ) => (
     <div className="space-y-1.5">
       <label
         htmlFor={`agent-config-${key}`}
-        className="block text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500"
+        className="block text-xs font-semibold text-neutral-500"
       >
         {label}
       </label>
@@ -117,6 +121,7 @@ export const AgentConfigPanel: React.FC<AgentConfigPanelProps> = ({
         onChange={(event) => set(key, event.target.value)}
         className="font-mono text-xs"
       />
+      <p className="text-xs text-neutral-500">{hint}</p>
     </div>
   );
 
@@ -132,7 +137,7 @@ export const AgentConfigPanel: React.FC<AgentConfigPanelProps> = ({
       <div className="space-y-1.5">
         <label
           htmlFor="agent-config-c2url"
-          className="block text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500"
+          className="block text-xs font-semibold text-neutral-500"
         >
           {t("deploy.config.c2Url")}
         </label>
@@ -144,7 +149,7 @@ export const AgentConfigPanel: React.FC<AgentConfigPanelProps> = ({
           onChange={(event) => set("c2_url", event.target.value)}
           className="font-mono text-xs"
         />
-        <p className="text-[11px] text-neutral-500">
+        <p className="text-xs text-neutral-500">
           {t("deploy.config.c2UrlHint")}
         </p>
       </div>
@@ -152,7 +157,7 @@ export const AgentConfigPanel: React.FC<AgentConfigPanelProps> = ({
       <div className="space-y-1.5">
         <label
           htmlFor="agent-config-implant"
-          className="block text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500"
+          className="block text-xs font-semibold text-neutral-500"
         >
           {t("deploy.config.implantName")}
         </label>
@@ -163,13 +168,32 @@ export const AgentConfigPanel: React.FC<AgentConfigPanelProps> = ({
           onChange={(event) => set("implant_name", event.target.value)}
           className="font-mono text-xs"
         />
+        <p className="text-xs text-neutral-500">
+          {t("deploy.config.implantNameHint")}
+        </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        {numericField("sleep_min", t("deploy.config.sleepMin"))}
-        {numericField("sleep_max", t("deploy.config.sleepMax"))}
-        {numericField("watchdog", t("deploy.config.watchdog"))}
-        {numericField("untrusted_timer", t("deploy.config.untrustedTimer"))}
+        {numericField(
+          "sleep_min",
+          t("deploy.config.sleepMin"),
+          t("deploy.config.sleepMinHint"),
+        )}
+        {numericField(
+          "sleep_max",
+          t("deploy.config.sleepMax"),
+          t("deploy.config.sleepMaxHint"),
+        )}
+        {numericField(
+          "watchdog",
+          t("deploy.config.watchdog"),
+          t("deploy.config.watchdogHint"),
+        )}
+        {numericField(
+          "untrusted_timer",
+          t("deploy.config.untrustedTimer"),
+          t("deploy.config.untrustedTimerHint"),
+        )}
       </div>
 
       {error && <p className="text-xs text-red-600">{error}</p>}

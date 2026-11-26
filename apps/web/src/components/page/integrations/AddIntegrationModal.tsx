@@ -7,6 +7,7 @@ import { Button } from "~/components/ui/button";
 import { useI18n } from "~/i18n/I18nProvider";
 import { cn } from "~/lib/utils";
 import type { RouterOutputs } from "~/lib/trpc";
+import { IntegrationStatusBadge } from "./IntegrationsTable";
 
 type Integration = RouterOutputs["integrations"]["list"][number];
 type IntegrationMode = Integration["mode"];
@@ -27,6 +28,7 @@ export const AddIntegrationModal: React.FC<AddIntegrationModalProps> = ({
 }) => {
   const { t } = useI18n();
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const [now] = useState(() => Date.now());
 
   const selected =
     integrations.find((item) => item.adapterKey === selectedKey) ?? null;
@@ -92,11 +94,9 @@ export const AddIntegrationModal: React.FC<AddIntegrationModalProps> = ({
               <span className="flex items-center gap-2 text-sm font-bold text-neutral-900">
                 <Plug className="h-3.5 w-3.5 text-blue-700" />
                 {integration.name}
-                {integration.configured && (
-                  <span className="text-[10px] font-black uppercase tracking-widest text-green-700">
-                    {t("integrations.add.alreadyConfigured")}
-                  </span>
-                )}
+                <span className="ml-auto">
+                  <IntegrationStatusBadge item={integration} now={now} />
+                </span>
               </span>
               <span className="text-xs text-neutral-500">
                 {integration.vendor} · {integration.category}
@@ -108,7 +108,7 @@ export const AddIntegrationModal: React.FC<AddIntegrationModalProps> = ({
 
       {selected && (
         <div className="space-y-2 border-t border-neutral-200 pt-4">
-          <p className="text-xs font-black uppercase tracking-widest text-neutral-500">
+          <p className="text-xs font-semibold text-neutral-500">
             {t("integrations.add.method")}
           </p>
 

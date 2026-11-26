@@ -14,13 +14,13 @@ import {
 } from "lucide-react";
 import { SignatureDetail as SignatureDetailType } from "../mockData";
 import { cn } from "~/lib/utils";
+import { normalizePatternId } from "~/lib/format";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useI18n } from "~/i18n/I18nProvider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { StatusBadge } from "~/components/common/StatusBadge/StatusBadge";
-import { Badge } from "~/components/ui/badge";
 
 interface SignatureDetailProps {
   data: SignatureDetailType;
@@ -29,6 +29,7 @@ interface SignatureDetailProps {
 
 export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
   const { t } = useI18n();
+  const riskLabel = t(`risk.${data.risk.toLowerCase()}` as "risk.high");
   return (
     <Tabs defaultValue="overview" className="flex flex-col bg-white text-neutral-700 w-full h-full overflow-hidden animate-in fade-in duration-500">
       {/* 0. Sticky Header Section */}
@@ -40,12 +41,10 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
         <header className="px-6 py-4 border-b border-neutral-200 bg-white flex justify-between items-center">
         <div className="flex flex-col gap-1">
             <div className="flex items-center gap-4">
-                <h1 className="text-xl font-bold text-neutral-950 tracking-tight leading-none">{data.patternId}</h1>
-                <Badge variant="blue" className="border-blue-300 bg-blue-50 text-blue-700 text-[11px] font-bold uppercase tracking-widest px-2 py-0.5">
-                    {t("vulndb.detail.criticalAnalysis")}
-                </Badge>
+                <h1 className="text-xl font-bold text-neutral-950 tracking-tight leading-none">{normalizePatternId(data.patternId)}</h1>
+                <StatusBadge status={data.risk} label={t("vulndb.detail.riskLabel", { level: riskLabel })} />
             </div>
-            <div className="flex items-center gap-3 text-xs font-mono text-neutral-500 uppercase tracking-wider font-medium">
+            <div className="flex items-center gap-3 text-xs font-mono text-neutral-500 font-medium">
                 <span className="flex items-center gap-1.5"><Lock size={12} className="opacity-50 text-blue-700" /> SID: <span className="text-neutral-700">{data.sid}</span></span>
                 <span className="w-1 h-1 rounded-full bg-neutral-300" />
                 <span className="flex items-center gap-1.5"><ShieldAlert size={12} className="opacity-50 text-rose-600" /> CWE: <span className="text-neutral-700">{data.cwe}</span></span>
@@ -56,34 +55,35 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
             <button
                 type="button"
                 onClick={onClose}
-                className="p-2 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-all"
+                aria-label={t("common.close")}
+                className="rounded p-1 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900"
             >
-                <X size={20} />
+                <X className="h-5 w-5" />
             </button>
         </div>
         </header>
 
         {/* Sticky Tab Navigation */}
-        <div className="px-6 pb-px border-b border-neutral-200 bg-white">
-            <TabsList className="bg-neutral-50 border border-neutral-200 p-1 h-11 translate-y-px rounded-t-lg rounded-b-none border-b-0">
+        <div className="px-6 border-b border-neutral-200 bg-white">
+            <TabsList className="h-auto gap-1 rounded-none border-0 bg-transparent p-0">
                 <TabsTrigger
                     type="button"
                     value="overview"
-                    className="px-6 data-[state=active]:bg-white data-[state=active]:text-neutral-900 data-[state=active]:shadow-sm uppercase text-xs font-bold tracking-widest transition-all rounded-md"
+                    className="-mb-px rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-neutral-500 shadow-none hover:text-neutral-800 data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-700 data-[state=active]:shadow-none"
                 >
                     {t("vulndb.detail.tabs.overview")}
                 </TabsTrigger>
                 <TabsTrigger
                     type="button"
                     value="analysis"
-                    className="px-6 data-[state=active]:bg-white data-[state=active]:text-neutral-900 data-[state=active]:shadow-sm uppercase text-xs font-bold tracking-widest transition-all rounded-md"
+                    className="-mb-px rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-neutral-500 shadow-none hover:text-neutral-800 data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-700 data-[state=active]:shadow-none"
                 >
                     {t("vulndb.detail.tabs.analysis")}
                 </TabsTrigger>
                 <TabsTrigger
                     type="button"
                     value="flow"
-                    className="px-6 data-[state=active]:bg-white data-[state=active]:text-neutral-900 data-[state=active]:shadow-sm uppercase text-xs font-bold tracking-widest transition-all rounded-md"
+                    className="-mb-px rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-neutral-500 shadow-none hover:text-neutral-800 data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:text-blue-700 data-[state=active]:shadow-none"
                 >
                     {t("vulndb.detail.tabs.flow")}
                 </TabsTrigger>
@@ -101,10 +101,16 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                     <DashMetric label={t("vulndb.detail.metrics.vector")} value={data.sinkMode} icon={Cpu} color="purple" />
                     <div className="py-2.5 px-4 rounded-lg border border-neutral-200 bg-white flex items-center justify-between transition-all hover:bg-neutral-50 shadow-sm group">
                         <div className="flex flex-col gap-1">
-                            <span className="text-xs font-bold text-neutral-500 uppercase tracking-widest leading-none">{t("vulndb.detail.metrics.risk")}</span>
-                            <span className="text-base font-bold text-neutral-900 tracking-tight">{data.risk}</span>
+                            <span className="text-xs font-bold text-neutral-500 leading-none">{t("vulndb.detail.metrics.risk")}</span>
+                            <span className="text-base font-bold text-neutral-900 tracking-tight">{riskLabel}</span>
                         </div>
-                        <StatusBadge status={data.risk} />
+                        <span
+                          aria-hidden
+                          className={cn(
+                            "h-3 w-3 rounded-full",
+                            data.risk === "HIGH" ? "bg-orange-500" : data.risk === "MEDIUM" ? "bg-amber-500" : "bg-sky-500"
+                          )}
+                        />
                     </div>
                 </div>
 
@@ -118,7 +124,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                             </div>
                             <div className="flex-1 min-w-0 flex flex-col gap-2">
                                 <div className="flex items-center gap-4">
-                                    <span className="text-xs font-black text-rose-700 uppercase tracking-[0.2em]">{t("vulndb.detail.violation.detected")}</span>
+                                    <span className="text-xs font-semibold text-rose-700">{t("vulndb.detail.violation.detected")}</span>
                                     <div className="flex-1 h-px bg-rose-200" />
                                 </div>
                                 <p className="text-2xl font-bold text-neutral-900 leading-tight">
@@ -130,8 +136,8 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
 
                     <div className="grid grid-cols-2 divide-x divide-neutral-200">
                             <div className="p-6 space-y-4">
-                                <span className="text-xs font-bold text-neutral-500 uppercase tracking-widest block">{t("vulndb.detail.outcome.label")}</span>
-                                <div className="inline-flex items-center gap-4 px-5 py-3 border border-rose-300 bg-rose-50 text-rose-700 font-bold text-xs uppercase tracking-widest rounded-lg">
+                                <span className="text-xs font-bold text-neutral-500 block">{t("vulndb.detail.outcome.label")}</span>
+                                <div className="inline-flex items-center gap-4 px-5 py-3 border border-rose-300 bg-rose-50 text-rose-700 font-bold text-xs rounded-lg">
                                     <ShieldX size={18} className="opacity-70 text-rose-600" />
                                     <span>{t("vulndb.detail.outcome.failed")}</span>
                                 </div>
@@ -139,10 +145,10 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                         <div className="p-6 space-y-4 bg-neutral-50">
                             <div className="flex items-center gap-3">
                                 <AlertTriangle size={16} className="text-amber-600" />
-                                <span className="text-xs font-bold text-neutral-500 uppercase tracking-widest">{t("vulndb.detail.triage.plan")}</span>
+                                <span className="text-xs font-bold text-neutral-500">{t("vulndb.detail.triage.plan")}</span>
                             </div>
                             <p className="text-sm font-medium text-neutral-700 leading-relaxed max-w-lg">
-                                Apply strict size validation using <code className="text-blue-700 font-mono px-1.5 py-0.5 bg-blue-50 rounded border border-blue-200">strnlen()</code> to the source buffer before copying memory to mitigate the risk of buffer overruns.
+                                {t("vulndb.detail.triage.body")}
                             </p>
                         </div>
                     </div>
@@ -151,15 +157,15 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
 
             <TabsContent value="analysis" className="space-y-6 mt-0 animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <div className="bg-white border border-neutral-200 rounded-lg overflow-hidden shadow-sm">
-                    <div className="grid grid-cols-[1fr_450px] divide-x divide-neutral-200">
-                        <div className="divide-y divide-neutral-200">
+                    <div className="grid grid-cols-1 divide-y divide-neutral-200 xl:grid-cols-[minmax(0,1fr)_minmax(0,420px)] xl:divide-x xl:divide-y-0">
+                        <div className="min-w-0 divide-y divide-neutral-200">
                             <div className="p-6 space-y-6">
                                 <header className="flex items-center gap-3">
                                     <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
-                                    <span className="text-xs font-bold text-neutral-500 uppercase tracking-[0.2em]">{t("vulndb.detail.execution.sink")}</span>
+                                    <span className="text-xs font-bold text-neutral-500">{t("vulndb.detail.execution.sink")}</span>
                                 </header>
                                 <div className="bg-neutral-50 p-6 rounded-lg border border-neutral-200 group transition-all hover:border-neutral-300">
-                                    <code className="text-xl font-mono font-bold text-blue-700 block tracking-tight group-hover:text-blue-900 transition-colors text-center py-4">
+                                    <code className="block overflow-x-auto whitespace-pre py-4 text-center font-mono text-xl font-bold tracking-tight text-blue-700 transition-colors group-hover:text-blue-900">
                                         {data.sinkStatement}
                                     </code>
                                 </div>
@@ -168,43 +174,43 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                             <div className="p-6">
                                 <header className="flex items-center gap-3 mb-8">
                                     <div className="w-1.5 h-6 bg-neutral-300 rounded-full" />
-                                    <span className="text-xs font-bold text-neutral-500 uppercase tracking-[0.2em] leading-none">{t("vulndb.detail.analysis.integrity")}</span>
+                                    <span className="text-xs font-bold text-neutral-500 leading-none">{t("vulndb.detail.analysis.integrity")}</span>
                                 </header>
-                                <div className="flex items-start gap-12">
-                                    <div className="w-[340px] shrink-0">
+                                <div className="flex flex-wrap items-start gap-8">
+                                    <div className="w-full min-w-0 max-w-[340px]">
                                         <IntegrityGaugeRestored 
                                             capacity={data.bufferVsRequest.capacity} 
                                             request={data.bufferVsRequest.request} 
                                         />
                                     </div>
-                                    <div className="flex-1 space-y-6">
+                                    <div className="min-w-[16rem] flex-1 space-y-6">
                                         <div className="p-5 rounded-lg bg-neutral-50 border border-neutral-200 space-y-3 group transition-all hover:bg-neutral-100">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-1.5 h-4 bg-blue-500 rounded-full" />
-                                                <span className="text-blue-700 font-bold uppercase text-xs tracking-widest">{t("vulndb.detail.objects.dstPtr")}</span>
+                                                <span className="text-blue-700 font-bold text-xs">{t("vulndb.detail.objects.dstPtr")}</span>
                                             </div>
-                                            <p className="text-sm text-neutral-700 leading-relaxed font-mono italic truncate block bg-white p-3 rounded-lg border border-neutral-200">{data.bufferVsRequest.destSnippet}</p>
+                                            <p className="text-sm text-neutral-700 leading-relaxed font-mono truncate block bg-white p-3 rounded-lg border border-neutral-200">{data.bufferVsRequest.destSnippet}</p>
                                         </div>
                                         <div className="p-5 rounded-lg bg-neutral-50 border border-neutral-200 space-y-3 group transition-all hover:bg-neutral-100">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-1.5 h-4 bg-rose-500 rounded-full" />
-                                                <span className="text-rose-700 font-bold uppercase text-xs tracking-widest">{t("vulndb.detail.objects.srcBuf")}</span>
+                                                <span className="text-rose-700 font-bold text-xs">{t("vulndb.detail.objects.srcBuf")}</span>
                                             </div>
-                                            <p className="text-sm text-neutral-700 leading-relaxed font-mono italic truncate block bg-white p-3 rounded-lg border border-neutral-200">{data.bufferVsRequest.srcSnippet}</p>
+                                            <p className="text-sm text-neutral-700 leading-relaxed font-mono truncate block bg-white p-3 rounded-lg border border-neutral-200">{data.bufferVsRequest.srcSnippet}</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="p-6 flex flex-col space-y-6 bg-neutral-50">
+                        <div className="flex min-w-0 flex-col space-y-6 bg-neutral-50 p-6">
                             <header className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
                                     <FileCode size={18} className="text-blue-700" />
-                                    <span className="text-xs font-bold text-neutral-500 uppercase tracking-[0.2em]">{t("vulndb.detail.evidence.title")}</span>
+                                    <span className="text-xs font-bold text-neutral-500">{t("vulndb.detail.evidence.title")}</span>
                                 </div>
                             </header>
-                            <div className="border border-neutral-800 rounded-lg overflow-hidden bg-neutral-950 shadow-sm flex-1 max-h-[520px]">
+                            <div className="max-h-[520px] min-w-0 flex-1 overflow-auto rounded-lg border border-neutral-800 bg-neutral-950 shadow-sm">
                                 <SyntaxHighlighter 
                                     language="cpp" 
                                     style={vscDarkPlus}
@@ -225,7 +231,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                 <EvidenceCard label={t("vulndb.detail.trace.title")} icon={ListTree}>
                     <div className="border border-neutral-200 rounded-lg overflow-hidden bg-white shadow-sm">
                         <table className="w-full text-left text-sm font-mono border-collapse">
-                            <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500 uppercase tracking-widest font-black text-[11px]">
+                            <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500 font-semibold text-xs">
                                 <tr>
                                     <th className="p-6 w-16 text-center">#</th>
                                     <th className="p-6 text-center">{t("vulndb.detail.trace.executionPath")}</th>
@@ -235,7 +241,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                             <tbody className="divide-y divide-neutral-200">
                                 {data.statementFlow.map((step, idx) => (
                                     <tr key={step.id} className={cn("hover:bg-neutral-50 transition-colors group", step.step === "SINK" && "bg-rose-50")}>
-                                        <td className="p-6 text-center text-neutral-500 text-sm italic">
+                                        <td className="p-6 text-center text-neutral-500 text-sm">
                                             {String(idx + 1).padStart(2, '0')}
                                         </td>
                                         <td className="p-6 text-center">
@@ -248,7 +254,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                                                 </span>
                                                 <div className="flex flex-wrap justify-center gap-2.5">
                                                     {step.tags.map(t => (
-                                                        <span key={t} className="px-2 py-0.5 rounded-lg bg-neutral-100 border border-neutral-200 text-[11px] text-blue-700 font-bold uppercase tracking-widest font-sans">
+                                                        <span key={t} className="px-2 py-0.5 rounded-lg bg-neutral-100 border border-neutral-200 text-xs text-blue-700 font-bold font-sans">
                                                             {t}
                                                         </span>
                                                     ))}
@@ -256,7 +262,7 @@ export function SignatureDetail({ data, onClose }: SignatureDetailProps) {
                                             </div>
                                         </td>
                                         <td className="p-6 text-right">
-                                            <span className="text-xs tabular-nums font-black text-neutral-500 group-hover:text-neutral-700 transition-colors">
+                                            <span className="text-xs tabular-nums font-semibold text-neutral-500 group-hover:text-neutral-700 transition-colors">
                                                 {step.weight.toFixed(5)}
                                             </span>
                                         </td>
@@ -290,7 +296,7 @@ function IntegrityGaugeRestored({ capacity, request }: { capacity: number, reque
             {/* Numerical Readout */}
             <div className="flex justify-between items-end">
                 <div className="flex flex-col gap-1.5">
-                    <span className="text-[11px] font-bold text-neutral-500 uppercase tracking-[0.2em] leading-none mb-1 font-sans">{t("vulndb.detail.gauge.boundary")}</span>
+                    <span className="text-xs font-bold text-neutral-500 leading-none mb-1 font-sans">{t("vulndb.detail.gauge.boundary")}</span>
                     <div className="flex items-center gap-3 font-mono font-bold text-lg leading-none">
                         <span className="text-blue-700">{capacity} B</span>
                         <ArrowRight size={14} className="text-neutral-500" />
@@ -299,7 +305,7 @@ function IntegrityGaugeRestored({ capacity, request }: { capacity: number, reque
                 </div>
                 {isOverflow && (
                    <div className="flex flex-col items-end gap-1">
-                        <span className="text-[11px] font-bold text-rose-700 uppercase leading-none font-sans">{t("vulndb.detail.gauge.overrun")}</span>
+                        <span className="text-xs font-bold text-rose-700 leading-none font-sans">{t("vulndb.detail.gauge.overrun")}</span>
                        <span className="text-base font-bold text-rose-700 font-mono leading-none">+{overflowAmt} B</span>
                    </div>
                 )}
@@ -322,7 +328,7 @@ function IntegrityGaugeRestored({ capacity, request }: { capacity: number, reque
                 )}
             </div>
 
-            <div className="flex justify-between text-[11px] font-bold text-neutral-500 uppercase tracking-widest font-sans px-1">
+            <div className="flex justify-between text-xs font-bold text-neutral-500 font-sans px-1">
                 <span>{t("vulndb.detail.gauge.baseline")}</span>
                 <span>{t("vulndb.detail.gauge.limit")}</span>
                 <span>{t("vulndb.detail.gauge.violation")}</span>
@@ -341,7 +347,7 @@ function DashMetric({ label, value, icon: Icon, color }: { label: string, value:
     return (
         <div className="py-2.5 px-4 rounded-lg border border-neutral-200 bg-white flex items-center justify-between transition-all hover:bg-neutral-50 shadow-sm group">
             <div className="flex flex-col overflow-hidden gap-1">
-                <span className="text-xs font-bold text-neutral-500 uppercase tracking-widest leading-none transition-colors">{label}</span>
+                <span className="text-xs font-bold text-neutral-500 leading-none transition-colors">{label}</span>
                 <span className="text-base font-bold text-neutral-900 tracking-tight truncate transition-colors">{value}</span>
             </div>
             <div className={cn("w-9 h-9 flex items-center justify-center rounded-lg border shrink-0 transition-transform group-hover:scale-105", variants[color])}>
@@ -356,7 +362,7 @@ function EvidenceCard({ label, icon: Icon, children }: { label: string, icon: an
         <div className="space-y-4 pt-4">
             <div className="flex items-center gap-3">
                 <Icon size={14} className="text-neutral-500" />
-                <h3 className="text-xs font-black text-neutral-500 uppercase tracking-[0.4em]">{label}</h3>
+                <h3 className="text-xs font-semibold text-neutral-500">{label}</h3>
             </div>
             {children}
         </div>

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Database, Plug, Plus, ShieldCheck } from "lucide-react";
-import { IntegrationsTable } from "~/components/page/integrations/IntegrationsTable";
+import { IntegrationsTable, displayStatus } from "~/components/page/integrations/IntegrationsTable";
 import { IntegrationModal } from "~/components/page/integrations/IntegrationModal";
 import { AddIntegrationModal } from "~/components/page/integrations/AddIntegrationModal";
 import { Button } from "~/components/ui/button";
@@ -18,6 +18,7 @@ export type IntegrationStatus = Integration["status"];
 
 export default function Integrations() {
   const { t } = useI18n();
+  const [now] = useState(() => Date.now());
   const [data, setData] = useState<IntegrationsListResponse | undefined>(
     undefined
   );
@@ -48,8 +49,9 @@ export default function Integrations() {
   }, [fetchData]);
 
   const integrations = data || [];
+  // Healthy = connected *and* collected recently (stale ones show as 지연/경고).
   const connectedCount = integrations.filter(
-    (item) => item.status === "CONNECTED"
+    (item) => displayStatus(item, now) === "CONNECTED"
   ).length;
   const collectedCount = integrations.reduce(
     (sum, item) => sum + item.collectedCount,
@@ -61,7 +63,7 @@ export default function Integrations() {
       <PageHeader
         title={t("integrations.page.title")}
         subtitle={t("integrations.page.subtitle")}
-        badge="Playground"
+        badge={t("common.badge.playground")}
         actions={
           <Button onClick={() => setAddOpen(true)}>
             <Plus className="h-4 w-4" />

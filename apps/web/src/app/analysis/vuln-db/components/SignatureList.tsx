@@ -1,7 +1,8 @@
 "use client";
 
+import { display, EMPTY, normalizePatternId } from "~/lib/format";
 import React, { useState, useMemo } from "react";
-import { ShieldAlert, Fingerprint, Activity, Zap } from "lucide-react";
+import { ShieldAlert, Fingerprint, Activity } from "lucide-react";
 import { 
   mockSignatures, 
   Signature 
@@ -64,10 +65,9 @@ export function SignatureList({ onSelect }: SignatureListProps) {
       label: t("vulndb.columns.patternId"),
       render: (item) => (
         <span className="font-bold font-mono text-blue-700 group-hover:text-blue-900 transition-colors">
-          {item.patternId}
+          {normalizePatternId(item.patternId)}
         </span>
       ),
-      className: "text-center"
     },
     {
       label: t("vulndb.columns.cwe"),
@@ -76,56 +76,39 @@ export function SignatureList({ onSelect }: SignatureListProps) {
           {item.cwe}
         </span>
       ),
-      className: "text-center"
     },
     {
       label: t("vulndb.columns.risk"),
       render: (item) => (
-        <div className="flex flex-col items-center gap-1 w-24 mx-auto">
-          <StatusBadge status={item.risk} className="w-full justify-center" />
-          <div className="h-1 w-full bg-neutral-200 rounded-full overflow-hidden">
-            <div
-              className={cn(
-                "h-full rounded-full transition-all duration-1000",
-                item.risk === "HIGH" ? "w-full bg-orange-500" :
-                item.risk === "MEDIUM" ? "w-2/3 bg-amber-500" :
-                "w-1/3 bg-sky-500"
-              )} 
-            />
-          </div>
-        </div>
+        <StatusBadge status={item.risk} className="min-w-16 justify-center" />
       ),
-      className: "text-center"
     },
     {
       label: t("vulndb.columns.sinkMode"),
       render: (item) => (
-        <span className="uppercase text-[10px] font-black tracking-widest text-neutral-500 italic">
+        <span className="whitespace-nowrap font-mono text-xs text-neutral-600">
           {item.sinkMode}
         </span>
       ),
-      className: "text-center"
     },
     {
       label: t("vulndb.columns.api"),
-      render: (item) => (
-        <div className="flex items-center justify-center gap-2">
-            <Zap size={10} className="text-sky-600 opacity-50" />
-            <code className="text-xs font-mono font-bold bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200 text-neutral-700">
-                {item.api}
-            </code>
-        </div>
-      ),
-      className: "text-center"
+      render: (item) =>
+        display(item.api) === EMPTY ? (
+          <span className="text-neutral-400">{EMPTY}</span>
+        ) : (
+          <code className="text-xs font-mono bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200 text-neutral-700">
+            {item.api}
+          </code>
+        ),
     },
     {
       label: t("vulndb.columns.region"),
       render: (item) => (
-        <span className="font-black text-neutral-500 uppercase text-[9px] tracking-[0.2em] leading-none">
+        <span className="text-xs font-medium text-neutral-600">
           {item.region}
         </span>
       ),
-      className: "text-center"
     }
   ];
 
@@ -134,25 +117,43 @@ export function SignatureList({ onSelect }: SignatureListProps) {
       <PageHeader 
         title={t("vulndb.title")}
         subtitle={t("vulndb.signatures")}
-        badge="Vulnerability Database"
+        badge={t("vulndb.badge")}
         badgeVariant="cyan"
         actions={
-          <div className="flex items-center gap-6 text-[10px] font-black tracking-widest text-neutral-500 uppercase">
-            <div className="flex items-center gap-4">
-               {Object.entries(counts.cweCounts).map(([cwe, count]) => (
-                 <div key={cwe} className="flex flex-col items-center">
-                   <span className="text-neutral-500 mb-0.5">{cwe}</span>
-                   <span className="text-neutral-700">{count}</span>
-                 </div>
-               ))}
+          <dl className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-neutral-600">
+            <div className="flex items-center gap-2">
+              <dt className="font-semibold text-neutral-500">{t("vulndb.stats.byCwe")}</dt>
+              <dd className="flex items-center gap-2">
+                {Object.entries(counts.cweCounts).map(([cwe, count], i) => (
+                  <span key={cwe} className="inline-flex items-center gap-1">
+                    {i > 0 && <span className="text-neutral-300">·</span>}
+                    <span className="font-mono">{cwe}</span>
+                    <span className="font-semibold tabular-nums text-neutral-900">{count}</span>
+                  </span>
+                ))}
+              </dd>
             </div>
-            <div className="w-px h-6 bg-neutral-200" />
-            <div className="flex items-center gap-3">
-              <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-orange-500" /> {counts.riskCounts.HIGH}</span>
-              <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-amber-500" /> {counts.riskCounts.MEDIUM}</span>
-              <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-sky-500" /> {counts.riskCounts.LOW}</span>
+            <div className="hidden h-4 w-px bg-neutral-200 sm:block" aria-hidden />
+            <div className="flex items-center gap-2">
+              <dt className="font-semibold text-neutral-500">{t("vulndb.stats.byRisk")}</dt>
+              <dd className="flex items-center gap-2">
+                {([
+                  ["HIGH", "bg-orange-500", "risk.high"],
+                  ["MEDIUM", "bg-amber-500", "risk.medium"],
+                  ["LOW", "bg-sky-500", "risk.low"],
+                ] as const).map(([level, dot, key], i) => (
+                  <span key={level} className="inline-flex items-center gap-1.5">
+                    {i > 0 && <span className="text-neutral-300">·</span>}
+                    <span className={cn("h-2 w-2 rounded-full", dot)} aria-hidden />
+                    {t(key)}
+                    <span className="font-semibold tabular-nums text-neutral-900">
+                      {counts.riskCounts[level]}
+                    </span>
+                  </span>
+                ))}
+              </dd>
             </div>
-          </div>
+          </dl>
         }
       />
 
@@ -161,21 +162,25 @@ export function SignatureList({ onSelect }: SignatureListProps) {
         searchPlaceholder={t("vulndb.list.searchPlaceholder")}
       >
         <FilterSelect 
-          label="CWE" 
+          label={t("vulndb.filters.cwe")}
           value={cweFilter}
           onValueChange={setCweFilter}
           options={["CWE-121", "CWE-122"]} 
           icon={Fingerprint}
         />
         <FilterSelect 
-          label="Risk" 
+          label={t("vulndb.filters.risk")}
           value={riskFilter} 
           onValueChange={setRiskFilter} 
-          options={["HIGH", "MEDIUM", "LOW"]} 
+          options={[
+            { label: t("risk.high"), value: "HIGH" },
+            { label: t("risk.medium"), value: "MEDIUM" },
+            { label: t("risk.low"), value: "LOW" },
+          ]}
           icon={Activity}
         />
         <FilterSelect 
-          label="API" 
+          label={t("vulndb.filters.api")}
           value={apiFilter}
           onValueChange={setApiFilter}
           options={["strcpy", "memcpy", "memmove", "wcscpy"]} 
@@ -187,6 +192,7 @@ export function SignatureList({ onSelect }: SignatureListProps) {
         columns={columns}
         data={pagedData}
         onRowClick={onSelect}
+        rowKey={(item) => item.id}
         emptyState={{
           title: t("vulndb.list.empty"),
           icon: ShieldAlert
@@ -196,7 +202,7 @@ export function SignatureList({ onSelect }: SignatureListProps) {
           totalPages,
           onPageChange: setCurrentPage,
           totalCount: filtered.length,
-          localeLabel: t("vulndb.list.count") || "signatures"
+          pageSize: PAGE_SIZE,
         }}
       />
     </div>

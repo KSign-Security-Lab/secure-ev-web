@@ -54,12 +54,12 @@ export function IconCard({
         {title}
       </h3>
 
-      <p className="text-neutral-500 mb-8 flex-1 text-sm font-medium leading-relaxed tracking-wide">
+      <p className="text-neutral-500 mb-8 flex-1 text-sm font-medium leading-relaxed">
         {description}
       </p>
 
       {comingSoon ? (
-        <span className="inline-flex items-center text-[10px] font-semibold uppercase tracking-wide text-neutral-500 cursor-not-allowed">
+        <span className="inline-flex items-center text-xs font-semibold text-neutral-500 cursor-not-allowed">
           Coming Soon
         </span>
       ) : href && (

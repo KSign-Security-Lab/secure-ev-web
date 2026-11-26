@@ -1,6 +1,8 @@
 
 "use client";
 
+import { PageHeader } from "~/components/common/PageHeader/PageHeader";
+
 import React, { useState, useRef } from "react";
 import { UploadCloud, File as FileIcon, Trash2, AlertCircle } from "lucide-react";
 import { Button } from "~/components/ui/button";
@@ -117,11 +119,12 @@ export default function UploadView({ onStartAnalysis }: UploadViewProps) {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-2xl mx-auto h-full space-y-8">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold mb-2">{t("analysis.upload.title")}</h1>
-        <p className="text-neutral-500">{t("analysis.upload.subtitle")}</p>
-      </div>
+    <div className="flex w-full flex-col space-y-6">
+      <PageHeader
+        title={t("analysis.upload.title")}
+        subtitle={t("analysis.upload.subtitle")}
+        badge={t("common.badge.analysis")}
+      />
 
       <input
         type="file"

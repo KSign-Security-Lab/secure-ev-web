@@ -9,6 +9,9 @@ import { Label } from "~/components/ui/label";
 import { useToast } from "~/components/ToastProvider/ToastProvider";
 import { useI18n } from "~/i18n/I18nProvider";
 import { cn } from "~/lib/utils";
+import { EMPTY, formatDateTimeSeconds } from "~/lib/format";
+import { ModalButton } from "~/components/common/Modal/ModalButton";
+import { Checkbox } from "~/components/ui/checkbox";
 import trpc, { type RouterOutputs } from "~/lib/trpc";
 
 type Integration = RouterOutputs["integrations"]["list"][number];
@@ -31,9 +34,8 @@ const SEVERITY_CLASS: Record<string, string> = {
   debug: "text-neutral-500",
 };
 
-function formatTime(iso: string): string {
-  return iso.replace("T", " ").slice(0, 19);
-}
+// Same local timezone as the integrations table; seconds kept for logs.
+const formatTime = (iso: string) => formatDateTimeSeconds(iso);
 
 export const IntegrationModal: React.FC<IntegrationModalProps> = ({
   integration,
@@ -189,6 +191,13 @@ export const IntegrationModal: React.FC<IntegrationModalProps> = ({
   };
 
   const isApi = mode === "API";
+  // Only self-hosted products (custom endpoint) can present a self-signed cert;
+  // SaaS APIs such as VirusTotal never need the option.
+  const showInsecureTls = integration.requiresBaseUrl;
+  const dirty =
+    baseUrl.trim() !== (integration.baseUrl ?? "") ||
+    secret.trim() !== "" ||
+    (showInsecureTls && insecureTls !== integration.insecureTls);
 
   return (
     <Modal
@@ -196,6 +205,39 @@ export const IntegrationModal: React.FC<IntegrationModalProps> = ({
       onClose={onClose}
       title={`${integration.name} — ${integration.vendor}`}
       className="lg:max-w-[820px]"
+      bodyClassName="h-[min(64vh,600px)]"
+      confirmOnClose={isApi && dirty && busy === null}
+      footer={
+        <>
+          {isApi && (
+            <div className="mr-auto flex gap-2">
+              <ModalButton
+                onClick={handleTest}
+                disabled={busy !== null || !integration.configured || dirty}
+                title={dirty ? t("integrations.modal.saveFirst") : undefined}
+              >
+                {busy === "test" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plug className="h-4 w-4" />}
+                {t("integrations.modal.test")}
+              </ModalButton>
+              <ModalButton
+                onClick={handleSync}
+                disabled={busy !== null || !integration.configured || dirty}
+                title={dirty ? t("integrations.modal.saveFirst") : undefined}
+              >
+                {busy === "sync" ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                {t("integrations.modal.sync")}
+              </ModalButton>
+            </div>
+          )}
+          <ModalButton onClick={onClose}>{t("common.close")}</ModalButton>
+          {isApi && (
+            <ModalButton variant="primary" onClick={handleSave} disabled={busy !== null || !dirty}>
+              {busy === "save" && <Loader2 className="h-4 w-4 animate-spin" />}
+              {t("integrations.modal.save")}
+            </ModalButton>
+          )}
+        </>
+      }
     >
       {isApi ? (
         <div className="flex flex-col gap-4">
@@ -234,46 +276,22 @@ export const IntegrationModal: React.FC<IntegrationModalProps> = ({
             </div>
           )}
 
-          <label className="flex items-center gap-2 text-sm text-neutral-700 select-none">
-            <input
-              type="checkbox"
-              checked={insecureTls}
-              onChange={(event) => setInsecureTls(event.target.checked)}
-              className="h-4 w-4 rounded border-neutral-300 bg-white"
-            />
-            {t("integrations.modal.insecureTls")}
-          </label>
+          {showInsecureTls && (
+            <label className="flex items-start gap-3 text-sm text-neutral-700 select-none">
+              <Checkbox
+                className="mt-0.5"
+                checked={insecureTls}
+                onCheckedChange={(checked) => setInsecureTls(checked === true)}
+              />
+              <span>
+                {t("integrations.modal.insecureTls")}
+                <span className="block text-xs text-neutral-500">
+                  {t("integrations.modal.insecureTlsHint")}
+                </span>
+              </span>
+            </label>
+          )}
 
-          <div className="flex flex-wrap gap-2">
-            <Button onClick={handleSave} disabled={busy !== null}>
-              {busy === "save" && <Loader2 className="h-4 w-4 animate-spin" />}
-              {t("integrations.modal.save")}
-            </Button>
-            <Button
-              variant="tinted"
-              onClick={handleTest}
-              disabled={busy !== null || !integration.configured}
-            >
-              {busy === "test" ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Plug className="h-4 w-4" />
-              )}
-              {t("integrations.modal.test")}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleSync}
-              disabled={busy !== null || !integration.configured}
-            >
-              {busy === "sync" ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <RefreshCw className="h-4 w-4" />
-              )}
-              {t("integrations.modal.sync")}
-            </Button>
-          </div>
         </div>
       ) : (
         <div className="flex flex-col gap-4">
@@ -362,11 +380,11 @@ export const IntegrationModal: React.FC<IntegrationModalProps> = ({
                   </span>
                   <span
                     className={cn(
-                      "shrink-0 w-14 font-mono uppercase",
+                      "w-20 shrink-0 whitespace-nowrap font-mono uppercase",
                       SEVERITY_CLASS[log.severity ?? ""] ?? "text-neutral-400"
                     )}
                   >
-                    {log.severity ?? "-"}
+                    {log.severity ?? EMPTY}
                   </span>
                   <span className="shrink-0 max-w-40 truncate font-mono text-blue-400/70">
                     {log.source}
@@ -375,7 +393,7 @@ export const IntegrationModal: React.FC<IntegrationModalProps> = ({
                     {log.message}
                   </span>
                 </summary>
-                <pre className="mt-2 max-h-64 overflow-auto rounded border border-neutral-800 bg-neutral-950 p-2 text-[11px] text-neutral-400 whitespace-pre-wrap break-all">
+                <pre className="mt-2 max-h-64 overflow-auto rounded border border-neutral-800 bg-neutral-950 p-2 text-xs text-neutral-400 whitespace-pre-wrap break-all">
                   {JSON.stringify(log.raw, null, 2)}
                 </pre>
               </details>

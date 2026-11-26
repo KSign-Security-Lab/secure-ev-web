@@ -15,11 +15,12 @@ import {
   ArrowRight,
   Shield,
   ShieldAlert,
+  Rocket,
 } from "lucide-react";
 import Loading from "~/components/common/Loading/Loading";
 import { PageHeader } from "~/components/common/PageHeader/PageHeader";
 import { EmptyState } from "~/components/common/EmptyState/EmptyState";
-import { AbilitiesCharts } from "~/components/dashboard/AbilitiesCharts";
+import { PlatformChart, TacticChart, TypeChart } from "~/components/dashboard/AbilitiesCharts";
 import { AgentsCharts } from "~/components/dashboard/AgentsCharts";
 import { StatsCard } from "~/components/dashboard/StatsCard";
 import { MitreCoverageCharts } from "~/components/dashboard/MitreCoverageCharts";
@@ -88,6 +89,14 @@ export default function Dashboard() {
     };
   }, []);
 
+  // Share of all agents; nothing to show when there are no agents yet.
+  const shareOf = (count?: number) =>
+    agentsStats?.totalCount && count !== undefined
+      ? t("dashboard.stats.shareOfAgents", {
+          pct: Math.round((count / agentsStats.totalCount) * 100),
+        })
+      : undefined;
+
   return (
     <div className="flex flex-col w-full space-y-8">
       <PageHeader
@@ -120,13 +129,7 @@ export default function Dashboard() {
           description={t("dashboard.stats.trustedAgentsDesc")}
           icon={Shield}
           variant="success"
-          trend={
-            agentsStats?.totalCount
-              ? `${Math.round(
-                  (agentsStats.trustedCount / agentsStats.totalCount) * 100
-                )}%`
-              : "0%"
-          }
+          trend={shareOf(agentsStats?.trustedCount)}
         />
 
         <StatsCard
@@ -135,38 +138,39 @@ export default function Dashboard() {
           description={t("dashboard.stats.untrustedAgentsDesc")}
           icon={ShieldAlert}
           variant="danger"
-          trend={
-            agentsStats?.totalCount
-              ? `${Math.round(
-                  (agentsStats.untrustedCount / agentsStats.totalCount) * 100
-                )}%`
-              : "0%"
-          }
+          trend={shareOf(agentsStats?.untrustedCount)}
         />
       </div>
 
-      <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-4">
-        {/* MITRE Coverage Visualization */}
-        <Card className="border-neutral-200 lg:col-span-1">
+      <div className="grid gap-6 lg:grid-cols-12">
+        {/* MITRE Coverage */}
+        <Card className="border-neutral-200 lg:col-span-4">
           <CardHeader className="border-b border-neutral-200 pb-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <CardTitle className="text-xl font-semibold text-neutral-950">
-                  {t("dashboard.mitre.title")}
-                </CardTitle>
-                <CardDescription className="text-sm text-neutral-500">
-                  {t("dashboard.mitre.desc")}
-                </CardDescription>
-              </div>
+            <div className="space-y-1">
+              <CardTitle className="text-xl font-semibold text-neutral-950">
+                {t("dashboard.mitre.title")}
+              </CardTitle>
+              <CardDescription className="text-sm text-neutral-500">
+                {t("dashboard.mitre.desc")}
+              </CardDescription>
             </div>
           </CardHeader>
-          <CardContent className="pt-6">
+          <CardContent className="flex flex-1 items-center justify-center pt-6">
             {isLoadingAbilities ? (
               <div className="flex justify-center items-center py-16">
                 <Loading />
               </div>
             ) : abilitiesStats?.mitreCoverage ? (
-              <MitreCoverageCharts data={abilitiesStats.mitreCoverage} />
+              <div className="w-full space-y-4">
+                <MitreCoverageCharts data={abilitiesStats.mitreCoverage} />
+                <Link
+                  href="/playground/coverage"
+                  className="flex items-center justify-center gap-1 text-sm font-medium text-blue-700 hover:text-blue-900"
+                >
+                  {t("dashboard.viewAll")}
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
             ) : (
               <EmptyState
                 icon={Shield}
@@ -177,8 +181,8 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        {/* Abilities Visualization */}
-        <Card className="border-neutral-200 lg:col-span-3">
+        {/* Abilities by tactic */}
+        <Card className="border-neutral-200 lg:col-span-8">
           <CardHeader className="border-b border-neutral-200 pb-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
@@ -203,7 +207,7 @@ export default function Dashboard() {
                 <Loading />
               </div>
             ) : abilitiesStats ? (
-              <AbilitiesCharts data={abilitiesStats} />
+              <TacticChart data={abilitiesStats} />
             ) : (
               <EmptyState
                 icon={Database}
@@ -214,6 +218,26 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Abilities by platform / type */}
+      {abilitiesStats && !isLoadingAbilities && (
+        <Card className="border-neutral-200">
+          <CardHeader className="border-b border-neutral-200 pb-4">
+            <div className="space-y-1">
+              <CardTitle className="text-xl font-semibold text-neutral-950">
+                {t("dashboard.abilities.platformTitle")}
+              </CardTitle>
+              <CardDescription className="text-sm text-neutral-500">
+                {t("dashboard.abilities.platformDesc")}
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="grid gap-6 pt-6 md:grid-cols-2">
+            <PlatformChart data={abilitiesStats} />
+            {abilitiesStats.byType.length > 0 && <TypeChart data={abilitiesStats} />}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Agents Visualization */}
       <Card className="border-neutral-200">
@@ -240,8 +264,24 @@ export default function Dashboard() {
             <div className="flex justify-center items-center py-16">
               <Loading />
             </div>
-          ) : agentsStats ? (
+          ) : agentsStats && agentsStats.totalCount > 0 ? (
             <AgentsCharts data={agentsStats} />
+          ) : agentsStats ? (
+            <EmptyState
+              icon={Server}
+              title={t("dashboard.agents.emptyTitle")}
+              description={t("dashboard.agents.emptyDesc")}
+              className="border-none bg-transparent py-10"
+              action={
+                <Link
+                  href="/playground/agents"
+                  className="inline-flex h-9 items-center gap-2 rounded-md bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700"
+                >
+                  <Rocket className="h-4 w-4" />
+                  {t("dashboard.agents.deployCta")}
+                </Link>
+              }
+            />
           ) : (
             <EmptyState
               icon={Server}

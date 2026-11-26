@@ -191,10 +191,13 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
     <Modal
       open={open}
       onClose={onClose}
-      title=""
-      className="max-w-4xl bg-white border border-neutral-200 shadow-sm p-0! overflow-hidden [&>div:first-child]:hidden space-y-0!"
+      hideHeader
+      disableDefaultStyles
+      className="max-w-4xl bg-white border border-neutral-200 shadow-sm overflow-hidden"
     >
-      <div className="flex flex-col max-h-[85vh]">
+      {/* Fixed height: switching between the deploy and config tabs must not
+          resize (and re-center) the dialog. */}
+      <div className="flex h-[min(85vh,760px)] flex-col">
         {/* Header */}
         <div className="flex items-start justify-between gap-4 px-6 py-5 border-b border-neutral-200">
           <div className="flex items-start gap-3">
@@ -214,24 +217,26 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
             type="button"
             onClick={onClose}
             aria-label={t("deploy.modal.close")}
-            className="text-neutral-500 hover:text-neutral-700 transition-colors"
+            className="rounded p-1 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 px-6 pt-4 border-b border-neutral-200">
+        <div role="tablist" className="flex gap-1 px-6 border-b border-neutral-200">
           {(["deploy", "config"] as const).map((value) => (
             <button
               key={value}
               type="button"
+              role="tab"
+              aria-selected={tab === value}
               onClick={() => setTab(value)}
               className={cn(
-                "px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-colors",
+                "-mb-px border-b-2 px-4 py-2.5 text-sm font-medium transition-colors",
                 tab === value
-                  ? "border-b-2 border-blue-600 text-blue-700"
-                  : "border-b-2 border-transparent text-neutral-500 hover:text-neutral-800"
+                  ? "border-blue-600 text-blue-700"
+                  : "border-transparent text-neutral-500 hover:text-neutral-800"
               )}
             >
               {t(value === "deploy" ? "deploy.tab.deploy" : "deploy.tab.config")}
@@ -267,7 +272,7 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
               <>
                 {/* Platform tiles */}
                 <div className="space-y-2">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500">
+                  <span className="text-xs font-semibold text-neutral-500">
                     {t("deploy.platform.label")}
                   </span>
                   <div className="grid grid-cols-3 gap-3">
@@ -288,7 +293,7 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
                           )}
                         >
                           {Glyph && <Glyph className="w-6 h-6" />}
-                          <span className="text-[10px] font-black uppercase tracking-[0.2em]">
+                          <span className="text-xs font-semibold">
                             {t(`deploy.platform.${deployment.platform}`)}
                           </span>
                         </button>
@@ -311,7 +316,7 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
                     <CommandBlock
                       platform={active.platform}
                       executor={active.executor}
-                      description={active.description}
+                      description={t(`deploy.desc.${active.descriptionKey}`)}
                       command={substitute(active.command, fieldValues)}
                       onCommandTaken={handleCommandTaken}
                     />
@@ -320,7 +325,7 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
                       platform={active.platform}
                       executor={active.executor}
                       variations={active.variations.map((variation) => ({
-                        description: variation.description,
+                        description: t(`deploy.desc.${variation.descriptionKey}`),
                         command: substitute(variation.command, fieldValues),
                       }))}
                       onCommandTaken={handleCommandTaken}
@@ -329,7 +334,7 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
                     {/* Direct binary download */}
                     <div className="rounded-lg border border-neutral-200 bg-white px-4 py-3 space-y-3">
                       <div>
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500">
+                        <span className="text-xs font-semibold text-neutral-500">
                           {t("deploy.binary.label")}
                         </span>
                         <p className="text-xs text-neutral-500 mt-1">
@@ -342,7 +347,7 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
                           type="button"
                           onClick={handleDownloadBinary}
                           disabled={isDownloadingBinary}
-                          className="flex items-center gap-2 rounded-lg border border-neutral-200 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-neutral-500 transition-colors hover:border-neutral-300 hover:text-neutral-700 disabled:opacity-50 disabled:pointer-events-none"
+                          className="flex items-center gap-2 rounded-lg border border-neutral-200 px-4 py-2 text-xs font-bold text-neutral-500 transition-colors hover:border-neutral-300 hover:text-neutral-700 disabled:opacity-50 disabled:pointer-events-none"
                         >
                           {isDownloadingBinary ? (
                             <Loader2 size={13} className="animate-spin" />

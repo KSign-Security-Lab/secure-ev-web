@@ -53,7 +53,7 @@ export function ConfirmationDialog({
           )}>
             <Icon size={24} />
           </div>
-          <DialogTitle className="text-xl font-bold text-neutral-950 tracking-tight italic">
+          <DialogTitle className="text-xl font-bold text-neutral-950 tracking-tight">
             {title}
           </DialogTitle>
           <DialogDescription className="text-neutral-500 text-sm font-medium leading-relaxed">

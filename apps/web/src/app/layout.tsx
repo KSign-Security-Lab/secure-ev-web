@@ -9,11 +9,13 @@ import { I18nProvider } from "~/i18n/I18nProvider";
 import { defaultLocale, isLocale } from "~/i18n/messages";
 
 // Self-hosted (next/font/local) so the app builds and runs fully offline. The
-// woff2 files live in src/fonts (OFL-1.1, see src/fonts/OFL.txt). Space Grotesk
-// is a variable font, so one file covers all weights.
-const spaceGrotesk = localFont({
-  src: "../fonts/space-grotesk.woff2",
+// woff2 files live in src/fonts (OFL-1.1, see src/fonts/OFL.txt). Pretendard
+// covers both Hangul and Latin, so Korean and English UI text share one
+// typeface; it is a variable font, so one file covers all weights.
+const pretendard = localFont({
+  src: "../fonts/PretendardVariable.woff2",
   variable: "--font-display",
+  weight: "45 920",
   display: "swap",
 });
 const plexMono = localFont({
@@ -47,12 +49,14 @@ export default async function RootLayout({
   return (
     <html
       lang={initialLocale}
-      className={`${spaceGrotesk.variable} ${plexMono.variable}`}
+      className={`${pretendard.variable} ${plexMono.variable}`}
     >
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body>
+      {/* Browser extensions (translators, password managers) inject attributes
+          into <body> before hydration; that mismatch is not ours. */}
+      <body suppressHydrationWarning>
         <I18nProvider initialLocale={initialLocale}>
           <ToastProvider>
             <SideBarLayout>{children}</SideBarLayout>

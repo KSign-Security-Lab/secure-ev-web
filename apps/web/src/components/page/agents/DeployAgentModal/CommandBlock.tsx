@@ -63,7 +63,7 @@ export const CommandBlock: React.FC<CommandBlockProps> = ({
       <div className="flex items-center justify-between gap-3 px-4 py-2.5 border-b border-neutral-800 bg-neutral-900">
         <div className="flex items-center gap-2 min-w-0">
           {Glyph && <Glyph className="w-3.5 h-3.5 text-neutral-400 shrink-0" />}
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 shrink-0">
+          <span className="text-xs font-semibold text-neutral-400 shrink-0">
             {executor}
           </span>
           <span className="truncate text-xs text-neutral-400">{description}</span>
@@ -76,7 +76,7 @@ export const CommandBlock: React.FC<CommandBlockProps> = ({
             className="flex items-center gap-1.5 h-7 px-2 rounded-lg text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 transition-colors"
           >
             <FileDown size={13} />
-            <span className="text-[9px] font-bold uppercase tracking-widest leading-none">
+            <span className="text-xs font-bold leading-none">
               {t("deploy.command.downloadScript")}
             </span>
           </button>
@@ -90,7 +90,7 @@ export const CommandBlock: React.FC<CommandBlockProps> = ({
             ) : (
               <Copy size={13} />
             )}
-            <span className="text-[9px] font-bold uppercase tracking-widest leading-none">
+            <span className="text-xs font-bold leading-none">
               {copied ? t("deploy.command.copiedShort") : t("deploy.command.copy")}
             </span>
           </button>

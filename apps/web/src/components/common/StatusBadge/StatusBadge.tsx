@@ -50,7 +50,16 @@ export function StatusBadge({ status, label, className }: StatusBadgeProps) {
   const { t } = useI18n();
   const variant = getStatusVariant(status);
   
-  const displayLabel = label || t(`status.${status.toLowerCase()}` as any) || t(`risk.${status.toLowerCase()}` as any) || status;
+  // `t` returns the key itself when a translation is missing.
+  const lookup = (key: string) => {
+    const value = t(key as Parameters<typeof t>[0]);
+    return value && value !== key ? value : undefined;
+  };
+  const displayLabel =
+    label ||
+    lookup(`status.${status.toLowerCase()}`) ||
+    lookup(`risk.${status.toLowerCase()}`) ||
+    status;
 
   return (
     <Badge variant={variant} className={cn("gap-1.5 py-0.5 px-2.5", className)}>

@@ -35,6 +35,7 @@ export function FilterSelect({
   showAll = true,
 }: FilterBarSelectProps) {
   const { t } = useI18n();
+  const allLabel = t("common.filter.allOf", { label });
   return (
     <div className="relative group">
       {Icon && <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500 group-hover:text-blue-700 transition-colors z-10" />}
@@ -43,19 +44,19 @@ export function FilterSelect({
           "bg-white border-neutral-200 text-neutral-900 text-sm rounded-lg pr-8 py-2 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-600 outline-none cursor-pointer hover:border-neutral-300 transition-all",
           Icon ? "pl-10" : "pl-4"
         )}>
-          <SelectValue placeholder={`[${label}]`} />
+          <SelectValue placeholder={allLabel} />
         </SelectTrigger>
         <SelectContent className="bg-white border-neutral-200">
           {showAll && (
-            <SelectItem value="all" className="text-xs uppercase font-semibold text-neutral-500 italic hover:text-neutral-900 transition-colors">
-              {t("vulndb.filters.all") || "All"} {label}s
+            <SelectItem value="all" className="text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors">
+              {allLabel}
             </SelectItem>
           )}
           {options.map((opt) => {
             const val = typeof opt === "string" ? opt : opt.value;
             const lab = typeof opt === "string" ? opt : opt.label;
             return (
-              <SelectItem key={val} value={val} className="text-xs font-mono">
+              <SelectItem key={val} value={val} className={cn("text-sm", typeof opt === "string" && "font-mono")}>
                 {lab}
               </SelectItem>
             );
@@ -69,6 +70,7 @@ export function FilterSelect({
 interface FilterBarProps {
   handleSearch?: (value: string) => void;
   searchPlaceholder?: string;
+  searchDefaultValue?: string;
   children?: React.ReactNode;
   className?: string;
 }
@@ -76,6 +78,7 @@ interface FilterBarProps {
 export function FilterBar({
   handleSearch,
   searchPlaceholder,
+  searchDefaultValue,
   children,
   className,
 }: FilterBarProps) {
@@ -84,7 +87,7 @@ export function FilterBar({
       {handleSearch && (
         <div className="flex-1 flex gap-4 min-w-[200px]">
           <div className="relative flex-1 max-w-xl">
-             <SearchInput onSearch={handleSearch} placeholder={searchPlaceholder} />
+             <SearchInput onSearch={handleSearch} placeholder={searchPlaceholder} defaultValue={searchDefaultValue} />
           </div>
         </div>
       )}

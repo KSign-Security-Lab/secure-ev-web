@@ -136,8 +136,11 @@ export const DEPLOY_PLATFORMS = ["linux", "windows", "darwin"] as const;
 
 export const deployPlatformSchema = z.enum(DEPLOY_PLATFORMS);
 
+const deployDescriptionKeySchema = z.enum(["default", "blueTeam", "background"]);
+
 export const deployCommandVariationSchema = z.object({
   description: z.string(),
+  descriptionKey: deployDescriptionKeySchema,
   command: z.string(),
 });
 
@@ -146,6 +149,7 @@ export const sandcatDeploymentSchema = z.object({
   platform: deployPlatformSchema,
   executor: z.string(),
   description: z.string(),
+  descriptionKey: deployDescriptionKeySchema,
   command: z.string(),
   variations: z.array(deployCommandVariationSchema),
 });
@@ -185,3 +189,4 @@ export const agentConfigUpdateSchema = z
     message: "Beacon min must be less than or equal to beacon max",
     path: ["sleep_min"],
   });
+

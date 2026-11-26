@@ -15,6 +15,10 @@ export const enIntegrationsTableMessages = {
   "integrations.table.statusDisabled": "Disabled",
   "integrations.table.noEndpoint": "-",
   "integrations.table.neverSynced": "Never",
+  "integrations.table.statusStale": "Delayed",
+  "integrations.table.statusWarning": "Warning",
+  "integrations.table.staleHint": "No data collected recently (threshold: {minutes} min)",
+  "integrations.table.staleReason": "Last collected {when} ({hours}h ago; delayed after {minutes} min)",
 } as const;
 
 type IntegrationsTableMessageKey = keyof typeof enIntegrationsTableMessages;
@@ -25,7 +29,7 @@ export const koIntegrationsTableMessages: Record<
 > = {
   "integrations.table.name": "제품",
   "integrations.table.vendor": "제조사",
-  "integrations.table.category": "범주",
+  "integrations.table.category": "분류",
   "integrations.table.mode": "연동 방식",
   "integrations.table.endpoint": "엔드포인트",
   "integrations.table.status": "상태",
@@ -39,4 +43,8 @@ export const koIntegrationsTableMessages: Record<
   "integrations.table.statusDisabled": "비활성",
   "integrations.table.noEndpoint": "-",
   "integrations.table.neverSynced": "없음",
+  "integrations.table.statusStale": "지연",
+  "integrations.table.statusWarning": "경고",
+  "integrations.table.staleHint": "최근 수집 없음 (기준: {minutes}분)",
+  "integrations.table.staleReason": "마지막 수집 {when} ({hours}시간 전, {minutes}분 경과 시 지연)",
 };

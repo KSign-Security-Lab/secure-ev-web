@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { TrendingUp, type LucideIcon } from "lucide-react";
+import { type LucideIcon } from "lucide-react";
 import { cn } from "~/lib/utils";
 
 interface StatsCardProps {
@@ -8,8 +8,8 @@ interface StatsCardProps {
   description: string;
   icon: LucideIcon;
   variant?: "primary" | "accent" | "success" | "danger";
+  /** Optional secondary figure (e.g. a share or a real delta). Omitted → nothing shown. */
   trend?: string;
-  trendIcon?: LucideIcon;
 }
 
 const VARIANTS = {
@@ -50,7 +50,6 @@ export function StatsCard({
   icon: Icon,
   variant = "primary",
   trend,
-  trendIcon: TrendIcon = TrendingUp,
 }: StatsCardProps) {
   const styles = VARIANTS[variant];
 
@@ -64,7 +63,7 @@ export function StatsCard({
     >
       <CardHeader className="pb-3">
         <div className="flex flex-row items-center justify-between">
-          <CardTitle className="text-sm font-medium text-neutral-500 uppercase tracking-wide">
+          <CardTitle className="text-sm font-medium text-neutral-500">
             {title}
           </CardTitle>
           <div
@@ -80,15 +79,13 @@ export function StatsCard({
       </CardHeader>
       <CardContent className="pt-0">
         <div className="flex items-baseline gap-2">
-          <div className="text-3xl font-bold text-neutral-950">
+          <div className="text-3xl font-semibold tabular-nums text-neutral-950">
             {typeof value === "number" ? value.toLocaleString() : value}
           </div>
-          {trend ? (
-             <div className={cn("text-xs font-medium px-2 py-1 rounded", styles.iconBg, styles.iconColor)}> {/* Reusing styles for simplicity, can customize */}
-                {trend}
-             </div>
-          ) : (
-            <TrendIcon className={cn("h-4 w-4", styles.iconColor)} />
+          {trend && (
+            <div className={cn("text-xs font-medium px-2 py-1 rounded", styles.iconBg, styles.iconColor)}>
+              {trend}
+            </div>
           )}
         </div>
         <p className="text-sm text-neutral-500 mt-2">{description}</p>

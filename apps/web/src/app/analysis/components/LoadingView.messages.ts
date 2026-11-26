@@ -19,5 +19,5 @@ export const koAnalysisLoadingViewMessages: Record<AnalysisLoadingViewMessageKey
   "analysis.loading.step.cfg": "제어 흐름 그래프(CFG)를 구성하는 중...",
   "analysis.loading.step.df": "데이터 흐름(DF) 분석을 실행하는 중...",
   "analysis.loading.step.signatures": "유사 시그니처를 추출하는 중...",
-  "analysis.loading.step.report": "리포트와 근거를 생성하는 중...",
+  "analysis.loading.step.report": "보고서와 근거를 생성하는 중...",
 };

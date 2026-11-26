@@ -11,6 +11,7 @@ import {
 import { Doughnut, Bar } from "react-chartjs-2";
 import type { RouterOutputs } from "~/lib/trpc";
 import { useI18n } from "~/i18n/I18nProvider";
+import { platformLabel } from "~/lib/format";
 import {
   CHART_COLORS,
   baseChartOptions,
@@ -59,7 +60,7 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
   };
 
   const platformChartData = {
-    labels: data.byPlatform.map((item) => item.name),
+    labels: data.byPlatform.map((item) => platformLabel(item.name)),
     datasets: [
       {
         data: data.byPlatform.map((item) => item.value),
@@ -107,7 +108,7 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
         <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
           <div className="flex items-center gap-2">
             <div className="w-1 h-5 bg-green-600 rounded-full" />
-            <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">
+            <h3 className="text-sm font-semibold text-neutral-700">
               {t("dashboard.chart.trustStatus")}
             </h3>
           </div>
@@ -119,10 +120,10 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
           <Doughnut data={trustChartData} options={baseChartOptions} />
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="text-center">
-              <div className="text-xl font-bold text-neutral-950 mb-1">
+              <div className="text-xl font-semibold tabular-nums text-neutral-950 mb-1">
                 {trustPercentage}%
               </div>
-              <div className="text-xs text-neutral-500 uppercase tracking-wide">
+              <div className="text-xs text-neutral-500">
                 {t("dashboard.chart.trusted")}
               </div>
             </div>
@@ -162,7 +163,7 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
         <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
           <div className="flex items-center gap-2">
             <div className="w-1 h-5 bg-blue-600 rounded-full" />
-            <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">
+            <h3 className="text-sm font-semibold text-neutral-700">
               {t("dashboard.chart.byPlatform")}
             </h3>
           </div>
@@ -188,7 +189,7 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
           <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
             <div className="flex items-center gap-2">
               <div className="w-1 h-5 bg-sky-600 rounded-full" />
-              <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">
+              <h3 className="text-sm font-semibold text-neutral-700">
                 {t("dashboard.chart.byGroup")}
               </h3>
             </div>
@@ -215,7 +216,7 @@ export function AgentsCharts({ data }: AgentsChartsProps) {
           <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
             <div className="flex items-center gap-2">
               <div className="w-1 h-5 bg-green-600 rounded-full" />
-              <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">
+              <h3 className="text-sm font-semibold text-neutral-700">
                 {t("dashboard.chart.byPrivilege")}
               </h3>
             </div>

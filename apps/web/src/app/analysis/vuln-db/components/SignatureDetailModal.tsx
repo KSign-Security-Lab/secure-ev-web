@@ -22,10 +22,7 @@ export function SignatureDetailModal({ open, onClose, data }: SignatureDetailMod
       disableDefaultStyles={true}
       className="max-w-7xl bg-white border border-neutral-200 shadow-sm p-0! overflow-hidden! m-0!"
     >
-      <div 
-        className="h-full overflow-hidden flex flex-col"
-        style={{ height: '800px', maxHeight: '800px' }}
-      >
+      <div className="flex h-[min(88vh,800px)] min-w-0 flex-col overflow-hidden">
         <SignatureDetail data={data} onClose={onClose} />
       </div>
     </Modal>

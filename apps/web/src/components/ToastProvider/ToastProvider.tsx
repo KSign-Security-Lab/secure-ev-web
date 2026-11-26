@@ -5,8 +5,16 @@ import React, {
   useContext,
   useState,
   useCallback,
+  useRef,
   ReactNode,
 } from "react";
+import { X } from "lucide-react";
+import { useI18n } from "~/i18n/I18nProvider";
+
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
 
 export interface Toast {
   id: number;
@@ -14,36 +22,31 @@ export interface Toast {
   duration?: number;
   type?: "info" | "success" | "error" | "warning";
   className?: string;
+  action?: ToastAction;
+  /** Toasts sharing a key replace each other instead of stacking. */
+  key?: string;
 }
 
+export type ShowToastOptions = Omit<Toast, "id" | "message">;
+
 interface ToastContextType {
-  toasts: Toast[];
-  addToast: (toast: Toast) => void;
+  showToast: (message: string, options?: ShowToastOptions) => number;
   removeToast: (id: number) => void;
 }
 
 const ToastContext = createContext<ToastContextType | null>(null);
 
+/** Returns a stable `showToast(message, options)` function. */
 export const useToast = () => {
   const context = useContext(ToastContext);
   if (!context) throw new Error("useToast must be used within ToastProvider");
+  return context.showToast;
+};
 
-  const showToast = (
-    message: string,
-    options?: {
-      duration?: number;
-      type?: Toast["type"];
-      className?: string;
-    }
-  ) => {
-    context.addToast({
-      id: Date.now(),
-      message,
-      ...options,
-    });
-  };
-
-  return showToast;
+export const useToastControls = () => {
+  const context = useContext(ToastContext);
+  if (!context) throw new Error("useToastControls must be used within ToastProvider");
+  return context;
 };
 
 const typeStyles: Record<NonNullable<Toast["type"]>, string> = {
@@ -54,27 +57,39 @@ const typeStyles: Record<NonNullable<Toast["type"]>, string> = {
 };
 
 export function ToastProvider({ children }: { children: ReactNode }) {
+  const { t } = useI18n();
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const nextId = useRef(1);
 
   const removeToast = useCallback((id: number) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  const addToast = useCallback(
-    (toast: Toast) => {
-      setToasts((prev) => [...prev, toast]);
-
-      setTimeout(() => {
-        removeToast(toast.id);
-      }, toast.duration ?? 3000);
+  const showToast = useCallback(
+    (message: string, options?: ShowToastOptions) => {
+      const id = nextId.current++;
+      const toast: Toast = { id, message, ...options };
+      setToasts((prev) => [
+        ...prev.filter((t) => !toast.key || t.key !== toast.key),
+        toast,
+      ]);
+      const duration = toast.duration ?? 3000;
+      if (duration > 0) setTimeout(() => removeToast(id), duration);
+      return id;
     },
     [removeToast]
   );
 
+  const [value] = useState(() => ({ showToast, removeToast }));
+
   return (
-    <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
+    <ToastContext.Provider value={value}>
       {children}
-      <div className="fixed bottom-4 right-4 space-y-2 z-999">
+      <div
+        className="fixed bottom-4 right-4 z-999 flex flex-col items-end gap-2"
+        role="status"
+        aria-live="polite"
+      >
         {toasts.map((toast) => {
           const style =
             toast.className ||
@@ -83,9 +98,31 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           return (
             <div
               key={toast.id}
-              className={`px-4 py-2 rounded shadow-md animate-slide-in ${style}`}
+              className={`flex max-w-sm items-center gap-3 rounded px-4 py-2 text-sm shadow-md animate-slide-in ${style}`}
             >
-              {toast.message}
+              <span className="min-w-0 flex-1">{toast.message}</span>
+              {toast.action && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    toast.action?.onClick();
+                    removeToast(toast.id);
+                  }}
+                  className="shrink-0 rounded border border-current/40 px-2 py-0.5 text-xs font-semibold hover:bg-white/15"
+                >
+                  {toast.action.label}
+                </button>
+              )}
+              {(toast.action || (toast.duration ?? 3000) <= 0) && (
+                <button
+                  type="button"
+                  aria-label={t("common.close")}
+                  onClick={() => removeToast(toast.id)}
+                  className="shrink-0 opacity-70 hover:opacity-100"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
             </div>
           );
         })}

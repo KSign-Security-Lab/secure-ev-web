@@ -4,9 +4,17 @@ import React from "react";
 import { RotateCcw } from "lucide-react";
 import { Input } from "~/components/ui/input";
 import { useI18n } from "~/i18n/I18nProvider";
+import type { TranslationKey } from "~/i18n/messages";
 
 /** `#{agent.extensions}` has no value in app_config, so it gets a hint instead. */
 const EXTENSIONS_FIELD = "agent.extensions";
+
+/** Same names the 설정 (config) tab uses for these values. */
+const FIELD_LABEL_KEYS: Record<string, TranslationKey> = {
+  "app.contact.http": "deploy.config.c2Url",
+  "agents.implant_name": "deploy.config.implantName",
+  "agent.extensions": "deploy.fields.extensions",
+};
 
 interface DeployFieldsProps {
   /** Placeholder keys, in the order they first appear in the commands. */
@@ -28,7 +36,7 @@ export const DeployFields: React.FC<DeployFieldsProps> = ({
 
   return (
     <div className="space-y-2">
-      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500">
+      <span className="text-xs font-semibold text-neutral-500">
         {t("deploy.fields.label")}
       </span>
 
@@ -45,9 +53,13 @@ export const DeployFields: React.FC<DeployFieldsProps> = ({
             >
               <label
                 htmlFor={`deploy-field-${field}`}
-                className="w-full sm:w-48 shrink-0 font-mono text-xs text-neutral-500"
+                className="w-full sm:w-48 shrink-0"
               >
-                {field}
+                <span className="block text-sm font-medium text-neutral-800">
+                  {FIELD_LABEL_KEYS[field] ? t(FIELD_LABEL_KEYS[field]) : field}
+                </span>
+                {/* The placeholder as it appears in the command, for reference. */}
+                <span className="block font-mono text-xs text-neutral-500">{`#{${field}}`}</span>
               </label>
 
               <div className="flex items-center gap-1 flex-1 min-w-0">

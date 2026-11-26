@@ -14,8 +14,10 @@ export const enDashboardChartMessages = {
   "dashboard.chart.groups": "Groups:",
   "dashboard.chart.privilegeLevels": "Privilege Levels:",
   "dashboard.chart.covered": "Covered",
-  "dashboard.chart.coveredTechniques": "Covered Techniques",
-  "dashboard.chart.totalTechniques": "Total Techniques",
+  "dashboard.chart.coveredTechniques": "Covered",
+  "dashboard.chart.totalTechniques": "ATT&CK techniques",
+  "dashboard.chart.abilities": "abilities",
+  "dashboard.chart.platformNote": "Abilities that run on several platforms are counted once per platform, so n is larger than the total.",
 } as const;
 
 type DashboardChartMessageKey = keyof typeof enDashboardChartMessages;
@@ -24,7 +26,7 @@ export const koDashboardChartMessages: Record<DashboardChartMessageKey, string> 
   "dashboard.chart.byTactic": "전술별",
   "dashboard.chart.byPlatform": "플랫폼별",
   "dashboard.chart.byType": "유형별",
-  "dashboard.chart.total": "총계",
+  "dashboard.chart.total": "합계",
   "dashboard.chart.platforms": "플랫폼:",
   "dashboard.chart.types": "유형:",
   "dashboard.chart.unique": "{count}개",
@@ -35,7 +37,9 @@ export const koDashboardChartMessages: Record<DashboardChartMessageKey, string> 
   "dashboard.chart.byPrivilege": "권한별",
   "dashboard.chart.groups": "그룹:",
   "dashboard.chart.privilegeLevels": "권한 수준:",
-  "dashboard.chart.covered": "커버됨",
-  "dashboard.chart.coveredTechniques": "커버된 기법",
-  "dashboard.chart.totalTechniques": "전체 기법",
+  "dashboard.chart.covered": "지원",
+  "dashboard.chart.coveredTechniques": "지원 기법",
+  "dashboard.chart.totalTechniques": "ATT&CK 기법",
+  "dashboard.chart.abilities": "Ability",
+  "dashboard.chart.platformNote": "여러 플랫폼에서 실행되는 Ability는 플랫폼마다 집계되므로 n이 전체 수보다 큽니다.",
 };

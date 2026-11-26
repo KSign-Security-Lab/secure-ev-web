@@ -34,7 +34,7 @@ export function DashMetric({
       className
     )}>
       <div className="flex flex-col overflow-hidden gap-1">
-        <span className="text-[10px] font-semibold text-neutral-500 uppercase tracking-wide leading-none group-hover:text-neutral-600 transition-colors">
+        <span className="text-xs font-semibold text-neutral-500 leading-none group-hover:text-neutral-600 transition-colors">
           {label}
         </span>
         <span className="text-lg font-bold text-neutral-900 tracking-tight truncate group-hover:text-neutral-950 transition-colors leading-tight">

@@ -165,3 +165,27 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #d1d5db;
 }
+
+/* Always-visible horizontal scrollbar for wide matrices/tables. */
+.scroll-x-visible {
+  scrollbar-width: thin;
+  scrollbar-color: #a3a3a3 #e5e5e5;
+}
+.scroll-x-visible::-webkit-scrollbar {
+  height: 10px;
+}
+.scroll-x-visible::-webkit-scrollbar-track {
+  background: #e5e5e5;
+  border-radius: 5px;
+}
+.scroll-x-visible::-webkit-scrollbar-thumb {
+  background-color: #a3a3a3;
+  border-radius: 5px;
+}
+
+/* Korean: break between words (어절), not inside them. Long tokens (IDs,
+   paths) may still wrap so they never overflow their container. */
+html:lang(ko) body {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}

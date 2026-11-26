@@ -33,7 +33,7 @@ export function CodeViewer({
       <div className="flex items-center justify-between px-6 py-3 border-b border-neutral-800 bg-neutral-900">
         <div className="flex items-center gap-3">
           <FileCode size={16} className="text-blue-500" />
-          <span className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wide">
+          <span className="text-xs font-semibold text-neutral-400">
             {filename || language}
           </span>
         </div>
@@ -44,7 +44,7 @@ export function CodeViewer({
           className="h-8 px-2 text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 gap-2"
         >
           {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
-          <span className="text-[9px] font-semibold uppercase tracking-wide leading-none">
+          <span className="text-xs font-semibold leading-none">
             {copied ? "Copied" : "Copy"}
           </span>
         </Button>

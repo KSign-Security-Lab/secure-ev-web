@@ -11,6 +11,7 @@ import {
 import { Doughnut, Bar } from "react-chartjs-2";
 import type { RouterOutputs } from "~/lib/trpc";
 import { useI18n } from "~/i18n/I18nProvider";
+import { tacticLabel, UNKNOWN_PLATFORM } from "~/lib/format";
 import {
   CHART_COLORS,
   CHART_PALETTE,
@@ -21,20 +22,44 @@ import {
 
 ChartJS.register(ArcElement, Tooltip, CategoryScale, LinearScale, BarElement);
 
+const OTHER_COLOR = "rgba(163, 163, 163, 0.85)"; // neutral-400
+
 type AbilitiesStatistics = RouterOutputs["abilities"]["statistics"];
 
-interface AbilitiesChartsProps {
+interface ChartProps {
   data: AbilitiesStatistics;
 }
 
-export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
+function SectionTitle({ label, n, accent }: { label: string; n: number; accent: string }) {
+  return (
+    <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
+      <div className="flex items-center gap-2">
+        <div className={`h-5 w-1 rounded-full ${accent}`} />
+        <h3 className="text-sm font-semibold text-neutral-700">{label}</h3>
+      </div>
+      <div className="text-xs tabular-nums text-neutral-500">n = {n.toLocaleString()}</div>
+    </div>
+  );
+}
+
+/** Tactic doughnut with a legend entry for every slice. */
+export function TacticChart({ data }: ChartProps) {
   const { t } = useI18n();
-  const tacticChartData = {
-    labels: data.byTactic.map((item) => item.name),
+  const translate = (key: string) => t(key as Parameters<typeof t>[0]);
+  const labels = data.byTactic.map((item) => tacticLabel(item.name, translate));
+  const sliceTotal = data.byTactic.reduce((sum, item) => sum + item.value, 0);
+  // "Other" is a remainder bucket, not a category — keep it neutral grey so it
+  // doesn't read as one more tactic next to similar palette hues.
+  const colors = data.byTactic.map((item, index) =>
+    item.name === "other" ? OTHER_COLOR : CHART_PALETTE[index % CHART_PALETTE.length]
+  );
+
+  const chartData = {
+    labels,
     datasets: [
       {
         data: data.byTactic.map((item) => item.value),
-        backgroundColor: CHART_PALETTE,
+        backgroundColor: colors,
         borderColor: "#ffffff",
         borderWidth: 2,
         hoverBorderWidth: 3,
@@ -43,8 +68,53 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
     ],
   };
 
-  const platformChartData = {
-    labels: data.byPlatform.map((item) => item.name),
+  return (
+    <div className="space-y-4">
+      <SectionTitle label={t("dashboard.chart.byTactic")} n={sliceTotal} accent="bg-blue-600" />
+      <div className="grid grid-cols-1 items-center gap-6 sm:grid-cols-[minmax(0,240px)_1fr]">
+        <div className="relative mx-auto h-[240px] w-full max-w-[240px]">
+          <Doughnut data={chartData} options={baseChartOptions} />
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+            <div className="text-center">
+              <div className="text-xl font-semibold tabular-nums text-neutral-950">
+                {sliceTotal.toLocaleString()}
+              </div>
+              <div className="text-xs text-neutral-500">{t("dashboard.chart.abilities")}</div>
+            </div>
+          </div>
+        </div>
+        <ul className="grid grid-cols-1 gap-1.5 text-sm">
+          {data.byTactic.map((item, index) => (
+            <li
+              key={item.name}
+              className="flex items-center gap-2 rounded border border-neutral-200 bg-neutral-50 px-2 py-1.5"
+            >
+              <span
+                className="h-2.5 w-2.5 shrink-0 rounded-full"
+                style={{ backgroundColor: colors[index] }}
+                aria-hidden
+              />
+              <span className="min-w-0 flex-1 truncate text-neutral-700" title={labels[index]}>
+                {labels[index]}
+              </span>
+              <span className="tabular-nums text-neutral-500">{item.value.toLocaleString()}</span>
+              <span className="w-12 text-right text-xs tabular-nums text-neutral-400">
+                {sliceTotal ? `${((item.value / sliceTotal) * 100).toFixed(1)}%` : "—"}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+export function PlatformChart({ data }: ChartProps) {
+  const { t } = useI18n();
+  const chartData = {
+    labels: data.byPlatform.map((item) =>
+      item.name === UNKNOWN_PLATFORM ? t("tactic.unknown") : item.name
+    ),
     datasets: [
       {
         data: data.byPlatform.map((item) => item.value),
@@ -57,8 +127,25 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
     ],
   };
 
-  const typeChartData = {
-    labels: data.byType.map((item) => item.name),
+  return (
+    <div className="space-y-4">
+      <SectionTitle
+        label={t("dashboard.chart.byPlatform")}
+        n={data.byPlatform.reduce((sum, item) => sum + item.value, 0)}
+        accent="bg-sky-600"
+      />
+      <div className="h-[260px] w-full">
+        <Bar data={chartData} options={barChartOptions} />
+      </div>
+      <p className="text-xs text-neutral-500">{t("dashboard.chart.platformNote")}</p>
+    </div>
+  );
+}
+
+export function TypeChart({ data }: ChartProps) {
+  const { t } = useI18n();
+  const chartData = {
+    labels: data.byType.map((item) => (item.name === "unknown" ? t("tactic.unknown") : item.name)),
     datasets: [
       {
         data: data.byType.map((item) => item.value),
@@ -72,108 +159,15 @@ export function AbilitiesCharts({ data }: AbilitiesChartsProps) {
   };
 
   return (
-    <div className="grid gap-6 grid-cols-1 md:grid-cols-3">
-      {/* Tactic Distribution */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-5 bg-blue-600 rounded-full" />
-            <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">
-              {t("dashboard.chart.byTactic")}
-            </h3>
-          </div>
-          <div className="text-xs text-neutral-500 font-mono">
-            n = {data.totalCount}
-          </div>
-        </div>
-        <div className="h-[300px] w-full relative">
-          <Doughnut data={tacticChartData} options={baseChartOptions} />
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="text-center">
-              <div className="text-xl font-bold text-neutral-950 mb-1">
-                {data.totalCount.toLocaleString()}
-              </div>
-              <div className="text-xs text-neutral-500 uppercase tracking-wide">
-                {t("dashboard.chart.total")}
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* Legend */}
-        <div className="space-y-1.5 text-xs">
-          {data.byTactic.slice(0, 4).map((item, index) => (
-            <div
-              key={item.name}
-              className="flex items-center gap-2 p-1.5 rounded bg-neutral-50 border border-neutral-200"
-            >
-              <div
-                className="w-2.5 h-2.5 rounded-full shrink-0"
-                style={{
-                  backgroundColor: CHART_PALETTE[index] || "#666",
-                }}
-              />
-              <span className="text-neutral-700 truncate flex-1 text-xs">
-                {item.name}
-              </span>
-              <span className="text-neutral-500 font-mono text-xs">
-                {item.value}
-              </span>
-            </div>
-          ))}
-        </div>
+    <div className="space-y-4">
+      <SectionTitle
+        label={t("dashboard.chart.byType")}
+        n={data.byType.reduce((sum, item) => sum + item.value, 0)}
+        accent="bg-sky-600"
+      />
+      <div className="h-[260px] w-full">
+        <Bar data={chartData} options={horizontalBarOptions} />
       </div>
-
-      {/* Platform Distribution */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-5 bg-sky-600 rounded-full" />
-            <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">
-              {t("dashboard.chart.byPlatform")}
-            </h3>
-          </div>
-          <div className="text-xs text-neutral-500 font-mono">
-            n = {data.byPlatform.reduce((sum, item) => sum + item.value, 0)}
-          </div>
-        </div>
-        <div className="h-[300px] w-full">
-          <Bar data={platformChartData} options={barChartOptions} />
-        </div>
-        {/* Summary Stats */}
-        <div className="flex items-center justify-between text-xs pt-2 border-t border-neutral-200">
-          <span className="text-neutral-500">{t("dashboard.chart.platforms")}</span>
-          <span className="text-neutral-700 font-mono">
-            {t("dashboard.chart.unique", { count: data.byPlatform.length })}
-          </span>
-        </div>
-      </div>
-
-      {/* Type Distribution */}
-      {data.byType.length > 0 && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
-            <div className="flex items-center gap-2">
-              <div className="w-1 h-5 bg-sky-600 rounded-full" />
-              <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">
-                {t("dashboard.chart.byType")}
-              </h3>
-            </div>
-            <div className="text-xs text-neutral-500 font-mono">
-              n = {data.byType.reduce((sum, item) => sum + item.value, 0)}
-            </div>
-          </div>
-          <div className="h-[300px] w-full">
-            <Bar data={typeChartData} options={horizontalBarOptions} />
-          </div>
-          {/* Summary Stats */}
-          <div className="flex items-center justify-between text-xs pt-2 border-t border-neutral-200">
-            <span className="text-neutral-500">{t("dashboard.chart.types")}</span>
-            <span className="text-neutral-700 font-mono">
-              {t("dashboard.chart.unique", { count: data.byType.length })}
-            </span>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
