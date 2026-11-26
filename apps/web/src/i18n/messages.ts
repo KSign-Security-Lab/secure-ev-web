@@ -33,7 +33,8 @@ import { enPlaygroundSessionsListMessages, koPlaygroundSessionsListMessages } fr
 import { enPlaygroundSystemLogPanelMessages, koPlaygroundSystemLogPanelMessages } from "~/components/page/playground/SystemLogPanel.messages";
 import { enPlaygroundCommandAutocompleteMessages, koPlaygroundCommandAutocompleteMessages } from "~/components/page/playground/Terminal/CommandAutocomplete.messages";
 import { enPlaygroundTerminalMessages, koPlaygroundTerminalMessages } from "~/components/page/playground/Terminal/Terminal.messages";
-
+import { enCoverageMessages, koCoverageMessages } from "~/components/page/coverage/coverage.messages";
+import { enOperationsMessages, koOperationsMessages } from "~/components/page/operations/operations.messages";
 export const SUPPORTED_LOCALES = ["en", "ko"] as const;
 
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
@@ -42,6 +43,8 @@ export const defaultLocale: Locale = "en";
 
 const enMessages = {
   ...enNavigationMessages,
+  ...enOperationsMessages,
+  ...enCoverageMessages,
   ...enVulnDBMessages,
   ...enCommonMessages,
   ...enAbilitiesPageMessages,
@@ -82,6 +85,8 @@ export type TranslationKey = keyof typeof enMessages;
 
 const koMessages: Record<TranslationKey, string> = {
   ...koNavigationMessages,
+  ...koOperationsMessages,
+  ...koCoverageMessages,
   ...koVulnDBMessages,
   ...koCommonMessages,
   ...koAbilitiesPageMessages,

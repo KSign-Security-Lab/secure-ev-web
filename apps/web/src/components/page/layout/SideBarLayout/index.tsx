@@ -6,12 +6,13 @@ import {
   Gauge,
   Zap,
   SearchCode,
-  Terminal,
+  ScanSearch,
   Users,
   Database,
   ClipboardCheck,
   Plug,
   Crosshair,
+  Grid3x3,
 } from "lucide-react";
 import { AppTopBar, MenuItemType } from "../TopBar/AppTopBar";
 import { usePathname } from "next/navigation";
@@ -33,11 +34,6 @@ export default function SideBarLayout({
       url: "/playground",
       children: [
         {
-          name: t("menu.agentTerminal"),
-          icon: <Terminal />,
-          url: "/playground/agent-terminal",
-        },
-        {
           name: t("menu.agents"),
           icon: <Users />,
           url: "/playground/agents",
@@ -53,6 +49,11 @@ export default function SideBarLayout({
           url: "/playground/operations",
         },
         {
+          name: t("menu.coverage"),
+          icon: <Grid3x3 />,
+          url: "/playground/coverage",
+        },
+        {
           name: t("menu.assessment"),
           icon: <ClipboardCheck />,
           url: "/playground/assessment",
@@ -66,7 +67,7 @@ export default function SideBarLayout({
     },
     {
       name: t("menu.analysis"),
-      icon: <SearchCode />,
+      icon: <ScanSearch />,
       url: "/analysis",
       children: [
         {
@@ -83,23 +84,27 @@ export default function SideBarLayout({
     },
   ];
 
-  // Analysis uses bounded-height full-width panes (code viewer / split views
-  // that rely on flex-1 + min-h-0). All other pages render centered in a
-  // max-w-7xl column.
-  const isAnalysisSection = pathname?.startsWith("/analysis");
+  // Inspect Code renders split panes (code viewer) that rely on a bounded
+  // flex height; every page still shares the same max-w-7xl column as the
+  // header so edges line up.
+  const needsBoundedHeight = pathname?.startsWith("/analysis/inspect-code");
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-neutral-100 text-neutral-900">
-      <AppTopBar menus={menuItems} />
-
-      <main className="flex w-full flex-1 flex-col min-h-0 overflow-y-auto">
-        {isAnalysisSection ? (
-          <div className="flex w-full flex-1 flex-col min-h-0 p-4">
-            {children}
-          </div>
-        ) : (
-          <div className="mx-auto w-full max-w-7xl px-4 py-5">{children}</div>
-        )}
+      {/* The single scroll container. A stable gutter keeps content from
+          shifting when the scrollbar appears/disappears; the (sticky) header
+          lives inside it so header and content share the same width. */}
+      <main className="flex w-full flex-1 flex-col min-h-0 overflow-y-auto [scrollbar-gutter:stable]">
+        <AppTopBar menus={menuItems} />
+        <div
+          className={
+            needsBoundedHeight
+              ? "mx-auto flex w-full max-w-7xl flex-1 flex-col min-h-0 px-4 py-5"
+              : "mx-auto w-full max-w-7xl px-4 py-5"
+          }
+        >
+          {children}
+        </div>
       </main>
     </div>
   );

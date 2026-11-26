@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Crosshair } from "lucide-react";
+import { Crosshair, Loader2 } from "lucide-react";
 import { GeneralTab } from "./GeneralTab";
 import { ExecutorsTab } from "./ExecutorsTab";
 import { RequirementTab } from "./RequirementTab";
@@ -10,6 +10,9 @@ import { ConfigurationTab } from "./ConfigurationTab";
 import { AttackDataItem } from "~/types/defend";
 import { Modal } from "~/components/common/Modal/Modal";
 import { useI18n } from "~/i18n/I18nProvider";
+import { cn } from "~/lib/utils";
+import { ModalButton } from "~/components/common/Modal/ModalButton";
+import { AbilityForm, executorsOf, isFormDirty, toAbilityForm } from "./form";
 
 enum AbilityModalTabs {
   General = "General",
@@ -18,42 +21,25 @@ enum AbilityModalTabs {
   Configuration = "Configuration",
 }
 
-interface TabContentProps {
-  tab: AbilityModalTabs;
-  tabData: AttackDataItem;
-}
-
-const TabContent: React.FC<TabContentProps> = ({ tab, tabData }) => {
-  switch (tab) {
-    case AbilityModalTabs.General:
-      return <GeneralTab data={tabData} />;
-    case AbilityModalTabs.Executors:
-      return <ExecutorsTab data={tabData.executors ?? []} />;
-    case AbilityModalTabs.Requirement:
-      return <RequirementTab />;
-    case AbilityModalTabs.Configuration:
-      return <ConfigurationTab />;
-    default:
-      return null;
-  }
-};
-
 interface AbilityModalProps {
   open: boolean;
   onClose: () => void;
   modalData: AttackDataItem;
-  onSave: () => void;
+  onSave: (form: AbilityForm) => Promise<void>;
 }
 
-const AbilityModal: React.FC<AbilityModalProps> = ({
-  open,
-  onClose,
-  modalData,
-  onSave,
-}) => {
+
+const AbilityModal: React.FC<AbilityModalProps> = ({ open, onClose, modalData, onSave }) => {
   const { t } = useI18n();
   const router = useRouter();
   const [tab, setTab] = useState<AbilityModalTabs>(AbilityModalTabs.General);
+  const initialForm = useMemo(() => toAbilityForm(modalData), [modalData]);
+  const [form, setForm] = useState<AbilityForm>(initialForm);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const executors = useMemo(() => executorsOf(modalData), [modalData]);
+
+  const dirty = isFormDirty(form, initialForm);
 
   const runAbility = () => {
     const query = new URLSearchParams({
@@ -64,66 +50,82 @@ const AbilityModal: React.FC<AbilityModalProps> = ({
     router.push(`/playground/operations?${query.toString()}`);
   };
 
-  const tabLabel = (tabValue: AbilityModalTabs) => {
-    switch (tabValue) {
-      case AbilityModalTabs.General:
-        return t("abilities.modal.general");
-      case AbilityModalTabs.Executors:
-        return t("abilities.modal.executors");
-      case AbilityModalTabs.Requirement:
-        return t("abilities.modal.requirement");
-      case AbilityModalTabs.Configuration:
-        return t("abilities.modal.configuration");
-      default:
-        return tabValue;
+  const handleSave = async () => {
+    setSaving(true);
+    setSaveError(null);
+    try {
+      await onSave(form);
+    } catch {
+      setSaveError(t("abilities.modal.saveFailed"));
+    } finally {
+      setSaving(false);
     }
+  };
+
+  const tabLabel: Record<AbilityModalTabs, string> = {
+    [AbilityModalTabs.General]: t("abilities.modal.general"),
+    [AbilityModalTabs.Executors]: t("abilities.modal.executors"),
+    [AbilityModalTabs.Requirement]: t("abilities.modal.requirement"),
+    [AbilityModalTabs.Configuration]: t("abilities.modal.configuration"),
   };
 
   return (
     <Modal
       open={open}
       onClose={onClose}
-      title={t("abilities.modal.title")}
-      footer={
-        <div className="flex justify-end space-x-2">
-          <button
-            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded"
-            onClick={runAbility}
-          >
-            <Crosshair className="w-4 h-4" />
-            Run on agent
-          </button>
-          <button
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-            onClick={onSave}
-          >
-            {t("abilities.modal.save")}
-          </button>
-          <button
-            className="bg-neutral-100 hover:bg-neutral-200 text-neutral-700 px-4 py-2 rounded"
-            onClick={onClose}
-          >
-            {t("abilities.modal.cancel")}
-          </button>
+      confirmOnClose={dirty && !saving}
+      title={modalData.ability_name || modalData.technique_name}
+      bodyClassName="h-[min(64vh,600px)]"
+      subHeader={
+        <div role="tablist" className="flex gap-1 border-b border-neutral-200">
+          {Object.values(AbilityModalTabs).map((value) => (
+            <button
+              key={value}
+              type="button"
+              role="tab"
+              aria-selected={tab === value}
+              className={cn(
+                "-mb-px border-b-2 px-4 py-2.5 text-sm font-medium transition-colors",
+                tab === value
+                  ? "border-blue-600 text-blue-700"
+                  : "border-transparent text-neutral-500 hover:text-neutral-800"
+              )}
+              onClick={() => setTab(value)}
+            >
+              {tabLabel[value]}
+            </button>
+          ))}
         </div>
       }
-    >
-      <div className="flex border-b border-neutral-200 space-x-4 mb-4">
-        {Object.values(AbilityModalTabs).map((t) => (
-          <button
-            key={t}
-            className={`py-2 px-4 font-medium transition-colors ${
-              tab === t
-                ? "border-b-2 border-blue-600 text-blue-700"
-                : "text-neutral-500 hover:text-neutral-700"
-            }`}
-            onClick={() => setTab(t)}
+      footer={
+        <>
+          <ModalButton variant="success" className="mr-auto" onClick={runAbility}>
+            <Crosshair className="h-4 w-4" />
+            {t("abilities.modal.runOnAgent")}
+          </ModalButton>
+          {saveError && <p className="text-sm text-rose-600">{saveError}</p>}
+          <ModalButton onClick={onClose}>{t("abilities.modal.cancel")}</ModalButton>
+          <ModalButton
+            variant="primary"
+            onClick={handleSave}
+            disabled={!dirty || saving || !form.ability_name.trim()}
           >
-            {tabLabel(t)}
-          </button>
-        ))}
-      </div>
-      <TabContent tab={tab} tabData={modalData} />
+            {saving && <Loader2 className="h-4 w-4 animate-spin" />}
+            {t("abilities.modal.save")}
+          </ModalButton>
+        </>
+      }
+    >
+      {tab === AbilityModalTabs.General && (
+        <GeneralTab
+          data={modalData}
+          form={form}
+          onChange={(patch) => setForm((prev) => ({ ...prev, ...patch }))}
+        />
+      )}
+      {tab === AbilityModalTabs.Executors && <ExecutorsTab data={executors} />}
+      {tab === AbilityModalTabs.Requirement && <RequirementTab abilityId={modalData.ability_id} />}
+      {tab === AbilityModalTabs.Configuration && <ConfigurationTab />}
     </Modal>
   );
 };

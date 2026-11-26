@@ -13,8 +13,38 @@ export const abilitySchema = z.object({
   command: z.string(),
   payload: z.string(),
   type: z.string(),
+  status: z.string(),
+  threat_groups: z.array(z.string()),
+  cves: z.array(z.string()),
   createdAt: z.string(), // ISO datetime string (serialized from Date)
   updatedAt: z.string(), // ISO datetime string (serialized from Date)
+});
+
+export const ABILITY_STATUSES = ["ACTIVE", "DISABLED"] as const;
+
+export const updateAbilityInputSchema = z.object({
+  id: z.string().uuid(),
+  ability_name: z.string().trim().min(1).max(191).optional(),
+  description: z.string().optional(),
+  status: z.enum(ABILITY_STATUSES).optional(),
+  threat_groups: z.array(z.string().trim().min(1).max(100)).max(50).optional(),
+  cves: z
+    .array(z.string().trim().regex(/^CVE-\d{4}-\d{4,}$/i))
+    .max(100)
+    .optional(),
+  command: z.string().optional(),
+  payload: z.string().optional(),
+});
+
+export const createAbilityInputSchema = z.object({
+  ability_name: z.string().trim().min(1).max(191),
+  description: z.string().max(20000).default(""),
+  tactic: z.string().trim().min(1).max(191),
+  technique_id: z.string().trim().regex(/^T\d{4}(\.\d{3})?$/i),
+  technique_name: z.string().trim().max(191).default(""),
+  platform: z.string().trim().min(1).max(191),
+  shell_type: z.string().trim().max(64).default(""),
+  command: z.string().min(1).max(100000),
 });
 
 export const paginatedAbilitiesResponseSchema = z.object({

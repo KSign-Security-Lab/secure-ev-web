@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE `Ability` ADD COLUMN `cves` JSON NULL,
+    ADD COLUMN `status` VARCHAR(191) NOT NULL DEFAULT 'ACTIVE',
+    ADD COLUMN `threat_groups` JSON NULL;

@@ -1,16 +1,14 @@
-import { Ability } from "@secure-ev-web/prisma";
+import type { RouterOutputs } from "~/lib/trpc";
 
 export interface AttackExecutor {
   platform: string;
+  shell?: string;
   payloads: string[];
   command: string;
   timeout: number;
   cleanup: number;
 }
 
-export interface AttackDataItem
-  extends Omit<Ability, "createdAt" | "updatedAt"> {
-  createdAt: string | Date;
-  updatedAt: string | Date;
+export type AttackDataItem = RouterOutputs["abilities"]["list"]["abilities"][number] & {
   executors?: AttackExecutor[];
-}
+};

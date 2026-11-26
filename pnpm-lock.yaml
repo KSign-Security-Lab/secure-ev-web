@@ -215,6 +215,9 @@ importers:
       prisma:
         specifier: ^6.19.0
         version: 6.19.3(typescript@5.9.3)
+      tsx:
+        specifier: ^4.20.6
+        version: 4.23.13
 
 packages:
 

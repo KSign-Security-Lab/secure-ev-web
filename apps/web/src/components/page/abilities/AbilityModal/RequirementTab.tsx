@@ -1,120 +1,92 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import trpc, { type RouterOutputs } from "~/lib/trpc";
 import { useI18n } from "~/i18n/I18nProvider";
+import { cn } from "~/lib/utils";
 
-interface FactModule {
-  module: string;
-  source: string;
-  edge?: string;
-  target?: string;
-}
+type Preview = RouterOutputs["operations"]["previewFacts"];
 
-export const RequirementTab = () => {
+/** Real requirements, derived from the command: #{fact} placeholders and payload files. */
+export const RequirementTab = ({ abilityId }: { abilityId: string }) => {
   const { t } = useI18n();
-  const [modules, setModules] = useState<FactModule[]>([
-    {
-      module: "",
-      source: "host.user.name",
-      edge: "undefined",
-      target: "undefined",
-    },
-  ]);
+  const [preview, setPreview] = useState<Preview | null>(null);
+  const [failed, setFailed] = useState(false);
 
-  const handleChange = (
-    index: number,
-    field: keyof FactModule,
-    value: string
-  ) => {
-    const updated = [...modules];
-    updated[index][field] = value;
-    setModules(updated);
-  };
+  useEffect(() => {
+    let active = true;
+    trpc.operations.previewFacts
+      .query({ abilityIds: [abilityId] })
+      .then((res) => active && setPreview(res))
+      .catch(() => active && setFailed(true));
+    return () => {
+      active = false;
+    };
+  }, [abilityId]);
 
-  const addModule = () => {
-    setModules([
-      ...modules,
-      {
-        module: "",
-        source: "host.user.name",
-        edge: "undefined",
-        target: "undefined",
-      },
-    ]);
-  };
+  if (failed) return <p className="text-sm text-rose-600">{t("abilities.requirement.failed")}</p>;
+  if (!preview) return <p className="text-sm text-neutral-500">{t("abilities.requirement.loading")}</p>;
 
-  const removeModule = (index: number) => {
-    setModules(modules.filter((_, i) => i !== index));
-  };
+  const view = preview.abilities[0];
+  const placeholders = view?.found ? view.placeholders : [];
+  const payloads = view?.found ? view.payloads : [];
+  const required = new Set(preview.requiredFacts);
 
   return (
-    <div className="p-4">
-      <h2 className="font-bold mb-4">{t("abilities.requirement.title")}</h2>
-      <div className="grid grid-cols-1 gap-4">
-        {modules.map((mod, index) => (
-          <div
-            key={index}
-            className="border border-neutral-200 p-4 rounded space-y-4 bg-white"
-          >
-            {[
-              {
-                label: t("abilities.requirement.module"),
-                value: mod.module,
-                key: "module",
-              },
-              {
-                label: t("abilities.requirement.source"),
-                value: mod.source,
-                key: "source",
-              },
-              {
-                label: t("abilities.requirement.edge"),
-                value: mod.edge,
-                key: "edge",
-              },
-              {
-                label: t("abilities.requirement.targetOptional"),
-                value: mod.target,
-                key: "target",
-              },
-            ].map(({ label, value, key }) => (
-              <div
-                key={key}
-                className="grid gap-2 items-center mb-2"
-                style={{ gridTemplateColumns: "1fr 3fr" }}
-              >
-                <label className="font-bold">{label}</label>
-                <input
-                  type="text"
-                  className="p-2 border border-neutral-200 rounded bg-neutral-50 text-neutral-900"
-                  value={value}
-                  onChange={(e) =>
-                    handleChange(index, key as keyof FactModule, e.target.value)
-                  }
-                />
-              </div>
+    <div className="space-y-6">
+      <section>
+        <h3 className="mb-2 text-sm font-semibold text-neutral-800">{t("abilities.requirement.facts")}</h3>
+        {placeholders.length === 0 ? (
+          <p className="text-sm text-neutral-500">{t("abilities.requirement.factsEmpty")}</p>
+        ) : (
+          <ul className="divide-y divide-neutral-200 rounded-md border border-neutral-200">
+            {placeholders.map((fact) => (
+              <li key={fact} className="flex items-center justify-between gap-4 px-4 py-2.5 text-sm">
+                <code className="font-mono text-neutral-800">{`#{${fact}}`}</code>
+                <span
+                  className={cn(
+                    "rounded px-2 py-0.5 text-xs font-medium",
+                    required.has(fact) ? "bg-amber-50 text-amber-700" : "bg-neutral-100 text-neutral-600"
+                  )}
+                >
+                  {required.has(fact) ? t("abilities.requirement.required") : t("abilities.requirement.derived")}
+                </span>
+              </li>
             ))}
+          </ul>
+        )}
+      </section>
 
-            <div className="text-right">
-              <button
-                onClick={() => removeModule(index)}
-                className="border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-md px-3 py-2 text-sm font-semibold"
-              >
-                {t("abilities.requirement.delete")}
-              </button>
-            </div>
-          </div>
-        ))}
-
-        <div className="text-right mt-4">
-          <button
-            onClick={addModule}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-          >
-            {t("abilities.requirement.add")}
-          </button>
-        </div>
-      </div>
+      <section>
+        <h3 className="mb-2 text-sm font-semibold text-neutral-800">{t("abilities.requirement.payloads")}</h3>
+        {payloads.length === 0 ? (
+          <p className="text-sm text-neutral-500">{t("abilities.requirement.payloadsEmpty")}</p>
+        ) : (
+          <ul className="divide-y divide-neutral-200 rounded-md border border-neutral-200">
+            {payloads.map((p) => (
+              <li key={p.name} className="flex items-center justify-between gap-4 px-4 py-2.5 text-sm">
+                <code className="min-w-0 truncate font-mono text-neutral-800">{p.name}</code>
+                <span
+                  className={cn(
+                    "shrink-0 rounded px-2 py-0.5 text-xs font-medium",
+                    p.available === true
+                      ? "bg-green-50 text-green-700"
+                      : p.available === false
+                        ? "bg-rose-50 text-rose-700"
+                        : "bg-neutral-100 text-neutral-600"
+                  )}
+                >
+                  {p.available === true
+                    ? t("abilities.requirement.available")
+                    : p.available === false
+                      ? t("abilities.requirement.missing")
+                      : t("abilities.requirement.unknown")}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 };

@@ -1,51 +1,42 @@
 import React from "react";
+import { Info } from "lucide-react";
 import { useI18n } from "~/i18n/I18nProvider";
+import { Switch } from "~/components/ui/switch";
 
-interface DummyAbilityFlags {
-  singleton: boolean;
-  repeatable: boolean;
-  deletePayload: boolean;
-}
-
-const dummyData: DummyAbilityFlags = {
-  singleton: true,
-  repeatable: false,
-  deletePayload: true,
-};
+/**
+ * Execution flags familiar from Caldera. The current engine runs each step
+ * once per agent and never deletes payloads, so the switches reflect that and
+ * are read-only until the engine supports them.
+ */
+const FLAGS = [
+  { key: "singleton", value: false },
+  { key: "repeatable", value: false },
+  { key: "deletePayload", value: false },
+] as const;
 
 export const ConfigurationTab = () => {
   const { t } = useI18n();
-  const config: { key: keyof DummyAbilityFlags; label: string }[] = [
-    { key: "singleton", label: t("abilities.configuration.singleton") },
-    { key: "repeatable", label: t("abilities.configuration.repeatable") },
-    { key: "deletePayload", label: t("abilities.configuration.deletePayload") },
-  ];
-
   return (
-    <div className="w-full max-w-xl overflow-hidden rounded-md border border-neutral-200">
-      <table className="table-fixed w-full text-neutral-900 border-collapse">
-        <colgroup>
-          <col style={{ width: "25%" }} />
-          <col style={{ width: "75%" }} />
-        </colgroup>
-        <tbody>
-          {config.map(({ key, label }, idx) => (
-            <tr
-              key={key}
-              className={
-                idx !== config.length - 1 ? "border-b border-neutral-200" : ""
-              }
-            >
-              <td className="px-4 py-3 font-bold align-top border-r border-neutral-200 bg-neutral-50">
-                {label}
-              </td>
-              <td className="px-4 py-3">
-                <input type="checkbox" checked={dummyData[key]} readOnly />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="space-y-4">
+      <p className="flex items-start gap-2 rounded-md border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800">
+        <Info className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+        {t("abilities.configuration.notice")}
+      </p>
+      <ul className="divide-y divide-neutral-200 rounded-md border border-neutral-200">
+        {FLAGS.map(({ key, value }) => (
+          <li key={key} className="flex items-start justify-between gap-6 px-4 py-3">
+            <div>
+              <p id={`flag-${key}`} className="text-sm font-semibold text-neutral-900">
+                {t(`abilities.configuration.${key}` as "abilities.configuration.singleton")}
+              </p>
+              <p className="mt-0.5 text-sm text-neutral-500">
+                {t(`abilities.configuration.${key}Desc` as "abilities.configuration.singletonDesc")}
+              </p>
+            </div>
+            <Switch checked={value} disabled aria-labelledby={`flag-${key}`} className="mt-0.5" />
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

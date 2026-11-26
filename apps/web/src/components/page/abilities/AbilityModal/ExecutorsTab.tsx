@@ -1,90 +1,62 @@
-import { AttackExecutor } from "~/types/defend";
 import { useState } from "react";
+import { TerminalSquare } from "lucide-react";
+import { AttackExecutor } from "~/types/defend";
 import { useI18n } from "~/i18n/I18nProvider";
+import { EmptyState } from "~/components/common/EmptyState/EmptyState";
+import { display, platformLabel } from "~/lib/format";
+import { NativeSelect } from "~/components/common/Select/NativeSelect";
 
-interface InnerContentProps {
-  execData: AttackExecutor;
-  availablePlatforms: string[];
-}
+const fieldLabel = "mb-1.5 block text-sm font-semibold text-neutral-800";
+const readOnly =
+  "h-10 w-full rounded-md border border-neutral-200 bg-neutral-50 px-3 text-sm text-neutral-700";
 
-const InnerContent: React.FC<InnerContentProps> = ({
-  execData,
-  availablePlatforms,
-}) => {
+const ExecutorDetail: React.FC<{ exec: AttackExecutor }> = ({ exec }) => {
   const { t } = useI18n();
   return (
-    <>
-      {/* Platform Radio */}
-      <div className="flex flex-wrap gap-6 items-center">
-        {availablePlatforms.map((platform, index) => (
-          <label key={platform + index} className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="platform"
-              defaultChecked={platform === execData.platform}
-              className="accent-blue-500"
-            />
-            <span>{platform}</span>
-          </label>
-        ))}
-      </div>
-
-      {/* Executor Radio */}
-      <div className="flex flex-wrap gap-6 items-center">
-        {["psh", "cmd", "proc", "MNX", "Elastic"].map((ex) => (
-          <label key={ex} className="flex items-center gap-2">
-            <input type="radio" name="executor" className="accent-blue-500" />
-            <span>{ex}</span>
-          </label>
-        ))}
-      </div>
-
-      {/* Payloads */}
-      <div>
-        <textarea
-          className="bg-neutral-50 p-2 w-full rounded resize-none"
-          placeholder={t("abilities.executors.payloadPlaceholder")}
-          rows={3}
-          defaultValue={execData.payloads.join("\n")}
-        />
-      </div>
-
-      {/* Command block */}
-      <div>
-        <label className="block text-sm font-medium mb-1">
-          {t("abilities.executors.command")}
-        </label>
-        <textarea
-          className="bg-neutral-950 text-neutral-100 p-2 w-full rounded resize-none font-mono text-sm leading-relaxed"
-          rows={6}
-          defaultValue={execData.command}
-        />
-      </div>
-
-      {/* Timeout + Cleanup */}
-      <div className="grid grid-cols-2 gap-4">
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <div>
-          <label className="block text-sm font-medium mb-1">
-            {t("abilities.executors.timeout")}
-          </label>
-          <input
-            type="number"
-            className="bg-neutral-50 p-2 rounded w-full"
-            defaultValue={execData.timeout}
-          />
+          <span className={fieldLabel}>{t("abilities.executors.platform")}</span>
+          <div className={`${readOnly} flex items-center`}>{platformLabel(exec.platform)}</div>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">
-            {t("abilities.executors.cleanup")}
-          </label>
-          <input
-            type="number"
-            className="bg-neutral-50 p-2 rounded w-full"
-            defaultValue={execData.cleanup}
-          />
+          <span className={fieldLabel}>{t("abilities.executors.shell")}</span>
+          <div className={`${readOnly} flex items-center font-mono`}>{display(exec.shell)}</div>
+        </div>
+        <div>
+          <span className={fieldLabel}>{t("abilities.executors.timeout")}</span>
+          <div className={`${readOnly} flex items-center tabular-nums`}>
+            {t("abilities.executors.seconds", { value: exec.timeout })}
+          </div>
+        </div>
+        <div>
+          <span className={fieldLabel}>{t("abilities.executors.cleanup")}</span>
+          <div className={`${readOnly} flex items-center tabular-nums`}>{exec.cleanup}</div>
         </div>
       </div>
-    </>
+
+      <div>
+        <span className={fieldLabel}>{t("abilities.executors.command")}</span>
+        <pre className="max-h-64 overflow-auto whitespace-pre-wrap break-all rounded-md bg-neutral-950 p-3 font-mono text-sm leading-relaxed text-neutral-100">
+          {exec.command || "—"}
+        </pre>
+      </div>
+
+      <div>
+        <span className={fieldLabel}>{t("abilities.executors.payloads")}</span>
+        {exec.payloads.length ? (
+          <ul className="space-y-1 rounded-md border border-neutral-200 bg-neutral-50 p-3 font-mono text-xs text-neutral-700">
+            {exec.payloads.map((p, i) => (
+              <li key={i} className="break-all">
+                {p}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-neutral-500">{t("abilities.executors.noPayloads")}</p>
+        )}
+      </div>
+    </div>
   );
 };
 
@@ -94,31 +66,45 @@ interface ExecutorsTabProps {
 
 export const ExecutorsTab: React.FC<ExecutorsTabProps> = ({ data }) => {
   const { t } = useI18n();
-  const [executorData, setExecutorData] = useState<AttackExecutor | null>(null);
+  const [index, setIndex] = useState(0);
+
+  if (!data.length) {
+    return (
+      <EmptyState
+        size="sm"
+        icon={TerminalSquare}
+        title={t("abilities.executors.emptyTitle")}
+        description={t("abilities.executors.emptyDescription")}
+      />
+    );
+  }
+
+  const current = data[Math.min(index, data.length - 1)];
 
   return (
-    <div className="space-y-4">
-      {/* Choose Dropdown */}
-      <div>
-        <select
-          className="w-full bg-neutral-50 p-2 rounded"
-          onChange={(e) => {
-            setExecutorData(data[Number(e.currentTarget.value)]);
-          }}
+    <div className="space-y-5">
+      <div className="max-w-sm">
+        <label htmlFor="ability-executor" className={fieldLabel}>
+          {t("abilities.executors.label")}
+        </label>
+        <NativeSelect
+          id="ability-executor"
+          className="bg-neutral-50"
+          value={index}
+          onChange={(e) => setIndex(Number(e.currentTarget.value))}
         >
-          {data?.map((_, index) => (
-            <option key={index} value={index}>
-              {t("abilities.executors.executorIndex", { index })}
+          {data.map((exec, i) => (
+            <option key={i} value={i}>
+              {t("abilities.executors.option", {
+                index: i + 1,
+                platform: platformLabel(exec.platform),
+                shell: display(exec.shell),
+              })}
             </option>
           ))}
-        </select>
+        </NativeSelect>
       </div>
-      {executorData ? (
-        <InnerContent
-          execData={executorData}
-          availablePlatforms={data.map((it) => it.platform)}
-        />
-      ) : null}
+      <ExecutorDetail exec={current} />
     </div>
   );
 };

@@ -1,5 +1,7 @@
 import { PrismaClient } from "./src";
-import seed from "./data/data.json";
+import data from "./data/data.json";
+import extra from "./data/extra.json";
+import custom from "./data/custom.json";
 import mitre from "./data/mitre_list.json";
 
 const filterX = (data: string): string => {
@@ -8,6 +10,8 @@ const filterX = (data: string): string => {
   }
   return data;
 };
+
+const seed = [...data, ...extra, ...custom];
 
 const prisma = new PrismaClient();
 async function main() {
