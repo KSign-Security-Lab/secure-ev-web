@@ -1,9 +1,14 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Plus, Search, Trash2, ArrowUp, ArrowDown, AlertTriangle, Loader2 } from "lucide-react";
+import { Trash2, ArrowUp, ArrowDown, AlertTriangle, Loader2 } from "lucide-react";
 import { Modal } from "~/components/common/Modal/Modal";
+import { ModalButton } from "~/components/common/Modal/ModalButton";
+import { Checkbox } from "~/components/ui/checkbox";
+import { AbilityPicker, type PickedAbility } from "~/components/page/abilities/AbilityPicker";
 import trpc, { type RouterOutputs } from "~/lib/trpc";
+import { useI18n } from "~/i18n/I18nProvider";
+import { platformLabel } from "~/lib/format";
 
 type AgentList = RouterOutputs["agents"]["list"];
 type PreviewFacts = RouterOutputs["operations"]["previewFacts"];
@@ -19,8 +24,17 @@ interface OperationBuilderProps {
   open: boolean;
   onClose: () => void;
   onCreated: (operationId: string) => void;
-  /** Pre-seed the plan with one ability (e.g. "Run" from the ability modal). */
-  initialAbility?: { abilityId: string; abilityName: string; platform: string } | null;
+  /**
+   * Pre-seed the builder: one ability ("Run" from the ability modal) or a
+   * whole saved assessment plan.
+   */
+  initialPlan?: BuilderPreset | null;
+}
+
+export interface BuilderPreset {
+  name: string;
+  abilities: { abilityId: string; abilityName: string; platform: string }[];
+  paws?: string[];
 }
 
 const inputClass =
@@ -30,17 +44,15 @@ export const OperationBuilder: React.FC<OperationBuilderProps> = ({
   open,
   onClose,
   onCreated,
-  initialAbility,
+  initialPlan,
 }) => {
+  const { t } = useI18n();
   const [name, setName] = useState("");
   const [agents, setAgents] = useState<AgentList>([]);
   const [selectedPaws, setSelectedPaws] = useState<Set<string>>(new Set());
   const [steps, setSteps] = useState<StepDraft[]>([]);
   const [stopOnError, setStopOnError] = useState(false);
 
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState<RouterOutputs["abilities"]["search"]["abilities"]>([]);
-  const [searching, setSearching] = useState(false);
 
   const [preview, setPreview] = useState<PreviewFacts | null>(null);
   const [factValues, setFactValues] = useState<Record<string, string>>({});
@@ -50,33 +62,14 @@ export const OperationBuilder: React.FC<OperationBuilderProps> = ({
   // Reset when (re)opened; seed with the initial ability if given.
   useEffect(() => {
     if (!open) return;
-    setName(initialAbility ? `Run: ${initialAbility.abilityName}` : "");
-    setSteps(initialAbility ? [{ ...initialAbility, captures: [] }] : []);
-    setSelectedPaws(new Set());
+    setName(initialPlan?.name ?? "");
+    setSteps(initialPlan ? initialPlan.abilities.map((a) => ({ ...a, captures: [] })) : []);
+    setSelectedPaws(new Set(initialPlan?.paws ?? []));
     setStopOnError(false);
-    setQuery("");
-    setResults([]);
     setFactValues({});
     setError(null);
     void trpc.agents.list.query().then(setAgents).catch(() => setAgents([]));
-  }, [open, initialAbility]);
-
-  // Debounced ability search.
-  useEffect(() => {
-    if (!open || query.trim().length < 2) {
-      setResults([]);
-      return;
-    }
-    const handle = setTimeout(() => {
-      setSearching(true);
-      trpc.abilities.search
-        .query({ query: query.trim(), page: 1, pageSize: 20 })
-        .then((res) => setResults(res.abilities))
-        .catch(() => setResults([]))
-        .finally(() => setSearching(false));
-    }, 250);
-    return () => clearTimeout(handle);
-  }, [query, open]);
+  }, [open, initialPlan]);
 
   const stepIds = useMemo(() => steps.map((step) => step.abilityId), [steps]);
 
@@ -100,7 +93,7 @@ export const OperationBuilder: React.FC<OperationBuilderProps> = ({
     };
   }, [stepIds, open]);
 
-  const addStep = useCallback((ability: (typeof results)[number]) => {
+  const addStep = useCallback((ability: PickedAbility) => {
     setSteps((prev) =>
       prev.some((step) => step.abilityId === ability.ability_id)
         ? prev
@@ -194,7 +187,7 @@ export const OperationBuilder: React.FC<OperationBuilderProps> = ({
       });
       onCreated(id);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to start operation");
+      setError(err instanceof Error ? err.message : t("operations.builder.failed"));
     } finally {
       setSubmitting(false);
     }
@@ -204,71 +197,61 @@ export const OperationBuilder: React.FC<OperationBuilderProps> = ({
     <Modal
       open={open}
       onClose={onClose}
-      title="New Operation"
+      title={t("operations.builder.title")}
       className="max-w-5xl"
+      bodyClassName="h-[min(66vh,640px)]"
+      confirmOnClose={steps.length > 0 && !submitting}
       footer={
-        <div className="flex items-center justify-between w-full gap-3">
-          <span className="text-xs text-rose-600">{error}</span>
-          <div className="flex gap-2">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 rounded bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-sm"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={submit}
-              disabled={!canSubmit}
-              className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white text-sm font-semibold flex items-center gap-2"
-            >
-              {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
-              Launch
-            </button>
-          </div>
-        </div>
+        <>
+          {error && <span className="mr-auto text-sm text-rose-600">{error}</span>}
+          <ModalButton onClick={onClose}>{t("operations.builder.cancel")}</ModalButton>
+          <ModalButton variant="primary" onClick={submit} disabled={!canSubmit}>
+            {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
+            {t("operations.builder.launch")}
+          </ModalButton>
+        </>
       }
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto pr-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Left: targeting + abilities */}
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-neutral-600 mb-1">Name</label>
+            <label className="block text-xs font-semibold text-neutral-600 mb-1">{t("operations.builder.name")}</label>
             <input
               className={inputClass}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Discovery sweep"
+              placeholder={t("operations.builder.namePlaceholder")}
             />
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1">
               <label className="text-xs font-semibold text-neutral-600">
-                Target agents ({selectedPaws.size})
+                {t("operations.builder.targets", { count: selectedPaws.size })}
               </label>
             </div>
             <div className="border border-neutral-200 rounded max-h-40 overflow-y-auto divide-y divide-neutral-100">
               {agents.length === 0 && (
-                <p className="text-xs text-neutral-400 p-3">No agents have checked in.</p>
+                <p className="text-xs text-neutral-400 p-3">{t("operations.builder.noAgents")}</p>
               )}
               {agents.map((agent) => (
                 <label
                   key={agent.paw}
                   className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-neutral-50 cursor-pointer"
                 >
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={selectedPaws.has(agent.paw)}
-                    onChange={() => togglePaw(agent.paw)}
+                    onCheckedChange={() => togglePaw(agent.paw)}
                   />
                   <span className="font-mono text-xs text-neutral-700">{agent.paw}</span>
                   <span className="text-neutral-500">{agent.host || agent.display_name}</span>
-                  <span className="ml-auto text-[10px] uppercase tracking-wider text-neutral-400">
-                    {agent.platform}
+                  <span className="ml-auto text-xs text-neutral-500">
+                    {platformLabel(agent.platform)}
                   </span>
                   <span
                     className={`h-2 w-2 rounded-full ${agent.trusted ? "bg-green-500" : "bg-neutral-300"}`}
-                    title={agent.trusted ? "trusted" : "stale"}
+                    title={agent.trusted ? t("operations.builder.trusted") : t("operations.builder.stale")}
                   />
                 </label>
               ))}
@@ -276,43 +259,16 @@ export const OperationBuilder: React.FC<OperationBuilderProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-neutral-600 mb-1">Add abilities</label>
-            <div className="relative">
-              <Search className="w-4 h-4 absolute left-2 top-2.5 text-neutral-400" />
-              <input
-                className={`${inputClass} pl-8`}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search by name, tactic, technique…"
-              />
-            </div>
-            {(searching || results.length > 0) && (
-              <div className="border border-neutral-200 rounded mt-1 max-h-48 overflow-y-auto divide-y divide-neutral-100">
-                {searching && <p className="text-xs text-neutral-400 p-2">Searching…</p>}
-                {results.map((ability) => (
-                  <button
-                    key={ability.ability_id}
-                    onClick={() => addStep(ability)}
-                    className="w-full flex items-center gap-2 px-2 py-1.5 text-left text-sm hover:bg-blue-50"
-                  >
-                    <Plus className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                    <span className="truncate">{ability.ability_name}</span>
-                    <span className="ml-auto text-[10px] uppercase text-neutral-400">
-                      {ability.platform}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
+            <label className="block text-xs font-semibold text-neutral-600 mb-1">{t("operations.builder.addAbilities")}</label>
+            <AbilityPicker selectedIds={stepIds} onPick={addStep} />
           </div>
 
           <label className="flex items-center gap-2 text-sm text-neutral-600">
-            <input
-              type="checkbox"
+            <Checkbox
               checked={stopOnError}
-              onChange={(e) => setStopOnError(e.target.checked)}
+              onCheckedChange={(checked) => setStopOnError(checked === true)}
             />
-            Stop an agent&apos;s remaining steps after a skip/failure
+            {t("operations.builder.stopOnError")}
           </label>
         </div>
 
@@ -320,11 +276,11 @@ export const OperationBuilder: React.FC<OperationBuilderProps> = ({
         <div className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-neutral-600 mb-1">
-              Plan ({steps.length} step{steps.length === 1 ? "" : "s"})
+              {t("operations.builder.plan", { count: steps.length })}
             </label>
             {steps.length === 0 && (
               <p className="text-xs text-neutral-400 border border-dashed border-neutral-200 rounded p-3">
-                Add abilities from the left. They run top-to-bottom on every target agent.
+                {t("operations.builder.planEmpty")}
               </p>
             )}
             <ol className="space-y-2">
@@ -333,14 +289,14 @@ export const OperationBuilder: React.FC<OperationBuilderProps> = ({
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-mono text-neutral-400 w-5">{idx + 1}</span>
                     <span className="text-sm truncate flex-1">{step.abilityName}</span>
-                    <span className="text-[10px] uppercase text-neutral-400">{step.platform}</span>
-                    <button onClick={() => moveStep(idx, -1)} className="text-neutral-400 hover:text-neutral-700">
+                    <span className="shrink-0 text-xs text-neutral-500">{platformLabel(step.platform)}</span>
+                    <button type="button" onClick={() => moveStep(idx, -1)} aria-label={t("operations.builder.moveUp")} title={t("operations.builder.moveUp")} className="text-neutral-400 hover:text-neutral-700">
                       <ArrowUp className="w-3.5 h-3.5" />
                     </button>
-                    <button onClick={() => moveStep(idx, 1)} className="text-neutral-400 hover:text-neutral-700">
+                    <button type="button" onClick={() => moveStep(idx, 1)} aria-label={t("operations.builder.moveDown")} title={t("operations.builder.moveDown")} className="text-neutral-400 hover:text-neutral-700">
                       <ArrowDown className="w-3.5 h-3.5" />
                     </button>
-                    <button onClick={() => removeStep(idx)} className="text-rose-400 hover:text-rose-600">
+                    <button type="button" onClick={() => removeStep(idx)} aria-label={t("operations.builder.remove")} title={t("operations.builder.remove")} className="text-rose-400 hover:text-rose-600">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -348,13 +304,13 @@ export const OperationBuilder: React.FC<OperationBuilderProps> = ({
                     <div key={cIdx} className="flex items-center gap-1 mt-1 pl-7">
                       <input
                         className="w-28 rounded border border-neutral-200 px-1.5 py-1 text-xs"
-                        placeholder="fact name"
+                        placeholder={t("operations.builder.factName")}
                         value={capture.fact}
                         onChange={(e) => updateCapture(idx, cIdx, "fact", e.target.value)}
                       />
                       <input
                         className="flex-1 rounded border border-neutral-200 px-1.5 py-1 text-xs font-mono"
-                        placeholder="regex with (group)"
+                        placeholder={t("operations.builder.regex")}
                         value={capture.regex}
                         onChange={(e) => updateCapture(idx, cIdx, "regex", e.target.value)}
                       />
@@ -368,9 +324,9 @@ export const OperationBuilder: React.FC<OperationBuilderProps> = ({
                   ))}
                   <button
                     onClick={() => addCapture(idx)}
-                    className="text-[11px] text-blue-600 hover:text-blue-800 mt-1 pl-7"
+                    className="text-xs text-blue-600 hover:text-blue-800 mt-1 pl-7"
                   >
-                    + capture fact from output
+                    {t("operations.builder.addCapture")}
                   </button>
                 </li>
               ))}
@@ -380,7 +336,7 @@ export const OperationBuilder: React.FC<OperationBuilderProps> = ({
           {preview && preview.requiredFacts.length > 0 && (
             <div>
               <label className="block text-xs font-semibold text-neutral-600 mb-1">
-                Required facts
+                {t("operations.builder.requiredFacts")}
               </label>
               <div className="space-y-1">
                 {preview.requiredFacts.map((fact) => (
@@ -392,14 +348,13 @@ export const OperationBuilder: React.FC<OperationBuilderProps> = ({
                       onChange={(e) =>
                         setFactValues((prev) => ({ ...prev, [fact]: e.target.value }))
                       }
-                      placeholder="value (or capture it from an earlier step)"
+                      placeholder={t("operations.builder.factValue")}
                     />
                   </div>
                 ))}
               </div>
-              <p className="text-[11px] text-neutral-400 mt-1">
-                Leave blank to fill it from a capture rule on an earlier step. Unfilled
-                placeholders cause that step to be skipped on the agent.
+              <p className="text-xs text-neutral-400 mt-1">
+                {t("operations.builder.factHint")}
               </p>
             </div>
           )}
@@ -408,16 +363,13 @@ export const OperationBuilder: React.FC<OperationBuilderProps> = ({
             <div className="flex gap-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2">
               <AlertTriangle className="w-4 h-4 shrink-0" />
               <span>
-                Payload{missingPayloads.length > 1 ? "s" : ""} not present on the C2:{" "}
-                <span className="font-mono">{missingPayloads.join(", ")}</span>. Drop the file
-                {missingPayloads.length > 1 ? "s" : ""} into the payload directory, or these steps
-                will fail on the target.
+                {t("operations.builder.missingPayloads", { files: missingPayloads.join(", ") })}
               </span>
             </div>
           )}
           {preview && !preview.payloadListingAvailable && (
-            <p className="text-[11px] text-neutral-400">
-              Could not reach the C2 to verify payload availability.
+            <p className="text-xs text-neutral-400">
+              {t("operations.builder.payloadCheckUnavailable")}
             </p>
           )}
         </div>
