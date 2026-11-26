@@ -145,18 +145,27 @@ export const DeployAgentModal: React.FC<DeployAgentModalProps> = ({
   const handleDownloadBinary = async () => {
     setIsDownloadingBinary(true);
     try {
-      const response = await fetch("/file/download", {
-        method: "POST",
-        headers: { file: "sandcat.go", platform },
-      });
+      // The binary is served by the C2; the console proxies it (api/agent-binary).
+      const response = await fetch(
+        `/api/agent-binary?platform=${encodeURIComponent(platform)}`
+      );
       if (!response.ok) throw new Error(await response.text());
+
+      const fallbackName =
+        platform === "windows" ? "sandcat.exe" : `sandcat-${platform}`;
+      const disposition = response.headers.get("content-disposition") ?? "";
+      const named = /filename="?([^";]+)"?/i.exec(disposition)?.[1];
+      // The C2 names the binary after the configured implant name; keep `.exe` on Windows.
+      let filename = named ?? fallbackName;
+      if (platform === "windows" && !filename.toLowerCase().endsWith(".exe")) {
+        filename += ".exe";
+      }
 
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download =
-        platform === "windows" ? "sandcat.exe" : `sandcat-${platform}`;
+      anchor.download = filename;
       document.body.appendChild(anchor);
       anchor.click();
       document.body.removeChild(anchor);
