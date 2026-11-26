@@ -13,6 +13,10 @@ export async function getAgentConfig(): Promise<AgentConfig> {
     create: {
       id: 1,
       c2Url: env.C2_PUBLIC_URL,
+      // Responsive beacon cadence so terminals attach to agents within a few
+      // seconds. Interactive sessions drop to a 1s beacon on top of this.
+      sleepMin: 2,
+      sleepMax: 5,
     },
   });
 }

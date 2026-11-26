@@ -4,11 +4,15 @@ import prisma from "~/lib/prisma";
 
 /**
  * Terminal heartbeat. While `interactiveUntil` is in the future the beacon
- * endpoint returns sleep=1, which is what makes the terminal feel live. The
- * window is deliberately short so an abandoned tab drops the agent back to its
- * normal beacon interval on its own.
+ * endpoint returns sleep=1, which is what makes the terminal feel live.
+ *
+ * The window must comfortably outlast several missed client heartbeats —
+ * background-tab timer throttling or a transient network blip must not let it
+ * lapse, because once it does the agent falls back to its 30–60s sleep and the
+ * session needs a full slow cycle to recover. The client beats every ~5s, so a
+ * 60s window tolerates ~12 consecutive misses before the agent is released.
  */
-const WINDOW_MS = 30_000;
+const WINDOW_MS = 60_000;
 
 const bodySchema = z.object({
   paw: z.string().min(1),

@@ -10,7 +10,7 @@ type PlaygroundPageHeaderMessageKey = keyof typeof enPlaygroundPageHeaderMessage
 
 export const koPlaygroundPageHeaderMessages: Record<PlaygroundPageHeaderMessageKey, string> = {
   "playground.header.title": "에이전트 터미널",
-  "playground.header.subtitle": "활성 세션을 탐색하고 라이브 터미널과 상호작용하세요.",
+  "playground.header.subtitle": "활성 세션을 선택해 실시간 터미널에서 명령을 실행하세요.",
   "playground.header.sessionSelected": "세션 #{id}",
   "playground.header.noSessionSelected": "선택된 세션 없음",
   "playground.header.refreshSessions": "세션 목록 새로고침",

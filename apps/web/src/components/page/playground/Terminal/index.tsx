@@ -58,6 +58,20 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
     const [showAutocomplete, setShowAutocomplete] = useState(false);
     const [autocompleteInput, setAutocompleteInput] = useState("");
     const autocompleteTriggeredRef = useRef(false);
+    // Latest values read by the long-lived xterm handlers. The terminal is
+    // created once per mount; re-creating it on every prop/locale change
+    // disposed it while xterm still had a queued Viewport.syncScrollArea,
+    // which threw "Cannot read properties of undefined (reading 'dimensions')".
+    const tRef = useRef(t);
+    const onCommandRef = useRef(onCommand);
+    const promptLabelRef = useRef(promptLabel);
+    const welcomeMessageRef = useRef(welcomeMessage);
+    useEffect(() => {
+      tRef.current = t;
+      onCommandRef.current = onCommand;
+      promptLabelRef.current = promptLabel;
+      welcomeMessageRef.current = welcomeMessage;
+    });
 
     const write = useCallback((value: string) => {
       termRef.current?.write(value);
@@ -70,10 +84,10 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
     const prompt = useCallback(
       (options?: { leadingNewline?: boolean }) => {
         const leadingNewline = options?.leadingNewline ?? true;
-        write(`${leadingNewline ? "\r\n" : ""}${promptLabel}`);
+        write(`${leadingNewline ? "\r\n" : ""}${promptLabelRef.current}`);
         inputBufferRef.current = "";
       },
-      [promptLabel, write]
+      [write]
     );
 
     const setCommand = useCallback((command: string) => {
@@ -122,7 +136,25 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
       fitAddonRef.current = fitAddon;
 
       terminal.open(container);
-      fitAddon.fit();
+
+      // Only measure once the element is attached and has a size; xterm's
+      // renderer has no dimensions before that.
+      let disposed = false;
+      const safeFit = () => {
+        if (disposed || !container.isConnected) return;
+        if (container.clientWidth === 0 || container.clientHeight === 0) return;
+        try {
+          fitAddon.fit();
+        } catch {
+          // Renderer not ready yet; the next resize will retry.
+        }
+      };
+      let frame = requestAnimationFrame(safeFit);
+      const observer = new ResizeObserver(() => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(safeFit);
+      });
+      observer.observe(container);
 
       // Ensure terminal element has matching rounded corners
       const terminalElement = container.querySelector(".xterm");
@@ -132,18 +164,19 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
 
       terminal.focus();
       terminal.writeln(
-        welcomeMessage || t("playground.terminal.welcome")
+        welcomeMessageRef.current || tRef.current("playground.terminal.welcome")
       );
       prompt({ leadingNewline: false });
 
-      const resize = () => fitAddon.fit();
-      window.addEventListener("resize", resize);
-
       const dataListener = terminal.onData((data) => {
-        // Disable input when no session selected or not connected (use ref to get current state)
+        // Allow input whenever a session is reachable — "connecting" means the
+        // agent is alive but still finishing a sleep cycle, and commands queue
+        // for its next beacon. Only block with no session or a dead/errored one.
+        const connState = connectionStateRef.current;
         if (
           !sessionIdRef.current ||
-          connectionStateRef.current !== "connected"
+          connState === "disconnected" ||
+          connState === "error"
         ) {
           // Allow Ctrl+C to cancel
           if (data === "\u0003") {
@@ -156,11 +189,11 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
               terminal.write("\r\n");
               if (!sessionIdRef.current) {
                 terminal.writeln(
-                  t("playground.terminal.warnNoSession")
+                  tRef.current("playground.terminal.warnNoSession")
                 );
               } else {
                 terminal.writeln(
-                  t("playground.terminal.warnDisconnected")
+                  tRef.current("playground.terminal.warnDisconnected")
                 );
               }
               prompt();
@@ -201,7 +234,7 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
               setShowAutocomplete(false);
               autocompleteTriggeredRef.current = false;
               if (command.length > 0) {
-                onCommand(command);
+                onCommandRef.current(command);
               } else {
                 prompt({ leadingNewline: false });
               }
@@ -237,14 +270,20 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
       });
 
       return () => {
-        window.removeEventListener("resize", resize);
+        disposed = true;
+        cancelAnimationFrame(frame);
+        observer.disconnect();
         dataListener.dispose();
-        terminal.dispose();
-        fitAddon.dispose();
         termRef.current = null;
         fitAddonRef.current = null;
+        // xterm queues a Viewport.syncScrollArea via setTimeout when it opens.
+        // Disposing synchronously (e.g. React StrictMode's mount → unmount →
+        // mount) lets that timer run against a disposed renderer and throw
+        // "reading 'dimensions'". Queue the dispose behind it instead.
+        // Disposing the terminal also disposes loaded addons (FitAddon).
+        setTimeout(() => terminal.dispose(), 0);
       };
-    }, [welcomeMessage, promptLabel, prompt, onCommand, t]);
+    }, [prompt]);
 
     // Update connection state ref when it changes
     useEffect(() => {
@@ -320,9 +359,7 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
         <div className="flex min-h-0 flex-1 relative overflow-hidden rounded-lg">
           <div
             ref={containerRef}
-            className={`h-full w-full overflow-hidden rounded-lg bg-black p-4 ${
-              !isConnected ? "opacity-75" : ""
-            }`}
+            className="h-full w-full overflow-hidden rounded-lg bg-black p-4"
           />
           {/* Autocomplete hidden for now */}
           {/* @ts-ignore */}
@@ -335,13 +372,6 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(
                   onSelect={handleCommandSelect}
                   onClose={handleAutocompleteClose}
                 />
-              </div>
-            </div>
-          )}
-          {!sessionId && (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none backdrop-blur-sm">
-              <div className="rounded-lg bg-neutral-900/90 border border-neutral-700 px-4 py-2 text-sm text-neutral-300">
-                {t("playground.terminal.selectSessionPrompt")}
               </div>
             </div>
           )}

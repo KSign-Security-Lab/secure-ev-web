@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import type { UIEvent } from "react";
-import { Search, X } from "lucide-react";
+import { Play, Search, SquarePen, X } from "lucide-react";
 import trpc from "~/lib/trpc";
 import { cn } from "~/lib/utils";
 import { useI18n } from "~/i18n/I18nProvider";
@@ -26,12 +26,16 @@ interface CommandResult {
 }
 
 interface CommandFilterDropdownProps {
+  /** Load the command into the terminal input for review/editing. */
   onSelectCommand: (command: string) => void;
+  /** Run the command on the agent immediately. */
+  onRunCommand?: (command: string) => void;
   disabled?: boolean;
 }
 
 export function CommandFilterDropdown({
   onSelectCommand,
+  onRunCommand,
   disabled = false,
 }: CommandFilterDropdownProps) {
   const { t } = useI18n();
@@ -222,6 +226,12 @@ export function CommandFilterDropdown({
     handleReset();
   };
 
+  const handleRunCommand = (command: string) => {
+    onRunCommand?.(command);
+    setIsOpen(false);
+    handleReset();
+  };
+
   const activeFilterCount = (
     ["platform", "type", "techniqueName", "tactic"] as const
   ).filter((key) => filterState[key]).length;
@@ -337,7 +347,7 @@ export function CommandFilterDropdown({
           )}
         >
           <div className="flex items-center gap-2 min-w-0">
-            <span className="text-[11px] uppercase tracking-wide text-neutral-500">
+            <span className="text-xs text-neutral-500">
               {label}
             </span>
             <span className="text-sm truncate font-medium">
@@ -416,9 +426,10 @@ export function CommandFilterDropdown({
         <span>{t("playground.filter.searchCommands")}</span>
         {isOpen && (
           <span className="ml-auto flex items-center gap-2 text-xs text-neutral-500">
-            <span className="inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-[10px] text-neutral-600 ring-1 ring-inset ring-neutral-200">
-              {activeFilterCount || t("playground.filter.noFilters")}{" "}
-              {t("playground.filter.filters")}
+            <span className="inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-xs text-neutral-600 ring-1 ring-inset ring-neutral-200">
+              {activeFilterCount
+                ? t("playground.filter.filterCount", { count: activeFilterCount })
+                : t("playground.filter.noFilters")}
             </span>
           </span>
         )}
@@ -443,7 +454,7 @@ export function CommandFilterDropdown({
 
             {/* Keyword search */}
             <div className="mb-4">
-              <label className="text-[11px] font-semibold uppercase tracking-wide text-neutral-500">
+              <label className="text-xs font-semibold text-neutral-500">
                 {t("common.keyword")}
               </label>
               <div className="mt-2 relative">
@@ -491,7 +502,7 @@ export function CommandFilterDropdown({
             {/* Results */}
             <div className="border-t border-neutral-200 pt-4">
               <div className="flex items-center justify-between mb-3">
-                <h4 className="text-[10px] font-semibold text-neutral-500 tracking-[0.08em] uppercase">
+                <h4 className="text-xs font-semibold text-neutral-500">
                   {t("common.results")}
                 </h4>
                 <button
@@ -526,32 +537,52 @@ export function CommandFilterDropdown({
                 ) : (
                   <div className="space-y-2">
                     {commands.map((cmd) => (
-                      <button
+                      <div
                         key={cmd.id}
-                        type="button"
-                        onClick={() => handleSelectCommand(cmd.command)}
-                        className="w-full text-left px-4 py-3 rounded-lg transition-colors border border-neutral-200 bg-white hover:border-blue-200 hover:bg-neutral-50"
+                        className="group/cmd rounded-lg border border-neutral-200 bg-white transition-colors hover:border-blue-200"
                       >
-                        <div className="font-semibold text-neutral-900 text-sm mb-1">
-                          {cmd.ability_name}
-                        </div>
-                        <div className="text-[11px] text-neutral-600 font-mono break-all mb-2">
-                          {cmd.command}
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2 text-[11px] text-neutral-500">
-                          <span className="inline-flex items-center rounded-full bg-neutral-100/70 px-2 py-0.5 ring-1 ring-inset ring-neutral-200">
-                            {cmd.platform}
-                          </span>
-                          <span className="inline-flex items-center rounded-full bg-neutral-100/70 px-2 py-0.5 ring-1 ring-inset ring-neutral-200">
-                            {cmd.type}
-                          </span>
-                          {cmd.technique_name && (
-                            <span className="truncate text-neutral-500">
-                              {cmd.technique_name}
+                        <div className="px-4 pt-3">
+                          <div className="font-semibold text-neutral-900 text-sm mb-1">
+                            {cmd.ability_name}
+                          </div>
+                          <div className="text-xs text-neutral-600 font-mono break-all mb-2">
+                            {cmd.command}
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-500">
+                            <span className="inline-flex items-center rounded-full bg-neutral-100/70 px-2 py-0.5 ring-1 ring-inset ring-neutral-200">
+                              {cmd.platform}
                             </span>
+                            <span className="inline-flex items-center rounded-full bg-neutral-100/70 px-2 py-0.5 ring-1 ring-inset ring-neutral-200">
+                              {cmd.type}
+                            </span>
+                            {cmd.technique_name && (
+                              <span className="truncate text-neutral-500">
+                                {cmd.technique_name}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-3 flex items-center justify-end gap-2 border-t border-neutral-100 px-3 py-2">
+                          <button
+                            type="button"
+                            onClick={() => handleSelectCommand(cmd.command)}
+                            className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
+                          >
+                            <SquarePen className="h-3.5 w-3.5" />
+                            {t("playground.filter.editInTerminal")}
+                          </button>
+                          {onRunCommand && (
+                            <button
+                              type="button"
+                              onClick={() => handleRunCommand(cmd.command)}
+                              className="inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-700"
+                            >
+                              <Play className="h-3.5 w-3.5" />
+                              {t("playground.filter.runOnAgent")}
+                            </button>
                           )}
                         </div>
-                      </button>
+                      </div>
                     ))}
                     {isLoadingMore && (
                       <div className="px-4 py-2 text-center text-xs text-neutral-500">

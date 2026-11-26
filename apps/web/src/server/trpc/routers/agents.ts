@@ -2,14 +2,33 @@ import { router, publicProcedure } from "../init";
 import prisma from "~/lib/prisma";
 import { getAgentConfig } from "~/server/c2/agentConfig";
 import { DEPLOY_TEMPLATES } from "~/server/c2/deployTemplates";
+import { defaultExecutor } from "~/server/c2/protocol";
 import type { Agent } from "@secure-ev-web/prisma";
 import {
   agentsListResponseSchema,
   agentStatisticsSchema,
   agentConfigSchema,
   agentConfigUpdateSchema,
+  agentPawInputSchema,
+  agentKillResponseSchema,
+  agentRemoveResponseSchema,
   sandcatDeployResponseSchema,
 } from "../schemas/responses";
+
+/**
+ * A command that makes the agent kill its own process on its next beacon.
+ *
+ * Sandcat reports its own PID in the beacon profile (`Agent.pid`), so we target
+ * that directly. Stock sandcat has no persistence, so killing the process stops
+ * the implant for good — it will not re-register. Returns null when the PID is
+ * unknown (nothing to target), in which case the caller skips queueing.
+ */
+function selfKillCommand(platform: string, pid: number | null): string | null {
+  if (pid == null) return null;
+  return platform === "windows"
+    ? `Stop-Process -Id ${pid} -Force`
+    : `kill -9 ${pid}`;
+}
 
 /** Arrays are stored as Json because MySQL has no scalar list support. */
 const toStringArray = (value: unknown): string[] =>
@@ -167,5 +186,49 @@ export const agentsRouter = router({
         bootstrap_abilities: [],
         deployments: [],
       };
+    }),
+
+  /**
+   * Stop a live implant. Queues a one-off instruction that kills the agent's own
+   * process; the agent runs it on its next beacon and exits. This does NOT delete
+   * the row — the agent must stay registered long enough to receive the kill. Once
+   * it stops beaconing it goes untrusted and can be cleared with `remove`.
+   */
+  kill: publicProcedure
+    .input(agentPawInputSchema)
+    .output(agentKillResponseSchema)
+    .mutation(async ({ input }) => {
+      const agent = await prisma.agent.findUnique({ where: { paw: input.paw } });
+      if (!agent) return { paw: input.paw, queued: false, instructionId: null };
+
+      const command = selfKillCommand(agent.platform, agent.pid);
+      if (!command) return { paw: input.paw, queued: false, instructionId: null };
+
+      const instruction = await prisma.agentInstruction.create({
+        data: {
+          paw: input.paw,
+          command: Buffer.from(command, "utf-8").toString("base64"),
+          executor: defaultExecutor(agent.platform, toStringArray(agent.executors)),
+          timeout: 60,
+        },
+      });
+
+      return { paw: input.paw, queued: true, instructionId: instruction.id };
+    }),
+
+  /**
+   * Remove an agent from the console. Deletes the row; the `onDelete: Cascade` on
+   * AgentInstruction (and AgentResult) clears its tasking history with it.
+   * Idempotent via deleteMany. Note: this does not stop a running implant — if the
+   * process is still alive it will beacon again and re-register. Use `kill` first.
+   */
+  remove: publicProcedure
+    .input(agentPawInputSchema)
+    .output(agentRemoveResponseSchema)
+    .mutation(async ({ input }) => {
+      const { count } = await prisma.agent.deleteMany({
+        where: { paw: input.paw },
+      });
+      return { paw: input.paw, removed: count > 0 };
     }),
 });

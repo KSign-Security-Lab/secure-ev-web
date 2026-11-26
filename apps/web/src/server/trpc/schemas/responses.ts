@@ -220,3 +220,22 @@ export const agentConfigUpdateSchema = z
     path: ["sleep_min"],
   });
 
+// ---------------------------------------------------------------------------
+// Agent lifecycle mutations (kill / remove)
+// ---------------------------------------------------------------------------
+
+/** Target a single agent by its paw. */
+export const agentPawInputSchema = z.object({ paw: z.string().min(1) });
+
+export const agentRemoveResponseSchema = z.object({
+  paw: z.string(),
+  /** False when no row matched (already gone) — the call is idempotent. */
+  removed: z.boolean(),
+});
+
+export const agentKillResponseSchema = z.object({
+  paw: z.string(),
+  /** False when the agent is gone or has no known PID to target. */
+  queued: z.boolean(),
+  instructionId: z.string().nullable(),
+});

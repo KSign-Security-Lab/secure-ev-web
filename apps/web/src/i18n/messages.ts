@@ -29,7 +29,6 @@ import { enIntegrationsTableMessages, koIntegrationsTableMessages } from "~/comp
 import { enPlaygroundCommandFilterDropdownMessages, koPlaygroundCommandFilterDropdownMessages } from "~/components/page/playground/CommandFilterDropdown.messages";
 import { enPlaygroundConnectionPillMessages, koPlaygroundConnectionPillMessages } from "~/components/page/playground/ConnectionPill.messages";
 import { enPlaygroundPageHeaderMessages, koPlaygroundPageHeaderMessages } from "~/components/page/playground/PageHeader.messages";
-import { enPlaygroundSessionsListMessages, koPlaygroundSessionsListMessages } from "~/components/page/playground/SessionsList.messages";
 import { enPlaygroundSystemLogPanelMessages, koPlaygroundSystemLogPanelMessages } from "~/components/page/playground/SystemLogPanel.messages";
 import { enPlaygroundCommandAutocompleteMessages, koPlaygroundCommandAutocompleteMessages } from "~/components/page/playground/Terminal/CommandAutocomplete.messages";
 import { enPlaygroundTerminalMessages, koPlaygroundTerminalMessages } from "~/components/page/playground/Terminal/Terminal.messages";
@@ -75,7 +74,6 @@ const enMessages = {
   ...enPlaygroundCommandFilterDropdownMessages,
   ...enPlaygroundConnectionPillMessages,
   ...enPlaygroundPageHeaderMessages,
-  ...enPlaygroundSessionsListMessages,
   ...enPlaygroundSystemLogPanelMessages,
   ...enPlaygroundCommandAutocompleteMessages,
   ...enPlaygroundTerminalMessages,
@@ -117,7 +115,6 @@ const koMessages: Record<TranslationKey, string> = {
   ...koPlaygroundCommandFilterDropdownMessages,
   ...koPlaygroundConnectionPillMessages,
   ...koPlaygroundPageHeaderMessages,
-  ...koPlaygroundSessionsListMessages,
   ...koPlaygroundSystemLogPanelMessages,
   ...koPlaygroundCommandAutocompleteMessages,
   ...koPlaygroundTerminalMessages,

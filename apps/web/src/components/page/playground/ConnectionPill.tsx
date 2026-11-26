@@ -20,12 +20,12 @@ export function ConnectionPill({ state }: { state: ConnectionState }) {
   }[state];
   return (
     <div
-      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 ring-1 ring-inset ${tone.pill}`}
+      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 ring-1 ring-inset ${tone.pill}`}
     >
       <span
         className={`h-1.5 w-1.5 rounded-full ${tone.dot} ${state === "connecting" ? "animate-pulse" : ""}`}
       />
-      <span className="text-[10px] font-medium capitalize">{stateLabel}</span>
+      <span className="text-xs font-medium">{stateLabel}</span>
     </div>
   );
 }

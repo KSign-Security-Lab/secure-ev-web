@@ -3,6 +3,7 @@ export const enPlaygroundTerminalMessages = {
   "playground.terminal.selectSessionPrompt": "Please select a session from the list to connect to the terminal.",
   "playground.terminal.warnNoSession": "[warn] No session selected. Please select a session from the list.",
   "playground.terminal.warnDisconnected": "[warn] Terminal is not connected. The terminal will automatically reconnect.",
+  "playground.terminal.emptyTitle": "No session selected",
 } as const;
 
 type PlaygroundTerminalMessageKey = keyof typeof enPlaygroundTerminalMessages;
@@ -12,4 +13,5 @@ export const koPlaygroundTerminalMessages: Record<PlaygroundTerminalMessageKey, 
   "playground.terminal.selectSessionPrompt": "터미널에 연결하려면 목록에서 세션을 선택하세요.",
   "playground.terminal.warnNoSession": "[경고] 선택된 세션이 없습니다. 목록에서 세션을 선택하세요.",
   "playground.terminal.warnDisconnected": "[경고] 터미널이 연결되지 않았습니다. 자동으로 재연결됩니다.",
+  "playground.terminal.emptyTitle": "선택된 세션이 없습니다",
 };
