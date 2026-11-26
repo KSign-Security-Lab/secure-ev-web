@@ -1,27 +1,30 @@
 "use client";
 
 import React from "react";
+import { ClipboardList } from "lucide-react";
 import { DataTable, type DataTableColumn } from "~/components/common/DataTable/DataTable";
 import { useI18n } from "~/i18n/I18nProvider";
+import { display, formatDate } from "~/lib/format";
 
-export interface AssessmentItem {
-  id: string;
-  name: string;
-  target: string;
-  attackCount: number;
-  repeatCount: number;
-  lastExecutionDate: string | null;
-}
+import type { RouterOutputs } from "~/lib/trpc";
+
+export type AssessmentItem = RouterOutputs["assessments"]["list"][number];
 
 interface AssessmentTableProps {
   data: AssessmentItem[];
   isLoading?: boolean;
   onRowClick?: (item: AssessmentItem) => void;
+  selection?: {
+    selected: Set<string>;
+    onChange: (next: Set<string>) => void;
+  };
+  emptyAction?: React.ReactNode;
   pagination?: {
     currentPage: number;
     totalPages: number;
     onPageChange: (page: number) => void;
     totalCount?: number;
+    pageSize?: number;
   };
 }
 
@@ -29,6 +32,8 @@ export const AssessmentTable: React.FC<AssessmentTableProps> = ({
   data, 
   isLoading, 
   onRowClick,
+  selection,
+  emptyAction,
   pagination 
 }) => {
   const { t } = useI18n();
@@ -38,34 +43,34 @@ export const AssessmentTable: React.FC<AssessmentTableProps> = ({
       label: t("assessment.table.name"),
       render: (item) => (
         <div className="flex flex-col gap-0.5 min-w-0">
-          <span className="text-sm font-bold text-neutral-900 truncate">
+          <span className="text-sm font-semibold text-neutral-900 truncate">
             {item.name}
-          </span>
-          <span className="text-[10px] text-neutral-500 uppercase tracking-widest font-mono">
-            ID: {item.id}
           </span>
         </div>
       ),
     },
     {
       label: t("assessment.table.target"),
-      className: "font-mono text-xs text-neutral-500 font-bold",
-      render: (item) => item.target,
+      className: "font-mono text-xs text-neutral-600",
+      render: (item) => display(item.target),
     },
     {
       label: t("assessment.table.attackCount"),
-      className: "text-neutral-900 font-bold tabular-nums",
-      render: (item) => item.attackCount,
+      align: "right",
+      className: "text-neutral-700",
+      render: (item) => item.attackCount.toLocaleString(),
     },
     {
       label: t("assessment.table.repeatCount"),
-      className: "text-neutral-500 font-medium tabular-nums",
-      render: (item) => item.repeatCount,
+      align: "right",
+      className: "text-neutral-700",
+      render: (item) => item.repeatCount.toLocaleString(),
     },
     {
       label: t("assessment.table.lastDate"),
-      className: "text-neutral-500 text-xs italic",
-      render: (item) => item.lastExecutionDate || t("assessment.table.notYet"),
+      className: "text-neutral-500 text-xs tabular-nums",
+      nowrap: true,
+      render: (item) => (item.lastRunAt ? formatDate(item.lastRunAt) : t("assessment.table.notYet")),
     },
   ];
 
@@ -75,9 +80,14 @@ export const AssessmentTable: React.FC<AssessmentTableProps> = ({
       columns={columns} 
       isLoading={isLoading}
       onRowClick={onRowClick}
+      rowKey={(item) => item.id}
+      selection={selection}
       pagination={pagination}
       emptyState={{
+        icon: ClipboardList,
         title: t("assessment.page.empty"),
+        description: t("assessment.page.emptyDesc"),
+        action: emptyAction,
       }}
     />
   );

@@ -13,8 +13,8 @@ export const koAssessmentTableMessages: Record<
 > = {
   "assessment.table.name": "이름",
   "assessment.table.target": "평가 대상",
-  "assessment.table.attackCount": "등록 공격 수",
+  "assessment.table.attackCount": "등록된 공격 수",
   "assessment.table.repeatCount": "반복 횟수",
-  "assessment.table.lastDate": "최종 수행 날짜",
-  "assessment.table.notYet": "미수행",
+  "assessment.table.lastDate": "최근 실행일",
+  "assessment.table.notYet": "미실행",
 };

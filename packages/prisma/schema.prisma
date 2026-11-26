@@ -305,3 +305,18 @@ model CollectedLog {
   @@index([integrationId, occurredAt])
 }
 
+/// A saved assessment plan: which abilities to run against which targets.
+/// Execution goes through Operations; `lastRunAt` is set when one is launched.
+model Assessment {
+  id          String    @id @default(uuid())
+  name        String
+  target      String    @default("")
+  /// Ability.ability_id values, in run order.
+  abilityIds  Json
+  /// Agent.paw values the plan targets.
+  agentPaws   Json
+  repeatCount Int       @default(1)
+  lastRunAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}

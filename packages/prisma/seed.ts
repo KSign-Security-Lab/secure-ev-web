@@ -3,6 +3,7 @@ import data from "./data/data.json";
 import extra from "./data/extra.json";
 import custom from "./data/custom.json";
 import mitre from "./data/mitre_list.json";
+import { seedAssessments } from "./seed-assessments";
 
 const filterX = (data: string): string => {
   if (data === "x" || data === "X") {
@@ -43,6 +44,7 @@ async function main() {
       subtechnique_name: undefined,
     })),
   });
+  await seedAssessments(prisma);
 }
 
 main()
