@@ -1,0 +1,219 @@
+\ProvidesPackage{ksigntech}[2025/11/26 KSIGN technical style]
+
+% ---------- Encoding ----------
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[T1]{fontenc}
+
+% ---------- Korean + Nanum ----------
+\RequirePackage[utf]{kotex}
+\RequirePackage{dhucs-nanumfont}
+
+% ---------- Modern Latin font (sans) ----------
+\RequirePackage{lmodern}
+\renewcommand{\familydefault}{\sfdefault}
+
+% ---------- Layout / graphics ----------
+\RequirePackage[left=25mm,right=25mm,top=30mm,bottom=40mm]{geometry}
+\RequirePackage{graphicx}
+\RequirePackage{array}
+\RequirePackage{makecell}
+\RequirePackage{booktabs}
+\RequirePackage{multirow}
+\RequirePackage{url}
+\RequirePackage{tabularx}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\RequirePackage{lastpage}
+\RequirePackage{indentfirst}
+\RequirePackage{float}
+\RequirePackage{setspace}
+\setstretch{1.3}
+\setlength{\parindent}{2em}  % indent size (adjust freely)
+\setlength{\parskip}{0pt}    % no extra space between paragraphs
+% tighter gaps between list items
+\let\ksOldItemize\itemize \renewcommand{\itemize}{\ksOldItemize\setlength{\itemsep}{0.5pt}\setlength{\parsep}{0pt}}
+\let\ksOldEnumerate\enumerate \renewcommand{\enumerate}{\ksOldEnumerate\setlength{\itemsep}{0.5pt}\setlength{\parsep}{0pt}}
+
+% ---------- Diagrams / plots ----------
+\RequirePackage{pifont}
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,backgrounds,calc}
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\definecolor{ksblue}{RGB}{31,78,121}
+\definecolor{kslight}{RGB}{222,233,245}
+\definecolor{ksgray}{RGB}{110,110,110}
+\definecolor{ksred}{RGB}{192,0,0}
+\definecolor{ksbg}{RGB}{247,247,247}
+\tikzset{
+  box/.style={draw=ksblue, fill=kslight, rounded corners=2pt, align=center, font=\footnotesize, inner sep=4pt, minimum height=8mm},
+  ext/.style={draw=ksgray, fill=white, rounded corners=2pt, align=center, font=\footnotesize, inner sep=4pt, minimum height=8mm},
+  hot/.style={draw=ksred, fill=white, rounded corners=2pt, align=center, font=\footnotesize, inner sep=4pt, minimum height=8mm, thick},
+  arr/.style={-{Stealth[length=2mm]}, thick, ksgray},
+  lbl/.style={font=\scriptsize, ksgray, align=center},
+  zone/.style={draw=ksgray, dashed, rounded corners=4pt, inner sep=6pt},
+}
+
+% ---------- TOC / lists / captions ----------
+\RequirePackage{tocloft}
+\RequirePackage{caption}
+\captionsetup{labelsep=period}
+\AtBeginDocument{\renewcommand{\figurename}{그림}\renewcommand{\tablename}{표}}
+
+% ---------- Code Snippets ----------
+\RequirePackage{listings}
+\RequirePackage{xcolor}
+
+\definecolor{codebg}{RGB}{245,245,245}
+\definecolor{codekeyword}{RGB}{0,0,180}
+\definecolor{codestring}{RGB}{163,21,21}
+\definecolor{codecomment}{RGB}{0,128,0}
+
+
+\lstdefinelanguage{TypeScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break, const, let, export, interface, class, extends, public, private, protected, import, from, as, number, string, boolean, any, void},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  ndkeywordstyle=\color{teal}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=true,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{gray}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{codebg},
+    frame=single,
+    framerule=0pt,
+    framesep=12pt,
+    xleftmargin=24pt,
+    xrightmargin=24pt,
+    columns=fullflexible,
+    keepspaces=true,
+    breaklines=true,
+    breakatwhitespace=false,  % <-- changed
+    tabsize=4,
+    showstringspaces=false,
+    keywordstyle=\color{codekeyword}\bfseries,
+    stringstyle=\color{codestring},
+    commentstyle=\color{codecomment}\itshape,
+    escapeinside={(*@}{@*)} % (*@ 와 @*) 사이의 내용은 LaTeX로 처리 (한글 출력 가능)
+}
+
+% ---------- Header via fancyhdr ----------
+\RequirePackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{} % clear all
+\setlength{\headheight}{70pt}
+\setlength{\headsep}{10pt}
+\renewcommand{\headrulewidth}{0pt}
+
+% ========= KSIGN HEADER BLOCK (EVERY PAGE) =========
+\newcommand{\KSHeader}{%
+  \scriptsize
+  \renewcommand{\arraystretch}{1.2}%
+  \noindent
+  \begin{minipage}{\textwidth}
+
+    % ---- TOP GRADIENT (no border, flush) ----
+    \includegraphics[
+      width=\textwidth,
+      height=3mm,
+      keepaspectratio
+    ]{top-gradient.pdf}% 
+
+    % ---- METADATA TABLE (has borders) ----
+    \begin{tabularx}{\textwidth}{|p{2.8cm}|X|p{1.6cm}|p{3cm}|p{1.6cm}|p{1.6cm}|}
+      \hline
+      \multirow{3}{*}{%
+        \centering
+        \begin{minipage}[c]{2.8cm}
+            \centering
+            \includegraphics[width=2.2cm]{ksign-logo.pdf}
+        \end{minipage}
+      } & \multirow{3}{=}{\centering 침해 및 공격\\ 시뮬레이션 플랫폼} &
+      \textbf{부서} & 정보보안연구소 & \textbf{작성자} & 김건오 \\ \cline{3-6}
+      & & \textbf{최종 수정일} & 2026.11.24 & \textbf{버전} & 1.0 \\ \cline{3-6}
+      & & \textbf{관리번호} &
+      \multicolumn{3}{c|}{RS-2024-00398993-2501} \\ \hline
+    \end{tabularx}
+
+    % ---- BOTTOM GRADIENT (no border, flush) ----
+    \hfill\includegraphics[
+      width=0.5\textwidth,
+      height=3mm,
+      keepaspectratio
+    ]{bottom-gradient.pdf}
+
+  \end{minipage}%
+}
+
+\fancyhead[L]{\KSHeader}
+\fancyfoot{} 
+
+% Make LaTeX's "plain" pagestyle identical to fancy *for the header*
+\makeatletter
+\let\ps@plain\ps@fancy
+\makeatother
+
+% ---------- Footer via overlay (eso-pic) ----------
+\RequirePackage{eso-pic}
+
+\newcommand{\KSFooterOverlay}{%
+  \scriptsize
+  \begin{minipage}[b][0pt][b]{\textwidth}
+    이 문서의 저작권은 ㈜케이사인에 있습니다.\hfill(\thepage/\pageref*{LastPage} Page)
+  \end{minipage}%
+}
+
+\AddToShipoutPictureFG{%
+  \AtTextLowerLeft{%
+    % negative raise → move DOWN out of the text block into the bottom margin
+    \raisebox{-10mm}[0pt][0pt]{%
+      \makebox[\textwidth][l]{\KSFooterOverlay}%
+    }%
+  }%
+}
+
+% ---------- Section titles ----------
+\RequirePackage{titlesec}
+
+
+\titleformat{\section}
+  {\bfseries\Large}
+  {\thesection.}{0.5em}{}
+
+\titleformat{\subsection}
+  {\bfseries\large}
+  {\thesubsection.}{0.5em}{}
+
+\titleformat{\subsubsection}
+  {\bfseries\large}
+  {\thesubsubsection.}{0.5em}{}
+
+% Names
+\renewcommand{\contentsname}{\textless 목\ \ 차\textgreater}
+\renewcommand{\listfigurename}{\textless 그\ 림\ \ 목\ \ 차\textgreater}
+\renewcommand{\listtablename}{\textless 표\ \ 목\ \ 차\textgreater}
+
+\renewcommand{\cfttoctitlefont}{\hfill\large\bfseries}
+\renewcommand{\cftaftertoctitle}{\hfill}
+\renewcommand{\cftloftitlefont}{\hfill\large\bfseries}
+\renewcommand{\cftafterloftitle}{\hfill}
+\renewcommand{\cftlottitlefont}{\hfill\large\bfseries}
+\renewcommand{\cftafterlottitle}{\hfill}
+
+\setlength{\cftaftertoctitleskip}{1cm}
+\setlength{\cftafterloftitleskip}{1cm}
+\setlength{\cftafterlottitleskip}{1cm}
+
+% ---------- Clickable TOC / cross-references + PDF bookmarks ----------
+% Loaded last (hyperref must come after other packages). hidelinks keeps the
+% printed look unchanged; unicode makes Korean bookmark titles render.
+\RequirePackage[unicode,hidelinks,bookmarksnumbered,bookmarksopen]{hyperref}
+
+\endinput

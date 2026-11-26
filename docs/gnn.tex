@@ -1,0 +1,231 @@
+\clearpage
+
+\section{GNN을 이용한 AST 기반의 취약점 탐지}
+
+\subsection{개요}
+Agent 모듈은 정적 분석 파이프라인의 후반부에서 동작하는 그래프 신경망(Graph Neural Network, GNN) 기반의 취약점 탐지 시스템이다. 이 모듈은 앞선 단계에서 생성된 코드의 그래프 표현(AST 및 DFG)을 입력으로 받아, 해당 함수가 취약한지(Vulnerable) 혹은 안전한지(Safe)를 분류하도록 학습된 PyTorch Geometric 모델을 운용한다.
+
+\subsubsection{해결하고자 하는 문제}
+기존의 정적 분석 도구는 잠재적 취약점을 식별할 수 있으나, 코드의 의미(Semantics)와 문맥(Context)을 완전히 이해하지 못해 다음과 같은 한계가 존재한다.
+
+\begin{itemize}
+    \item \textbf{문맥 민감성(Context Sensitivity) 부재}: 동일한 코드 패턴이라도 문맥에 따라 안전할 수도, 취약할 수도 있다.
+    \item \textbf{높은 오탐률(False Positives)}: 런타임 제약 조건이나 검증 로직으로 인해 실제로는 안전한 코드임에도 취약점으로 탐지되는 경우가 빈번하다.
+    \item \textbf{복잡한 패턴}: 취약점은 단일 구문이 아닌, 여러 코드 요소 간의 복잡한 상호작용으로 인해 발생하는 경우가 많다.
+\end{itemize}
+
+Agent 모듈은 레이블링된 데이터셋을 통해 GNN 모델을 학습시킴으로써 이러한 문제를 해결한다. GNN 아키텍처는 코드를 그래프 구조(구문을 위한 AST, 데이터 흐름을 위한 DFG)로 표현하고, 노드 및 엣지 속성으로부터 특징(Feature)을 자동으로 학습하며, 두 그래프의 정보를 결합(Fusion)하여 구문적/의미적 패턴을 동시에 포착하는 데 최적화되어 있다.
+
+
+\subsubsection{기능 요약}
+Agent 모듈은 다음과 같은 기계 학습 파이프라인 전 과정을 제공한다.
+
+\begin{enumerate}
+    \item \textbf{데이터 로딩}: 함수별 AST 및 DFG 그래프가 포함된 JSON 파일을 로드한다.
+    \item \textbf{그래프 구축}: JSON 데이터를 PyTorch Geometric의 \texttt{Data} 객체(노드 특징, 엣지 인덱스, 엣지 속성 포함)로 변환한다.
+    \item \textbf{모델 학습}: 학습 데이터를 사용하여 함수를 취약(1) 또는 안전(0)으로 분류하는 GNN 모델을 학습한다.
+    \item \textbf{모델 평가}: 테스트 데이터를 통해 모델의 정확도, 혼동 행렬(Confusion Matrix), 클래스별 통계 등을 평가한다.
+    \item \textbf{설정 관리}: 재현성을 보장하기 위해 전체 학습 구성을 저장하고 관리한다.
+\end{enumerate}
+
+
+\subsection{실행 흐름 (Execution Flow)}
+
+\subsubsection{학습 파이프라인 (Training Pipeline)}
+학습 프로세스는 \texttt{train()} 함수 호출 시 시작되며, 데이터 로딩부터 모델 저장까지의 과정을 수행한다.
+
+
+
+[Image of training pipeline sequence diagram]
+
+
+\begin{lstlisting}[language=Python, caption=학습 파이프라인 메인 로직]
+def train(cfg: Optional[TrainConfig] = None, *, plot_max_points: Optional[int] = None) -> None:
+    if cfg is None:
+        cfg = _parse_train_args()  # CLI 인자 파싱
+
+    # 1. 초기 설정 (Seed, Device, 결과 디렉토리)
+    torch.manual_seed(cfg.seed)
+    device = torch.device(cfg.device)
+    os.makedirs(cfg.save_name, exist_ok=True)
+
+    # 2. 데이터셋 로드 및 분할
+    train_datasets_list = []
+    test_datasets_list = []
+    for data_entry in cfg.data_path:
+        # GenericJsonDataset을 통해 JSON 로드 및 전처리
+        dataset_part = GenericJsonDataset(...)
+        train_datasets_list.append(...)
+        test_datasets_list.append(...)
+
+    # 3. 데이터로더 생성 (Batching, Collate)
+    train_dataset = ConcatDataset(train_datasets_list)
+    test_dataset = ConcatDataset(test_datasets_list)
+    train_dataloader = build_dataloader(train_dataset, cfg, collate_fn=collate_multi)
+    test_dataloader = build_dataloader(test_dataset, cfg, collate_fn=collate_multi)
+
+    # 4. 입력 차원 추론 (AST/DFG 노드 및 엣지 차원)
+    dims = infer_dims_from_dataset(train_dataset, kinds=["ast", "dfg"])
+    ast_in, ast_edge_dim = dims["ast"]
+    dfg_in, dfg_edge_dim = dims["dfg"]
+
+    # 5. 모델 생성 및 초기화
+    model = select_model(cfg, ast_in, dfg_in, ast_edge_dim, dfg_edge_dim)
+    model.to(device)
+
+    # 6. 최적화 도구 및 손실 함수 설정
+    optimizer = torch.optim.Adam(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
+    class_weights = compute_class_weights(train_indices, train_dataset, cfg.out_classes)
+    criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
+
+    # 7. 모델 학습 수행
+    train_model_from_dataset(cfg, train_dataloader, model, optimizer, criterion, device, ...)
+
+    # 8. 모델 및 설정 저장
+    torch.save(model.state_dict(), weights_path)
+    save_training_config(cfg, results_dir, model_info)
+
+    # 9. 테스트 셋 평가
+    summary = evaluate_model(model, test_dataloader, device, cfg.mode, ...)
+\end{lstlisting}
+
+주요 단계별 상세 내용은 다음과 같다.
+
+\begin{itemize}
+    \item \textbf{구성 파싱}: CLI 인자를 통해 \texttt{TrainConfig} 객체를 생성하여 유연한 실험 설정을 지원한다.
+    \item \textbf{데이터셋 로딩}: \texttt{GenericJsonDataset}을 통해 JSON 파일을 PyG 객체로 변환하고, 파일명 키워드 등을 기반으로 레이블을 추론한다.
+    \item \textbf{데이터로더 생성}: \texttt{collate\_multi} 함수를 사용하여 AST와 DFG가 혼합된 그래프 배치를 구성한다.
+    \item \textbf{차원 추론}: 데이터셋을 검사하여 가변적인 노드/엣지 속성의 차원을 자동으로 계산한다.
+    \item \textbf{모델 선택}: \texttt{cfg.mode}에 따라 \texttt{ASTOnly}, \texttt{DFGOnly}, \texttt{LateFusion}, \texttt{DualStream} 중 적절한 모델을 인스턴스화한다.
+    \item \textbf{학습 및 저장}: 에포크별 학습, 체크포인트 저장, 손실 기록, 최종 모델 및 설정 파일 저장을 수행한다.
+\end{itemize}
+
+\subsubsection{평가 파이프라인 (Evaluation Pipeline)}
+평가 프로세스는 저장된 설정을 로드하여 학습 환경을 복원한 후 수행된다.
+
+\begin{lstlisting}[language=Python, caption=평가 파이프라인 로직]
+def evaluate() -> None:
+    # 1. 학습 설정 로드
+    config = load_training_config(results_dir)
+    cfg = TrainConfig(**config["training_config"])
+
+    # 2. 데이터셋 재구성 (학습 시와 동일한 환경 보장)
+    train_dataset, test_dataset = ... 
+
+    # 3. 모델 체크포인트 로드
+    model = load_model_robust(checkpoint_path, device)
+
+    # 4. 평가 수행
+    summary = evaluate_model(model, eval_dataloader, device, mode, ...)
+
+    # 5. 결과 저장
+    with open("evaluation.json", "w") as f:
+        json.dump(summary, f, indent=2)
+\end{lstlisting}
+
+
+
+\subsection{컴포넌트 책임 (Component Responsibilities)}
+
+\subsubsection{GenericJsonDataset}
+JSON 파일을 로드하고 PyTorch Geometric 그래프 객체로 변환하는 역할을 담당한다. Pydantic 모델을 사용하여 JSON 스키마를 검증하며, \texttt{juliet\_json\_to\_sample} 변환기를 통해 AST 및 DFG 섹션을 추출하고 그래프를 구축한다.
+
+\subsubsection{Graph Building Functions}
+JSON 구조의 노드와 엣지를 PyG 텐서로 변환한다.
+\begin{itemize}
+    \item \textbf{노드 특징}: JSON의 \texttt{feat} 필드나 노드 자체를 플랫하게 펼쳐 특징 행렬 \texttt{x}를 구성한다.
+    \item \textbf{엣지 구성}: \texttt{edges\_ast}, \texttt{edges\_dfg} 등의 패밀리를 식별하고, 원-핫 인코딩된 패밀리 정보와 엣지 속성을 결합하여 \texttt{edge\_attr} 및 \texttt{edge\_index}를 생성한다.
+    \item \textbf{차원 조화}: \texttt{\_harmonize\_graph\_dims} 함수를 통해 배치 내 모든 그래프가 호환 가능한 차원을 갖도록 패딩한다.
+\end{itemize}
+
+
+
+\subsubsection{Collate Function}
+다중 그래프 타입(AST, DFG)과 가변 메타데이터를 포함하는 샘플들을 하나의 배치로 결합한다. PyTorch Geometric의 \texttt{Batch.from\_data\_list}를 사용하여 효율적인 병렬 처리가 가능한 연결된 그래프(Disjoint Union) 형태를 생성한다.
+
+\subsubsection{Model Selection \& Training}
+설정된 모드에 따라 적절한 모델 아키텍처를 선택하고 학습 루프를 제어한다. \texttt{forward\_by\_mode} 함수를 통해 단일 분기 모델에는 특정 그래프만, 퓨전 모델에는 두 그래프 모두를 전달하는 라우팅을 수행한다.
+
+\subsubsection{Evaluation Functions}
+\texttt{evaluate\_model} 및 \texttt{analyze\_sample\_with\_model} 함수를 통해 추론을 수행하고, 정확도, 확신도(Confidence), 오분류 샘플 등의 상세 분석 결과를 생성한다.
+
+
+\subsection{데이터 변환 (Data Transformations)}
+
+\subsubsection{JSON $\rightarrow$ PyG Graph}
+입력 JSON은 AST와 DFG 노드 및 엣지 정보를 포함하며, 다음과 같은 과정을 거쳐 PyG \texttt{Data} 객체로 변환된다.
+
+\begin{enumerate}
+    \item \textbf{노드 특징 추출}: 모든 노드의 고유한 속성 키를 수집하여 특징 행렬을 구성한다 (누락된 속성은 0으로 패딩).
+    \item \textbf{엣지 수집 및 특징화}: 엣지 패밀리(타입)를 식별하여 원-핫 벡터를 생성하고, 추가 속성(Guard kind 등)과 결합한다.
+    \item \textbf{텐서 생성}: 최종적으로 \texttt{x}, \texttt{edge\_index}, \texttt{edge\_attr} 텐서와 레이블 \texttt{y}, 메타데이터를 포함하는 객체를 생성한다.
+\end{enumerate}
+
+\subsubsection{Graph Batching}
+배치 처리 시 차원 조화(Dimension Harmonization) 과정을 통해 서로 다른 특징 집합을 가진 그래프들을 정렬하고, 이를 하나의 거대한 그래프 객체(\texttt{Batch})로 병합하여 GPU 연산 효율성을 극대화한다.
+
+
+\subsection{모델 아키텍처 (Model Architectures)}
+
+\subsubsection{Single-Branch Models}
+\textbf{ASTOnlyModel} 및 \textbf{DFGOnlyModel}은 단일 그래프 유형만을 처리한다. GINEStack(Graph Isomorphism Network with Edge features)을 사용하여 그래프를 인코딩하고, 글로벌 풀링 후 선형 분류기를 통해 예측을 수행한다. 이는 기준 모델(Baseline)로 활용된다.
+
+\subsubsection{Late Fusion Model}
+AST와 DFG를 독립적인 GINEStack으로 인코딩한 후, 두 표현 벡터를 이어 붙여(Concatenate) MLP로 처리한다. 이는 두 그래프의 정보를 모두 활용하지만, 상호작용은 마지막 단계에서만 고려한다.
+
+\subsubsection{Dual-Stream Cross-Graph Network}
+어텐션(Attention) 메커니즘을 사용하여 AST와 DFG 간의 정보 교환을 모델링한다.
+
+
+
+\begin{lstlisting}[language=Python, caption=Dual-Stream 모델 구조]
+class DualStreamCrossGraphNet(nn.Module):
+    def __init__(self, ...):
+        # Attention 기반 TransformerConv 사용
+        self.ast_encoder = _GraphTokenEncoder(..., kind="attn")
+        # SAGEConv 사용
+        self.dfg_encoder = _GraphTokenEncoder(..., kind="sage")
+        self.gate = nn.Sequential(...)  # Gating 메커니즘
+
+    def forward(self, ast_data, dfg_data):
+        ast_repr = self.ast_encoder(ast_data)
+        dfg_repr = self.dfg_encoder(dfg_data)
+        # Cross-graph Gating을 통한 정보 결합
+        combined = self.gate(torch.cat([ast_repr, dfg_repr], dim=-1))
+        return self.classifier(combined)
+\end{lstlisting}
+
+\begin{itemize}
+    \item \textbf{Encoder}: AST에는 TransformerConv를, DFG에는 SAGEConv를 적용하여 각기 다른 구조적 특성을 반영한다.
+    \item \textbf{Gating}: 학습 가능한 게이팅 메커니즘이 두 정보원 간의 가중치를 조절한다.
+    \item \textbf{Pooling}: Mean 풀링과 Max 풀링을 결합하여 정보 손실을 최소화한다.
+\end{itemize}
+
+
+
+\subsection{설정 (Configuration)}
+
+\texttt{TrainConfig} 클래스는 학습에 필요한 모든 하이퍼파라미터와 데이터 경로를 정의한다.
+
+\begin{itemize}
+    \item \textbf{기본 설정}: 에포크 수, 학습률, 배치 크기, 디바이스, GNN 레이어 수, 히든 차원 등.
+    \item \textbf{데이터 경로}: JSON 파일 경로 및 레이블 추론 규칙(\texttt{label\_key})을 정의한다.
+    \item \textbf{레이블 추론}: 명시적 레이블 필드, 파일명 키워드 매칭("bad", "patched"), 휴리스틱 순으로 레이블을 결정한다.
+\end{itemize}
+
+학습 시 \texttt{training\_config.json} 파일이 생성되어 실험의 재현성을 보장하며, 모델 로딩 시 수동 설정 없이도 아키텍처를 복원할 수 있게 한다.
+
+
+
+\subsection{분석 파이프라인과의 통합 (Integration)}
+
+Agent 모듈은 전체 정적 분석 파이프라인의 최종 단계로 통합된다.
+
+\begin{enumerate}
+    \item \textbf{CPG 생성}: Joern을 이용해 소스 코드를 CPG로 변환.
+    \item \textbf{Template 생성}: CPG를 정규화된 템플릿 노드로 변환.
+    \item \textbf{Graph 추출}: 템플릿에서 AST/DFG 그래프 추출 및 JSON 익스포트.
+    \item \textbf{GNN 분석}: Agent 모듈이 JSON을 입력받아 취약점 여부 판별.
+\end{enumerate}
+
+CLI 명령어 \texttt{uv run train} 및 \texttt{uv run evaluate}를 통해 독립적으로 실행 가능하며, 학습된 모델은 배치 예측이나 정적 분석 결과의 필터링 용도로 배포되어 활용된다.

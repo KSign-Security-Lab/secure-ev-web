@@ -1,0 +1,166 @@
+\clearpage
+
+\section{CPG 자동 생성 기술}\label{sec:cpg}
+
+본 문서 \ref{sec:cpg}절에서는 오픈소스 Joern 기반의 소스코드 그래프화에 대하여 기술한다.
+
+\subsection{Joern CPG}
+
+\subsubsection{Joern}
+소스코드는 대체로 자연어 기반의 개발 친화적으로 비정형 데이터로 분류된다.
+이러한 비정형 자연어는 정형화된 데이터를 처리하는 AI에게 가장 큰 병목으로, 이를 규격화하기 위한 시도들이 계속되고 있다.
+이러한 접근들 중 하나로 오픈소스인 Joern이 존재한다.
+Joern은 Java 와 각 언어의 컴파일러 기반의 명령어 프로그램으로 소스코드를 다양한 형태의 \textbf{CPG(Code Property Graph)}로 제공한다.
+Joern을 사용함으로써 가장 큰 장벽으로 Joern이 제공하는 그래프의 속성과 형태 그리고 다양한 Node와 Edge로 인해 분석에 어려움이 있다.
+Joern에서 제공하는 다양한 Node, Edge, Properties 중에 본 기술에서 사용된 일부는 \ref{subsubsec:cpgspec}에 기술 되어있다.
+이러한 복잡한 구조를 해결하기 위해 조금 더 사용자 친화적이고 AI가 처리할 수 있는 방향으로 전처리를 하게된다.
+이렇게 전처리 후에 생성된 그래프를 본 문서에서는 \textbf{Template(템플릿)}이라고 규정한다.
+
+\subsubsection{CPG Specification}\label{subsubsec:cpgspec}
+코드 속성 그래프(Code Property Graph, CPG) 명세 1.1은 정적 분석을 위해 설계된 언어 중립적인 중간 그래프 표현(intermediate graph representation)을 정의한다. CPG는 방향성(directed), 엣지 라벨(edge-labeled), 속성(attributed) 멀티그래프 구조를 가지며, 코드의 각기 다른 측면을 모델링하는 여러 개의 레이어(Layer)로 구성된다.
+
+\paragraph{MetaData 레이어} 이 레이어는 그래프의 생성 정보와 출처(provenance)를 기술한다.
+\begin{itemize} \setlength{\itemsep}{0pt} \setlength{\parskip}{0pt} \setlength{\topsep}{0pt} \setlength{\partopsep}{0pt}
+    \item \textbf{노드:} \texttt{META\_DATA} (언어, 명세 버전, 오버레이 정보 포함).
+    \item \textbf{속성:} \texttt{LANGUAGE}, \texttt{VERSION}, \texttt{OVERLAYS}, \texttt{ROOT}, \texttt{HASH}.
+\end{itemize}
+
+\paragraph{FileSystem 레이어} 그래프 노드를 실제 물리적 파일 시스템의 위치와 매핑한다.
+\begin{itemize} \setlength{\itemsep}{0pt} \setlength{\parskip}{0pt} \setlength{\topsep}{0pt} \setlength{\partopsep}{0pt}
+    \item \textbf{노드:} \texttt{FILE} (소스 파일을 표현).
+    \item \textbf{엣지:} \texttt{SOURCE\_FILE} (노드를 원본 파일과 연결).
+    \item \textbf{속성:} \texttt{FILENAME}, \texttt{CODE}, \texttt{COLUMN\_NUMBER}, \texttt{LINE\_NUMBER}.
+\end{itemize}
+
+\paragraph{Namespace 레이어} 패키징 및 논리적 네임스페이스 구조를 다룬다.
+\begin{itemize} \setlength{\itemsep}{0pt} \setlength{\parskip}{0pt} \setlength{\topsep}{0pt} \setlength{\partopsep}{0pt}
+    \item \textbf{노드:} \texttt{NAMESPACE} (논리적 네임스페이스), \texttt{NAMESPACE\_BLOCK} (네임스페이스 내의 구체적인 코드 블록).
+    \item \textbf{속성:} \texttt{NAME}, \texttt{FULL\_NAME}.
+\end{itemize}
+
+\paragraph{Method 레이어} 파라미터와 반환 타입을 포함하여 메서드 선언을 모델링한다.
+\begin{itemize} \setlength{\itemsep}{0pt} \setlength{\parskip}{0pt} \setlength{\topsep}{0pt} \setlength{\partopsep}{0pt}
+    \item \textbf{노드:} \texttt{METHOD} (함수 자체), \texttt{METHOD\_PARAMETER\_IN}, \texttt{METHOD\_PARAMETER\_OUT}, \texttt{METHOD\_RETURN}.
+    \item \textbf{속성:} \texttt{SIGNATURE}, \texttt{IS\_EXTERNAL}, \texttt{FULL\_NAME}, \texttt{IS\_VARIADIC}.
+\end{itemize}
+
+\paragraph{Type 레이어} 타입의 계층 구조, 선언 및 사용을 표현한다.
+\begin{itemize} \setlength{\itemsep}{0pt} \setlength{\parskip}{0pt} \setlength{\topsep}{0pt} \setlength{\partopsep}{0pt}
+    \item \textbf{노드:} \texttt{TYPE} (구체적 인스턴스), \texttt{TYPE\_DECL} (클래스/인터페이스 선언), \texttt{MEMBER} (필드), \texttt{TYPE\_ARGUMENT}.
+    \item \textbf{엣지:} \texttt{BINDS\_TO}, \texttt{INHERITS\_FROM}.
+    \item \textbf{속성:} \texttt{TYPE\_FULL\_NAME}, \texttt{INHERITS\_FROM\_TYPE\_FULL\_NAME}.
+\end{itemize}
+
+\paragraph{Abstract Syntax Tree (AST) 레이어} 코드의 구문 구조(syntactic structure)를 표현한다.
+\begin{itemize} \setlength{\itemsep}{0pt} \setlength{\parskip}{0pt} \setlength{\topsep}{0pt} \setlength{\partopsep}{0pt}
+    \item \textbf{노드:} \texttt{BLOCK}, \texttt{CALL}, \texttt{CONTROL\_STRUCTURE}, \texttt{IDENTIFIER}, \texttt{LITERAL}, \texttt{RETURN}, \texttt{UNKNOWN}, \texttt{MODIFIER}.
+    \item \textbf{엣지:} \texttt{AST} (부모 노드와 자식 노드를 연결).
+    \item \textbf{속성:} \texttt{ORDER}, \texttt{CODE}.
+\end{itemize}
+
+\paragraph{CallGraph 레이어} 메서드 호출 및 디스패치(dispatching) 과정을 모델링한다.
+\begin{itemize} \setlength{\itemsep}{0pt} \setlength{\parskip}{0pt} \setlength{\topsep}{0pt} \setlength{\partopsep}{0pt}
+    \item \textbf{노드:} \texttt{CALL} (호출 지점).
+    \item \textbf{엣지:} \texttt{CALL} (발신 호출), \texttt{RECEIVER}, \texttt{ARGUMENT}.
+    \item \textbf{속성:} \texttt{METHOD\_FULL\_NAME}, \texttt{DISPATCH\_TYPE}, \texttt{ARGUMENT\_INDEX}.
+\end{itemize}
+
+\paragraph{Control Flow Graph (CFG) 레이어} 메서드 내에서의 실행 흐름(execution flow)을 모델링한다.
+\begin{itemize} \setlength{\itemsep}{0pt} \setlength{\parskip}{0pt} \setlength{\topsep}{0pt} \setlength{\partopsep}{0pt}
+    \item \textbf{노드:} \texttt{CFG\_NODE} (모든 제어 흐름 노드의 기본 클래스).
+    \item \textbf{엣지:} \texttt{CFG} (실행 순서를 지시).
+\end{itemize}
+
+\paragraph{Program Dependence Graph (PDG) 레이어} 오염 분석(taint analysis) 및 슬라이싱을 위해 데이터 및 제어 의존성을 모델링한다.
+\begin{itemize} \setlength{\itemsep}{0pt} \setlength{\parskip}{0pt} \setlength{\topsep}{0pt} \setlength{\partopsep}{0pt}
+    \item \textbf{엣지:} 
+    \begin{itemize} \setlength{\itemsep}{0pt} \setlength{\parskip}{0pt} \setlength{\topsep}{0pt} \setlength{\partopsep}{0pt}
+        \item \texttt{CDG} (제어 의존성 그래프, Control Dependence Graph).
+        \item \texttt{REACHING\_DEF} (데이터 의존성).
+    \end{itemize}
+    \item \textbf{속성:} \texttt{VARIABLE} (전파되는 변수).
+\end{itemize}
+
+\paragraph{Binding 레이어} 메서드 이름 및 시그니처를 타입 선언과 결합(resolve)한다.
+\begin{itemize} \setlength{\itemsep}{0pt} \setlength{\parskip}{0pt} \setlength{\topsep}{0pt} \setlength{\partopsep}{0pt}
+    \item \textbf{노드:} \texttt{BINDING} (이름/시그니처를 메서드와 연결).
+    \item \textbf{엣지:} \texttt{BINDS} (TypeDecl에서 Binding으로), \texttt{REF} (Binding에서 Method로).
+\end{itemize}
+
+\paragraph{보조 레이어 (Auxiliary Layers)} 특정 분석 요구사항을 충족하기 위한 추가 레이어들이 존재한다.
+\begin{itemize} \setlength{\itemsep}{0pt} \setlength{\parskip}{0pt} \setlength{\topsep}{0pt} \setlength{\partopsep}{0pt}
+    \item \textbf{Dominators:} \texttt{DOMINATE} 및 \texttt{POST\_DOMINATE} 엣지를 포함한다.
+    \item \textbf{Finding:} 분석 결과 저장을 위한 노드 (\texttt{FINDING}, \texttt{KEY\_VALUE\_PAIR}).
+    \item \textbf{TagsAndLocation:} 임의의 노드 태깅을 위한 \texttt{TAG} 및 \texttt{LOCATION} 노드.
+\end{itemize}
+
+각 레이어별 상세 스키마, 노드 속성, 그리고 엣지 제약 조건에 대한 보다 구체적인 정보는 Code Property Graph 공식 웹사이트(\url{https://cpg.joern.io/})에서 확인할 수 있다.
+
+\subsection{가상 컨테이너}
+
+Joern은 아직 개발이 진행중인 도구로 업데이트 시에 CPG의 변화가 생기고 이는 이후 Template 변환 시에 런타임에러로 이어졌다.
+이를 해결하기 위해 추가적으로 Docker 컨테이너를 활용해서 특정 버전을 상시 동일하게 사용할 수 있도록 하였다.
+도커 컨테이너 설정은 다음 Figure. \ref{fig:docker}와 같다.
+
+\begin{figure}
+    \centering
+    \begin{lstlisting}[language=Python]
+FROM ubuntu:22.04
+
+ARG JOERN_VERSION=4.0.361
+ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV PATH="/usr/local/bin:${PATH}"
+ENV JOERN_PORT=8080
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      openjdk-17-jdk git unzip wget curl ca-certificates \
+      xauth x11-apps locales tini && \
+    rm -rf /var/lib/apt/lists/* && \
+    update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-17-openjdk-amd64/bin/java 1
+
+RUN set -eux; \
+    mkdir -p /opt/joern; \
+    wget --progress=dot:giga -O /tmp/joern-cli.zip \
+      "https://github.com/joernio/joern/releases/download/v${JOERN_VERSION}/joern-cli.zip"; \
+    unzip -q /tmp/joern-cli.zip -d /opt/joern; \
+    rm -f /tmp/joern-cli.zip; \
+    ln -sf /opt/joern/joern-cli/joern /usr/local/bin/joern; \
+    test -x /usr/local/bin/joern
+
+RUN mkdir -p /workspace && chmod 777 /workspace
+WORKDIR /workspace
+
+RUN joern --help >/dev/null 2>&1 || true; 
+
+ENTRYPOINT ["/usr/bin/tini", "--"]
+    \end{lstlisting}
+    \caption{Docker 컨테이너 생성 스크립트}
+    \label{fig:docker}
+\end{figure}
+
+해당 스크립트를 이용하여 도커 컨테이너를 생성한 후 공유되는 마운트를 지정하여 동작한다.
+하나의 예시로 현재 프로젝트에서 \textit{workspace}라는 디렉토리를 도커 컨테이너에서의 \textit{/workspace}와 같은 볼륨으로 마운트하여 사용하게된디.
+따라서 이후 CPG 생성 절차에서 마운트된 볼륨을 통하여 호스트와 컨테이너 간의 파일을 공유하며 도커에 설치된 Joern을 이용한다.
+
+\subsection{병렬 처리 및 자동화}
+
+하나의 소스코드를 JSON 형태의 CPG로 생성하기 위해서는 Joern이 제공하는 두가지의 명령어를 실행해야 한다. \verb|joern-parse| 와 \verb|joern-export|를 사용하게 되는데, 이는 각각 소스코드를 컴파일과 동시에 바이너리 형태의 CPG를  Joern으로 부터 생성하는 데에는 약 3\textasciitilde5초 정도 소요된다.
+이는 대량의 소스코드 데이터를 전처리 할 경우 약 1만개의 소스코드를 단순 CPG로 변환하는데에만 8\textasciitilde13시간 정도 소요된다.
+이러한 병목을 해결하기위해 파이썬의 병렬처리 로직을 활용하였다.
+이를 통해 약 21,000개의 데이터셋을 변환하는데에 8시간정도 소요되도록 단축하였다.
+
+
+\begin{table}[]
+\centering
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+ & \makecell[r]{변환파일 수 \\ (개)} & \makecell[r]{소요 시간 \\ (분)} & \makecell[r]{파일당 소요시간 \\ (초)} & \makecell[r]{단축율 \\ (\%)} \\ \midrule
+일반 & 10000 & 720 & 4.32 & \multirow{2}{*}{\textbf{-68.3\%}} \\
+병렬 & 21000 & 480 & 1.37 &  \\ \bottomrule
+\end{tabular}
+\caption{CPG 병렬 처리 속도 비교}
+\label{tab:cpg-convertion-time-table}
+\end{table}

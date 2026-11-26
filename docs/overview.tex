@@ -1,0 +1,86 @@
+\section{개요}\label{sec:overview}
+
+\subsection{목적}
+
+전기차 충전 인프라는 충전기(EVSE), 충전 관제 서버(CSMS), 차량 측 통신 제어기(EVCC)가 표준 프로토콜로 연결된 분산 시스템이다.
+충전기와 관제 서버 사이에는 OCPP(Open Charge Point Protocol)가, 충전기와 차량 사이에는 ISO 15118이 사용된다.
+각 구현체는 네트워크에 노출된 메시지 해석기와 충전 세션 상태 기계를 가지고 있어, 형식이 깨진 메시지나 순서가 어긋난 메시지를 받았을 때 크래시, 무응답, 인증 우회, 트랜잭션 상태 오염과 같은 보안 결함으로 이어질 수 있다.
+
+본 문서는 이러한 결함을 내부 소스 코드 없이(블랙박스) 자동으로 찾아내기 위한 \textbf{EV 충전 프로토콜 보안 퍼저}(이하 ``퍼저'')의 개념과 구조를 기술한다.
+퍼저는 다음 세 가지를 목표로 한다.
+
+\begin{itemize}
+    \item \textbf{프로토콜 인지형 입력 생성}: 메시지 구조와 충전 세션의 단계를 이해한 상태에서, 의미 있는 비정상 입력을 만든다.
+    \item \textbf{근거 기반 판정}: ``응답이 왔는가''가 아니라 입력의 의도, 대상의 응답, 대상 내부 상태의 변화를 함께 보고 결함 여부를 판단한다.
+    \item \textbf{재현성}: 같은 설정과 같은 시드(seed)로 실행하면 같은 입력이 만들어지도록 하여, 발견한 이상 동작을 다시 확인할 수 있게 한다.
+\end{itemize}
+
+\subsection{시험 대상과 퍼저의 역할}
+
+OCPP에서는 충전기가 관제 서버에 접속하고, ISO 15118에서는 차량이 충전기에 접속한다.
+퍼저는 시험하려는 대상의 \textbf{상대편 역할}을 맡아, 정상적인 상대처럼 통신하면서 그 사이에 변형된 메시지를 섞어 보낸다(표~\ref{tab:roles}).
+
+\begin{table}[H]
+\centering
+\small
+\caption{시험 대상별 퍼저의 역할}
+\label{tab:roles}
+\begin{tabularx}{\textwidth}{l l Y}
+\toprule
+\textbf{시험 대상} & \textbf{프로토콜} & \textbf{퍼저의 역할} \\
+\midrule
+충전기 & OCPP 1.6 & 관제 서버로 동작하며, 접속해 온 충전기에 변형된 명령을 보냄 \\
+관제 서버(CSMS) & OCPP 1.6 / 2.0.1 & 충전기로 동작하며, 서버에 변형된 보고 메시지를 보냄 \\
+충전기·서버 양측 & OCPP 1.6 & 둘 사이의 중간자(프록시)로서 오가는 메시지를 변형 \\
+충전기 측 제어기(SECC) & ISO 15118 & 차량으로 동작하며, 충전 협상 메시지를 변형 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+실제 장비 시험에서 가장 중요한 구성은 \textbf{충전기 시험}이다.
+OCPP에서는 충전기가 먼저 서버로 접속하므로, 퍼저는 관제 서버 자리에서 접속을 기다렸다가 충전기가 붙으면 원격 충전 시작, 설정 변경, 제조사 정의 데이터 전송 같은 서버 방향 명령을 변형하여 보낸다.
+
+\subsection{전체 구성}
+
+그림~\ref{fig:program-flow}는 퍼저의 전체 구성이다.
+사용자는 웹 화면에서 시험을 구성하고 결과를 확인하며, 실제 시험은 네 개의 핵심 기능이 순서대로 맡는다.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[every node/.style={font=\footnotesize}]
+  \node[ext, minimum width=26mm] (ui)  at (0,0)    {시험 구성\\\scriptsize 대상 · 메시지 · 기법};
+  \node[ext, minimum width=26mm] (res) at (0,-3.0) {결과 확인\\\scriptsize 판정 · 근거 · 재현};
+  \begin{scope}[on background layer]
+    \node[zone, fit=(ui)(res), label={[lbl]above:웹 화면}] {};
+  \end{scope}
+
+  \node[box, minimum width=30mm] (gen) at (4.2,0)    {\ding{172} 시험 입력 생성\\\scriptsize 변형 · 시퀀스 · 의도 태그};
+  \node[box, minimum width=30mm] (run) at (8.2,0)    {\ding{173} 시험 실행\\\scriptsize 메시지 송수신 · 상태 추적};
+  \node[box, minimum width=30mm] (orc) at (8.2,-3.0) {\ding{174} 판정\\\scriptsize 의도 × 응답 × 상태 변화};
+  \node[box, minimum width=30mm] (st)  at (4.2,-3.0) {\ding{175} 결과 관리\\\scriptsize 기록 · 재현 정보};
+  \begin{scope}[on background layer]
+    \node[zone, fit=(gen)(run)(orc)(st), label={[lbl]above:퍼저}] (bz) {};
+  \end{scope}
+
+  \node[hot, minimum width=22mm] (dut) at (12.3,-1.5) {시험 대상\\\scriptsize 충전기 · 관제 서버\\\scriptsize · 충전 제어기};
+
+  \draw[arr] (ui) -- (gen);
+  \draw[arr] (gen) -- (run);
+  \draw[arr] (run) -- node[lbl, left]{송수신 기록} (orc);
+  \draw[arr] (orc) -- (st);
+  \draw[arr] (st) -- (res);
+  \draw[arr, ksred] (run.east) to[out=0, in=150] (dut.north west);
+  \node[lbl, ksred, anchor=south west] at (10.25,0.05) {변형 메시지};
+  \draw[arr] (dut.south west) to[out=210, in=0] (orc.east);
+  \node[lbl, anchor=north west] at (10.25,-3.05) {응답 · 무응답};
+\end{tikzpicture}
+\caption{퍼저 전체 구성도}
+\label{fig:program-flow}
+\end{figure}
+
+\begin{enumerate}
+    \item \textbf{시험 입력 생성}(\ref{sec:engine}장): 선택한 기법과 범위에 따라 시험 입력을 만들고, 각 입력에 ``대상이 어떻게 반응해야 정상인가''라는 의도를 붙인다.
+    \item \textbf{시험 실행}(\ref{sec:runners}장): 입력을 실제 프로토콜 메시지로 만들어 대상과 주고받으며, 주고받은 메시지와 세션 상태의 변화를 기록한다.
+    \item \textbf{판정}(\ref{sec:oracle}장): 입력의 의도, 대상의 응답, 상태 변화를 비교하여 결과를 분류하고 근거를 남긴다.
+    \item \textbf{결과 관리와 활용}(\ref{sec:ops}장): 판정과 근거, 재현에 필요한 정보를 저장하여 검토와 재시험에 사용한다.
+\end{enumerate}

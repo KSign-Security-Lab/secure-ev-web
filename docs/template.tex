@@ -1,0 +1,284 @@
+\clearpage
+
+\section{Template 변환}
+
+\subsection{개요 및 설계}
+Template 모듈은 정적 분석 파이프라인 내부에서 CPG(Code Property Graph)를 템플릿 분석에 적합한 형태로 변환하는 핵심 계층이다. 소스 코드는 일차적으로 CPG로 변환되는데, 이 CPG는 타입 정보, 제어 흐름, 데이터 흐름, 호출 관계 등 매우 풍부한 의미 정보를 포함한다. 그러나 CPG 원본 데이터는 표현이 장황하고(verbose), 그래프 구조가 복잡하며, 동일한 의미의 코드라도 표현 방식이 다를 수 있다는 한계가 있어 보안 패턴 매칭이나 템플릿 기반 분석에 직접 사용하기에는 부적합하다.
+
+따라서 Template 모듈은 복잡한 CPG를 다음과 같이 가공하여 후속 단계(패턴 매칭, 취약점 탐지, 코드 생성 등)에서 단일하고 일관된 중간 표현(Intermediate Representation, IR)을 다룰 수 있도록 한다.
+
+\begin{itemize}
+    \item \textbf{정규화}: \texttt{<operator>.addition}과 같은 내부 이름을 \texttt{+}와 같은 표준 연산자로 변환하고, 배열 선언 등 불일치한 표현을 일관된 템플릿 노드 타입으로 통합한다.
+    \item \textbf{AST 재구성}: 그래프 엣지로 표현된 관계 중 AST 엣지만을 추출하여 직관적인 계층적 트리 구조를 재구성한다.
+    \item \textbf{타입 추론 및 보강}: 암시적인 타입 정보를 추론하고, 원본 코드 메타데이터를 부착한다.
+    \item \textbf{평탄화(Flattening)}: 필요 시 트리를 그래프 알고리즘에 적합한 노드/엣지 리스트 형태로 재가공한다.
+\end{itemize}
+
+\paragraph{\textbf{설계 근거 및 전략}:}
+\begin{itemize}
+    \item \textbf{컴포넌트 분리}: 추출, 변환, 후처리, 평탄화 단계를 명확히 분리하여 유지보수성과 테스트 용이성을 확보하였다.
+    \item \textbf{재귀 처리}: AST의 중첩 구조를 직관적으로 처리하기 위해 재귀적 순회 방식을 채택하였다.
+    \item \textbf{Graceful Degradation}: 비정상적인 CPG 입력(타입 정보 부족, 필수 속성 누락)에 대해서도 \texttt{<unknown>} 처리나 자식 노드 승격 등을 통해 분석을 지속한다. 단, 구조적 결함에 대해서는 명시적 예외를 발생시킨다.
+    \item \textbf{설정 기반 관리}: 연산자 매핑이나 표준 라이브러리 목록을 코드가 아닌 별도 설정 파일로 관리하여 확장성을 높였다.
+\end{itemize}
+
+\subsection{기능 및 컴포넌트 구성}
+Template 모듈은 4단계의 파이프라인을 통해 CPG를 변환하며, 각 단계는 전담 컴포넌트가 수행한다.
+
+\begin{enumerate}
+    \item \textbf{TemplateExtractor (추출)}: CPG 그래프에서 AST 구조를 추출한다.
+    \begin{itemize}
+        \item CPG JSON-LD 구조 검증 및 파싱 (\texttt{@value} 래퍼 해제).
+        \item AST 엣지 필터링 및 \texttt{nodeInfoMap}, \texttt{childrenMap} 구성.
+        \item 루트 노드(자식으로 등장하지 않는 노드) 식별 및 \texttt{TreeNode} 재귀적 생성.
+    \end{itemize}
+    
+    \item \textbf{TemplateConverter (변환)}: 추출된 트리를 표준 템플릿 노드(\texttt{TemplateNodes})로 변환한다.
+    \begin{itemize}
+        \item 노드 라벨(CALL, LOCAL, METHOD, CONTROL\_STRUCTURE) 기반 디스패치.
+        \item 연산자 이름 정규화 및 제어 구조 표준화.
+        \item \texttt{BinaryUnaryTypeWrapper}를 이용한 Bottom-up 타입 추론 (실패 시 \texttt{<unknown>}).
+        \item 표준 라이브러리 호출과 사용자 정의 호출 구분.
+    \end{itemize}
+    
+    \item \textbf{PostProcessor (후처리)}: 변환된 트리를 정제하고 보강한다.
+    \begin{itemize}
+        \item \texttt{nodeType}이 없는 유효하지 않은 노드 제거 및 자식 승계.
+        \item CPG의 \texttt{CODE} 속성을 추출하여 각 노드에 부착.
+        \item 배열 선언 및 할당 노드 병합, Translation Unit 분리.
+    \end{itemize}
+    
+    \item \textbf{PlanationTool (평탄화)}: 트리를 평탄화된 그래프로 변환한다.
+    \begin{itemize}
+        \item 계층적 트리를 노드 리스트와 엣지 리스트(\texttt{from}, \texttt{to})로 변환.
+        \item 결정적 결과(Determinism) 보장을 위한 ID 기반 정렬.
+        \item 엣지 유효성 검증 (Dangling edge 탐지).
+    \end{itemize}
+\end{enumerate}
+
+\subsection{실행 흐름}
+Template 변환은 \texttt{buildTemplateArtifacts()} 함수를 진입점으로 하여 순차적으로 실행된다. Endpoint는 용도에 따라 트리 기반의 \texttt{templateResult} 또는 그래프 기반의 \texttt{flatten}을 선택하여 사용할 수 있다.
+
+% (*@ [H] 옵션을 사용하여 그림을 현재 위치에 고정 @*)
+\begin{figure}[H]
+    \centering
+    \begin{lstlisting}[language=TypeScript]
+function buildTemplateArtifacts(root: CPGRoot): {
+  flatten: TemplateFlattenedGraph[];
+  template: TreeNode[];
+  templateResult: TemplateNodes[];
+  textLines: string[];
+} {
+  const extractor = new TemplateExtractor();
+  const converter = new TemplateConverter();
+  const postProcessor = new PostProcessor();
+  const planationTool = new PlanationTool([...]);
+
+  // 1. Extract: CPG -> TreeNode[]
+  const template: TreeNode[] = extractor.getTemplateTree(root.export);
+  
+  // 2. Convert: TreeNode[] -> TemplateNodes[]
+  const converted = converter.convertTree(template);
+  
+  // 3. Post-Process: Cleanup and attach properties
+  let templateResult = postProcessor.removeInvalidNodes(converted);
+  templateResult = postProcessor.addCodeProperties(templateResult, root);
+  
+  // 4. Flatten: TemplateNodes[] -> TemplateFlattenedGraph[]
+  const flatten = planationTool.flatten(templateResult);
+  
+  return { template, templateResult, textLines, flatten };
+}
+    \end{lstlisting}
+    \caption{Template 변환 파이프라인 오케스트레이션}
+    \label{fig:build_artifacts}
+\end{figure}
+
+\subsubsection{Step 1: 트리 추출 (TemplateExtractor)}
+CPG 데이터에서 \texttt{@value} 래퍼를 해제하고 AST 엣지만을 필터링하여 재귀적으로 구문 트리를 구성한다. 데이터 흐름이나 제어 흐름 엣지를 배제하여 순환 구조를 방지한다.
+
+\begin{figure}[H]
+    \centering
+    \begin{lstlisting}[language=TypeScript]
+public getTemplateTree(cpg: unknown): TreeNode[] {
+  if (typeof cpg !== "object" || cpg === null || !("@value" in (cpg as Record<string, unknown>))) {
+    return [];
+  }
+  const data = cpg as ICPGRootExport;
+  const inner = data["@value"];
+  
+  // Validate structure and Filter AST edges
+  const edges = inner.edges; // Use AST edges only
+  const nodes = inner.vertices;
+  // ... (Construct nodeInfoMap, identify root, create tree)
+}
+    \end{lstlisting}
+    \caption{CPG 파싱 및 AST 추출 로직}
+    \label{fig:template_extractor}
+\end{figure}
+
+\subsubsection{Step 2: 노드 변환 (TemplateConverter)}
+추출된 \texttt{TreeNode}를 표준화된 \texttt{TemplateNodes}로 변환한다. 각 노드의 라벨에 따라 적절한 핸들러로 분기(Dispatch)하며, 오류 발생 시 노드 식별 정보를 포함한 예외를 발생시킨다.
+
+\begin{figure}[H]
+    \centering
+    \begin{lstlisting}[language=TypeScript]
+private dispatchConvert(node: TreeNode): TemplateNodes | undefined {
+  try {
+    switch (node.label) {
+      case "CALL": return this.handleCall(node);
+      case "CONTROL_STRUCTURE": return this.handleControlStructure(node);
+      case "LOCAL": return this.handleLocal(node);
+      case "METHOD": return this.handleMethod(node);
+      case "BINDING": case "META_DATA": return this.handleSkippedNodes(node);
+      // ... Other cases
+      default: return this.assertNever(node.label);
+    }
+  } catch (error) {
+    throw new Error(`Conversion failed for node id=${node.id}: ${error.message}`);
+  }
+}
+    \end{lstlisting}
+    \caption{노드 변환 디스패처}
+    \label{fig:dispatch_convert}
+\end{figure}
+
+\paragraph{연산자 정규화 (CALL)} \texttt{<operator>.*} 형태의 이름을 \texttt{BinaryExpressionOperatorMap} 등을 통해 표준 기호(\texttt{+}, \texttt{==})로 매핑하고 \texttt{BinaryExpression} 또는 \texttt{UnaryExpression}으로 변환한다.
+
+\begin{figure}[H]
+    \centering
+    \begin{lstlisting}[language=TypeScript]
+private handleCallOperators(node: TreeNode): CallOperatorsReturnTypes {
+  if (Object.keys(BinaryExpressionOperatorMap).includes(node.name)) {
+    return {
+      nodeType: TemplateNodeTypes.BinaryExpression,
+      operator: BinaryExpressionOperatorMap[node.name],
+      type: BinaryUnaryTypeWrapper(node), // Type inference
+      children: this.convertedChildren(node.children),
+    };
+  }
+  // ... UnaryExpression processing
+}
+    \end{lstlisting}
+    \caption{연산자 노드 변환 로직}
+    \label{fig:handle_call_operators}
+\end{figure}
+
+\paragraph{제어 구조 (Control Structure)} \texttt{CONTROL\_STRUCTURE\_TYPE} 속성을 확인하여 IF, WHILE 등으로 변환한다. IF 문의 경우 조건, True 블록, False 블록을 템플릿 포맷에 맞게 재배치하며, 자식 노드 수가 부족할 경우 예외를 발생시킨다.
+
+\begin{figure}[H]
+    \centering
+    \begin{lstlisting}[language=TypeScript]
+private handleControlStructure(node: TreeNode): IIfStatement | ... {
+  // ... Parse properties
+  switch (controlStructureType) {
+    case "IF": {
+      if (node.children.length < 2) throw new Error(...); // Validate structure
+      // Restructure children (Condition, IfTrue, Else)
+      return { nodeType: TemplateNodeTypes.IfStatement, children: restructuredChildren, ... };
+    }
+    // ...
+  }
+}
+    \end{lstlisting}
+    \caption{제어 구조 정규화 로직}
+    \label{fig:handle_control_structure}
+\end{figure}
+
+\paragraph{변수 및 함수 처리} 변수 선언(\texttt{LOCAL})의 경우 \texttt{TYPE\_FULL\_NAME}을 분석하여 배열(\texttt{[]}), 포인터(\texttt{*})를 구분한다. 함수(\texttt{METHOD})는 파일 스코프 내의 항목만 처리하며, 본문 유무에 따라 선언(Declaration)과 정의(Definition)로 나눈다.
+
+\begin{figure}[H]
+    \centering
+    \begin{lstlisting}[language=TypeScript]
+// Example: Variable declaration handling
+if (typeFullName.includes("[")) return { nodeType: TemplateNodeTypes.ArrayDeclaration, ... };
+if (typeFullName.includes("*")) return { nodeType: TemplateNodeTypes.PointerDeclaration, ... };
+return { nodeType: TemplateNodeTypes.VariableDeclaration, ... };
+    \end{lstlisting}
+    \caption{변수 선언 타입 분석 로직}
+    \label{fig:variable_logic}
+\end{figure}
+
+\subsubsection{Step 3: 후처리 (PostProcessor)}
+\texttt{removeInvalidNodes}를 통해 \texttt{nodeType}이 없는 노드를 제거(자식은 승계)하고,\\
+\texttt{addCodeProperties}를 통해 CPG의 \texttt{CODE} 속성을 템플릿 노드에 부착하여 디버깅 및 리포팅을 지원한다.
+
+\begin{figure}[H]
+    \centering
+    \begin{lstlisting}[language=TypeScript]
+public addCodeProperties(nodes: TemplateNodes[], cpg: CPGRoot): TemplateNodes[] {
+  return nodes.map((node) => {
+    // Retrieve CODE property from CPG Vertex
+    const vertex = cpg.export["@value"].vertices.find((v) => v.id["@value"] === node.id);
+    const code = ...; 
+    return { ...node, code, children: ... };
+  });
+}
+    \end{lstlisting}
+    \caption{코드 속성 부착 로직}
+    \label{fig:add_code_properties}
+\end{figure}
+
+\subsubsection{Step 4: 평탄화 (PlanationTool)}
+트리를 순회하여 노드를 복제하고 부모-자식 관계를 \texttt{from}-\texttt{to} 엣지로 변환한다. 노드와 엣지를 ID 기준으로 정렬하여 결과의 결정성(determinism)을 보장하며, 존재하지 않는 노드를 가리키는 엣지가 없는지 검증한다.
+
+\begin{figure}[H]
+    \centering
+    \begin{lstlisting}[language=TypeScript]
+public flatten(astRoots: TemplateNodes[]): TemplateFlattenedGraph[] {
+  const graphs: TemplateFlattenedGraph[] = [];
+  for (const root of astRoots) {
+    this.traverse(root); // Recursive traversal to create nodes and edges
+    this.nodes.sort((a, b) => a.id - b.id);
+    this.edges.sort((e1, e2) => e1.from + e1.to - (e2.from + e2.to));
+    this.validateEdges(); // Integrity check
+    graphs.push({ edges: this.edges.slice(), nodes: this.nodes.slice() });
+  }
+  return graphs;
+}
+    \end{lstlisting}
+    \caption{평탄화 및 그래프 생성 로직}
+    \label{fig:flatten_logic}
+\end{figure}
+
+\subsection{설정}
+Template 모듈의 확장성을 위해 연산자 매핑, 표준 라이브러리 목록 등은 코드가 아닌 별도의 설정 파일로 관리된다.
+
+\begin{itemize}
+    \item \textbf{BinaryExpression.ts}: CPG 이진 연산자를 표준 연산자로 매핑한다.
+    \begin{figure}[H]
+        \centering
+        \begin{lstlisting}[language=TypeScript]
+export const BinaryExpressionOperatorMap: Record<string, string> = {
+  "<operator>.addition": "+",
+  "<operator>.equals": "==",
+  "<operator>.logicalAnd": "&&",
+  // ...
+};
+export const BinaryExpressionBooleanMap: Record<string, string> = {
+  "<operator>.equals": "boolean",
+  // ... (Operators that always return boolean)
+};
+        \end{lstlisting}
+        \caption{이진 연산자 매핑 설정}
+        \label{fig:binary_map}
+    \end{figure}
+    
+    \item \textbf{UnaryExpression.ts}: 단항 연산자 매핑을 정의한다.
+    \begin{figure}[H]
+        \centering
+        \begin{lstlisting}[language=TypeScript]
+export const UnaryExpressionOperatorMap: Record<string, string> = {
+  "<operator>.postIncrement": "++",
+  "<operator>.logicalNot": "!",
+  "<operator>.indirection": "*",
+  // ...
+};
+        \end{lstlisting}
+        \caption{단항 연산자 매핑 설정}
+        \label{fig:unary_map}
+    \end{figure}
+    
+    \item \textbf{Predefined.ts}: \texttt{stdin}, \texttt{NULL} 등의 식별자에 대해 고정 타입을 부여한다.
+    \item \textbf{StandardLibCall.ts}: 표준 라이브러리 및 보안 관련 함수 레지스트리를 관리하여 사용자 정의 호출과 구분한다.
+\end{itemize}

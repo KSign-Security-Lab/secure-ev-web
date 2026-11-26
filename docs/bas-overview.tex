@@ -1,0 +1,103 @@
+\section{개요}\label{sec:overview}
+
+\subsection{목적}\label{subsec:purpose}
+
+조직은 엔드포인트 탐지·대응(EDR), 네트워크 탐지·대응(NDR), 보안 오케스트레이션·자동화·대응(SOAR) 같은 방어 제품을 다층적으로 도입하지만, 이러한 제품의 실제 공격 행위에 대한 차단 및 탐지 성능은 운영 과정에서 확인하기 어렵다.
+설정 문서나 제조사 자료에 명시된 탐지 가능 여부와 실제 공격 기법 실행 시의 경보 발생 여부는 서로 다를 수 있기 때문이다.
+
+침해 및 공격 시뮬레이션(Breach and Attack Simulation, BAS)은 이러한 차이를 실제 시험을 통해 검증하는 방법이다.
+알려진 공격 기법을 통제된 방식으로 대상 호스트에서 실제로 실행하고, 그 결과와 방어 제품이 남긴 기록을 비교하여 방어 체계의 취약 지점을 식별한다.
+
+본 문서는 이러한 시뮬레이션을 폐쇄망 안에서 수행하기 위한 \textbf{BAS 플랫폼}(이하 ``플랫폼'')의 개념과 구조를 기술한다.
+플랫폼은 다음 세 가지를 목표로 한다.
+
+\begin{itemize}
+    \item \textbf{실제 실행}: 공격을 모사한 트래픽이나 로그만 생성하는 것이 아니라, 대상 호스트에 상주하는 에이전트가 해당 공격 기법의 명령을 실제로 실행한다.
+    \item \textbf{표준 체계 연계}: 모든 공격 절차를 MITRE ATT\&CK의 전술·기법에 대응시켜, 시험을 수행한 기법과 수행하지 않은 기법을 일관된 기준으로 구분할 수 있도록 한다.
+    \item \textbf{폐쇄망 운용}: 공격 실행에 필요한 기능은 외부 서비스나 인터넷 연결 없이 동작하며, 에이전트 바이너리까지 내부에서 빌드·배포하여 시험망 내에서 독립적으로 운용한다.
+\end{itemize}
+
+\subsection{기본 개념}\label{subsec:concepts}
+
+플랫폼의 주요 용어는 다음과 같으며, 플랫폼 화면에서 사용하는 명칭을 따른다.
+
+\begin{itemize}
+    \item \textbf{에이전트}: 대상 호스트에 상주하며 명령을 수행하는 프로그램이다. 주기적으로 C2 서버에 접속하여 명령을 수신하고, 명령을 실행한 결과를 보고한다.
+    \item \textbf{C2 서버}: 에이전트와의 통신을 전담하는 서버이다. 에이전트를 등록하고, 대기 중인 명령을 전달하고, 실행 결과를 수신하여 저장한다.
+    \item \textbf{Ability}: 개별 공격 절차를 정의하는 단위이다. 해당 공격 절차의 전술·기법, 지원 플랫폼, 실행기 및 실행 명령을 포함한다.
+    \item \textbf{공격 실행}: 하나 이상의 Ability를 지정된 순서에 따라 대상 에이전트에서 실행하는 작업 단위이다. 단계 간 값을 전달하기 위한 \textbf{변수 저장소}를 포함한다.
+    \item \textbf{평가}: 실행할 Ability와 대상 에이전트를 정의한 시험 계획이다(\ref{subsec:assessment}절).
+    \item \textbf{연동}: 방어 제품의 로그 및 탐지 기록을 수집하여 시뮬레이션 결과와 비교할 수 있도록 지원하는 기능이다.
+\end{itemize}
+
+\subsection{전체 구조}\label{subsec:arch}
+
+그림~\ref{fig:arch}은 플랫폼의 구성 요소와 각 요소 간 데이터 흐름을 나타낸다.
+운영자는 웹 기반 \textbf{운영 콘솔}에서 에이전트를 배포하고, 공격 실행을 구성하며, 결과와 수집 로그를 확인한다.
+대상 호스트의 에이전트는 운영 콘솔이 아닌, 별도의 프로세스로 실행되는 \textbf{C2 서버}에만 접속한다.
+두 프로세스는 명령과 실행 결과 등의 상태 정보를 \textbf{공유 데이터베이스}를 통해서만 주고받는다.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[every node/.style={font=\footnotesize}]
+  % operator side
+  \node[ext, minimum width=24mm] (op) at (0,0) {운영자\\\scriptsize 웹 브라우저};
+  \node[box, minimum width=30mm, minimum height=12mm] (con) at (0,-2.1) {운영 콘솔\\\scriptsize 화면 · 공격 실행 구성};
+  \node[box, minimum width=30mm, minimum height=12mm] (db) at (4.4,-2.1) {공유 데이터베이스\\\scriptsize 에이전트 · 명령 · 결과};
+  \node[hot, minimum width=30mm, minimum height=12mm] (c2) at (8.8,-2.1) {C2 서버\\\scriptsize 에이전트 통신 전담};
+  \node[box, minimum width=30mm] (eng) at (4.4,-4.2) {공격 실행 엔진\\\scriptsize 콘솔·C2가 함께 사용};
+  % target side
+  \node[ext, minimum width=26mm] (a1) at (8.8,0.35) {대상 호스트 A\\\scriptsize 에이전트};
+  \node[ext, minimum width=26mm] (a2) at (12.0,0.35) {대상 호스트 B\\\scriptsize 에이전트};
+  \node[ext, minimum width=26mm] (sec) at (0,-4.2) {방어 제품\\\scriptsize EDR · NDR · SOAR 등};
+
+  \draw[arr] (op) -- (con);
+  \draw[arr, <->] (con) -- (db);
+  \draw[arr, <->] (db) -- (c2);
+  \draw[arr] (a1) -- node[lbl, right, pos=0.45]{주기적 접속} (c2);
+  \draw[arr] (a2) |- (c2.east);
+  \draw[arr, dashed] (eng) -- (db);
+  \draw[arr, <->] (sec) -- node[lbl, right, align=left]{로그 조회 /\\로그 전송} (con);
+
+  \begin{scope}[on background layer]
+    \node[zone, fit=(op)(con)(db)(eng)(sec), label={[lbl]above:운영자 영역(내부망)}] {};
+    \node[zone, fit=(c2)(a1)(a2), label={[lbl]above:시험망}] {};
+  \end{scope}
+\end{tikzpicture}
+\caption{플랫폼 구성과 흐름}
+\label{fig:arch}
+\end{figure}
+
+\subsection{설계 원칙}\label{subsec:principles}
+
+\paragraph{\textbf{콘솔과 C2의 분리:}}
+플랫폼은 C2 서버와 운영 콘솔을 별도의 프로세스로 구성하고 서로 다른 포트를 할당하였다.
+시험망에서는 C2 서버에만 접근할 수 있도록 하고, 공격 실행을 제어하는 운영 콘솔은 내부망에서만 접근할 수 있도록 배치한다.
+C2 서버는 에이전트 통신과 페이로드 목록 조회 기능만 제공하므로, C2 서버에 접근하더라도 운영 콘솔의 기능에는 직접 접근할 수 없다.
+단, 시험망의 방어 제품에서 에이전트 방식으로 로그를 수집하는 경우에는 해당 제품 호스트에서 운영 콘솔의 수집 엔드포인트로의 접근만 추가로 허용한다(\ref{subsec:integ-token}절).
+
+\needspace{7\baselineskip}
+\paragraph{\textbf{데이터베이스를 통한 상태 공유:}}
+운영 콘솔과 C2 서버는 명령과 결과를 직접 주고받지 않는다. 콘솔이 명령을 `대기' 상태로 기록하면, C2가 에이전트의 다음 정기 비컨에서 이를 전달하고, 에이전트가 보고한 결과를 다시 기록한다.
+콘솔의 C2 서버 직접 호출은 공격 실행 구성 시 페이로드 파일 목록을 조회하는 용도로 한정되며(\ref{subsec:facts}절), C2 서버는 콘솔을 호출하지 않는다.
+이 방식은 두 프로세스를 독립적으로 배포하거나 재시작할 수 있도록 하며, 데이터베이스에 저장된 명령과 실행 결과는 각 프로세스의 중단 및 재시작 시에도 유지된다.
+공격 실행의 진행 규칙(\ref{sec:operations}장)은 콘솔과 C2가 공유하는 엔진에 구현되어 있어, 콘솔에서 공격 실행을 시작할 때와 C2에서 결과를 받을 때 같은 규칙이 적용된다.
+
+\paragraph{\textbf{Pull 기반 명령 전달:}}
+서버가 에이전트에 접속하는 것이 아니라 에이전트가 서버에 접속하여 대기 중인 명령을 수신한다.
+대상 호스트가 방화벽이나 NAT 뒤에 있더라도 C2 서버로 향하는 연결이 허용되면 동작하며, 이는 실제 공격 도구에서 사용되는 통신 방식 중 하나이다.
+다만 명령 전달은 에이전트의 접속 주기만큼 지연될 수 있으며, 이를 줄이는 방법은 \ref{subsec:terminal}절에서 설명한다.
+
+\paragraph{\textbf{폐쇄망 독립 운용:}}
+에이전트는 내부에 보관된 소스코드를 기반으로 운영체제(Linux, Windows, macOS)와 아키텍처(x86-64, 64비트·32비트 ARM)별로 사전 빌드되며, 생성된 바이너리는 C2 서버에 탑재된다.
+외부 C2 프레임워크 없이 동작하며, 인터넷 연결이 가능한 환경에서 설치 패키지를 생성한 후 폐쇄망으로 반입하는 절차를 제공한다.
+다만 외부 클라우드 서비스(예: VirusTotal)와의 API 연동은 해당 서비스에 접속할 수 있어야 하므로, 폐쇄망에서는 내부에 설치된 제품만 연동할 수 있다(\ref{subsec:integ-modes}절).
+
+\subsection{문서 구성}
+
+\ref{sec:c2}장은 에이전트의 배포와 C2 통신, 실시간 터미널을 다룬다.
+\ref{sec:abilities}장은 공격 절차 라이브러리와 ATT\&CK 커버리지 산정 방식을, \ref{sec:operations}장은 다중 에이전트를 지원하는 공격 실행 엔진과 평가 계획을 설명한다.
+\ref{sec:integrations}장은 방어 제품 연동을 설명한다.
+
+본 문서에 수록된 화면은 모두 실제 플랫폼에서 캡처하였다.
+시험 대상 호스트로는 플랫폼이 설치된 Linux 서버에서 실행한 컨테이너를 사용했으며, 해당 컨테이너에 에이전트 1개를 배포하여 무해한 정보 조회 명령만 수행하였다.
