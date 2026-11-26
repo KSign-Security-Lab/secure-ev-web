@@ -11,6 +11,10 @@ export type WebSocketMessageMap = {
 };
 
 type MessageType = keyof WebSocketMessageMap;
+
+/** Connection lifecycle surfaced to the UI (header indicator, toasts). */
+export type WebSocketStatus = "idle" | "connecting" | "open" | "reconnecting" | "failed";
+type StatusListener = (status: WebSocketStatus) => void;
 type MessageHandler<T extends MessageType> = (
   payload: WebSocketMessageMap[T]
 ) => void;
@@ -30,7 +34,45 @@ class WebSocketService {
     trigger: new Set(),
   };
 
+  private status: WebSocketStatus = "idle";
+  private statusListeners = new Set<StatusListener>();
+  private lastUrl: string | null = null;
+  private hasConnected = false;
+
   private constructor() {}
+
+  private setStatus(next: WebSocketStatus) {
+    if (this.status === next) return;
+    this.status = next;
+    this.statusListeners.forEach((listener) => listener(next));
+  }
+
+  /** True once a connection has been established in this page session. */
+  hasEverConnected(): boolean {
+    return this.hasConnected;
+  }
+
+  getStatus(): WebSocketStatus {
+    return this.status;
+  }
+
+  /** Subscribes to status changes; returns an unsubscribe function. */
+  onStatus(listener: StatusListener): () => void {
+    this.statusListeners.add(listener);
+    return () => {
+      this.statusListeners.delete(listener);
+    };
+  }
+
+  /** Manual retry after the automatic reconnect budget is exhausted. */
+  retry() {
+    if (this.reconnectTimeout) {
+      clearTimeout(this.reconnectTimeout);
+      this.reconnectTimeout = null;
+    }
+    this.reconnectAttempts = 0;
+    this.initializeSocket();
+  }
 
   private isSocketConnected(): boolean {
     return this.socket !== null && this.socket.readyState === WebSocket.OPEN;
@@ -76,37 +118,21 @@ class WebSocketService {
     return `${protocol}://${window.location.hostname}${portSegment}`;
   }
 
-  private logSocketError(err: Event | Error | unknown) {
-    if (
-      typeof window !== "undefined" &&
-      typeof ErrorEvent !== "undefined" &&
-      err instanceof ErrorEvent
-    ) {
-      // eslint-disable-next-line no-console
-      console.error("WebSocket error:", err.message, err.error ?? {});
-      return;
-    }
-
-    if (err instanceof Event) {
-      // eslint-disable-next-line no-console
-      console.error("WebSocket error event:", {
-        type: err.type,
-        target: (err.target as WebSocket | null)?.url,
-      });
-      return;
-    }
-
+  private logSocketError() {
+    // The browser's error Event carries no detail (it serialises as `{}`);
+    // the close event that follows has the code/reason, so log one line here.
     // eslint-disable-next-line no-console
-    console.error("WebSocket error", err);
+    console.warn(
+      `[ws] connection error (${this.lastUrl ?? "unknown url"}, attempt ${this.reconnectAttempts})`
+    );
   }
 
   private logCloseEvent(event: CloseEvent) {
+    if (event.wasClean) return;
     // eslint-disable-next-line no-console
-    console.warn("WebSocket disconnected", {
-      code: event.code,
-      reason: event.reason,
-      wasClean: event.wasClean,
-    });
+    console.warn(
+      `[ws] closed: code=${event.code}${event.reason ? ` reason="${event.reason}"` : ""}`
+    );
   }
 
   private initializeSocket() {
@@ -124,16 +150,22 @@ class WebSocketService {
     if (!socketUrl) {
       // eslint-disable-next-line no-console
       console.error(
-        "Unable to initialize WebSocket: no valid URL resolved. Set NEXT_PUBLIC_WS_URL to override the default."
+        "[ws] no valid URL resolved. Set NEXT_PUBLIC_WS_URL to override the default."
       );
+      this.setStatus("failed");
       return;
     }
+
+    this.lastUrl = socketUrl;
+    this.setStatus(this.reconnectAttempts > 0 ? "reconnecting" : "connecting");
 
     try {
       const ws = new WebSocket(socketUrl);
 
       ws.onopen = () => {
         this.reconnectAttempts = 0;
+        this.hasConnected = true;
+        this.setStatus("open");
         if (this.reconnectTimeout) {
           clearTimeout(this.reconnectTimeout);
           this.reconnectTimeout = null;
@@ -146,8 +178,8 @@ class WebSocketService {
         this.scheduleReconnect();
       };
 
-      ws.onerror = (err) => {
-        this.logSocketError(err);
+      ws.onerror = () => {
+        this.logSocketError();
         // Error event is usually followed by close event, so we'll handle cleanup there.
       };
 
@@ -164,14 +196,14 @@ class WebSocketService {
           }
         } catch (e) {
           // eslint-disable-next-line no-console
-          console.error("Invalid WebSocket message:", event.data, e);
+          console.error("[ws] invalid message:", String(event.data).slice(0, 200), e);
         }
       };
 
       this.socket = ws;
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error("Failed to create WebSocket:", error);
+      console.error(`[ws] failed to create socket for ${socketUrl}:`, error);
       this.scheduleReconnect();
     }
   }
@@ -202,14 +234,17 @@ class WebSocketService {
     }
 
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+      // Expected when no event server is running; the header shows it.
       // eslint-disable-next-line no-console
-      console.error(
-        `WebSocket reconnection failed after ${this.maxReconnectAttempts} attempts`
+      console.warn(
+        `[ws] giving up after ${this.maxReconnectAttempts} reconnect attempts (${this.lastUrl})`
       );
+      this.setStatus("failed");
       return;
     }
 
     this.reconnectAttempts++;
+    this.setStatus("reconnecting");
     const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
 
     this.reconnectTimeout = setTimeout(() => {
@@ -228,8 +263,14 @@ class WebSocketService {
 
   on<T extends MessageType>(type: T, handler: MessageHandler<T>) {
     this.listeners[type].add(handler);
-    // Ensure socket is initialized when listeners are added
-    if (typeof window !== "undefined" && !this.isSocketConnected()) {
+    // Ensure socket is initialized when listeners are added (but don't fight
+    // a pending reconnect or a socket that is still connecting).
+    if (
+      typeof window !== "undefined" &&
+      !this.socket &&
+      !this.reconnectTimeout &&
+      this.status !== "failed"
+    ) {
       this.initializeSocket();
     }
   }
@@ -249,7 +290,7 @@ class WebSocketService {
       });
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error(`Error in WebSocket handler for type "${type}":`, error);
+      console.error(`[ws] handler for "${type}" threw:`, error);
     }
   }
 }

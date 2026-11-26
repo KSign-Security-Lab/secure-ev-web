@@ -5,6 +5,7 @@ export const enNavigationMessages = {
   "menu.agentTerminal": "Agent Terminal",
   "menu.abilities": "Abilities",
   "menu.operations": "Operations",
+  "menu.coverage": "ATT&CK Coverage",
   "menu.playground": "Playground",
   "menu.assessment": "Assessment",
   "menu.integrations": "Integrations",
@@ -15,6 +16,8 @@ export const enNavigationMessages = {
   "sidebar.toggleLanguage": "Switch language",
   "language.english": "English",
   "language.korean": "Korean",
+  "menu.mainNav": "Main navigation",
+  "sidebar.currentLanguage": "Language: {language}",
 } as const;
 
 type NavigationMessageKey = keyof typeof enNavigationMessages;
@@ -24,8 +27,9 @@ export const koNavigationMessages: Record<NavigationMessageKey, string> = {
   "menu.fuzzing": "퍼징",
   "menu.agents": "에이전트",
   "menu.agentTerminal": "에이전트 터미널",
-  "menu.abilities": "어빌리티",
-  "menu.operations": "오퍼레이션",
+  "menu.abilities": "Ability",
+  "menu.operations": "공격 실행",
+  "menu.coverage": "ATT&CK 커버리지",
   "menu.playground": "플레이그라운드",
   "menu.assessment": "평가",
   "menu.integrations": "연동",
@@ -36,4 +40,6 @@ export const koNavigationMessages: Record<NavigationMessageKey, string> = {
   "sidebar.toggleLanguage": "언어 전환",
   "language.english": "영어",
   "language.korean": "한국어",
+  "menu.mainNav": "주 메뉴",
+  "sidebar.currentLanguage": "언어: {language}",
 };
